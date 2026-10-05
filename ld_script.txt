@@ -107,6 +107,7 @@ SECTIONS {
         src/script_main.o(.rodata);
         src/script_commands.o(.rodata);
         src/script_commands2.o(.rodata);
+        src/script_commands3.o(.rodata);
         src/gameover_process.o(.rodata);
         src/save_processes.o(.rodata);
         src/court_record.o(.rodata);
@@ -153,6 +154,7 @@ SECTIONS {
     {
         data/vwf_font.o(en_data);
         data/en_graphics.o(en_data);
+        data/en_choice.o(en_data);
     } =0
 
     /* DWARF debug sections.

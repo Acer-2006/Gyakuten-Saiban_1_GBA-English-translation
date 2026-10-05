@@ -308,6 +308,7 @@ bool32 Command08(struct ScriptContext * scriptCtx)
             for(i = 57; i < 88; i++)
                 gOamObjects[i].attr0 = SPRITE_ATTR0_CLEAR;
             gOamObjects[OAM_IDX_POINTER].attr0 = SPRITE_ATTR0_CLEAR;
+            ChoiceLabelsDone(); // English patch
             return FALSE;
         }
     }
@@ -388,6 +389,7 @@ bool32 Command09(struct ScriptContext * scriptCtx)
             for(i = 57; i < 88; i++)
                 gOamObjects[i].attr0 = SPRITE_ATTR0_CLEAR;
             gOamObjects[OAM_IDX_POINTER].attr0 = SPRITE_ATTR0_CLEAR;
+            ChoiceLabelsDone(); // English patch
             return FALSE;
         }
     }

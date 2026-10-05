@@ -331,9 +331,48 @@ bool32 Command5D(struct ScriptContext *scriptCtx)
     return 0;
 }
 
+// English patch: show the DS English answer labels for the next choice.
+// args: three label ids (0xFFFF = unused). Labels are 208x16 strips
+// (six 32x16 sprites + one 16x16) drawn through the fullscreen text sprites.
+extern const u8 gChoiceLabels[];
+static const u16 sChoiceLabelVram[3] = { 0x2000, 0x2680, 0x1800 };
+
 bool32 Command5E(struct ScriptContext *scriptCtx)
 {
+    u32 k, b, id;
+    scriptCtx->scriptPtr++;
+    for (k = 32; k < ARRAY_COUNT(gTextBoxCharacters); k++)
+        gTextBoxCharacters[k].state &= ~0x8000;
+    for (k = 0; k < 3; k++)
+    {
+        id = scriptCtx->scriptPtr[k];
+        if (id == 0xFFFF)
+            continue;
+        DmaCopy16(3, gChoiceLabels + id * 0x680, OBJ_VRAM0 + sChoiceLabelVram[k], 0x680);
+        for (b = 0; b < 7; b++)
+        {
+            struct TextBoxCharacter *c = &gTextBoxCharacters[32 + k * 7 + b];
+            c->x = 4 + b * 32; // clear of the pointer
+            c->y = k * 20;
+            c->objAttr2 = (sChoiceLabelVram[k] / 32 + b * 8) + 0x400;
+            c->state = 0x8000 | (b == 6 ? 0x4000 : 0);
+            c->color = 0;
+        }
+    }
+    scriptCtx->scriptPtr += 3;
     return 0;
+}
+
+// English patch: called when a choice is confirmed; puts back the graphics the
+// labels borrowed.
+void ChoiceLabelsDone(void)
+{
+    u32 k;
+    for (k = 32; k < ARRAY_COUNT(gTextBoxCharacters); k++)
+        gTextBoxCharacters[k].state &= ~0x8000;
+    if (gMain.process[GAME_PROCESS] == INVESTIGATION_PROCESS)
+        DmaCopy16(3, gGfx4bppInvestigationActions, OBJ_VRAM0 + 0x2000, 0x1000);
+    MakeMapMarkerSprites();
 }
 
 bool32 Command5F(struct ScriptContext *scriptCtx)

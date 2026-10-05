@@ -62,7 +62,7 @@ def pair_sections(gb, G, db, D):
     return pairs
 
 
-def merge_section(gtoks, dtoks):
+def merge_section(gtoks, dtoks, choice_ids=None):
     """Return (out_tokens, gpos_to_out, patches, stats)."""
     g, _ = parse(gtoks, GBA_ARGS)
     d, _ = parse(dtoks, DS_ARGS)
@@ -135,6 +135,9 @@ def merge_section(gtoks, dtoks):
                 emit_g(j)
             nextg = j + 1
             continue
+        if op == 0x07 and choice_ids:          # English answer labels for this choice
+            out.extend([0x5E] + list(choice_ids))
+            stats['choice_labels'] = 1
         if op in TEXT_CMDS or op in DS_KEEP:
             out.append(op)
             out.extend(args)
@@ -166,7 +169,7 @@ def map_pos(gpos_to_out, target):
     return gpos_to_out[keys[-1]] if keys else 0
 
 
-def port(gfile, dfile, outfile, report=None):
+def port(gfile, dfile, outfile, report=None, scenario_idx=None):
     global ANIM_MAP, ANIM_TAG
     mp = os.path.join(os.path.dirname(__file__), 'anim_map.json')
     ANIM_MAP = json.load(open(mp)) if os.path.exists(mp) else {}
@@ -176,6 +179,12 @@ def port(gfile, dfile, outfile, report=None):
     G = section_bounds(gb, goffs)
     D = section_bounds(db, doffs)
     pairs = pair_sections(gb, G, db, D)
+    choices = {}
+    cp = os.path.join(os.path.dirname(__file__), 'choice_table.json')
+    if scenario_idx is not None and os.path.exists(cp):
+        for c in json.load(open(cp)):
+            if c['scenario'] == scenario_idx:
+                choices[c['ds_section']] = c['ids']
     # find header entries used as jump descriptors
     desc_idx = set()
     for x in G:
@@ -196,7 +205,7 @@ def port(gfile, dfile, outfile, report=None):
             continue
         gt = tokens(gb, *x)
         if gi in pairs and D[pairs[gi]]:
-            out, m, patches, st = merge_section(gt, tokens(db, *D[pairs[gi]]))
+            out, m, patches, st = merge_section(gt, tokens(db, *D[pairs[gi]]), choices.get(pairs[gi]))
             for idx, tgt in patches:
                 out[idx] = map_pos(m, tgt) * 2
             lines.append('sec %3d <- ds %3d  %s' % (gi, pairs[gi], st))

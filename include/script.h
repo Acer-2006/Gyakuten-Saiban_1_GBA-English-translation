@@ -213,6 +213,7 @@ bool32 Command5B(struct ScriptContext *);
 bool32 Command5C(struct ScriptContext *);
 bool32 Command5D(struct ScriptContext *);
 bool32 Command5E(struct ScriptContext *);
+void ChoiceLabelsDone(void);
 bool32 Command5F(struct ScriptContext *);
 /* end commands */
 

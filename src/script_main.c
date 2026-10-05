@@ -474,8 +474,10 @@ static void DrawTextAndMapMarkers(struct ScriptContext * scriptCtx)
             {
                 if(gTextBoxCharacters[i].state & 0x8000)
                 {
-                    oam->attr0 = SPRITE_ATTR0(gTextBoxCharacters[i].y + scriptCtx->fullscreenTextYOffset, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
-                    oam->attr1 = SPRITE_ATTR1_NONAFFINE(gTextBoxCharacters[i].x + scriptCtx->fullscreenTextXOffset, FALSE, FALSE, 1);
+                    // English patch: choice labels are 32x16 strips ending in one 16x16 sprite
+                    u32 sq = gTextBoxCharacters[i].state & 0x4000;
+                    oam->attr0 = SPRITE_ATTR0(gTextBoxCharacters[i].y + scriptCtx->fullscreenTextYOffset, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, sq ? ST_OAM_SQUARE : ST_OAM_H_RECTANGLE);
+                    oam->attr1 = SPRITE_ATTR1_NONAFFINE(gTextBoxCharacters[i].x + scriptCtx->fullscreenTextXOffset, FALSE, FALSE, sq ? 1 : 2);
                     oam->attr2 = gTextBoxCharacters[i].objAttr2;
                 }
                 else

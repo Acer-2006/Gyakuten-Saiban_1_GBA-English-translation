@@ -8,8 +8,8 @@ os.makedirs(odir, exist_ok=True)
 gfiles = sorted(glob.glob(os.path.join(gdir, 'scenario_*.phscr')))
 dfiles = [os.path.join(ddir, '%02d.bin' % i) for i in range(1, 35, 2)]
 T = K = 0
-for gf, df in zip(gfiles, dfiles):
+for idx, (gf, df) in enumerate(zip(gfiles, dfiles)):
     name = os.path.basename(gf)
-    t, k = port_script.port(gf, df, os.path.join(odir, name), os.path.join(odir, name + '.report.txt'))
+    t, k = port_script.port(gf, df, os.path.join(odir, name), os.path.join(odir, name + '.report.txt'), idx)
     T += t; K += k
 print('ported %d sections, %d left in Japanese' % (T, K))
