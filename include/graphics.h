@@ -7,6 +7,7 @@
 #define ROM_START 0x08000000 // why is this not already a fucking define 
 #endif
 
+
 // English patch relocations (tools/en/relocate_assets.py)
 extern u8 gPalTitleScreen_en[];
 extern u8 gGfx8lzTitleScreen_en[];

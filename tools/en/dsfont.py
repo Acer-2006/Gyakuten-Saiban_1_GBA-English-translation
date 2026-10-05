@@ -8,7 +8,7 @@ WIDTHS = open(os.path.join(HERE, '..', '..', 'graphics/vwf/font_widths.bin'), 'r
 ROWS = 13
 PUNCT = {'.': 0xE1, ',': 0xEF, "'": 0xF3, ':': 0xED, '!': 0x3E, '?': 0x3F, '-': 0x100,
          '(': 0xE5, ')': 0xE6, '"': 0x101, '&': 0xFC, '/': 0xF1, '*': 0xF2, '+': 0xF0,
-         '~': 0xF9, '%': 0xF7, ';': 0x10C}
+         '~': 0xF9, '%': 0xF7, ';': 0x10C, '[': 0x102, ']': 0x103, '#': 0x105}
 def code(ch):
     if ch.isdigit(): return ord(ch) - 48
     if 'A' <= ch <= 'Z': return 10 + ord(ch) - 65
