@@ -22,6 +22,10 @@ DS_ONLY = {0x69, 0x6b, 0x74, 0x5d, 0x75, 0x4d, 0x4e, 0x65, 0x6f, 0x78, 0x7a}
 DS_KEEP = {0x01, 0x02, 0x03, 0x07, 0x0B, 0x0C, 0x0D, 0x0E, 0x11, 0x14, 0x16, 0x1F,
            0x21, 0x24, 0x27, 0x2B, 0x2D, 0x2E, 0x30, 0x40, 0x41, 0x49, 0x4C}
 TEXT_CMDS = {0x01, 0x02, 0x03, 0x07, 0x0B, 0x0C, 0x2D, 0x30}  # never matched from GBA: DS owns text flow
+KEYED_OPS = {0x05, 0x0E, 0x1B, 0x1E}  # align on (op, first arg): music, speaker, background, person
+DS_ARGS_WIN = {0x0E}
+ANIM_MAP = {}   # 'scenario_x:person:dsval' -> gba value (learn_anim_map.py)
+ANIM_TAG = ''  # matched for alignment, but the DS arguments are used (speaker nametag)
 JUMP_IN_SECTION = 0x35
 
 
@@ -64,7 +68,12 @@ def merge_section(gtoks, dtoks):
     d, _ = parse(dtoks, DS_ARGS)
     gcmds = [x for x in g if x[1] == 'cmd' and x[2] not in TEXT_CMDS]
     dcmds = [x for x in d if x[1] == 'cmd' and x[2] not in DS_ONLY and x[2] not in TEXT_CMDS]
-    sm = difflib.SequenceMatcher(None, [x[2] for x in gcmds], [x[2] for x in dcmds], autojunk=False)
+    def key(x):
+        op, args = x[2], x[3]
+        if op in KEYED_OPS and args:
+            return (op, args[0])
+        return (op,)
+    sm = difflib.SequenceMatcher(None, [key(x) for x in gcmds], [key(x) for x in dcmds], autojunk=False)
     d2g = {}
     for bl in sm.get_matching_blocks():
         for k in range(bl.size):
@@ -84,19 +93,46 @@ def merge_section(gtoks, dtoks):
         out.extend(args)
         emitted.add(j)
 
+    def conv_anim(args):
+        person = args[0]
+        try:
+            return [0x1E, person] + [ANIM_MAP['%s:%x:%x' % (ANIM_TAG, person, v)] for v in args[1:3]]
+        except KeyError:
+            return None
+
     nextg = 0
     for pos, kind, op, args in d:
         if kind == 'text':
             out.append(op)
             continue
+        if op == 0x1E:
+            conv = conv_anim(args)
+            if conv is not None:
+                if pos in d2g:
+                    j = d2g[pos]
+                    while nextg < j:
+                        if nextg not in emitted and gcmds[nextg][2] != 0x1E:
+                            emit_g(nextg)
+                            stats['inserted_gba'] += 1
+                        nextg += 1
+                    emitted.add(j)
+                    nextg = j + 1
+                out.extend(conv)
+                stats['anim_ds'] = stats.get('anim_ds', 0) + 1
+                continue
         if pos in d2g:
             j = d2g[pos]
             while nextg < j:  # GBA-only commands that come before this one
-                if nextg not in emitted:
+                if nextg not in emitted and gcmds[nextg][2] != 0x1E:
                     emit_g(nextg)
                     stats['inserted_gba'] += 1
                 nextg += 1
-            emit_g(j)
+            if op in DS_ARGS_WIN:
+                out.append(op)
+                out.extend(args)
+                emitted.add(j)
+            else:
+                emit_g(j)
             nextg = j + 1
             continue
         if op in TEXT_CMDS or op in DS_KEEP:
@@ -109,7 +145,7 @@ def merge_section(gtoks, dtoks):
         else:
             stats['dropped_ds'] += 1
     # leftovers: insert before the final terminator if there is one
-    tail = [j for j in range(len(gcmds)) if j not in emitted]
+    tail = [j for j in range(len(gcmds)) if j not in emitted and gcmds[j][2] != 0x1E]
     if tail:
         term = None
         if out and out[-1] == 0x0D:
@@ -131,6 +167,10 @@ def map_pos(gpos_to_out, target):
 
 
 def port(gfile, dfile, outfile, report=None):
+    global ANIM_MAP, ANIM_TAG
+    mp = os.path.join(os.path.dirname(__file__), 'anim_map.json')
+    ANIM_MAP = json.load(open(mp)) if os.path.exists(mp) else {}
+    ANIM_TAG = os.path.basename(gfile).split('_script')[0]
     gb, gn, goffs = load(gfile)
     db, dn, doffs = load(dfile)
     G = section_bounds(gb, goffs)
