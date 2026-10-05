@@ -1,0 +1,1728 @@
+Making ld
+Making bfd
+Configuring in ld...
+Configuring in bfd...
+configure: creating cache config.cache
+configure: creating cache config.cache
+checking build system type... checking build system type... x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking target system type... x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking target system type... armv4tl-none-eabi
+checking for a BSD-compatible install... armv4tl-none-eabi
+checking for a BSD-compatible install... /usr/bin/install -c
+/usr/bin/install -c
+checking for a thread-safe mkdir -p... checking for a thread-safe mkdir -p... /usr/bin/mkdir -p
+checking for gawk... no
+checking for mawk... /usr/bin/mkdir -p
+checking for gawk... mawk
+no
+checking for mawk... mawk
+checking whether make supports nested variables... checking whether make supports nested variables... yes
+yes
+checking for gcc... cc
+checking for ar... ar
+checking for ranlib... ranlib
+checking for a sed that does not truncate output... /usr/bin/sed
+checking for gcc... cc
+checking whether the C compiler works... checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... checking for suffix of executables... 
+
+checking for suffix of object files... checking for suffix of object files... o
+checking whether we are using the GNU C compiler... o
+checking whether we are using the GNU C compiler... yes
+checking whether cc understands -c and -o together... yes
+checking whether cc understands -c and -o together... yes
+checking whether make supports the include directive... yes
+checking whether make supports the include directive... yes (GNU style)
+checking dependency style of cc... none
+checking how to run the C preprocessor... yes (GNU style)
+checking dependency style of cc... none
+checking how to run the C preprocessor... cc -E
+cc -E
+checking for grep that handles long lines and -e... checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for ANSI C header files... (cached) yes
+/usr/bin/grep -E
+checking for ANSI C header files... (cached) yes
+checking for sys/types.h... checking for sys/types.h... yes
+yes
+checking for sys/stat.h... checking for sys/stat.h... yes
+yes
+checking for stdlib.h... checking for stdlib.h... (cached) (cached) yes
+yes
+checking for string.h... (cached) yes
+checking for string.h... (cached) yes
+checking for memory.h... checking for memory.h... yes
+yes
+checking for strings.h... checking for strings.h... yes
+yes
+checking for inttypes.h... checking for inttypes.h... yes
+yes
+checking for stdint.h... (cached) yes
+checking for unistd.h... checking for stdint.h... (cached) yes
+checking for unistd.h... yes
+checking for minix/config.h... yes
+checking for minix/config.h... no
+checking whether it is safe to define __EXTENSIONS__... no
+checking whether it is safe to define __EXTENSIONS__... yes
+checking for special C compiler options needed for large files... no
+checking for _FILE_OFFSET_BITS value needed for large files... yes
+checking for special C compiler options needed for large files... no
+checking for _FILE_OFFSET_BITS value needed for large files... no
+checking for fcntl.h... no
+checking for long double... yes
+checking for fcntl.h... yes
+checking for malloc.h... yes
+checking for strings.h... (cached) yes
+checking for sys/file.h... yes
+checking for strings.h... (cached) yes
+yes
+checking for sys/file.h... checking for sys/time.h... yes
+yes
+checking for unistd.h... (cached) yes
+checking whether string.h and strings.h may both be included... checking for unistd.h... (cached) yes
+checking whether string.h and strings.h may both be included... yes
+checking for mmap... yes
+checking for getpagesize... yes
+yes
+checking for mmap... checking for strcasecmp... yes
+yes
+checking for munmap... configure: updating cache config.cache
+yes
+configure: creating ./config.status
+checking for strcasecmp... yes
+checking for strncasecmp... config.status: creating Makefile
+config.status: creating config.h
+yes
+checking for _LARGEFILE_SOURCE value needed for large files... config.status: executing depfiles commands
+Making libiberty
+Configuring in libiberty...
+no
+checking whether ftello is declared... yes
+checking whether ftello64 is declared... yes
+checking whether asprintf is declared... yes
+checking file_ptr type... long
+configure: creating cache config.cache
+checking build system type... configure: updating cache config.cache
+configure: creating ./config.status
+x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking for ar... ar
+checking for ranlib... ranlib
+checking for gcc... cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... config.status: creating Makefile
+config.status: creating bfd-in3.h
+
+checking for suffix of object files... config.status: creating config.h
+o
+checking whether we are using the GNU C compiler... config.status: executing depfiles commands
+yes
+checking how to run the C preprocessor... Making binutils
+Configuring in binutils...
+cc -E
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for ANSI C header files... (cached) yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for memory.h... yes
+configure: creating cache config.cache
+checking for strings.h... checking build system type... yes
+checking for inttypes.h... x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking target system type... armv4tl-none-eabi
+checking for a BSD-compatible install... /usr/bin/install -c
+yes
+checking for a thread-safe mkdir -p... /usr/bin/mkdir -p
+checking for gawk... no
+checking for mawk... mawk
+checking for stdint.h... (cached) yes
+checking whether make supports nested variables... yes
+checking for unistd.h... checking for gcc... cc
+yes
+checking whether the C compiler works... checking for minix/config.h... no
+checking whether it is safe to define __EXTENSIONS__... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... yes
+checking for special C compiler options needed for large files... no
+checking for _FILE_OFFSET_BITS value needed for large files... 
+no
+checking whether byte ordering is bigendian... checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether cc understands -c and -o together... no
+checking for a BSD-compatible install... yes
+checking whether make supports the include directive... /usr/bin/install -c
+yes (GNU style)
+checking dependency style of cc... none
+checking how to run the C preprocessor... checking for fcntl.h... yes
+cc -E
+checking for malloc.h... yes
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... checking for stdio_ext.h... /usr/bin/grep -E
+checking for ANSI C header files... (cached) yes
+checking for sys/types.h... yes
+checking for sys/file.h... yes
+checking for sys/stat.h... yes
+checking for sys/param.h... yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for memory.h... yes
+checking for sys/time.h... yes
+checking for strings.h... yes
+checking for unistd.h... (cached) yes
+checking for sys/wait.h that is POSIX.1 compatible... yes
+checking for inttypes.h... yes
+checking for stdint.h... (cached) yes
+yes
+checking whether time.h and sys/time.h may both be included... checking for unistd.h... yes
+checking size of long... yes
+checking for minix/config.h... no
+checking whether it is safe to define __EXTENSIONS__... 8
+checking size of size_t... yes
+checking for special C compiler options needed for large files... no
+checking for _FILE_OFFSET_BITS value needed for large files... 0
+checking for atexit... no
+checking size of long... yes
+checking for bzero... 8
+checking for fcntl.h... yes
+yes
+checking for malloc.h... checking for getcwd... yes
+checking for strings.h... (cached) yes
+checking for sys/param.h... yes
+checking for getpagesize... yes
+checking for sys/time.h... yes
+checking for unistd.h... (cached) yes
+yes
+checking for utime.h... checking for gettimeofday... yes
+checking whether string.h and strings.h may both be included... yes
+yes
+checking for getpagesize... checking for mempcpy... yes
+yes
+checking for mkdir... checking for pathconf... yes
+yes
+checking for rmdir... checking for pstat_getdynamic... yes
+checking for stpcpy... no
+checking for realpath... yes
+yes
+checking for stpcpy... checking for utime... yes
+yes
+checking for mkstemp... checking for strdup... yes
+checking for mkdtemp... yes
+checking for strerror... yes
+checking for utime.h... yes
+checking for psignal... yes
+checking whether stpcpy is declared... yes
+checking for strsignal... yes
+configure: updating cache config.cache
+yes
+configure: creating ./config.status
+checking for asprintf... yes
+checking for atexit... (cached) yes
+checking for basename... config.status: creating Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+yes
+checking for bzero... (cached) yes
+checking for getcwd... (cached) yes
+checking for getpagesize... (cached) yes
+Making gas
+Configuring in gas...
+checking for gettimeofday... (cached) yes
+checking for index... yes
+checking for mkstemps... yes
+checking for random... yes
+checking for rename... configure: creating cache config.cache
+checking build system type... yes
+x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking target system type... checking for sigsetmask... armv4tl-none-eabi
+checking for a BSD-compatible install... /usr/bin/install -c
+checking for a thread-safe mkdir -p... /usr/bin/mkdir -p
+checking for gawk... no
+checking for mawk... mawk
+checking whether make supports nested variables... yes
+yes
+checking for gcc... cc
+checking for stpcpy... (cached) yes
+checking for strdup... (cached) yes
+checking for vasprintf... checking whether the C compiler works... yes
+checking for sys_errlist... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... no
+checking for sys_nerr... 
+checking for suffix of object files... no
+checking for sys_siglist... o
+checking whether we are using the GNU C compiler... yes
+checking whether cc understands -c and -o together... no
+checking whether basename is declared... yes
+checking whether make supports the include directive... yes
+yes (GNU style)
+checking dependency style of cc... none
+checking how to run the C preprocessor... checking whether asprintf is declared... cc -E
+yes
+checking whether vasprintf is declared... checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for ANSI C header files... (cached) yes
+checking for sys/types.h... yes
+checking whether getopt is declared... yes
+checking for sys/stat.h... yes
+checking whether canonicalize_file_name is declared... yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for memory.h... yes
+yes
+configure: updating cache config.cache
+checking for strings.h... configure: creating ./config.status
+yes
+checking for inttypes.h... yes
+checking for stdint.h... (cached) yes
+checking for unistd.h... yes
+checking for minix/config.h... config.status: creating Makefile
+config.status: creating config.h
+no
+checking whether it is safe to define __EXTENSIONS__... config.status: executing default commands
+rm -f function.o loop.o thumb.o unroll.o agbcc old_agbcc
+yes
+checking for special C compiler options needed for large files... no
+checking for _FILE_OFFSET_BITS value needed for large files... gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c gengenrtl.c
+no
+checking whether byte ordering is bigendian... gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c gencheck.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o gengenrtl gengenrtl.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o gencheck gencheck.o
+./gengenrtl tmp-genrtl.h tmp-genrtl.c
+/bin/sh ./../gnu_aux/move-if-change tmp-genrtl.h genrtl.h
+/bin/sh ./../gnu_aux/move-if-change tmp-genrtl.c genrtl.c
+no
+touch s-genrtl
+./gencheck > tmp-check.h
+/bin/sh ./../gnu_aux/move-if-change tmp-check.h tree-check.h
+checking for memory.h... (cached) yes
+touch s-check
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c genpeep.c
+checking for strings.h... (cached) yes
+checking for unistd.h... (cached) yes
+checking for sys/types.h... (cached) yes
+checking for sys/stat.h... (cached) yes
+checking whether string.h and strings.h may both be included... gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c rtl.c
+yes
+checking for unlink... yes
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c bitmap.c
+configure: updating cache config.cache
+configure: creating ./config.status
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c obstack.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c print-rtl.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c genopinit.c
+config.status: creating Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c genrecog.c
+config.status: executing default commands
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c genconfig.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c genoutput.c
+CDPATH="${ZSH_VERSION+.}:" && cd . && /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/missing aclocal-1.16 -I . -I .. -I ../config
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c genemit.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c rtlanal.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c genflags.c
+ cd . && /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/missing automake-1.16 --foreign
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c gencodes.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c genattr.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o genpeep genpeep.o rtl.o bitmap.o obstack.o print-rtl.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o genopinit genopinit.o rtl.o bitmap.o obstack.o print-rtl.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o genrecog genrecog.o rtl.o bitmap.o obstack.o print-rtl.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o genconfig genconfig.o rtl.o bitmap.o obstack.o print-rtl.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o genoutput genoutput.o rtl.o bitmap.o obstack.o print-rtl.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o genemit genemit.o rtl.o bitmap.o obstack.o print-rtl.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o genflags genflags.o rtl.o bitmap.o obstack.o print-rtl.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o gencodes gencodes.o rtl.o bitmap.o obstack.o print-rtl.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o genattr genattr.o rtl.o bitmap.o obstack.o print-rtl.o
+./genpeep ./thumb.md > tmp-peep.c
+/bin/sh ./../gnu_aux/move-if-change tmp-peep.c insn-peep.c
+touch s-peep
+./genopinit ./thumb.md > tmp-opinit.c
+/bin/sh ./../gnu_aux/move-if-change tmp-opinit.c insn-opinit.c
+touch s-opinit
+./genrecog ./thumb.md > tmp-recog.c
+/bin/sh ./../gnu_aux/move-if-change tmp-recog.c insn-recog.c
+touch s-recog
+./genconfig ./thumb.md > tmp-config.h
+/bin/sh ./../gnu_aux/move-if-change tmp-config.h insn-config.h
+touch s-config
+./genoutput ./thumb.md > tmp-output.c
+/bin/sh ./../gnu_aux/move-if-change tmp-output.c insn-output.c
+touch s-output
+./genemit ./thumb.md > tmp-emit.c
+/bin/sh ./../gnu_aux/move-if-change tmp-emit.c insn-emit.c
+touch s-emit
+./genflags ./thumb.md > tmp-flags.h
+/bin/sh ./../gnu_aux/move-if-change tmp-flags.h insn-flags.h
+touch s-flags
+./gencodes ./thumb.md > tmp-codes.h
+/bin/sh ./../gnu_aux/move-if-change tmp-codes.h insn-codes.h
+touch s-codes
+./genattr ./thumb.md > tmp-attr.h
+/bin/sh ./../gnu_aux/move-if-change tmp-attr.h insn-attr.h
+touch s-attr
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c genextract.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c genattrtab.c
+genattrtab.c: In function 'attr_rtx':
+genattrtab.c:487:24: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  487 | #define RTL_HASH(RTL) ((int32_t)(RTL)&0777777)
+      |                        ^
+genattrtab.c:556:37: note: in expansion of macro 'RTL_HASH'
+  556 |         hashcode = ((int32_t)code + RTL_HASH(arg0));
+      |                                     ^~~~~~~~
+genattrtab.c:487:24: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  487 | #define RTL_HASH(RTL) ((int32_t)(RTL)&0777777)
+      |                        ^
+genattrtab.c:583:37: note: in expansion of macro 'RTL_HASH'
+  583 |         hashcode = ((int32_t)code + RTL_HASH(arg0) + RTL_HASH(arg1));
+      |                                     ^~~~~~~~
+genattrtab.c:487:24: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  487 | #define RTL_HASH(RTL) ((int32_t)(RTL)&0777777)
+      |                        ^
+genattrtab.c:583:54: note: in expansion of macro 'RTL_HASH'
+  583 |         hashcode = ((int32_t)code + RTL_HASH(arg0) + RTL_HASH(arg1));
+      |                                                      ^~~~~~~~
+genattrtab.c:487:24: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  487 | #define RTL_HASH(RTL) ((int32_t)(RTL)&0777777)
+      |                        ^
+genattrtab.c:604:37: note: in expansion of macro 'RTL_HASH'
+  604 |         hashcode = ((int32_t)code + RTL_HASH(arg0));
+      |                                     ^~~~~~~~
+genattrtab.c:487:24: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  487 | #define RTL_HASH(RTL) ((int32_t)(RTL)&0777777)
+      |                        ^
+genattrtab.c:622:37: note: in expansion of macro 'RTL_HASH'
+  622 |         hashcode = ((int32_t)code + RTL_HASH(arg0) + RTL_HASH(arg1));
+      |                                     ^~~~~~~~
+genattrtab.c:487:24: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  487 | #define RTL_HASH(RTL) ((int32_t)(RTL)&0777777)
+      |                        ^
+genattrtab.c:622:54: note: in expansion of macro 'RTL_HASH'
+  622 |         hashcode = ((int32_t)code + RTL_HASH(arg0) + RTL_HASH(arg1));
+      |                                                      ^~~~~~~~
+CDPATH="${ZSH_VERSION+.}:" && cd . && /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/missing autoconf
+configure.ac:41: warning: AC_CHECK_HEADERS($ac_header_list): you should use literals
+./lib/autoconf/headers.m4:217: AC_CHECK_HEADERS is expanded from...
+configure.ac:41: _AC_Header_stdio_h is expanded from...
+./lib/autoconf/specific.m4:364: AC_USE_SYSTEM_EXTENSIONS is expanded from...
+configure.ac:41: the top level
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o genextract genextract.o rtl.o bitmap.o obstack.o print-rtl.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1 -o genattrtab genattrtab.o rtl.o bitmap.o obstack.o print-rtl.o rtlanal.o
+/bin/sh ./config.status --recheck
+./genextract ./thumb.md > tmp-extract.c
+/bin/sh ./../gnu_aux/move-if-change tmp-extract.c insn-extract.c
+touch s-extract
+./genattrtab ./thumb.md > tmp-attrtab.c;
+/bin/sh ./../gnu_aux/move-if-change tmp-attrtab.c insn-attrtab.c
+touch s-attrtab
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c toplev.c
+running CONFIG_SHELL=/bin/sh /bin/sh ./configure -C --disable-option-checking SHELL=/bin/sh LDFLAGS= CFLAGS=-O2 -std=gnu11 --disable-plugins --without-libtool --without-libintl --target=armv4tl-none-eabi --program-prefix=arm-none-eabi- --disable-dependency-tracking --enable-gold=no --with-system-zlib --without-isl --exec-prefix=NONE CC=cc target_alias=armv4tl-none-eabi --no-create --no-recursion
+configure: loading cache config.cache
+checking build system type... (cached) x86_64-pc-linux-gnu
+checking host system type... (cached) x86_64-pc-linux-gnu
+checking target system type... (cached) armv4tl-none-eabi
+checking for a BSD-compatible install... (cached) /usr/bin/install -c
+checking for a race-free mkdir -p... (cached) /usr/bin/mkdir -p
+checking for gawk... (cached) mawk
+checking whether make supports nested variables... (cached) yes
+checking for ar... (cached) ar
+checking for ranlib... (cached) ranlib
+checking for a sed that does not truncate output... (cached) /usr/bin/sed
+checking for gcc... (cached) cc
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c version.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c tree.c
+checking whether the C compiler works... tree.c: In function 'build_type_attribute_variant':
+tree.c:248:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  248 | #define TYPE_HASH(TYPE) ((uint32_t)(TYPE)&0777777)
+      |                          ^
+tree.c:2454:50: note: in expansion of macro 'TYPE_HASH'
+ 2454 |         hashcode = TYPE_HASH(TREE_CODE(ntype)) + TYPE_HASH(TREE_TYPE(ntype))
+      |                                                  ^~~~~~~~~
+tree.c:248:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  248 | #define TYPE_HASH(TYPE) ((uint32_t)(TYPE)&0777777)
+      |                          ^
+tree.c:2460:25: note: in expansion of macro 'TYPE_HASH'
+ 2460 |             hashcode += TYPE_HASH(TYPE_ARG_TYPES(ntype));
+      |                         ^~~~~~~~~
+tree.c:248:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  248 | #define TYPE_HASH(TYPE) ((uint32_t)(TYPE)&0777777)
+      |                          ^
+tree.c:2463:25: note: in expansion of macro 'TYPE_HASH'
+ 2463 |             hashcode += TYPE_HASH(TYPE_DOMAIN(ntype));
+      |                         ^~~~~~~~~
+tree.c:248:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  248 | #define TYPE_HASH(TYPE) ((uint32_t)(TYPE)&0777777)
+      |                          ^
+tree.c:2466:25: note: in expansion of macro 'TYPE_HASH'
+ 2466 |             hashcode += TYPE_HASH(TYPE_MAX_VALUE(ntype));
+      |                         ^~~~~~~~~
+tree.c: In function 'type_hash_list':
+tree.c:248:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  248 | #define TYPE_HASH(TYPE) ((uint32_t)(TYPE)&0777777)
+      |                          ^
+tree.c:2789:21: note: in expansion of macro 'TYPE_HASH'
+ 2789 |         hashcode += TYPE_HASH(TREE_VALUE(tail));
+      |                     ^~~~~~~~~
+tree.c: In function 'attribute_hash_list':
+tree.c:248:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  248 | #define TYPE_HASH(TYPE) ((uint32_t)(TYPE)&0777777)
+      |                          ^
+tree.c:2879:21: note: in expansion of macro 'TYPE_HASH'
+ 2879 |         hashcode += TYPE_HASH(TREE_PURPOSE(tail));
+      |                     ^~~~~~~~~
+tree.c: In function 'build_array_type':
+tree.c:248:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  248 | #define TYPE_HASH(TYPE) ((uint32_t)(TYPE)&0777777)
+      |                          ^
+tree.c:3243:16: note: in expansion of macro 'TYPE_HASH'
+ 3243 |     hashcode = TYPE_HASH(elt_type) + TYPE_HASH(index_type);
+      |                ^~~~~~~~~
+tree.c:248:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  248 | #define TYPE_HASH(TYPE) ((uint32_t)(TYPE)&0777777)
+      |                          ^
+tree.c:3243:38: note: in expansion of macro 'TYPE_HASH'
+ 3243 |     hashcode = TYPE_HASH(elt_type) + TYPE_HASH(index_type);
+      |                                      ^~~~~~~~~
+tree.c: In function 'build_function_type':
+tree.c:248:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  248 | #define TYPE_HASH(TYPE) ((uint32_t)(TYPE)&0777777)
+      |                          ^
+tree.c:3275:16: note: in expansion of macro 'TYPE_HASH'
+ 3275 |     hashcode = TYPE_HASH(value_type) + type_hash_list(arg_types);
+      |                ^~~~~~~~~
+tree.c: In function 'build_complex_type':
+tree.c:248:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  248 | #define TYPE_HASH(TYPE) ((uint32_t)(TYPE)&0777777)
+      |                          ^
+tree.c:3297:16: note: in expansion of macro 'TYPE_HASH'
+ 3297 |     hashcode = TYPE_HASH(component_type);
+      |                ^~~~~~~~~
+yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking for suffix of object files... (cached) o
+checking whether the compiler supports GNU C... (cached) yes
+checking for cc option to enable C11 features... none needed
+checking whether cc understands -c and -o together... (cached) yes
+checking whether make supports the include directive... yes (GNU style)
+checking dependency style of cc... (cached) none
+checking whether it is safe to define __EXTENSIONS__... (cached) yes
+checking whether _XOPEN_SOURCE should be defined... ./configure: 5089: test: =: unexpected operator
+no
+checking for special C compiler options needed for large files... (cached) no
+checking for _FILE_OFFSET_BITS value needed for large files... (cached) no
+checking for long double... (cached) yes
+checking whether string.h and strings.h may both be included... (cached) yes
+checking for getpagesize... (cached) yes
+checking for mmap... (cached) yes
+checking for munmap... (cached) yes
+checking for strcasecmp... (cached) yes
+checking for strncasecmp... (cached) yes
+checking for _LARGEFILE_SOURCE value needed for large files... (cached) no
+checking for cc options needed to detect all undeclared functions... gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c stor-layout.c
+none needed
+checking whether ftello is declared... (cached) yes
+checking whether ftello64 is declared... (cached) yes
+checking whether asprintf is declared... (cached) yes
+checking file_ptr type... long
+configure: updating cache config.cache
+configure: creating ./config.status
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c fold-const.c
+ /bin/sh ./config.status
+config.status: creating Makefile
+config.status: creating bfd-in3.h
+config.status: creating config.h
+config.status: executing depfiles commands
+creating bfdver.h
+rm -f targmatch.h
+/usr/bin/sed -f ./targmatch.sed < ./config.bfd > targmatch.new
+mv -f targmatch.new targmatch.h
+rm -f bfd-tmp.h
+cp bfd-in3.h bfd-tmp.h
+/bin/sh ./../gnu_aux/move-if-change bfd-tmp.h bfd.h
+rm -f bfd-tmp.h
+touch stmp-bfd-h
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c function.c
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./dwarfnames.c -o dwarfnames.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./filename_cmp.c -o filename_cmp.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./fnmatch.c -o fnmatch.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c stmt.c
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./getopt.c -o getopt.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./getopt1.c -o getopt1.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./getpwd.c -o getpwd.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./getruntime.c -o getruntime.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c except.c
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./hashtab.c -o hashtab.o
+In file included from except.c:25:
+except.c: In function 'output_exception_table_entry':
+rtl.h:1120:50: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+ 1120 | #define GEN_INT(N)  gen_rtx_CONST_INT (VOIDmode, (int32_t) (N))
+      |                                                  ^
+except.c:1151:34: note: in expansion of macro 'GEN_INT'
+ 1151 |                 assemble_integer(GEN_INT(CATCH_ALL_TYPE), POINTER_SIZE / BITS_PER_UNIT, 1);
+      |                                  ^~~~~~~
+except.c: In function 'output_exception_table':
+rtl.h:1120:50: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+ 1120 | #define GEN_INT(N)  gen_rtx_CONST_INT (VOIDmode, (int32_t) (N))
+      |                                                  ^
+except.c:1183:26: note: in expansion of macro 'GEN_INT'
+ 1183 |         assemble_integer(GEN_INT(NEW_EH_RUNTIME), POINTER_SIZE / BITS_PER_UNIT, 1);
+      |                          ^~~~~~~
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c expr.c
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./hex.c -o hex.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./lbasename.c -o lbasename.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./lrealpath.c -o lrealpath.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./make-relative-prefix.c -o make-relative-prefix.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./make-temp-file.c -o make-temp-file.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./objalloc.c -o objalloc.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c calls.c
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./obstack.c -o obstack.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./vprintf-support.c -o vprintf-support.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./safe-ctype.c -o safe-ctype.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./simple-object.c -o simple-object.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c expmed.c
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./simple-object-elf.c -o simple-object-elf.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c explow.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c optabs.c
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./strsignal.c -o strsignal.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./unlink-if-ordinary.c -o unlink-if-ordinary.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./xatexit.c -o xatexit.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c varasm.c
+varasm.c: In function 'const_hash':
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./xexit.c -o xexit.o
+varasm.c:1866:23: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+ 1866 |                 hi = ((uint32_t)TREE_TYPE(exp) & ((1 << HASHBITS) - 1)) % MAX_HASH_TABLE;
+      |                       ^
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./xmemdup.c -o xmemdup.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./xstrerror.c -o xstrerror.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./xstrndup.c -o xstrndup.o
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./argv.c -o argv.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c emit-rtl.c
+cc -c -DHAVE_CONFIG_H -O2 -std=gnu11  -I. -I./../include  -D_GNU_SOURCE ./concat.c -o concat.o
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c genrtl.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c real.c
+(echo "/* This file is automatically generated.  DO NOT EDIT! */";\
+for f in `echo " " earmelf.o "" \
+ | sed -e 's/ e/ ld/g' -e 's/ ld/ /g' -e 's/[.]o//g'`; do \
+    echo "extern ld_emulation_xfer_type ld_${f}_emulation;"; \
+done;\
+echo "";\
+echo "#define EMULATION_LIST \\";\
+for f in `echo " " earmelf.o "" \
+ | sed -e 's/ e/ ld/g' -e 's/ ld/ /g' -e 's/[.]o//g'`; do \
+    echo "  &ld_${f}_emulation, \\"; \
+done;\
+echo "  0") >ldemul-tmp.h
+mv ldemul-tmp.h ldemul-list.h
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c `test -f ldgram.c || echo ./`ldgram.c 
+ldgram.c: In function 'yyparse':
+ldgram.c:4049:1: warning: label 'yyerrorlab' defined but not used [-Wunused-label]
+ 4049 | yyerrorlab:
+      | ^~~~~~~~~~
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c regmove.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c dwarf2out.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c ./ldlex-wrapper.c 
+In file included from ./ldlex.c:1472,
+                 from ./ldlex-wrapper.c:26:
+./ldfile.h:52:11: warning: 'struct lang_input_statement_struct' declared inside parameter list will not be visible outside of this definition or declaration
+   52 |   (struct lang_input_statement_struct *);
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+./ldfile.h:54:25: warning: 'struct lang_input_statement_struct' declared inside parameter list will not be visible outside of this definition or declaration
+   54 |   (const char *, struct lang_input_statement_struct *);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+./ldfile.h:58:29: warning: 'struct lang_input_statement_struct' declared inside parameter list will not be visible outside of this definition or declaration
+   58 |   (const char *arch, struct lang_input_statement_struct *,
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c alias.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c integrate.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -o lexsup.o lexsup.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c jump.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c cse.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -o ldlang.o ldlang.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c loop.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c unroll.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c flow.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c stupid.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c combine.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -o mri.o mri.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -o ldctor.o ldctor.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -DDEFAULT_EMULATION='"armelf"' \
+  -DBINDIR='"/usr/local/bin"' -DTOOLBINDIR='"/usr/local/armv4tl-none-eabi/bin"' \
+  -DTARGET='"armv4tl-none-eabi"' -DTARGET_SYSTEM_ROOT=\"\" \
+  ./ldmain.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c varray.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c regclass.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c local-alloc.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c global.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -o ldwrite.o ldwrite.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c reload.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -o ldexp.o ldexp.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -o ldemul.o ldemul.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c reload1.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -o ldver.o ldver.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -o ldmisc.o ldmisc.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -DSCRIPTDIR='"/usr/local/armv4tl-none-eabi/lib"' -DBINDIR='"/usr/local/bin"' \
+  -DTOOLBINDIR='"/usr/local/armv4tl-none-eabi/bin"' \
+  ./ldfile.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c caller-save.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -o ldcref.o ldcref.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c gcse.c
+cp ./emultempl/astring.sed stringify.sed
+base=`echo earmelf.c | sed -e 's,e\(.*\).c,\1,'`; \
+make run-genscripts "script_target=$base" "script_tdirname=tdir_$base"
+LIB_PATH='' /bin/sh ./genscripts.sh "." "/usr/local/lib" "/usr/local" "/usr/local" x86_64-pc-linux-gnu armv4tl-none-eabi armv4tl-none-eabi "armelf" "" no @enable_initfini_array@ armelf "armv4tl-none-eabi"
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c insn-peep.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c final.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c recog.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c insn-opinit.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c insn-recog.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c insn-extract.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c insn-output.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c insn-emit.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c lcm.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include  -O2 -std=gnu11  -DLOCALEDIR="\"/usr/local/share/locale\""  -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11 -c -o earmelf.o earmelf.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c insn-attrtab.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c thumb.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c getpwd.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c convert.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c dyn-string.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c splay-tree.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c graph.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c sbitmap.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c c-parse.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c c-lex.c
+(CDPATH="${ZSH_VERSION+.}:" && cd . && /bin/sh '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/missing' autoheader)
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c c-decl.c
+rm -f stamp-h1
+touch config.in
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o elf32-gen.o elf32-gen.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c c-typeck.c
+rm -f tofiles
+f=""; \
+for i in elf32-arm.o elf32.o elf.o elflink.o elf-attrs.o elf-strtab.o elf-properties.o elf-eh-frame.o dwarf1.o dwarf2.o elf32-gen.o cpu-arm.o ; do \
+  case " $f " in \
+    *" $i "*) ;; \
+    *) f="$f $i" ;; \
+  esac ; \
+done ; \
+echo $f > tofiles
+/bin/sh ./../gnu_aux/move-if-change tofiles ofiles
+touch stamp-ofiles
+cd . && /bin/sh ./config.status config.h
+config.status: creating config.h
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o elf32-arm.o elf32-arm.c
+elf32-arm.c: In function 'arm_type_of_stub':
+elf32-arm.c:2108:7: warning: variable 'arch' set but not used [-Wunused-but-set-variable]
+ 2108 |   int arch;
+      |       ^~~~
+elf32-arm.c: In function 'elf32_arm_populate_plt_entry':
+elf32-arm.c:5700:11: warning: variable 'plt_header_size' set but not used [-Wunused-but-set-variable]
+ 5700 |   bfd_vma plt_header_size;
+      |           ^~~~~~~~~~~~~~~
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c c-convert.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c c-aux-info.c
+elf32-arm.c: In function 'tag_cpu_arch_combine':
+elf32-arm.c:9834:7: warning: variable 'tagl' set but not used [-Wunused-but-set-variable]
+ 9834 |   int tagl, tagh, result;
+      |       ^~~~
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c c-common.c
+elf32-arm.c: In function 'elf32_arm_gc_mark_extra_sections':
+elf32-arm.c:11303:18: warning: variable 'out_attr' set but not used [-Wunused-but-set-variable]
+11303 |   obj_attribute *out_attr;
+      |                  ^~~~~~~~
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -I. -I. -c c-iterate.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DAGBCC_VERSION=1  -o agbcc toplev.o version.o tree.o stor-layout.o fold-const.o function.o stmt.o except.o expr.o calls.o expmed.o explow.o optabs.o varasm.o emit-rtl.o genrtl.o real.o regmove.o dwarf2out.o alias.o integrate.o jump.o cse.o loop.o unroll.o flow.o stupid.o combine.o varray.o regclass.o local-alloc.o global.o reload.o reload1.o caller-save.o gcse.o insn-peep.o final.o recog.o insn-opinit.o insn-recog.o insn-extract.o insn-output.o insn-emit.o lcm.o insn-attrtab.o thumb.o getpwd.o convert.o dyn-string.o splay-tree.o graph.o sbitmap.o c-parse.o c-lex.o c-decl.o c-typeck.o c-convert.o c-aux-info.o c-common.o c-iterate.o rtl.o bitmap.o obstack.o print-rtl.o rtlanal.o
+elf32-arm.c: In function 'elf32_arm_write_section':
+elf32-arm.c:13816:26: warning: unused variable 'errcount' [-Wunused-variable]
+13816 |   unsigned int mapcount, errcount;
+      |                          ^~~~~~~~
+cp gcc/agbcc agbcc
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o elf32.o elf32.c
+echo ./argv.o ./concat.o ./dwarfnames.o ./filename_cmp.o ./fnmatch.o ./getopt.o ./getopt1.o ./getpwd.o ./getruntime.o ./hashtab.o ./hex.o ./lbasename.o ./lrealpath.o ./make-relative-prefix.o ./make-temp-file.o ./objalloc.o ./obstack.o ./vprintf-support.o ./safe-ctype.o ./simple-object.o ./simple-object-elf.o ./strsignal.o ./unlink-if-ordinary.o ./xatexit.o ./xexit.o ./xmemdup.o ./xstrerror.o ./xstrndup.o > required-list
+rm -f ./libiberty.a
+ar rc ./libiberty.a \
+  ./argv.o ./concat.o ./dwarfnames.o ./filename_cmp.o ./fnmatch.o ./getopt.o ./getopt1.o ./getpwd.o ./getruntime.o ./hashtab.o ./hex.o ./lbasename.o ./lrealpath.o ./make-relative-prefix.o ./make-temp-file.o ./objalloc.o ./obstack.o ./vprintf-support.o ./safe-ctype.o ./simple-object.o ./simple-object-elf.o ./strsignal.o ./unlink-if-ordinary.o ./xatexit.o ./xexit.o ./xmemdup.o ./xstrerror.o ./xstrndup.o  
+ranlib ./libiberty.a
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o elf.o elf.c
+elf.c: In function 'setup_group':
+elf.c:740:49: warning: overflow in conversion from 'unsigned int' to 'int' changes value from 'num_group = 4294967295' to '-1' [-Woverflow]
+  740 |                   elf_tdata (abfd)->num_group = num_group = -1;
+      |                                                 ^~~~~~~~~
+CDPATH="${ZSH_VERSION+.}:" && cd . && /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/missing aclocal-1.16 -I .. -I ../config -I ../bfd
+ cd . && /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/missing automake-1.16 --foreign
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o elflink.o elflink.c
+CDPATH="${ZSH_VERSION+.}:" && cd . && /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/missing autoconf
+configure.ac:32: warning: AC_CHECK_HEADERS($ac_header_list): you should use literals
+./lib/autoconf/headers.m4:217: AC_CHECK_HEADERS is expanded from...
+configure.ac:32: _AC_Header_stdio_h is expanded from...
+./lib/autoconf/specific.m4:364: AC_USE_SYSTEM_EXTENSIONS is expanded from...
+configure.ac:32: the top level
+/bin/sh ./config.status --recheck
+running CONFIG_SHELL=/bin/sh /bin/sh ./configure -C --disable-option-checking SHELL=/bin/sh LDFLAGS= CFLAGS=-O2 -std=gnu11 --disable-plugins --without-libtool --without-libintl --target=armv4tl-none-eabi --program-prefix=arm-none-eabi- --disable-dependency-tracking --enable-gold=no --with-system-zlib --without-isl --exec-prefix=NONE CC=cc target_alias=armv4tl-none-eabi --no-create --no-recursion
+configure: loading cache config.cache
+checking build system type... (cached) x86_64-pc-linux-gnu
+checking host system type... (cached) x86_64-pc-linux-gnu
+checking target system type... (cached) armv4tl-none-eabi
+checking for a BSD-compatible install... (cached) /usr/bin/install -c
+checking for a race-free mkdir -p... (cached) /usr/bin/mkdir -p
+checking for gawk... (cached) mawk
+checking whether make supports nested variables... (cached) yes
+checking for gcc... (cached) cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking for suffix of object files... (cached) o
+checking whether the compiler supports GNU C... (cached) yes
+checking for cc option to enable C11 features... none needed
+checking whether cc understands -c and -o together... (cached) yes
+checking whether make supports the include directive... yes (GNU style)
+checking dependency style of cc... (cached) none
+checking whether it is safe to define __EXTENSIONS__... (cached) yes
+checking whether _XOPEN_SOURCE should be defined... ./configure: 4792: test: =: unexpected operator
+no
+checking for special C compiler options needed for large files... (cached) no
+checking for _FILE_OFFSET_BITS value needed for large files... (cached) no
+checking size of long... (cached) 8
+checking whether string.h and strings.h may both be included... (cached) yes
+checking for getpagesize... (cached) yes
+checking for mkdir... (cached) yes
+checking for rmdir... (cached) yes
+checking for stpcpy... (cached) yes
+checking for utime... (cached) yes
+checking for mkstemp... (cached) yes
+checking for mkdtemp... (cached) yes
+checking for utime.h... (cached) yes
+checking for cc options needed to detect all undeclared functions... none needed
+checking whether stpcpy is declared... (cached) yes
+configure: updating cache config.cache
+configure: creating ./config.status
+ /bin/sh ./config.status
+config.status: creating Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c `test -f arparse.c || echo ./`arparse.c 
+arparse.c: In function 'yyparse':
+arparse.c:1565:1: warning: label 'yyerrorlab' defined but not used [-Wunused-label]
+ 1565 |   YY_STACK_PRINT (yyss, yyssp);
+      | ^ ~~~~~~~~
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c `test -f arlex.c || echo ./`arlex.c 
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o ar.o ar.c
+ar.c: In function 'mri_emul':
+ar.c:153:17: warning: implicit declaration of function 'isatty' [-Wimplicit-function-declaration]
+  153 |   interactive = isatty (fileno (stdin));
+      |                 ^~~~~~
+ar.c: In function 'ranlib_touch':
+ar.c:1364:7: warning: implicit declaration of function 'open'; did you mean 'popen'? [-Wimplicit-function-declaration]
+ 1364 |   f = open (archname, O_RDWR | O_BINARY, 0);
+      |       ^~~~
+      |       popen
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o not-ranlib.o not-ranlib.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o arsup.o arsup.c
+arsup.c: In function 'ar_end':
+arsup.c:448:7: warning: implicit declaration of function 'unlink' [-Wimplicit-function-declaration]
+  448 |       unlink (bfd_get_filename (obfd));
+      |       ^~~~~~
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o rename.o rename.c
+rename.c: In function 'simple_copy':
+rename.c:49:12: warning: implicit declaration of function 'open'; did you mean 'popen'? [-Wimplicit-function-declaration]
+   49 |   fromfd = open (from, O_RDONLY | O_BINARY);
+      |            ^~~~
+      |            popen
+rename.c:55:10: warning: implicit declaration of function 'creat' [-Wimplicit-function-declaration]
+   55 |   tofd = creat (to, 0777);
+      |          ^~~~~
+rename.c:60:7: warning: implicit declaration of function 'close'; did you mean 'pclose'? [-Wimplicit-function-declaration]
+   60 |       close (fromfd);
+      |       ^~~~~
+      |       pclose
+rename.c:64:19: warning: implicit declaration of function 'read'; did you mean 'fread'? [-Wimplicit-function-declaration]
+   64 |   while ((nread = read (fromfd, buf, sizeof buf)) > 0)
+      |                   ^~~~
+      |                   fread
+rename.c:66:11: warning: implicit declaration of function 'write'; did you mean 'fwrite'? [-Wimplicit-function-declaration]
+   66 |       if (write (tofd, buf, nread) != nread)
+      |           ^~~~~
+      |           fwrite
+rename.c: In function 'smart_rename':
+rename.c:188:19: warning: implicit declaration of function 'chown' [-Wimplicit-function-declaration]
+  188 |               if (chown (to, s.st_uid, s.st_gid) >= 0)
+      |                   ^~~~~
+rename.c:196:11: warning: implicit declaration of function 'unlink' [-Wimplicit-function-declaration]
+  196 |           unlink (from);
+      |           ^~~~~~
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o binemul.o binemul.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o emul_vanilla.o emul_vanilla.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o bucomm.o bucomm.c
+bucomm.c: In function 'display_target_list':
+bucomm.c:307:3: warning: implicit declaration of function 'unlink' [-Wimplicit-function-declaration]
+  307 |   unlink (arg->filename);
+      |   ^~~~~~
+bucomm.c: In function 'make_tempname':
+bucomm.c:539:3: warning: implicit declaration of function 'close'; did you mean 'pclose'? [-Wimplicit-function-declaration]
+  539 |   close (fd);
+      |   ^~~~~
+      |   pclose
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o version.o version.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o filemode.o filemode.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o objcopy.o objcopy.c
+objcopy.c: In function 'need_sym_before':
+objcopy.c:1345:25: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+ 1345 |           ptr->othersym = ""; /* Empty name is hopefully never a valid symbol name.  */
+      |                         ^
+objcopy.c: In function 'copy_object':
+objcopy.c:2330:9: warning: variable 'dhandle' set but not used [-Wunused-but-set-variable]
+ 2330 |   void *dhandle;
+      |         ^~~~~~~
+objcopy.c: In function 'copy_archive':
+objcopy.c:3156:11: warning: implicit declaration of function 'unlink' [-Wimplicit-function-declaration]
+ 3156 |           unlink (output_name);
+      |           ^~~~~~
+objcopy.c:3200:9: warning: implicit declaration of function 'rmdir' [-Wimplicit-function-declaration]
+ 3200 |         rmdir (l->name);
+      |         ^~~~~
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o not-strip.o not-strip.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -DOBJDUMP_PRIVATE_VECTORS="" ./objdump.c
+./objdump.c: In function 'slurp_file':
+./objdump.c:1221:12: warning: implicit declaration of function 'open'; did you mean 'popen'? [-Wimplicit-function-declaration]
+ 1221 |   int fd = open (fn, O_RDONLY | O_BINARY);
+      |            ^~~~
+      |            popen
+./objdump.c:1227:7: warning: implicit declaration of function 'close'; did you mean 'pclose'? [-Wimplicit-function-declaration]
+ 1227 |       close (fd);
+      |       ^~~~~
+      |       pclose
+./objdump.c:1241:24: warning: implicit declaration of function 'read'; did you mean 'fread'? [-Wimplicit-function-declaration]
+ 1241 |   if (!map || (size_t) read (fd, (char *) map, *size) != *size)
+      |                        ^~~~
+      |                        fread
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o elf-attrs.o elf-attrs.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o elf-strtab.o elf-strtab.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o elf-properties.o elf-properties.c
+elf-properties.c: In function '_bfd_elf_get_property':
+elf-properties.c:67:7: warning: implicit declaration of function '_exit' [-Wimplicit-function-declaration]
+   67 |       _exit (EXIT_FAILURE);
+      |       ^~~~~
+elf-properties.c:67:7: warning: incompatible implicit declaration of built-in function '_exit' [-Wbuiltin-declaration-mismatch]
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o dwarf.o dwarf.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o elf-eh-frame.o elf-eh-frame.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o dwarf1.o dwarf1.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o dwarf2.o -DDEBUGDIR=\"/usr/local/lib/debug\" ./dwarf2.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o cpu-arm.o cpu-arm.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o arm-dis.o arm-dis.c
+arm-dis.c: In function 'print_insn_coprocessor':
+arm-dis.c:1531:39: warning: format '%d' expects argument of type 'int', but argument 3 has type 'long int' [-Wformat=]
+ 1531 |                       func (stream, "%d", (imm5 == 0) ? 32 : imm5);
+      |                                      ~^   ~~~~~~~~~~~~~~~~~~~~~~~
+      |                                       |                    |
+      |                                       int                  long int
+      |                                      %ld
+arm-dis.c:1545:31: warning: format '%x' expects argument of type 'unsigned int', but argument 3 has type 'long int' [-Wformat=]
+ 1545 |         func (stream, "\t; 0x%x", value_in_comment);
+      |                              ~^   ~~~~~~~~~~~~~~~~
+      |                               |   |
+      |                               |   long int
+      |                               unsigned int
+      |                              %lx
+arm-dis.c: In function 'print_insn_thumb16':
+arm-dis.c:2390:36: warning: format '%d' expects argument of type 'int', but argument 3 has type 'long int' [-Wformat=]
+ 2390 |                   func (stream, "#%d", imm);
+      |                                   ~^   ~~~
+      |                                    |   |
+      |                                    int long int
+      |                                   %ld
+arm-dis.c:2493:33: warning: format '%x' expects argument of type 'unsigned int', but argument 3 has type 'long int' [-Wformat=]
+ 2493 |           func (stream, "\t; 0x%x", value_in_comment);
+      |                                ~^   ~~~~~~~~~~~~~~~~
+      |                                 |   |
+      |                                 |   long int
+      |                                 unsigned int
+      |                                %lx
+arm-dis.c: In function 'print_insn_thumb32':
+arm-dis.c:3110:33: warning: format '%x' expects argument of type 'unsigned int', but argument 3 has type 'long int' [-Wformat=]
+ 3110 |           func (stream, "\t; 0x%x", value_in_comment);
+      |                                ~^   ~~~~~~~~~~~~~~~~
+      |                                 |   |
+      |                                 |   long int
+      |                                 unsigned int
+      |                                %lx
+dwarf.c: In function 'display_debug_lines':
+dwarf.c:4689:19: warning: '__builtin_strncpy' specified bound 36 equals destination size [-Wstringop-truncation]
+ 4689 |                   strncpy (newFileName,
+      |                   ^
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o archive.o archive.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o elfcomm.o elfcomm.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o archures.o -DDEFAULT_VECTOR=arm_elf32_le_vec -DSELECT_VECS='&arm_elf32_le_vec,&arm_elf32_fdpic_le_vec,&elf32_le_vec' -DSELECT_ARCHITECTURES='&bfd_arm_arch' ./archures.c
+./archures.c: In function 'bfd_default_scan':
+./archures.c:378:6: warning: 'arch' may be used uninitialized [-Wmaybe-uninitialized]
+  378 |   if (arch != info->arch)
+      |      ^
+./archures.c:296:25: note: 'arch' was declared here
+  296 |   enum bfd_architecture arch;
+      |                         ^~~~
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./../bfd -I./../include -DLOCALEDIR="\"/usr/local/share/locale\"" -Dbin_dummy_emulation=bin_vanilla_emulation  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o is-ranlib.o is-ranlib.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o bfd.o bfd.c
+bfd.c: In function '_bfd_abort':
+bfd.c:1108:3: warning: implicit declaration of function '_exit' [-Wimplicit-function-declaration]
+ 1108 |   _exit (EXIT_FAILURE);
+      |   ^~~~~
+bfd.c:1108:3: warning: incompatible implicit declaration of built-in function '_exit' [-Wbuiltin-declaration-mismatch]
+CDPATH="${ZSH_VERSION+.}:" && cd . && /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/missing aclocal-1.16 -I .. -I ../config -I ../bfd
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o bfdio.o bfdio.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o bfdwin.o bfdwin.c
+bfdwin.c: In function 'bfd_get_file_window':
+bfdwin.c:126:16: warning: implicit declaration of function 'getpagesize' [-Wimplicit-function-declaration]
+  126 |     pagesize = getpagesize ();
+      |                ^~~~~~~~~~~
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o cache.o cache.c
+ cd . && /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/missing automake-1.16 --foreign
+cache.c: In function 'cache_bmmap':
+cache.c:457:23: warning: implicit declaration of function 'getpagesize' [-Wimplicit-function-declaration]
+  457 |         pagesize_m1 = getpagesize () - 1;
+      |                       ^~~~~~~~~~~
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o compress.o compress.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o corefile.o corefile.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o disassemble.o disassemble.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o dis-buf.o dis-buf.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o dis-init.o dis-init.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o format.o format.c
+CDPATH="${ZSH_VERSION+.}:" && cd . && /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/missing autoconf
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o hash.o hash.c
+configure.ac:35: warning: AC_CHECK_HEADERS($ac_header_list): you should use literals
+./lib/autoconf/headers.m4:217: AC_CHECK_HEADERS is expanded from...
+configure.ac:35: _AC_Header_stdio_h is expanded from...
+./lib/autoconf/specific.m4:364: AC_USE_SYSTEM_EXTENSIONS is expanded from...
+configure.ac:35: the top level
+/bin/sh ./config.status --recheck
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o init.o init.c
+running CONFIG_SHELL=/bin/sh /bin/sh ./configure -C --disable-option-checking SHELL=/bin/sh LDFLAGS= CFLAGS=-O2 -std=gnu11 --disable-plugins --without-libtool --without-libintl --target=armv4tl-none-eabi --program-prefix=arm-none-eabi- --disable-dependency-tracking --enable-gold=no --with-system-zlib --without-isl --exec-prefix=NONE CC=cc target_alias=armv4tl-none-eabi --no-create --no-recursion
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o libbfd.o libbfd.c
+configure: loading cache config.cache
+checking build system type... (cached) x86_64-pc-linux-gnu
+checking host system type... (cached) x86_64-pc-linux-gnu
+checking target system type... (cached) armv4tl-none-eabi
+checking for a BSD-compatible install... (cached) /usr/bin/install -c
+checking for a race-free mkdir -p... (cached) /usr/bin/mkdir -p
+checking for gawk... (cached) mawk
+checking whether make supports nested variables... (cached) yes
+checking for gcc... (cached) cc
+checking whether the C compiler works... cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o linker.o linker.c
+yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking for suffix of object files... (cached) o
+checking whether the compiler supports GNU C... (cached) yes
+checking for cc option to enable C11 features... none needed
+checking whether cc understands -c and -o together... (cached) yes
+checking whether make supports the include directive... yes (GNU style)
+checking dependency style of cc... (cached) none
+checking whether it is safe to define __EXTENSIONS__... (cached) yes
+checking whether _XOPEN_SOURCE should be defined... ./configure: 4535: test: =: unexpected operator
+no
+checking for special C compiler options needed for large files... (cached) no
+checking for _FILE_OFFSET_BITS value needed for large files... (cached) no
+checking whether byte ordering is bigendian... (cached) no
+checking whether string.h and strings.h may both be included... (cached) yes
+checking for unlink... (cached) yes
+configure: updating cache config.cache
+configure: creating ./config.status
+ /bin/sh ./config.status
+config.status: creating Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing default commands
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o app.o app.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o merge.o merge.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o as.o as.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o opncls.o opncls.c
+opncls.c: In function 'bfd_fopen':
+opncls.c:204:9: warning: implicit declaration of function 'close'; did you mean 'pclose'? [-Wimplicit-function-declaration]
+  204 |         close (fd);
+      |         ^~~~~
+      |         pclose
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o atof-generic.o atof-generic.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o compress-debug.o compress-debug.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o cond.o cond.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o reloc.o reloc.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o depend.o depend.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o section.o section.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o dwarf2dbg.o dwarf2dbg.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o simple.o simple.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o syms.o syms.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o targets.o -DDEFAULT_VECTOR=arm_elf32_le_vec -DSELECT_VECS='&arm_elf32_le_vec,&arm_elf32_fdpic_le_vec,&elf32_le_vec' -DSELECT_ARCHITECTURES='&bfd_arm_arch' ./targets.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o dw2gencfi.o dw2gencfi.c
+cc -O2 -std=gnu11 -DBINDIR='"/usr/local/bin"'    -I. -I. -I./../include  -DHAVE_arm_elf32_le_vec -DHAVE_arm_elf32_fdpic_le_vec -DHAVE_elf32_le_vec -Wall -c -o binary.o binary.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o ehopt.o ehopt.c
+rm -f function.o loop.o thumb.o unroll.o agbcc old_agbcc
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DOLD_COMPILER -DAGBCC_VERSION=1  -I. -I. -c function.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o expr.o expr.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DOLD_COMPILER -DAGBCC_VERSION=1  -I. -I. -c loop.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o flonum-copy.o flonum-copy.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o flonum-konst.o flonum-konst.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o flonum-mult.o flonum-mult.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o frags.o frags.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DOLD_COMPILER -DAGBCC_VERSION=1  -I. -I. -c unroll.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o hash.o hash.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DOLD_COMPILER -DAGBCC_VERSION=1  -I. -I. -c thumb.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o input-file.o input-file.c
+gcc -DAGBCC_VERSION=1 -std=gnu11 -O0 -DOLD_COMPILER -DAGBCC_VERSION=1 -o old_agbcc toplev.o version.o tree.o stor-layout.o fold-const.o function.o stmt.o except.o expr.o calls.o expmed.o explow.o optabs.o varasm.o emit-rtl.o genrtl.o real.o regmove.o dwarf2out.o alias.o integrate.o jump.o cse.o loop.o unroll.o flow.o stupid.o combine.o varray.o regclass.o local-alloc.o global.o reload.o reload1.o caller-save.o gcse.o insn-peep.o final.o recog.o insn-opinit.o insn-recog.o insn-extract.o insn-output.o insn-emit.o lcm.o insn-attrtab.o thumb.o getpwd.o convert.o dyn-string.o splay-tree.o graph.o sbitmap.o c-parse.o c-lex.o c-decl.o c-typeck.o c-convert.o c-aux-info.o c-common.o c-iterate.o rtl.o bitmap.o obstack.o print-rtl.o rtlanal.o
+cp gcc/old_agbcc old_agbcc
+make  all-am
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o input-scrub.o input-scrub.c
+rm -f libbfd.a
+ar cru libbfd.a arm-dis.o archive.o archures.o bfd.o bfdio.o bfdwin.o cache.o compress.o corefile.o disassemble.o dis-buf.o dis-init.o format.o hash.o init.o libbfd.o linker.o merge.o opncls.o reloc.o section.o simple.o syms.o targets.o binary.o `cat ofiles` 
+ar: `u' modifier ignored since `D' is the default (see `U')
+ranlib libbfd.a
+make  all-am
+cc -Wall -DELF_LIST_OPTIONS=TRUE -DELF_SHLIB_LIST_OPTIONS=TRUE -DELF_PLT_UNWIND_LIST_OPTIONS=FALSE -O2 -std=gnu11   -o ld-new ldgram.o ldlex-wrapper.o lexsup.o ldlang.o mri.o ldctor.o ldmain.o ldwrite.o ldexp.o ldemul.o ldver.o ldmisc.o ldfile.o ldcref.o  earmelf.o  ../bfd/libbfd.a ../libiberty/libiberty.a -lz 
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o listing.o listing.c
+if [ -r sysinfo.c ]; then \
+  cc -c -I. -Wall   sysinfo.c ; \
+else \
+  cc -c -I. -Wall   ./sysinfo.c ; \
+fi
+(CDPATH="${ZSH_VERSION+.}:" && cd . && /bin/sh '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/missing' autoheader)
+rm -f stamp-h1
+touch config.in
+cd . && /bin/sh ./config.status config.h
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o macro.o macro.c
+config.status: creating config.h
+cc -c -I. -I. -Wall   ./syslex_wrap.c
+cc   -o sysinfo sysinfo.o syslex_wrap.o
+./sysinfo -d <./sysroff.info >sysroff.h
+make  all-am
+cc -Wall -Wwrite-strings -O2 -std=gnu11   -o objdump objdump.o dwarf.o  bucomm.o version.o filemode.o elfcomm.o  ../bfd/libbfd.a ../libiberty/libiberty.a -lz 
+cc -Wall -Wwrite-strings -O2 -std=gnu11   -o ar arparse.o arlex.o ar.o not-ranlib.o arsup.o rename.o binemul.o emul_vanilla.o bucomm.o version.o filemode.o ../bfd/libbfd.a ../libiberty/libiberty.a  -lz 
+cc -Wall -Wwrite-strings -O2 -std=gnu11   -o ranlib ar.o is-ranlib.o arparse.o arlex.o arsup.o rename.o binemul.o emul_vanilla.o bucomm.o version.o filemode.o ../bfd/libbfd.a ../libiberty/libiberty.a  -lz 
+cc -Wall -Wwrite-strings -O2 -std=gnu11   -o objcopy objcopy.o not-strip.o rename.o  bucomm.o version.o filemode.o ../bfd/libbfd.a ../libiberty/libiberty.a -lz 
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o messages.o messages.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o output-file.o output-file.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o read.o read.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o remap.o remap.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o sb.o sb.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o subsegs.o subsegs.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o symbols.o symbols.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o write.o write.c
+write.c: In function 'chain_frchains_together':
+write.c:384:13: warning: dangling pointer 'prev_frag' to 'dummy' may be used [-Wdangling-pointer=]
+  383 |         info->frchainP->frch_last
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+  384 |             = chain_frchains_together_1(section, info->frchainP);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+write.c:351:11: note: 'dummy' declared here
+  351 |     fragS dummy, *prev_frag = &dummy;
+      |           ^~~~~
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o config/tc-arm.o config/tc-arm.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o config/obj-elf.o config/obj-elf.c
+cc -DHAVE_CONFIG_H -I.  -I. -I. -I../bfd -I./config -I./../include -I./.. -I./../bfd  -Wall -Wwrite-strings -O2 -std=gnu11 -c -o config/atof-ieee.o config/atof-ieee.c
+(CDPATH="${ZSH_VERSION+.}:" && cd . && /bin/sh '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/missing' autoheader)
+rm -f stamp-h1
+touch config.in
+cd . && /bin/sh ./config.status config.h
+config.status: creating config.h
+make  all-am
+cc -Wall -Wwrite-strings -O2 -std=gnu11   -o as-new app.o as.o atof-generic.o compress-debug.o cond.o depend.o dwarf2dbg.o dw2gencfi.o ehopt.o expr.o flonum-copy.o flonum-konst.o flonum-mult.o frags.o hash.o input-file.o input-scrub.o listing.o macro.o messages.o output-file.o read.o remap.o sb.o subsegs.o symbols.o write.o config/tc-arm.o config/obj-elf.o config/atof-ieee.o  ../bfd/libbfd.a ../libiberty/libiberty.a  -lz 
+cc -E -P -undef -nostdinc -DL_udivsi3 -x assembler-with-cpp lib1thumb.asm | ../gas/as-new -mcpu=arm7tdmi -o _udivsi3.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/syswait.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/syswait.o
+cc -E -P -undef -nostdinc -DL_divsi3 -x assembler-with-cpp lib1thumb.asm | ../gas/as-new -mcpu=arm7tdmi -o _divsi3.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/syslseek.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/syslseek.o
+cc -E -P -undef -nostdinc -DL_umodsi3 -x assembler-with-cpp lib1thumb.asm | ../gas/as-new -mcpu=arm7tdmi -o _umodsi3.o
+cc -E -P -undef -nostdinc -DL_modsi3 -x assembler-with-cpp lib1thumb.asm | ../gas/as-new -mcpu=arm7tdmi -o _modsi3.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/sysstat.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/sysstat.o
+cc -E -P -undef -nostdinc -DL_dvmd_tls -x assembler-with-cpp lib1thumb.asm | ../gas/as-new -mcpu=arm7tdmi -o _dvmd_tls.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/sysexecve.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/sysexecve.o
+cc -E -P -undef -nostdinc -DL_call_via_rX -x assembler-with-cpp lib1thumb.asm | ../gas/as-new -mcpu=arm7tdmi -o _call_via_rX.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/sysfork.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/sysfork.o
+cc -E -undef -nostdinc -I ../ginclude -DL_muldi3 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _muldi3.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/sysclose.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/sysclose.o
+cc -E -undef -nostdinc -I ../ginclude -DL_divdi3 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _divdi3.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/sysgetpid.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/sysgetpid.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/sysopen.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/sysopen.o
+cc -E -undef -nostdinc -I ../ginclude -DL_moddi3 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _moddi3.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/syswrite.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/syswrite.o
+cc -E -undef -nostdinc -I ../ginclude -DL_udivdi3 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _udivdi3.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/sysunlink.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/sysunlink.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/sysgettod.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/sysgettod.o
+cc -E -undef -nostdinc -I ../ginclude -DL_umoddi3 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _umoddi3.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/sysfstat.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/sysfstat.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/syssbrk.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/syssbrk.o
+cc -E -undef -nostdinc -I ../ginclude -DL_negdi2 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _negdi2.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/sysread.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/sysread.o
+cc -E -undef -nostdinc -I ../ginclude -DL_lshrdi3 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _lshrdi3.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/syskill.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/syskill.o
+cc -E -undef -nostdinc -I ../ginclude -DL_ashldi3 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _ashldi3.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/sysfcntl.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/sysfcntl.o
+cc -E -undef -nostdinc -I ../ginclude -DL_ashrdi3 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _ashrdi3.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/syslink.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/syslink.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= syscalls/systimes.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o syscalls/systimes.o
+cc -E -undef -nostdinc -I ../ginclude -DL_ffsdi2 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _ffsdi2.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strupr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strupr.o
+cc -E -undef -nostdinc -I ../ginclude -DL_udiv_w_sdiv libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _udiv_w_sdiv.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strspn.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strspn.o
+cc -E -undef -nostdinc -I ../ginclude -DL_udivmoddi4 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _udivmoddi4.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strlen.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strlen.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strrchr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strrchr.o
+cc -E -undef -nostdinc -I ../ginclude -DL_cmpdi2 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _cmpdi2.o
+cc -E -undef -nostdinc -I ../ginclude -DL_ucmpdi2 libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _ucmpdi2.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/memchr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/memchr.o
+cc -E -undef -nostdinc -I ../ginclude -DL_floatdidf libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _floatdidf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/bzero.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/bzero.o
+cc -E -undef -nostdinc -I ../ginclude -DL_floatdisf libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _floatdisf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strcat.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strcat.o
+cc -E -undef -nostdinc -I ../ginclude -DL_fixunsdfsi libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _fixunsdfsi.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/bcmp.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/bcmp.o
+cc -E -undef -nostdinc -I ../ginclude -DL_fixunssfsi libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _fixunssfsi.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/memset.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/memset.o
+cc -E -undef -nostdinc -I ../ginclude -DL_fixunsdfdi libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _fixunsdfdi.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strxfrm.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strxfrm.o
+cc -E -undef -nostdinc -I ../ginclude -DL_fixdfdi libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _fixdfdi.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/u_strerr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/u_strerr.o
+cc -E -undef -nostdinc -I ../ginclude -DL_fixunssfdi libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _fixunssfdi.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strlwr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strlwr.o
+cc -E -undef -nostdinc -I ../ginclude -DL_fixsfdi libgcc2.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o _fixsfdi.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/rindex.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/rindex.o
+cc -E -P -undef -nostdinc -DFLOAT -DFLOAT_BIT_ORDER_MISMATCH -I ../ginclude fp-bit-base.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o fp-bit.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strcpy.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strcpy.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strstr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strstr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strerror.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strerror.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strncpy.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strncpy.o
+cc -E -P -undef -nostdinc -DFLOAT_BIT_ORDER_MISMATCH -DFLOAT_WORD_ORDER_MISMATCH -I ../ginclude fp-bit-base.c | ../old_agbcc -O2 | ../gas/as-new -mcpu=arm7tdmi -o dp-bit.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/memcmp.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/memcmp.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/bcopy.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/bcopy.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strtok_r.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strtok_r.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strcmp.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strcmp.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strncmp.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strncmp.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/index.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/index.o
+../binutils/ar -rc libgcc.a _udivsi3.o _divsi3.o _umodsi3.o _modsi3.o _dvmd_tls.o _call_via_rX.o _muldi3.o _divdi3.o _moddi3.o _udivdi3.o _umoddi3.o _negdi2.o _lshrdi3.o _ashldi3.o _ashrdi3.o _ffsdi2.o _udiv_w_sdiv.o _udivmoddi4.o _cmpdi2.o _ucmpdi2.o _floatdidf.o _floatdisf.o _fixunsdfsi.o _fixunssfsi.o _fixunsdfdi.o _fixdfdi.o _fixunssfdi.o _fixsfdi.o fp-bit.o dp-bit.o
+cp libgcc/libgcc.a libgcc.a
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strncasecmp.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strncasecmp.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strcoll.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strcoll.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strchr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strchr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/memcpy.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/memcpy.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strpbrk.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strpbrk.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strtok.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strtok.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strncat.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strncat.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strcasecmp.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strcasecmp.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/memmove.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/memmove.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= string/strcspn.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o string/strcspn.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= signal/raise.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o signal/raise.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= signal/signal.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o signal/signal.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/dtoastub.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/dtoastub.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/mlock.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/mlock.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/dtoa.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/dtoa.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/ldiv.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/ldiv.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/ecvtbuf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/ecvtbuf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/malloc.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/malloc.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/mbtowc_r.c | ../old_agbcc -O2 -fno-builtin -fshort-enums | ../gas/as-new -mcpu=arm7tdmi -o stdlib/mbtowc_r.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/realloc.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/realloc.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/malign.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/malign.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/atoff.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/atoff.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/mtrim.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/mtrim.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/rand_r.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/rand_r.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/getopt.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/getopt.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/atexit.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/atexit.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/mblen.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/mblen.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/atol.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/atol.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/strtol.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/strtol.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/mstats.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/mstats.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/putenv.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/putenv.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/rand.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/rand.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/exit.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/exit.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/calloc.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/calloc.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/div.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/div.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/mbstowcs_r.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/mbstowcs_r.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/wctomb.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/wctomb.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/__exp10.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/__exp10.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/valloc.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/valloc.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/mbstowcs.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/mbstowcs.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/bsearch.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/bsearch.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/strtoul.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/strtoul.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/environ.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/environ.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/wcstombs.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/wcstombs.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/wctomb_r.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/wctomb_r.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/__ten_mu.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/__ten_mu.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/strtod.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/strtod.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/system.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/system.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/wcstombs_r.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/wcstombs_r.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/__adjust.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/__adjust.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/msize.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/msize.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/strdup.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/strdup.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/qsort.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/qsort.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/efgcvt.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/efgcvt.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/mbtowc.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/mbtowc.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/labs.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/labs.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/assert.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/assert.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/setenv.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/setenv.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/atoi.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/atoi.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/mprec.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/mprec.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/getenv.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/getenv.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/abs.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/abs.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/abort.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/abort.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/atof.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/atof.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdlib/eprintf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/eprintf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/s_scalbn.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/s_scalbn.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/sf_modf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/sf_modf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/sf_finite.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/sf_finite.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/sf_ldexp.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/sf_ldexp.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/s_isinf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/s_isinf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/sf_isinf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/sf_isinf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/sf_isnan.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/sf_isnan.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/s_modf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/s_modf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/s_copysign.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/s_copysign.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/sf_copysign.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/sf_copysign.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/s_finite.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/s_finite.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/s_ldexp.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/s_ldexp.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/sf_frexp.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/sf_frexp.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/s_frexp.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/s_frexp.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/s_isnan.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/s_isnan.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/s_infconst.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/s_infconst.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= math/sf_scalbn.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o math/sf_scalbn.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= misc/unctrl.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o misc/unctrl.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= misc/dprintf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o misc/dprintf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= misc/ffs.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o misc/ffs.o
+misc/dprintf.c: In function `__dprintf':
+misc/dprintf.c:84: warning: passing arg 1 of `write_string' discards qualifiers from pointer target type
+                    write_string(unctrl(*p++));
+
+misc/dprintf.c:112: warning: passing arg 1 of `write_string' discards qualifiers from pointer target type
+                write_string(unctrl(c));
+
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= locale/locale.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o locale/locale.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fscanf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fscanf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/perror.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/perror.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fiprintf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fiprintf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/puts.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/puts.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/tmpfile.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/tmpfile.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/vfprintf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/vfprintf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fgetc.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fgetc.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/putc.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/putc.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fgets.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fgets.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fputs.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fputs.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/putchar.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/putchar.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fopen.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fopen.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/scanf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/scanf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fileno.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fileno.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/stdio.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/stdio.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fclose.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fclose.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fdopen.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fdopen.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/freopen.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/freopen.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/makebuf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/makebuf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/wbuf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/wbuf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fread.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fread.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/setvbuf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/setvbuf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fgetpos.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fgetpos.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/rewind.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/rewind.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/tmpnam.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/tmpnam.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fseek.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fseek.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/rename.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/rename.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fflush.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fflush.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/sscanf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/sscanf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fwalk.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fwalk.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/siprintf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/siprintf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/vfscanf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/vfscanf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/flags.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/flags.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fprintf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fprintf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/clearerr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/clearerr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/vsprintf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/vsprintf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/iprintf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/iprintf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/remove.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/remove.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fvwrite.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fvwrite.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/gets.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/gets.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/refill.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/refill.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/rget.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/rget.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/wsetup.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/wsetup.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/ferror.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/ferror.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fwrite.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fwrite.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/feof.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/feof.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/mktemp.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/mktemp.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fputc.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fputc.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/vprintf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/vprintf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/findfp.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/findfp.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/setbuf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/setbuf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/fsetpos.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/fsetpos.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/sprintf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/sprintf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/printf.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/printf.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/getc.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/getc.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/getchar.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/getchar.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/ungetc.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/ungetc.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= stdio/ftell.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/ftell.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/_tolower.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/_tolower.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/iscntrl.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/iscntrl.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/toupper.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/toupper.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/isdigit.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/isdigit.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/isxdigit.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/isxdigit.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/islower.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/islower.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/isascii.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/isascii.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/toascii.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/toascii.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/isprint.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/isprint.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/isspace.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/isspace.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/isalpha.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/isalpha.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/isalnum.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/isalnum.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/isupper.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/isupper.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/_toupper.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/_toupper.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/ctype_.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/ctype_.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/ispunct.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/ispunct.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= ctype/tolower.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o ctype/tolower.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= arm/libcfunc.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o arm/libcfunc.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= arm/syscalls.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o arm/syscalls.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/difftime.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/difftime.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/strftime.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/strftime.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/gmtime_r.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/gmtime_r.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/lcltime_r.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/lcltime_r.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/time.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/time.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/asctime.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/asctime.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/ctime.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/ctime.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/asctime_r.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/asctime_r.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/mktime.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/mktime.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/lcltime.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/lcltime.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/clock.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/clock.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/ctime_r.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/ctime_r.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= time/gmtime.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o time/gmtime.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= errno/errno.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o errno/errno.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/writer.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/writer.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/closer.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/closer.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/openr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/openr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/timer.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/timer.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/impure.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/impure.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/sbrkr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/sbrkr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/reent.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/reent.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/statr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/statr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/execr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/execr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/signalr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/signalr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/linkr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/linkr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/lseekr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/lseekr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/fstatr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/fstatr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= reent/readr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o reent/readr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DDEFINE_MALLOC stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/mallocr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DDEFINE_FREE stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/freer.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DDEFINE_REALLOC stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/reallocr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DDEFINE_CALLOC stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/callocr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DDEFINE_CFREE stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/cfreer.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DDEFINE_MEMALIGN stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/malignr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DDEFINE_VALLOC stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/vallocr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DDEFINE_PVALLOC stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/pvallocr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DDEFINE_MALLINFO stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/mallinfor.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DDEFINE_MALLOC_STATS stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/mallstatsr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DDEFINE_MALLOC_USABLE_SIZE stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/msizer.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DDEFINE_MALLOPT stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdlib/malloptr.o
+cc -E -I ../ginclude -I include -nostdinc -undef -DABORT_PROVIDED -DHAVE_GETTIMEOFDAY -D__thumb__ -DARM_RDI_MONITOR -D__GNUC__ -DINTERNAL_NEWLIB -D__USER_LABEL_PREFIX__= -DINTEGER_ONLY stdlib/mallocr.c | ../old_agbcc -O2 -fno-builtin | ../gas/as-new -mcpu=arm7tdmi -o stdio/vfiprintf.o
+../gas/as-new -mcpu=arm7tdmi -o arm/setjmp.o arm/setjmp.i
+../gas/as-new -mcpu=arm7tdmi -o arm/trap.o arm/trap.i
+../binutils/ar -rc libc.a ./syscalls/syswait.o ./syscalls/syslseek.o ./syscalls/sysstat.o ./syscalls/sysexecve.o ./syscalls/sysfork.o ./syscalls/sysclose.o ./syscalls/sysgetpid.o ./syscalls/sysopen.o ./syscalls/syswrite.o ./syscalls/sysunlink.o ./syscalls/sysgettod.o ./syscalls/sysfstat.o ./syscalls/syssbrk.o ./syscalls/sysread.o ./syscalls/syskill.o ./syscalls/sysfcntl.o ./syscalls/syslink.o ./syscalls/systimes.o ./string/strupr.o ./string/strspn.o ./string/strlen.o ./string/strrchr.o ./string/memchr.o ./string/bzero.o ./string/strcat.o ./string/bcmp.o ./string/memset.o ./string/strxfrm.o ./string/u_strerr.o ./string/strlwr.o ./string/rindex.o ./string/strcpy.o ./string/strstr.o ./string/strerror.o ./string/strncpy.o ./string/memcmp.o ./string/bcopy.o ./string/strtok_r.o ./string/strcmp.o ./string/strncmp.o ./string/index.o ./string/strncasecmp.o ./string/strcoll.o ./string/strchr.o ./string/memcpy.o ./string/strpbrk.o ./string/strtok.o ./string/strncat.o ./string/strcasecmp.o ./string/memmove.o ./string/strcspn.o ./signal/raise.o ./signal/signal.o ./stdlib/dtoastub.o ./stdlib/mlock.o ./stdlib/dtoa.o ./stdlib/ldiv.o ./stdlib/ecvtbuf.o ./stdlib/malloc.o ./stdlib/mbtowc_r.o ./stdlib/realloc.o ./stdlib/malign.o ./stdlib/atoff.o ./stdlib/mtrim.o ./stdlib/rand_r.o ./stdlib/getopt.o ./stdlib/atexit.o ./stdlib/mblen.o ./stdlib/atol.o ./stdlib/strtol.o ./stdlib/mstats.o ./stdlib/putenv.o ./stdlib/rand.o ./stdlib/exit.o ./stdlib/calloc.o ./stdlib/div.o ./stdlib/mbstowcs_r.o ./stdlib/wctomb.o ./stdlib/__exp10.o ./stdlib/valloc.o ./stdlib/mbstowcs.o ./stdlib/bsearch.o ./stdlib/strtoul.o ./stdlib/environ.o ./stdlib/wcstombs.o ./stdlib/wctomb_r.o ./stdlib/__ten_mu.o ./stdlib/strtod.o ./stdlib/system.o ./stdlib/wcstombs_r.o ./stdlib/__adjust.o ./stdlib/msize.o ./stdlib/strdup.o ./stdlib/qsort.o ./stdlib/efgcvt.o ./stdlib/mbtowc.o ./stdlib/labs.o ./stdlib/assert.o ./stdlib/setenv.o ./stdlib/atoi.o ./stdlib/mprec.o ./stdlib/getenv.o ./stdlib/abs.o ./stdlib/abort.o ./stdlib/atof.o ./stdlib/eprintf.o ./math/s_scalbn.o ./math/sf_modf.o ./math/sf_finite.o ./math/sf_ldexp.o ./math/s_isinf.o ./math/sf_isinf.o ./math/sf_isnan.o ./math/s_modf.o ./math/s_copysign.o ./math/sf_copysign.o ./math/s_finite.o ./math/s_ldexp.o ./math/sf_frexp.o ./math/s_frexp.o ./math/s_isnan.o ./math/s_infconst.o ./math/sf_scalbn.o ./misc/unctrl.o ./misc/dprintf.o ./misc/ffs.o ./locale/locale.o ./stdio/fscanf.o ./stdio/perror.o ./stdio/fiprintf.o ./stdio/puts.o ./stdio/tmpfile.o ./stdio/vfprintf.o ./stdio/fgetc.o ./stdio/putc.o ./stdio/fgets.o ./stdio/fputs.o ./stdio/putchar.o ./stdio/fopen.o ./stdio/scanf.o ./stdio/fileno.o ./stdio/stdio.o ./stdio/fclose.o ./stdio/fdopen.o ./stdio/freopen.o ./stdio/makebuf.o ./stdio/wbuf.o ./stdio/fread.o ./stdio/setvbuf.o ./stdio/fgetpos.o ./stdio/rewind.o ./stdio/tmpnam.o ./stdio/fseek.o ./stdio/rename.o ./stdio/fflush.o ./stdio/sscanf.o ./stdio/fwalk.o ./stdio/siprintf.o ./stdio/vfscanf.o ./stdio/flags.o ./stdio/fprintf.o ./stdio/clearerr.o ./stdio/vsprintf.o ./stdio/iprintf.o ./stdio/remove.o ./stdio/fvwrite.o ./stdio/gets.o ./stdio/refill.o ./stdio/rget.o ./stdio/wsetup.o ./stdio/ferror.o ./stdio/fwrite.o ./stdio/feof.o ./stdio/mktemp.o ./stdio/fputc.o ./stdio/vprintf.o ./stdio/findfp.o ./stdio/setbuf.o ./stdio/fsetpos.o ./stdio/sprintf.o ./stdio/printf.o ./stdio/getc.o ./stdio/getchar.o ./stdio/ungetc.o ./stdio/ftell.o ./ctype/_tolower.o ./ctype/iscntrl.o ./ctype/toupper.o ./ctype/isdigit.o ./ctype/isxdigit.o ./ctype/islower.o ./ctype/isascii.o ./ctype/toascii.o ./ctype/isprint.o ./ctype/isspace.o ./ctype/isalpha.o ./ctype/isalnum.o ./ctype/isupper.o ./ctype/_toupper.o ./ctype/ctype_.o ./ctype/ispunct.o ./ctype/tolower.o ./arm/libcfunc.o ./arm/syscalls.o ./time/difftime.o ./time/strftime.o ./time/gmtime_r.o ./time/lcltime_r.o ./time/time.o ./time/asctime.o ./time/ctime.o ./time/asctime_r.o ./time/mktime.o ./time/lcltime.o ./time/clock.o ./time/ctime_r.o ./time/gmtime.o ./errno/errno.o ./reent/writer.o ./reent/closer.o ./reent/openr.o ./reent/timer.o ./reent/impure.o ./reent/sbrkr.o ./reent/reent.o ./reent/statr.o ./reent/execr.o ./reent/signalr.o ./reent/linkr.o ./reent/lseekr.o ./reent/fstatr.o ./reent/readr.o stdlib/mallocr.o stdlib/freer.o stdlib/reallocr.o stdlib/callocr.o stdlib/cfreer.o stdlib/malignr.o stdlib/vallocr.o stdlib/pvallocr.o stdlib/mallinfor.o stdlib/mallstatsr.o stdlib/msizer.o stdlib/malloptr.o stdio/vfiprintf.o arm/setjmp.o arm/trap.o
+cp libc/libc.a libc.a
+Making ld
+Making bfd
+make[1]: Nothing to be done for 'objs'.
+make  all-am
+Making libiberty
+make  all-am
+Making binutils
+make[1]: Nothing to be done for 'objs'.
+make  all-am
+Making gas
+make[1]: Nothing to be done for 'objs'.
+make  all-am
+make[1]: 'libgcc.a' is up to date.
+if test -z ''; then \
+  make  INSTALL_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" \
+    install_sh_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" INSTALL_STRIP_FLAG=-s \
+      install; \
+else \
+  make  INSTALL_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" \
+    install_sh_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" INSTALL_STRIP_FLAG=-s \
+    "INSTALL_PROGRAM_ENV=STRIPPROG=''" install; \
+fi
+make  install-am
+ /usr/bin/mkdir -p '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin'
+  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s ld-new '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/./arm-none-eabi-ld.bfd'
+/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -d /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin
+n=`echo ld.bfd | sed 's/^ld-new$/ld.bfd/;s&^&arm-none-eabi-&'`; \
+if test "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin" != "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin"; then \
+  rm -f /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/ld.bfd; \
+  ln -s /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$n /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/ld.bfd >/dev/null 2>/dev/null \
+  ||  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s ld-new /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/ld.bfd; \
+fi; \
+ld=`echo ld | sed 's/^ld-new$/ld.bfd/;s&^&arm-none-eabi-&'`; \
+rm -f /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$ld; \
+ln -s /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$n /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$ld >/dev/null 2>/dev/null \
+||  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s ld-new /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$ld; \
+if test "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin" != "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin"; then \
+  rm -f /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/ld; \
+  ln -s /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$n /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/ld >/dev/null 2>/dev/null \
+  ||  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s ld-new /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/ld; \
+fi
+/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -d /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/lib/ldscripts
+for f in ldscripts/* ; do \
+  /usr/bin/install -c -m 644 $f /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/lib/$f ; \
+done
+Done ld-install-strip
+
+
+if test -z ''; then \
+  make  INSTALL_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" \
+    install_sh_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" INSTALL_STRIP_FLAG=-s \
+      install; \
+else \
+  make  INSTALL_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" \
+    install_sh_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" INSTALL_STRIP_FLAG=-s \
+    "INSTALL_PROGRAM_ENV=STRIPPROG=''" install; \
+fi
+make  install-am
+ /usr/bin/mkdir -p '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin'
+  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s objdump '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/./arm-none-eabi-objdump'
+  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s ar '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/./arm-none-eabi-ar'
+  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s ranlib '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/./arm-none-eabi-ranlib'
+  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s objcopy '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/./arm-none-eabi-objcopy'
+/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -d /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin
+for i in nm-new ar ranlib objdump objcopy; do \
+  if [ -f $i ]; then \
+    j=`echo $i | sed -e 's/-new//'`; \
+    k=`echo $j | sed 's&^&arm-none-eabi-&'`; \
+    if [ "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$k" != "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/$j" ]; then \
+      rm -f /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/$j; \
+      ln -s /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$k /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/$j >/dev/null 2>/dev/null \
+	||  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s $i /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/$j; \
+    fi; \
+  else true; \
+  fi; \
+done
+make[4]: Nothing to be done for 'install-data-am'.
+Done binutils-install-strip
+
+
+if test -z ''; then \
+  make  INSTALL_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" \
+    install_sh_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" INSTALL_STRIP_FLAG=-s \
+      install; \
+else \
+  make  INSTALL_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" \
+    install_sh_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" INSTALL_STRIP_FLAG=-s \
+    "INSTALL_PROGRAM_ENV=STRIPPROG=''" install; \
+fi
+/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -d /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin
+ /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s as-new /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/arm-none-eabi-as
+/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -d /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin
+n=`echo as | sed 's&^&arm-none-eabi-&'`; \
+if [ "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$n" != "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/as" ]; then \
+  rm -f /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/as; \
+  ln -s /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$n /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/as >/dev/null 2>/dev/null \
+    ||  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s as-new /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/as; \
+else \
+  true ; \
+fi
+make[3]: Nothing to be done for 'install-data-am'.
+cp agbcc ..//tools/agbcc/bin/
+cp old_agbcc ..//tools/agbcc/bin/
+cp -R libc/include ..//tools/agbcc/
+cp -R ginclude/* ..//tools/agbcc/include/
+cp libgcc.a ..//tools/agbcc/lib/
+cp libc.a ..//tools/agbcc/lib/
+Making ld
+Making bfd
+make[1]: Nothing to be done for 'objs'.
+make  all-am
+Making libiberty
+make  all-am
+Making binutils
+make[1]: Nothing to be done for 'objs'.
+make  all-am
+Making gas
+make[1]: Nothing to be done for 'objs'.
+make  all-am
+make[1]: 'libgcc.a' is up to date.
+if test -z ''; then \
+  make  INSTALL_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" \
+    install_sh_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" INSTALL_STRIP_FLAG=-s \
+      install; \
+else \
+  make  INSTALL_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" \
+    install_sh_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" INSTALL_STRIP_FLAG=-s \
+    "INSTALL_PROGRAM_ENV=STRIPPROG=''" install; \
+fi
+make  install-am
+ /usr/bin/mkdir -p '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin'
+  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s ld-new '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/./arm-none-eabi-ld.bfd'
+/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -d /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin
+n=`echo ld.bfd | sed 's/^ld-new$/ld.bfd/;s&^&arm-none-eabi-&'`; \
+if test "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin" != "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin"; then \
+  rm -f /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/ld.bfd; \
+  ln -s /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$n /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/ld.bfd >/dev/null 2>/dev/null \
+  ||  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s ld-new /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/ld.bfd; \
+fi; \
+ld=`echo ld | sed 's/^ld-new$/ld.bfd/;s&^&arm-none-eabi-&'`; \
+rm -f /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$ld; \
+ln -s /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$n /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$ld >/dev/null 2>/dev/null \
+||  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s ld-new /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$ld; \
+if test "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin" != "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin"; then \
+  rm -f /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/ld; \
+  ln -s /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$n /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/ld >/dev/null 2>/dev/null \
+  ||  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s ld-new /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/ld; \
+fi
+/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -d /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/lib/ldscripts
+for f in ldscripts/* ; do \
+  /usr/bin/install -c -m 644 $f /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/lib/$f ; \
+done
+Done ld-install-strip
+
+
+if test -z ''; then \
+  make  INSTALL_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" \
+    install_sh_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" INSTALL_STRIP_FLAG=-s \
+      install; \
+else \
+  make  INSTALL_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" \
+    install_sh_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" INSTALL_STRIP_FLAG=-s \
+    "INSTALL_PROGRAM_ENV=STRIPPROG=''" install; \
+fi
+make  install-am
+ /usr/bin/mkdir -p '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin'
+  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s objdump '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/./arm-none-eabi-objdump'
+  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s ar '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/./arm-none-eabi-ar'
+  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s ranlib '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/./arm-none-eabi-ranlib'
+  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s objcopy '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/./arm-none-eabi-objcopy'
+/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -d /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin
+for i in nm-new ar ranlib objdump objcopy; do \
+  if [ -f $i ]; then \
+    j=`echo $i | sed -e 's/-new//'`; \
+    k=`echo $j | sed 's&^&arm-none-eabi-&'`; \
+    if [ "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$k" != "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/$j" ]; then \
+      rm -f /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/$j; \
+      ln -s /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$k /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/$j >/dev/null 2>/dev/null \
+	||  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s $i /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/$j; \
+    fi; \
+  else true; \
+  fi; \
+done
+make[4]: Nothing to be done for 'install-data-am'.
+Done binutils-install-strip
+
+
+if test -z ''; then \
+  make  INSTALL_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" \
+    install_sh_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" INSTALL_STRIP_FLAG=-s \
+      install; \
+else \
+  make  INSTALL_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" \
+    install_sh_PROGRAM="/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s" INSTALL_STRIP_FLAG=-s \
+    "INSTALL_PROGRAM_ENV=STRIPPROG=''" install; \
+fi
+/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -d /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin
+ /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s as-new /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/arm-none-eabi-as
+/bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -d /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin
+n=`echo as | sed 's&^&arm-none-eabi-&'`; \
+if [ "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$n" != "/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/as" ]; then \
+  rm -f /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/as; \
+  ln -s /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/bin/$n /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/as >/dev/null 2>/dev/null \
+    ||  /bin/sh /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/agbcc/gnu_aux/install-sh -c -s as-new /tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1/tools/binutils/armv4tl-none-eabi/bin/as; \
+else \
+  true ; \
+fi
+make[3]: Nothing to be done for 'install-data-am'.
+cp agbcc ..//tools/agbcc/bin/
+cp old_agbcc ..//tools/agbcc/bin/
+cp -R libc/include ..//tools/agbcc/
+cp -R ginclude/* ..//tools/agbcc/include/
+cp libgcc.a ..//tools/agbcc/lib/
+cp libc.a ..//tools/agbcc/lib/
+../gas/as-new -mcpu=arm7tdmi -o agb_flash.o agb_flash.s
+../gas/as-new -mcpu=arm7tdmi -o agb_flash_1m.o agb_flash_1m.s
+../gas/as-new -mcpu=arm7tdmi -o agb_flash_le.o agb_flash_le.s
+../gas/as-new -mcpu=arm7tdmi -o agb_flash_mx.o agb_flash_mx.s
+../binutils/ar rc libagb_flash.a agb_flash.o agb_flash_1m.o agb_flash_le.o agb_flash_mx.o
+cp agb_flash/libagb_flash.a libagb_flash.a
+../gas/as-new -mcpu=arm7tdmi --defsym L_IntrWait=1 -o IntrWait.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_RegisterRamReset=1 -o RegisterRamReset.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_Sqrt=1 -o Sqrt.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_MusicPlayerOpen=1 -o MusicPlayerOpen.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoundBiasReset=1 -o SoundBiasReset.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoundDriverVSyncOn=1 -o SoundDriverVSyncOn.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_Mod=1 -o Mod.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_VBlankIntrWait=1 -o VBlankIntrWait.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_MusicPlayerStart=1 -o MusicPlayerStart.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoundDriverVSyncOff=1 -o SoundDriverVSyncOff.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_HuffUnComp=1 -o HuffUnComp.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoftResetExram=1 -o SoftResetExram.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_MusicPlayerFadeOut=1 -o MusicPlayerFadeOut.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_LZ77UnCompWram=1 -o LZ77UnCompWram.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoundDriverMain=1 -o SoundDriverMain.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoundBiasChange=1 -o SoundBiasChange.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_LZ77UnCompVram=1 -o LZ77UnCompVram.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_ArcTan2=1 -o ArcTan2.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_MusicPlayerStop=1 -o MusicPlayerStop.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_DivArm=1 -o DivArm.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_ModArm=1 -o ModArm.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoundDriverVSync=1 -o SoundDriverVSync.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoundDriverInit=1 -o SoundDriverInit.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_BgAffineSet=1 -o BgAffineSet.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_Diff8bitUnFilterWram=1 -o Diff8bitUnFilterWram.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_MultiBoot=1 -o MultiBoot.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_MidiKey2Freq=1 -o MidiKey2Freq.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_Div=1 -o Div.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_Diff8bitUnFilterVram=1 -o Diff8bitUnFilterVram.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_ArcTan=1 -o ArcTan.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_ObjAffineSet=1 -o ObjAffineSet.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoftResetRom=1 -o SoftResetRom.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoundDriverMode=1 -o SoundDriverMode.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_RLUnCompWram=1 -o RLUnCompWram.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_BitUnPack=1 -o BitUnPack.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoundChannelClear=1 -o SoundChannelClear.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_CpuFastSet=1 -o CpuFastSet.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_CpuSet=1 -o CpuSet.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_Diff16bitUnFilter=1 -o Diff16bitUnFilter.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoundBiasSet=1 -o SoundBiasSet.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_MusicPlayerContinue=1 -o MusicPlayerContinue.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_SoftReset=1 -o SoftReset.o libagbsyscall.s
+../gas/as-new -mcpu=arm7tdmi --defsym L_RLUnCompVram=1 -o RLUnCompVram.o libagbsyscall.s
+../binutils/ar rc libagbsyscall.a IntrWait.o RegisterRamReset.o Sqrt.o MusicPlayerOpen.o SoundBiasReset.o SoundDriverVSyncOn.o Mod.o VBlankIntrWait.o MusicPlayerStart.o SoundDriverVSyncOff.o HuffUnComp.o SoftResetExram.o MusicPlayerFadeOut.o LZ77UnCompWram.o SoundDriverMain.o SoundBiasChange.o LZ77UnCompVram.o ArcTan2.o MusicPlayerStop.o DivArm.o ModArm.o SoundDriverVSync.o SoundDriverInit.o BgAffineSet.o Diff8bitUnFilterWram.o MultiBoot.o MidiKey2Freq.o Div.o Diff8bitUnFilterVram.o ArcTan.o ObjAffineSet.o SoftResetRom.o SoundDriverMode.o RLUnCompWram.o BitUnPack.o SoundChannelClear.o CpuFastSet.o CpuSet.o Diff16bitUnFilter.o SoundBiasSet.o MusicPlayerContinue.o SoftReset.o RLUnCompVram.o
+cp libagbsyscall/libagbsyscall.a libagbsyscall.a
+../gas/as-new -mcpu=arm7tdmi -o libgcnmultiboot.o libgcnmultiboot.s
+../binutils/ar rc libgcnmultiboot.a libgcnmultiboot.o
+cp libgcnmultiboot/libgcnmultiboot.a libgcnmultiboot.a
+../gas/as-new -mcpu=arm7tdmi -o libisagbprn.o libisagbprn.s
+../gas/as-new -mcpu=arm7tdmi -o nocashgba.o nocashgba.s
+../binutils/ar rc libisagbprn.a libisagbprn.o nocashgba.o
+cp libisagbprn/libisagbprn.a libisagbprn.a
+../gas/as-new -mcpu=arm7tdmi --defsym RFU_VERSION=1024 -o librfu_rfu_1024.o librfu_rfu.s
+../gas/as-new -mcpu=arm7tdmi --defsym RFU_VERSION=1024 -o librfu_stwi_1024.o librfu_stwi.s
+../gas/as-new -mcpu=arm7tdmi --defsym RFU_VERSION=1024 -o librfu_intr_1024.o librfu_intr.s
+../gas/as-new -mcpu=arm7tdmi --defsym RFU_VERSION=1024 -o librfu_1024.o librfu.s
+../binutils/ar -rc librfu_1024.a librfu_rfu_1024.o librfu_stwi_1024.o librfu_intr_1024.o librfu_1024.o
+cp librfu/librfu_1024.a librfu_1024.a
+../gas/as-new -mcpu=arm7tdmi --defsym RFU_VERSION=1026 -o librfu_rfu_1026.o librfu_rfu.s
+../gas/as-new -mcpu=arm7tdmi --defsym RFU_VERSION=1026 -o librfu_stwi_1026.o librfu_stwi.s
+../gas/as-new -mcpu=arm7tdmi --defsym RFU_VERSION=1026 -o librfu_intr_1026.o librfu_intr.s
+../gas/as-new -mcpu=arm7tdmi --defsym RFU_VERSION=1026 -o librfu_1026.o librfu.s
+../binutils/ar -rc librfu_1026.a librfu_rfu_1026.o librfu_stwi_1026.o librfu_intr_1026.o librfu_1026.o
+cp librfu/librfu_1026.a librfu_1026.a
+../gas/as-new -mcpu=arm7tdmi -g -o m4a_2.o m4a_2.s
+../gas/as-new -mcpu=arm7tdmi -g -o m4a_4.o m4a_4.s
+../gas/as-new -mcpu=arm7tdmi -g -o m4a_tables.o m4a_tables.s
+../gas/as-new -mcpu=arm7tdmi -g --agbasm -o m4a_1.o m4a_1.s
+../gas/as-new -mcpu=arm7tdmi -g --agbasm -o m4a_3.o m4a_3.s
+../binutils/ar rc libm4a.a m4a_2.o m4a_4.o m4a_tables.o m4a_1.o m4a_3.o
+cp m4a/libm4a.a libm4a.a
+../gas/as-new -mcpu=arm7tdmi -o siirtc.o siirtc.s
+../binutils/ar rc libsiirtc.a siirtc.o
+cp siirtc/libsiirtc.a libsiirtc.a
+cp agb_flash/agb_flash.h ..//tools/agbcc/include/
+cp librfu/librfu.h ..//tools/agbcc/include/
+cp libgcnmultiboot/libgcnmultiboot.h ..//tools/agbcc/include/
+cp m4a/m4a.h ..//tools/agbcc/include/
+cp siirtc/siirtc.h ..//tools/agbcc/include/
+cp libagb_flash.a ..//tools/agbcc/lib/
+cp libagbsyscall.a ..//tools/agbcc/lib/
+cp libgcnmultiboot.a ..//tools/agbcc/lib/
+cp libisagbprn.a ..//tools/agbcc/lib/
+cp librfu_1024.a ..//tools/agbcc/lib/
+cp librfu_1026.a ..//tools/agbcc/lib/
+cp libm4a.a ..//tools/agbcc/lib/
+cp libsiirtc.a ..//tools/agbcc/lib/
