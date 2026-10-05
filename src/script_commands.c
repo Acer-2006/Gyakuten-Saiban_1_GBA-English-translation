@@ -31,6 +31,8 @@ u8 * const gCourtScrollGfxPointers[] = {
     gGfxCourtscroll03,
 };
 
+// English patch: the "next" arrow moved from the bottom centre (tiles 622/623)
+// to the bottom right (635/636) so it no longer covers the third text line.
 const u8 gTextboxDownArrowTileIndexes[] = {
     0x20, 0x22, 0x24, 0x26, 0x24, 0x22,
 };
@@ -100,8 +102,8 @@ bool32 Command02(struct ScriptContext * scriptCtx)
     if(scriptCtx->flags & 2)
     {
         PlaySE(SE005_TEXT_ADVANCE);
-        gBG1MapBuffer[622] = 9;
-        gBG1MapBuffer[623] = 9;
+        gBG1MapBuffer[635] = 9;
+        gBG1MapBuffer[636] = 9;
         scriptCtx->flags &= ~(2 | 1);
         if(scriptCtx->textSkip > 0)
         {
@@ -179,14 +181,14 @@ bool32 Command02(struct ScriptContext * scriptCtx)
                     }
                 }
             }
-            gBG1MapBuffer[622] = gTextboxDownArrowTileIndexes[scriptCtx->textboxDownArrowIndex];
-            gBG1MapBuffer[623] = gTextboxDownArrowTileIndexes[scriptCtx->textboxDownArrowIndex]+1;
+            gBG1MapBuffer[635] = gTextboxDownArrowTileIndexes[scriptCtx->textboxDownArrowIndex];
+            gBG1MapBuffer[636] = gTextboxDownArrowTileIndexes[scriptCtx->textboxDownArrowIndex]+1;
             return 1;
         }
         scriptCtx->textboxDownArrowIndex = 0;
         scriptCtx->textboxDownArrowDelayCounter = 0;
-        gBG1MapBuffer[622] = 9;
-        gBG1MapBuffer[623] = 9;
+        gBG1MapBuffer[635] = 9;
+        gBG1MapBuffer[636] = 9;
     }
     return 1;
 }

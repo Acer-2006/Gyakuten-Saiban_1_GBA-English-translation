@@ -632,8 +632,8 @@ bool32 Command2C(struct ScriptContext *scriptCtx)
     {
         gTextBoxCharacters[i].state &= ~0x8000;
     }
-    gBG1MapBuffer[622] = 9; // clear downward arrow in text box
-    gBG1MapBuffer[623] = 9; // clear downward arrow in text box
+    gBG1MapBuffer[635] = 9; // clear downward arrow in text box
+    gBG1MapBuffer[636] = 9; // clear downward arrow in text box
     SetAnimationFrameOffset(&gAnimation[1], gMain.idleAnimationOffset);
     return 0;
 }
@@ -651,8 +651,8 @@ bool32 Command2E(struct ScriptContext *scriptCtx)
     {
         gTextBoxCharacters[i].state &= ~0x8000;
     }
-    gBG1MapBuffer[622] = 9; // clear downward arrow in text box
-    gBG1MapBuffer[623] = 9; // clear downward arrow in text box
+    gBG1MapBuffer[635] = 9; // clear downward arrow in text box
+    gBG1MapBuffer[636] = 9; // clear downward arrow in text box
     return 1;
 }
 
