@@ -3,11 +3,11 @@
 
 	.global gPalTitleScreen
 gPalTitleScreen:
-	.incbin "graphics/title_screen.gbapal"
+	.incbin "graphics_orig/title_screen.gbapal"
 
 	.global gGfx8lzTitleScreen
 gGfx8lzTitleScreen:
-	.incbin "graphics/title_screen.8bpp.lz"
+	.incbin "graphics_orig/title_screen.8bpp.lz"
 
 	.global gPalTitleScreenDemo
 gPalTitleScreenDemo:
@@ -31,7 +31,7 @@ gGfxSaveGameTiles:
 
 	.global gGfx4bppNametags
 gGfx4bppNametags:
-	.incbin "graphics/ui/message_box/nametags.4bpp"
+	.incbin "graphics_orig/ui/message_box/nametags.4bpp"
 
 	.global gGfx4bppTestimonyArrows
 gGfx4bppTestimonyArrows:
@@ -107,7 +107,7 @@ gGfxTrialGameOverText:
 
 	.global gGfxNewGameContinue
 gGfxNewGameContinue:
-	.incbin "graphics/ui/new_game_continue.4bpp"
+	.incbin "graphics_orig/ui/new_game_continue.4bpp"
 
 	.global gGfxTrialConfetti
 gGfxTrialConfetti:
@@ -212,435 +212,435 @@ gGfxSaveYesOrNo:
 
 	.global gGfxProfilesMiaFey0_description
 gGfxProfilesMiaFey0_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/mia_fey_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/mia_fey_0.4bpp.lz"
 
 	.global gGfxProfilesMayaFey0_description
 gGfxProfilesMayaFey0_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/maya_fey_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/maya_fey_0.4bpp.lz"
 
 	.global gGfxProfilesLarryButz0_description
 gGfxProfilesLarryButz0_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/larry_butz_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/larry_butz_0.4bpp.lz"
 
 	.global gGfxProfilesCindyStone_description
 gGfxProfilesCindyStone_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/cindy_stone.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/cindy_stone.4bpp.lz"
 
 	.global gGfxProfilesFrankSahwit_description
 gGfxProfilesFrankSahwit_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/frank_sahwit.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/frank_sahwit.4bpp.lz"
 
 	.global gGfxProfilesWinstonPayne_description
 gGfxProfilesWinstonPayne_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/winston_payne.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/winston_payne.4bpp.lz"
 
 	.global gGfxEvidenceGenericAutopsyReport0_description
 gGfxEvidenceGenericAutopsyReport0_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_autopsy_report_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_autopsy_report_0.4bpp.lz"
 
 	.global gGfxEvidenceTheThinker0_description
 gGfxEvidenceTheThinker0_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/the_thinker_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/the_thinker_0.4bpp.lz"
 
 	.global gGfxEvidenceCindyStonesPassport_description
 gGfxEvidenceCindyStonesPassport_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/cindy_stones_passport.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/cindy_stones_passport.4bpp.lz"
 
 	.global gGfxEvidenceGenericAffidavit0_description
 gGfxEvidenceGenericAffidavit0_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_affidavit_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_affidavit_0.4bpp.lz"
 
 	.global gGfxProfilesMiaFey1_description
 gGfxProfilesMiaFey1_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/mia_fey_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/mia_fey_1.4bpp.lz"
 
 	.global gGfxProfilesMayaFey1_description
 gGfxProfilesMayaFey1_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/maya_fey_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/maya_fey_1.4bpp.lz"
 
 	.global gGfxProfilesMayaFey2_description
 gGfxProfilesMayaFey2_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/maya_fey_2.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/maya_fey_2.4bpp.lz"
 
 	.global gGfxProfilesMayaFey3_description
 gGfxProfilesMayaFey3_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/maya_fey_3.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/maya_fey_3.4bpp.lz"
 
 	.global gGfxProfilesMilesEdgeworth0_description
 gGfxProfilesMilesEdgeworth0_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/miles_edgeworth_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/miles_edgeworth_0.4bpp.lz"
 
 	.global gGfxProfilesDickGumshoe_description
 gGfxProfilesDickGumshoe_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/dick_gumshoe.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/dick_gumshoe.4bpp.lz"
 
 	.global gGfxProfilesAprilMay0_description
 gGfxProfilesAprilMay0_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/april_may_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/april_may_0.4bpp.lz"
 
 	.global gGfxProfilesAprilMay1_description
 gGfxProfilesAprilMay1_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/april_may_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/april_may_1.4bpp.lz"
 
 	.global gGfxProfilesAprilMay2_description
 gGfxProfilesAprilMay2_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/april_may_2.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/april_may_2.4bpp.lz"
 
 	.global gGfxProfilesReddWhite0_description
 gGfxProfilesReddWhite0_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/redd_white_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/redd_white_0.4bpp.lz"
 
 	.global gGfxProfilesBellboy0_description
 gGfxProfilesBellboy0_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/bellboy_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/bellboy_0.4bpp.lz"
 
 	.global gGfxProfilesBellboy1_description
 gGfxProfilesBellboy1_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/bellboy_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/bellboy_1.4bpp.lz"
 
 	.global gGfxProfilesMarvinGrossberg_description
 gGfxProfilesMarvinGrossberg_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/marvin_grossberg.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/marvin_grossberg.4bpp.lz"
 
 	.global gGfxEvidencePhoenixBadge_description
 gGfxEvidencePhoenixBadge_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/phoenix_badge.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/phoenix_badge.4bpp.lz"
 
 	.global gGfxEvidenceGenericAutopsyReport1_description
 gGfxEvidenceGenericAutopsyReport1_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_autopsy_report_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_autopsy_report_1.4bpp.lz"
 
 	.global gGfxEvidenceGenericLetter0_description
 gGfxEvidenceGenericLetter0_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_letter_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_letter_0.4bpp.lz"
 
 	.global gGfxEvidenceMayasCellphone_description
 gGfxEvidenceMayasCellphone_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/mayas_cellphone.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/mayas_cellphone.4bpp.lz"
 
 	.global gGfxEvidenceGlassShards_description
 gGfxEvidenceGlassShards_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/glass_shards.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/glass_shards.4bpp.lz"
 
 	.global gGfxEvidenceTheThinker1_description
 gGfxEvidenceTheThinker1_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/the_thinker_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/the_thinker_1.4bpp.lz"
 
 	.global gGfxEvidenceTheThinker2_description
 gGfxEvidenceTheThinker2_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/the_thinker_2.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/the_thinker_2.4bpp.lz"
 
 	.global gGfxEvidenceMayaMemo_description
 gGfxEvidenceMayaMemo_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/maya_memo.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/maya_memo.4bpp.lz"
 
 	.global gGfxEvidenceNoteFromTheSafe_description
 gGfxEvidenceNoteFromTheSafe_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/note_from_the_safe.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/note_from_the_safe.4bpp.lz"
 
 	.global gGfxEvidenceWiretap_description
 gGfxEvidenceWiretap_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/wiretap.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/wiretap.4bpp.lz"
 
 	.global gGfxEvidenceGenericAffidavit1_description
 gGfxEvidenceGenericAffidavit1_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_affidavit_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_affidavit_1.4bpp.lz"
 
 	.global gGfxProfilesMistyFey0_description
 gGfxProfilesMistyFey0_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/misty_fey_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/misty_fey_0.4bpp.lz"
 
 	.global gGfxProfilesReddWhite1_description
 gGfxProfilesReddWhite1_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/redd_white_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/redd_white_1.4bpp.lz"
 
 	.global gGfxEvidenceGenericNewspaperClipping_description
 gGfxEvidenceGenericNewspaperClipping_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_newspaper_clipping.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_newspaper_clipping.4bpp.lz"
 
 	.global gGfxEvidenceGenericPhoto0_description
 gGfxEvidenceGenericPhoto0_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_photo_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_photo_0.4bpp.lz"
 
 	.global gGfxEvidenceGenericAffidavit2_description
 gGfxEvidenceGenericAffidavit2_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_affidavit_2.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_affidavit_2.4bpp.lz"
 
 	.global gGfxEvidenceGenericAutopsyReport2_description
 gGfxEvidenceGenericAutopsyReport2_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_autopsy_report_2.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_autopsy_report_2.4bpp.lz"
 
 	.global gGfxEvidenceGenericLetter1_description
 gGfxEvidenceGenericLetter1_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_letter_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_letter_1.4bpp.lz"
 
 	.global gGfxEvidenceLottasCamera0_description
 gGfxEvidenceLottasCamera0_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/lottas_camera_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/lottas_camera_0.4bpp.lz"
 
 	.global gGfxProfilesWillPowers_description
 gGfxProfilesWillPowers_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/will_powers.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/will_powers.4bpp.lz"
 
 	.global gGfxProfilesWendyOldbag_description
 gGfxProfilesWendyOldbag_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/wendy_oldbag.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/wendy_oldbag.4bpp.lz"
 
 	.global gGfxProfilesJackHammer_description
 gGfxProfilesJackHammer_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/jack_hammer.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/jack_hammer.4bpp.lz"
 
 	.global gGfxProfilesPennyNichols_description
 gGfxProfilesPennyNichols_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/penny_nichols.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/penny_nichols.4bpp.lz"
 
 	.global gGfxProfilesSalManella_description
 gGfxProfilesSalManella_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/sal_manella.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/sal_manella.4bpp.lz"
 
 	.global gGfxProfilesDeeVasquez_description
 gGfxProfilesDeeVasquez_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/dee_vasquez.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/dee_vasquez.4bpp.lz"
 
 	.global gGfxProfilesCodyHackins_description
 gGfxProfilesCodyHackins_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/cody_hackins.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/cody_hackins.4bpp.lz"
 
 	.global gGfxEvidenceGenericAffidavit3_description
 gGfxEvidenceGenericAffidavit3_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_affidavit_3.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_affidavit_3.4bpp.lz"
 
 	.global gGfxEvidenceGenericAutopsyReport3_description
 gGfxEvidenceGenericAutopsyReport3_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_autopsy_report_3.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_autopsy_report_3.4bpp.lz"
 
 	.global gGfxEvidenceGlobalStudiosCardKey_description
 gGfxEvidenceGlobalStudiosCardKey_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/global_studios_card_key.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/global_studios_card_key.4bpp.lz"
 
 	.global gGfxEvidenceGenericPhoto1_description
 gGfxEvidenceGenericPhoto1_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_photo_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_photo_1.4bpp.lz"
 
 	.global gGfxEvidenceGenericPhoto2_description
 gGfxEvidenceGenericPhoto2_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_photo_2.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_photo_2.4bpp.lz"
 
 	.global gGfxEvidenceGenericPhoto3_description
 gGfxEvidenceGenericPhoto3_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_photo_3.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_photo_3.4bpp.lz"
 
 	.global gGfxEvidenceSteelSamuraiSpear0_description
 gGfxEvidenceSteelSamuraiSpear0_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/steel_samurai_spear_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/steel_samurai_spear_0.4bpp.lz"
 
 	.global gGfxEvidenceSteelSamuraiSpear1_description
 gGfxEvidenceSteelSamuraiSpear1_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/steel_samurai_spear_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/steel_samurai_spear_1.4bpp.lz"
 
 	.global gGfxEvidenceEmptyBottle0_description
 gGfxEvidenceEmptyBottle0_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/empty_bottle_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/empty_bottle_0.4bpp.lz"
 
 	.global gGfxEvidenceKeyToCottage_description
 gGfxEvidenceKeyToCottage_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/key_to_cottage.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/key_to_cottage.4bpp.lz"
 
 	.global gGfxEvidenceGenericLetter2_description
 gGfxEvidenceGenericLetter2_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_letter_2.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_letter_2.4bpp.lz"
 
 	.global gGfxEvidenceSteelSamuraiScript_description
 gGfxEvidenceSteelSamuraiScript_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/steel_samurai_script.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/steel_samurai_script.4bpp.lz"
 
 	.global gGfxEvidenceMrMonkey_description
 gGfxEvidenceMrMonkey_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/mr_monkey.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/mr_monkey.4bpp.lz"
 
 	.global gGfxEvidenceSteelSamuraiCards_description
 gGfxEvidenceSteelSamuraiCards_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/steel_samurai_cards.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/steel_samurai_cards.4bpp.lz"
 
 	.global gGfxEvidenceSteelSamuraiUltraRareCard_description
 gGfxEvidenceSteelSamuraiUltraRareCard_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/steel_samurai_ultra_rare_card.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/steel_samurai_ultra_rare_card.4bpp.lz"
 
 	.global gGfxEvidenceCodysSteelSamuraiScrapbook_description
 gGfxEvidenceCodysSteelSamuraiScrapbook_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/codys_steel_samurai_scrapbook.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/codys_steel_samurai_scrapbook.4bpp.lz"
 
 	.global gGfxEvidenceCodysDigitalCamera_description
 gGfxEvidenceCodysDigitalCamera_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/codys_digital_camera.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/codys_digital_camera.4bpp.lz"
 
 	.global gGfxEvidencePlateWithSteakBones_description
 gGfxEvidencePlateWithSteakBones_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/plate_with_steak_bones.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/plate_with_steak_bones.4bpp.lz"
 
 	.global gGfxEvidenceEmptyBottle1_description
 gGfxEvidenceEmptyBottle1_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/empty_bottle_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/empty_bottle_1.4bpp.lz"
 
 	.global gGfxEvidenceGenericPhoto4_description
 gGfxEvidenceGenericPhoto4_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_photo_4.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_photo_4.4bpp.lz"
 
 	.global gGfxEvidenceGlobalStudiosVan_description
 gGfxEvidenceGlobalStudiosVan_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/global_studios_van.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/global_studios_van.4bpp.lz"
 
 	.global gGfxEvidenceEmptyPlate_description
 gGfxEvidenceEmptyPlate_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/empty_plate.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/empty_plate.4bpp.lz"
 
 	.global gGfxProfilesMilesEdgeworth1_description
 gGfxProfilesMilesEdgeworth1_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/miles_edgeworth_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/miles_edgeworth_1.4bpp.lz"
 
 	.global gGfxProfilesLottaHart0_description
 gGfxProfilesLottaHart0_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/lotta_hart_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/lotta_hart_0.4bpp.lz"
 
 	.global gGfxProfilesLottaHart1_description
 gGfxProfilesLottaHart1_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/lotta_hart_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/lotta_hart_1.4bpp.lz"
 
 	.global gGfxProfilesLarryButz1_description
 gGfxProfilesLarryButz1_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/larry_butz_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/larry_butz_1.4bpp.lz"
 
 	.global gGfxProfilesRobertHammond_description
 gGfxProfilesRobertHammond_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/robert_hammond.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/robert_hammond.4bpp.lz"
 
 	.global gGfxProfilesMistyFey1_description
 gGfxProfilesMistyFey1_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/misty_fey_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/misty_fey_1.4bpp.lz"
 
 	.global gGfxProfilesManfredVonKarma_description
 gGfxProfilesManfredVonKarma_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/manfred_von_karma.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/manfred_von_karma.4bpp.lz"
 
 	.global gGfxProfilesGregoryEdgeworth_description
 gGfxProfilesGregoryEdgeworth_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/gregory_edgeworth.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/gregory_edgeworth.4bpp.lz"
 
 	.global gGfxProfilesOldMan0_description
 gGfxProfilesOldMan0_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/old_man_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/old_man_0.4bpp.lz"
 
 	.global gGfxProfilesOldMan1_description
 gGfxProfilesOldMan1_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/old_man_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/old_man_1.4bpp.lz"
 
 	.global gGfxEvidenceFirecrackers_description
 gGfxEvidenceFirecrackers_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/firecrackers.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/firecrackers.4bpp.lz"
 
 	.global gGfxEvidenceGenericAutopsyReport4_description
 gGfxEvidenceGenericAutopsyReport4_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_autopsy_report_4.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_autopsy_report_4.4bpp.lz"
 
 	.global gGfxEvidenceGenericAutopsyReport5_description
 gGfxEvidenceGenericAutopsyReport5_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_autopsy_report_5.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_autopsy_report_5.4bpp.lz"
 
 	.global gGfxEvidenceGenericAutopsyReport6_description
 gGfxEvidenceGenericAutopsyReport6_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_autopsy_report_6.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_autopsy_report_6.4bpp.lz"
 
 	.global gGfxEvidenceLottasCamera1_description
 gGfxEvidenceLottasCamera1_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/lottas_camera_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/lottas_camera_1.4bpp.lz"
 
 	.global gGfxEvidenceGenericPhoto5_description
 gGfxEvidenceGenericPhoto5_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_photo_5.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_photo_5.4bpp.lz"
 
 	.global gGfxEvidenceGenericPhoto6_description
 gGfxEvidenceGenericPhoto6_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_photo_6.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_photo_6.4bpp.lz"
 
 	.global gGfxEvidenceGenericPhoto7_description
 gGfxEvidenceGenericPhoto7_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_photo_7.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_photo_7.4bpp.lz"
 
 	.global gGfxProfilesMistyFey2_description
 gGfxProfilesMistyFey2_description:
-	.incbin "graphics/evidence_profile_descriptions/profiles/misty_fey_2.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/profiles/misty_fey_2.4bpp.lz"
 
 	.global gGfxEvidenceArticleGourdy_description
 gGfxEvidenceArticleGourdy_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/article_gourdy.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/article_gourdy.4bpp.lz"
 
 	.global gGfxEvidenceGenericAffidavit4_description
 gGfxEvidenceGenericAffidavit4_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_affidavit_4.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_affidavit_4.4bpp.lz"
 
 	.global gGfxEvidenceGenericPhoto8_description
 gGfxEvidenceGenericPhoto8_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_photo_8.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_photo_8.4bpp.lz"
 
 	.global gGfxEvidenceBullet0_description
 gGfxEvidenceBullet0_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/bullet_0.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/bullet_0.4bpp.lz"
 
 	.global gGfxEvidenceBullet1_description
 gGfxEvidenceBullet1_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/bullet_1.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/bullet_1.4bpp.lz"
 
 	.global gGfxEvidencePistol_description
 gGfxEvidencePistol_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/pistol.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/pistol.4bpp.lz"
 
 	.global gGfxEvidenceGenericAffidavit5_description
 gGfxEvidenceGenericAffidavit5_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_affidavit_5.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_affidavit_5.4bpp.lz"
 
 	.global gGfxEvidenceAirTube_description
 gGfxEvidenceAirTube_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/air_tube.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/air_tube.4bpp.lz"
 
 	.global gGfxEvidenceMissile_description
 gGfxEvidenceMissile_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/missile.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/missile.4bpp.lz"
 
 	.global gGfxEvidenceFishingPole_description
 gGfxEvidenceFishingPole_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/fishing_pole.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/fishing_pole.4bpp.lz"
 
 	.global gGfxEvidenceMetalDetector_description
 gGfxEvidenceMetalDetector_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/metal_detector.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/metal_detector.4bpp.lz"
 
 	.global gGfxEvidencePolly_description
 gGfxEvidencePolly_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/polly.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/polly.4bpp.lz"
 
 	.global gGfxEvidenceYannisSafe_description
 gGfxEvidenceYannisSafe_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/yannis_safe.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/yannis_safe.4bpp.lz"
 
 	.global gGfxEvidenceGenericAutopsyReport7_description
 gGfxEvidenceGenericAutopsyReport7_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_autopsy_report_7.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_autopsy_report_7.4bpp.lz"
 
 	.global gGfxEvidenceGenericPhoto9_description
 gGfxEvidenceGenericPhoto9_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_photo_9.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_photo_9.4bpp.lz"
 
 	.global gGfxEvidenceGenericLetter3_description
 gGfxEvidenceGenericLetter3_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/generic_letter_3.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/generic_letter_3.4bpp.lz"
 
 	.global gGfxEvidenceDl6Bullet_description
 gGfxEvidenceDl6Bullet_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/dl-6_bullet.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/dl-6_bullet.4bpp.lz"
 
 	.global gGfxEvidenceMissileAngry_description
 gGfxEvidenceMissileAngry_description:
-	.incbin "graphics/evidence_profile_descriptions/evidence/missile_angry.4bpp.lz"
+	.incbin "graphics_orig/evidence_profile_descriptions/evidence/missile_angry.4bpp.lz"
 
 @ END EVIDENCE AND PROFILE DESCRIPTIONS
 

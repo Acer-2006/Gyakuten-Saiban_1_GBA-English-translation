@@ -152,6 +152,7 @@ SECTIONS {
     ALIGN(4)
     {
         data/vwf_font.o(en_data);
+        data/en_graphics.o(en_data);
     } =0
 
     /* DWARF debug sections.
