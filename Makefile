@@ -138,7 +138,7 @@ include graphics.mk
 $(C_BUILDDIR)/agb_sram.o: CFLAGS := -O -mthumb-interwork
 
 $(ROM): $(ELF)
-	$(OBJCOPY) -O binary --gap-fill 0xff $< $@
+	$(OBJCOPY) -O binary --gap-fill 0xff --pad-to 0x9000000 $< $@
 	$(GBAFIX) --silent -p $@
 
 $(OBJ_DIR)/sym_iwram.txt: sym_iwram.txt

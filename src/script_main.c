@@ -8,6 +8,7 @@
 #include "constants/songs.h"
 #include "constants/process.h"
 #include "constants/oam_allocations.h"
+#include "vwf.h"
 
 static void AdvanceScriptContext(struct ScriptContext *);
 static void DrawTextAndMapMarkers(struct ScriptContext *);
@@ -144,7 +145,7 @@ void LoadCurrentScriptIntoRam(void)
         gTextBoxCharacters[i].state &= ~0x8000;
     }
 
-    LZ77UnCompWram(gScriptTable[gMain.scenarioIdx], eScriptHeap);
+    gScriptBase = gScriptTable[gMain.scenarioIdx]; // English patch: run from ROM
 }
 
 void RunScriptContext(void)
@@ -302,6 +303,14 @@ static void AdvanceScriptContext(struct ScriptContext * scriptCtx)
 
 static void PutCharInTextbox(u32 characterCode, u32 y, u32 x)
 {
+    if(!(gScriptContext.flags & 4)) // English patch: normal text box uses the VWF
+    {
+        if(x == 0)
+            VwfClearLine(y);
+        VwfPutChar(characterCode, y, gScriptContext.textColor);
+        return;
+    }
+    {
     uintptr_t i;
     uintptr_t temp = characterCode*0x80;
     temp += (uintptr_t)gCharSet;
@@ -359,6 +368,7 @@ static void PutCharInTextbox(u32 characterCode, u32 y, u32 x)
     gTextBoxCharacters[temp].objAttr2 += 0x400;
     gTextBoxCharacters[temp].state = characterCode | 0x8000;
     gTextBoxCharacters[temp].color = gScriptContext.textColor;
+    }
 }
 
 static void DrawTextAndMapMarkers(struct ScriptContext * scriptCtx)
@@ -449,8 +459,8 @@ static void DrawTextAndMapMarkers(struct ScriptContext * scriptCtx)
             
             if(gTextBoxCharacters[i].state & 0x8000)
             {
-                oam->attr0 = SPRITE_ATTR0(gTextBoxCharacters[i].y + scriptCtx->textYOffset, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
-                oam->attr1 = SPRITE_ATTR1_NONAFFINE(gTextBoxCharacters[i].x + scriptCtx->textXOffset, FALSE, FALSE, 1);
+                oam->attr0 = SPRITE_ATTR0(gTextBoxCharacters[i].y + scriptCtx->textYOffset, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_H_RECTANGLE);
+                oam->attr1 = SPRITE_ATTR1_NONAFFINE(gTextBoxCharacters[i].x + scriptCtx->textXOffset, FALSE, FALSE, 2);
                 oam->attr2 = gTextBoxCharacters[i].objAttr2;
             }
             else
@@ -499,7 +509,8 @@ void RedrawTextboxCharacters()
     u32 i;
     u8 * src;
     u8 * dst;
-    for(i = 0; i < ARRAY_COUNT(gTextBoxCharacters); i++)
+    VwfRedraw(); // English patch: normal text lives in the VWF buffers
+    for(i = OAM_COUNT_TEXT; i < ARRAY_COUNT(gTextBoxCharacters); i++)
     {
         struct TextBoxCharacter *theCharacter = &gTextBoxCharacters[i];
         if(theCharacter->state & 0x8000)
