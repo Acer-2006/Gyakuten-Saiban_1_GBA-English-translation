@@ -848,27 +848,53 @@ JP_TRANS = None
 
 def pose_events(toks):
     """Each pose command with the one shown just before it (same person, no
-    background change or pan in between) and whether text came between."""
+    background change or pan in between) and whether that one was showing
+    its idle animation by then: the engine switches to idle while it waits
+    for a button (02, 07, 0A, 2D) and back to talking when a page break (02)
+    goes on to the next page."""
     ev = []
     cur = None
-    text = False
+    text = False   # True: the previous pose is on its idle animation
     bg = None
+    reset = False
     for pos, kind, op, a in parse(toks, GBA_ARGS)[0]:
         if kind == 'text':
-            text = True
             continue
+        if op in (0x07, 0x0A, 0x2D):
+            text = True
+        elif op == 0x02:
+            text = False
         if op in (0x1B, 0x1A):
             cur = None
+            reset = True
             if op == 0x1B and a:
                 bg = a[0] & 0x7FFF
         elif op == 0x1E and a:
-            e = [pos, a[0] & 0xFF, a[1], a[2], None, text, bg]
+            e = [pos, a[0] & 0xFF, a[1], a[2], None, text, bg, not ev and bg is None and not reset]
             if a[0] & 0xFF and cur is not None and cur[1] == e[1]:
                 e[4] = cur
             ev.append(e)
             cur = e if a[0] & 0xFF else None
             text = False
     return ev
+
+
+def end_state(toks):
+    """(person, talking, idle, on idle) shown when the section ends, if nobody
+    was cleared and no background change or pan came after the last pose"""
+    st = None
+    for pos, kind, op, a in parse(toks, GBA_ARGS)[0]:
+        if kind == 'text':
+            continue
+        if op in (0x07, 0x0A, 0x2D) and st:
+            st = st[:3] + (True,)
+        elif op == 0x02 and st:
+            st = st[:3] + (False,)
+        if op in (0x1B, 0x1A):
+            st = None
+        elif op == 0x1E and a:
+            st = (a[0] & 0xFF, a[1], a[2], False) if a[0] & 0xFF else None
+    return st
 
 
 def jp_transitions(gdir):
@@ -880,14 +906,21 @@ def jp_transitions(gdir):
         JP_TRANS = set()
         for f in glob.glob(os.path.join(gdir, 'scenario_*.phscr')):
             b, n, offs = load(f)
+            carry = None
             for x in section_bounds(b, offs):
-                if x:
-                    for pos, p, t, i, prev, text, bg in pose_events(tokens(b, *x)):
-                        if not p:
-                            continue
-                        JP_TRANS.add((p, t, i))
-                        if prev:
-                            JP_TRANS.add((p, prev[3] if text else prev[2], t))
+                if not x:
+                    carry = None
+                    continue
+                toks = tokens(b, *x)
+                for k, (pos, p, t, i, prev, text, bg, clean) in enumerate(pose_events(toks)):
+                    if not p:
+                        continue
+                    JP_TRANS.add((p, t, i))
+                    if prev:
+                        JP_TRANS.add((p, prev[3] if text else prev[2], t))
+                    elif clean and carry and carry[0] == p:   # on from the section before
+                        JP_TRANS.add((p, carry[2] if (carry[3] or text) else carry[1], t))
+                carry = end_state(toks)
     return JP_TRANS
 
 
@@ -901,7 +934,7 @@ def moves(p, a, b):
     return bool(ha and hb and (abs(ha[0] - hb[0]) >= 4 or abs(ha[1] - hb[1]) >= 4))
 
 
-def fix_moving_poses(out, gdir):
+def fix_moving_poses(out, gdir, carry=None):
     """A DS expression the GBA has no line for can put a character in a pose
     the GBA never goes to from the one before (or never leaves to the next
     one), and where the two are drawn with the head in another place the
@@ -914,9 +947,13 @@ def fix_moving_poses(out, gdir):
     def ok(p, a, b):
         return a == b or (p, a, b) in jt or not moves(p, a, b)
     ev = pose_events(out)
+    if ev and ev[0][7] and carry and carry[0] == ev[0][1]:
+        # the section goes on from the one before with the same person shown
+        ev[0][4] = [None, carry[0], carry[1], carry[2], None, None, None, False]
+        ev[0][5] = ev[0][5] or carry[3]
     fixed = 0
     for k, e in enumerate(ev):
-        pos, p, t, i, prev, text, bg = e
+        pos, p, t, i, prev, text, bg, clean = e
         if not p:
             continue
         here = POSES_BG.get((bg, p)) if bg is not None else None
@@ -1037,8 +1074,10 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
     sec_out = {}
     maps = {}
     lines = []
+    carry = None    # who is shown at the end of the section before
     for gi, x in enumerate(G):
         if not x or gi in desc_idx:
+            carry = None
             continue
         gt = tokens(gb, *x)
         if gi in pairs and D[pairs[gi]]:
@@ -1062,7 +1101,7 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             out, note = fix_scene_poses(out, seen_poses(os.path.dirname(gfile)))
             if note:
                 st = dict(st, poses=note)
-            out, note = fix_moving_poses(out, os.path.dirname(gfile))
+            out, note = fix_moving_poses(out, os.path.dirname(gfile), carry)
             if note:
                 st = dict(st, moving=note)
             out, n = fix_pan_waits(out)
@@ -1077,6 +1116,7 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             lines.append('sec %3d   KEPT JAPANESE (no DS match)' % gi)
         sec_out[gi] = out
         maps[gi] = m
+        carry = end_state(out)
     # assemble
     n = gn
     header = bytearray(struct.pack('<I', n) + b'\0' * (4 * n))

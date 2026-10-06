@@ -14,7 +14,7 @@ sec  12 <- ds  14  {'dropped_ds': 0, 'inserted_gba': 2, 'unmatched_kept': 23, 'a
 sec  13 <- ds  15  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 12, 'anim_ds': 2, 'ds_fx': 1}
 sec  14 <- ds  16  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 23, 'anim_ds': 3, 'ds_fx': 1}
 sec  15 <- ds  17  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 7, 'anim_ds': 3, 'ds_fx': 6}
-sec  16 <- ds  18  {'dropped_ds': 26, 'inserted_gba': 23, 'unmatched_kept': 143, 'anim_ds': 28, 'ds_fx': 44, 'anim_guess': 0, 'pose_pair_fixed': 1, 'moving': '2 poses that jumped replaced'}
+sec  16 <- ds  18  {'dropped_ds': 26, 'inserted_gba': 23, 'unmatched_kept': 143, 'anim_ds': 28, 'ds_fx': 44, 'anim_guess': 0, 'pose_pair_fixed': 1}
 sec  17 <- ds  19  {'dropped_ds': 2, 'inserted_gba': 2, 'unmatched_kept': 21, 'ds_fx': 6, 'anim_ds': 4, 'anim_guess': 0}
 sec  18 <- ds  20  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 1, 'ds_fx': 2}
 sec  19 <- ds  21  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'ds_fx': 1}
@@ -114,7 +114,7 @@ sec 112 <- ds 114  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 22, 'd
 sec 113 <- ds 115  {'dropped_ds': 1, 'inserted_gba': 2, 'unmatched_kept': 11, 'anim_guess': 0, 'anim_ds': 3, 'ds_fx': 4}
 sec 114 <- ds 116  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 13, 'ds_fx': 1}
 sec 115 <- ds 117  {'dropped_ds': 1, 'inserted_gba': 2, 'unmatched_kept': 34, 'anim_guess': 0, 'anim_ds': 5, 'ds_fx': 6}
-sec 116 <- ds 118  {'dropped_ds': 1, 'inserted_gba': 2, 'unmatched_kept': 24, 'anim_guess': 0, 'anim_ds': 4, 'ds_fx': 1}
+sec 116 <- ds 118  {'dropped_ds': 1, 'inserted_gba': 2, 'unmatched_kept': 24, 'anim_guess': 0, 'anim_ds': 4, 'ds_fx': 1, 'moving': '1 poses that jumped replaced'}
 sec 117 <- ds 119  {'dropped_ds': 1, 'inserted_gba': 2, 'unmatched_kept': 18, 'anim_guess': 0, 'anim_ds': 4, 'ds_fx': 1}
 sec 118 <- ds 120  {'dropped_ds': 2, 'inserted_gba': 3, 'unmatched_kept': 52, 'anim_ds': 9, 'ds_fx': 15, 'anim_guess': 0, 'ds_bg': 1}
 sec 119 <- ds 121  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 26, 'anim_ds': 2, 'ds_fx': 2}
