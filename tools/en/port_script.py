@@ -1075,7 +1075,7 @@ def bg_then_person(toks):
                 jj += 1
             if jj < len(items) and items[jj][1] == 'cmd' and items[jj][2] == 0x1E:
                 new = items[jj][3][0] & 0xFF
-                if shown and new and new != shown:
+                if shown and new != shown:       # another person, or nobody
                     res.append((pos, items[jj][0], a[0], shown, new))
         if op == 0x1E and a:
             shown = (a[0] & 0xFF) or None
@@ -1095,7 +1095,7 @@ def fix_bg_order(out, gtoks):
     jp = set(x[2:] for x in bg_then_person(gtoks))
     n = 0
     for p1b, p1e, bg, shown, new in reversed(bg_then_person(out)):
-        if (bg, shown, new) in jp:
+        if (bg, shown, new) in jp or (new == 0 and (a_bg := bg & 0x7FFF) == 0xFF):
             continue
         seg = out[p1e:p1e + 4] + out[p1b:p1e]
         old_idx = list(range(p1e, p1e + 4)) + list(range(p1b, p1e))

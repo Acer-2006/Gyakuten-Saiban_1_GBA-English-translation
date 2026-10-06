@@ -121,6 +121,6 @@ sec 119 <- ds 121  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 5, 'an
 sec 120 <- ds 122  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 26, 'anim_ds': 5, 'ds_fx': 16, 'pan_waits': 2}
 sec 121 <- ds 123  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 1}
 sec 122 <- ds 124  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 14, 'anim_ds': 7, 'ds_fx': 4}
-sec 123 <- ds 125  {'dropped_ds': 9, 'inserted_gba': 24, 'unmatched_kept': 85, 'anim_ds': 23, 'anim_guess': 0, 'ds_fx': 20, 'gavels': 1, 'gavel': 'gavels: DS [1], GBA [1, 1]', 'pan_waits': 1}
+sec 123 <- ds 125  {'dropped_ds': 9, 'inserted_gba': 24, 'unmatched_kept': 85, 'anim_ds': 23, 'anim_guess': 0, 'ds_fx': 20, 'gavels': 1, 'gavel': 'gavels: DS [1], GBA [1, 1]', 'bg_order': '1 person changes moved before the background change', 'pan_waits': 1}
 sec 124 <- ds 126  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 79, 'anim_ds': 18, 'ds_fx': 26, 'anim_guess': 0}
 sec 125 <- ds 127  {'dropped_ds': 6, 'inserted_gba': 10, 'unmatched_kept': 21, 'ds_fx': 8, 'anim_ds': 9, 'gavels': 2}
