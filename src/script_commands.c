@@ -107,7 +107,7 @@ bool32 Command02(struct ScriptContext * scriptCtx)
         scriptCtx->flags &= ~(2 | 1);
         if(scriptCtx->textSkip > 0)
         {
-            scriptCtx->textSpeed = 3;
+            scriptCtx->textSpeed = 2; // English patch: DS default speed
             scriptCtx->textSkip = 1;
         }
         scriptCtx->paragraphSkipDelayCounter = 8;
@@ -405,7 +405,7 @@ bool32 Command0B(struct ScriptContext * scriptCtx)
     scriptCtx->textSpeed = *scriptCtx->scriptPtr;
     if(scriptCtx->textSpeed == 0xFF)
     {
-        scriptCtx->textSpeed = 3;
+        scriptCtx->textSpeed = 2; // English patch: default speed as on the DS (GBA: 3)
     }
     if(scriptCtx->textSkip > 1)
     {

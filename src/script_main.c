@@ -191,8 +191,8 @@ void InitScriptSection(struct ScriptContext *scriptCtx)
     scriptCtx->flags = 0;
     scriptCtx->waitTimer = 0;
     scriptCtx->textColor = 0;
-    scriptCtx->textSpeed = 3;
-    scriptCtx->prevTextSpeed = 3;
+    scriptCtx->textSpeed = 2; // English patch: the DS types a character every 2 frames (GBA: 3)
+    scriptCtx->prevTextSpeed = 2;
     scriptCtx->textDelayTimer = 0;
     scriptCtx->fullscreenTextXOffset = 0x18;
     scriptCtx->fullscreenTextYOffset = 0x56;
