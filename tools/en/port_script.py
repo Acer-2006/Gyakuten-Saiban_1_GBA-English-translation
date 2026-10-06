@@ -33,33 +33,97 @@ def sig(toks):
     return (any(t >= 0x80 for t in toks), tuple(toks[:3]))
 
 
+# ---------------------------------------------------------------- section pairing
+# Sections are paired by a global, order-preserving alignment (the DS inserted
+# and split some sections). The similarity of two sections uses only things
+# that don't depend on the language: the command sequence, and the speaker /
+# music / background / sound / jump sequence.
+SIG_OPS = (0x0E, 0x05, 0x1B, 0x06, 0x35, 0x36, 0x08, 0x09, 0x0A, 0x0F, 0x10, 0x19, 0x1A, 0x40, 0x41, 0x1E, 0x07)
+def feats(b, x, ds):
+    ops, sig = [], []
+    for pos, kind, op, a in parse(tokens(b, *x), DS_ARGS if ds else GBA_ARGS)[0]:
+        if kind != 'cmd': continue
+        if ds and op in DS_ONLY: continue
+        ops.append(op)
+        if op in SIG_OPS:
+            if op == 0x06 and ds: a = [((a[0] & 0xFF) << 8) | (a[1] & 0xFF)] if len(a) > 1 else a
+            if op == 0x1E: a = a[:1]
+            sig.append((op,) + tuple(a[:1]))
+    return ops, sig
+def score(fg, fd):
+    r1 = difflib.SequenceMatcher(None, fg[0], fd[0], autojunk=False).ratio()
+    if not fg[1] and not fd[1]: r2 = r1
+    else: r2 = difflib.SequenceMatcher(None, fg[1], fd[1], autojunk=False).ratio()
+    return 0.5 * r1 + 0.5 * r2
+def align(gb, G, db, D, band=30, thresh=0.45):
+    gi_list = [i for i, x in enumerate(G) if x]
+    dj_list = [j for j, x in enumerate(D) if x]
+    FG = {i: feats(gb, G[i], False) for i in gi_list}
+    FD = {j: feats(db, D[j], True) for j in dj_list}
+    n, m = len(gi_list), len(dj_list)
+    NEG = -1e9
+    dp = [[NEG] * (m + 1) for _ in range(n + 1)]
+    bt = [[None] * (m + 1) for _ in range(n + 1)]
+    for a in range(n + 1): dp[a][0] = 0
+    for c in range(m + 1): dp[0][c] = 0
+    cache = {}
+    for a in range(1, n + 1):
+        gi = gi_list[a - 1]
+        for c in range(1, m + 1):
+            dj = dj_list[c - 1]
+            best, arg = dp[a - 1][c], 'up'
+            if dp[a][c - 1] > best: best, arg = dp[a][c - 1], 'left'
+            if abs(dj - gi) <= band:
+                s = score(FG[gi], FD[dj]); cache[(gi, dj)] = s
+                v = dp[a - 1][c - 1] + (s - thresh)
+                if s >= thresh and v > best: best, arg = v, 'diag'
+            dp[a][c] = best; bt[a][c] = arg
+    pairs = {}
+    a, c = n, m
+    while a > 0 and c > 0:
+        arg = bt[a][c]
+        if arg == 'diag':
+            pairs[gi_list[a - 1]] = (dj_list[c - 1], cache[(gi_list[a - 1], dj_list[c - 1])]); a -= 1; c -= 1
+        elif arg == 'up': a -= 1
+        else: c -= 1
+    return pairs
+
+
 def pair_sections(gb, G, db, D):
     """Return dict gba_section_index -> ds_section_index."""
-    Gs = [str(sig(tokens(gb, *x))) if x else 'none%d' % i for i, x in enumerate(G)]
-    Ds = [str(sig(tokens(db, *x))) if x else 'dnone%d' % i for i, x in enumerate(D)]
-    sm = difflib.SequenceMatcher(None, Gs, Ds, autojunk=False)
-    pairs = {}
-    for op, i1, i2, j1, j2 in sm.get_opcodes():
-        if op == 'equal':
-            for k in range(i2 - i1):
-                pairs[i1 + k] = j1 + k
-        elif op == 'replace':
-            # fuzzy: pair by command-op similarity within the replaced window
-            for gi in range(i1, i2):
-                if not G[gi]:
-                    continue
-                gops = [x[2] for x in parse(tokens(gb, *G[gi]), GBA_ARGS)[0] if x[1] == 'cmd']
-                best, bj = 0.0, None
-                for dj in range(j1, j2):
-                    if not D[dj]:
-                        continue
-                    dops = [x[2] for x in parse(tokens(db, *D[dj]), DS_ARGS)[0] if x[1] == 'cmd' and x[2] not in DS_ONLY]
-                    r = difflib.SequenceMatcher(None, gops, dops, autojunk=False).ratio()
-                    if r > best:
-                        best, bj = r, dj
-                if bj is not None and best >= 0.6:
-                    pairs[gi] = bj
+    pairs = {gi: dj for gi, (dj, sc) in align(gb, G, db, D).items()}
+    fill_gaps(gb, G, db, D, pairs)
     return pairs
+
+
+def _ops_ratio(gb, g, db, d):
+    gops = [x[2] for x in parse(tokens(gb, *g), GBA_ARGS)[0] if x[1] == 'cmd']
+    dops = [x[2] for x in parse(tokens(db, *d), DS_ARGS)[0] if x[1] == 'cmd' and x[2] not in DS_ONLY]
+    return difflib.SequenceMatcher(None, gops, dops, autojunk=False).ratio()
+
+
+def fill_gaps(gb, G, db, D, pairs):
+    """Sections the DS rewrote (longer TV show intro, merged lines...) don't
+    align by signature. Pair a leftover GBA section with the unpaired DS
+    section that sits between its neighbours' partners, or failing that with
+    a very similar DS section close by (a DS section may serve two GBA ones)."""
+    for gi in range(len(G)):
+        if gi in pairs or not G[gi]:
+            continue
+        lo = max([pairs[k] for k in pairs if k < gi] or [-1])
+        hi = min([pairs[k] for k in pairs if k > gi] or [len(D)])
+        used = set(pairs.values())
+        free = [dj for dj in range(lo + 1, hi) if D[dj] and dj not in used]
+        best = max(((_ops_ratio(gb, G[gi], db, D[dj]), dj) for dj in free), default=(0, None))
+        # a single leftover DS section between the neighbours' partners is the
+        # counterpart even when the DS reworked it heavily
+        if best[1] is not None and (best[0] >= 0.3 or (len(free) == 1 and best[0] >= 0.1)):
+            pairs[gi] = best[1]
+            continue
+        near = [dj for dj in range(max(0, lo - 2), min(len(D), hi + 3)) if D[dj]]
+        best = max(((_ops_ratio(gb, G[gi], db, D[dj]), dj) for dj in near), default=(0, None))
+        if best[1] is not None and best[0] >= 0.75:
+            pairs[gi] = best[1]
 
 
 def merge_section(gtoks, dtoks, choice_ids=None):

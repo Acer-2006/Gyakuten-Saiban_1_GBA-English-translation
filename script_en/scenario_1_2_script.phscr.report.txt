@@ -32,7 +32,7 @@ sec  30 <- ds  31  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 18, 'a
 sec  31 <- ds  32  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 25, 'anim_ds': 5}
 sec  32 <- ds  33  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 30, 'anim_ds': 3}
 sec  33 <- ds  34  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 16, 'anim_ds': 2}
-sec  34   KEPT JAPANESE (no DS match)
+sec  34 <- ds  35  {'dropped_ds': 4, 'inserted_gba': 1, 'unmatched_kept': 25, 'anim_ds': 5}
 sec  35 <- ds  36  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 9}
 sec  36 <- ds  37  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 1}
 sec  37 <- ds  38  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 2}

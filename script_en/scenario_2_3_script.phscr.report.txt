@@ -34,7 +34,7 @@ sec  32 <- ds  32  {'dropped_ds': 7, 'inserted_gba': 0, 'unmatched_kept': 40, 'a
 sec  33 <- ds  33  {'dropped_ds': 20, 'inserted_gba': 0, 'unmatched_kept': 98, 'anim_ds': 21}
 sec  34 <- ds  35  {'dropped_ds': 10, 'inserted_gba': 0, 'unmatched_kept': 61, 'anim_ds': 13}
 sec  35 <- ds  36  {'dropped_ds': 104, 'inserted_gba': 46, 'unmatched_kept': 445, 'anim_ds': 75}
-sec  36   KEPT JAPANESE (no DS match)
+sec  36 <- ds  37  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
 sec  37 <- ds  37  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
 sec  38 <- ds  38  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
 sec  39 <- ds  39  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
@@ -54,11 +54,11 @@ sec  52 <- ds  53  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 30, 'a
 sec  53 <- ds  54  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 24, 'anim_ds': 7}
 sec  54 <- ds  55  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 16, 'anim_ds': 4}
 sec  55 <- ds  56  {'dropped_ds': 38, 'inserted_gba': 8, 'unmatched_kept': 174, 'anim_ds': 39}
-sec  56   KEPT JAPANESE (no DS match)
-sec  57 <- ds  57  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
-sec  58 <- ds  58  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
-sec  59 <- ds  59  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
-sec  60 <- ds  60  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
+sec  56 <- ds  57  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
+sec  57 <- ds  58  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
+sec  58 <- ds  59  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
+sec  59 <- ds  60  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
+sec  60 <- ds  61  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
 sec  61 <- ds  62  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 13, 'anim_ds': 3}
 sec  62 <- ds  63  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 13, 'anim_ds': 5}
 sec  63 <- ds  64  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 31, 'anim_ds': 7}
@@ -74,11 +74,11 @@ sec  72 <- ds  73  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 10, 'a
 sec  73 <- ds  74  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 2, 'anim_ds': 1}
 sec  74 <- ds  75  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 26, 'anim_ds': 7}
 sec  75 <- ds  76  {'dropped_ds': 27, 'inserted_gba': 3, 'unmatched_kept': 162, 'anim_ds': 45}
-sec  76   KEPT JAPANESE (no DS match)
-sec  77 <- ds  77  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 2, 'anim_ds': 2}
-sec  78 <- ds  78  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
-sec  79 <- ds  79  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
-sec  80 <- ds  80  {'dropped_ds': 1, 'inserted_gba': 3, 'unmatched_kept': 3, 'anim_ds': 2}
+sec  76 <- ds  77  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 2, 'anim_ds': 2}
+sec  77 <- ds  78  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
+sec  78 <- ds  79  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
+sec  79 <- ds  80  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
+sec  80 <- ds  81  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 9, 'anim_ds': 2}
 sec  81 <- ds  82  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 12, 'anim_ds': 3}
 sec  82 <- ds  83  {'dropped_ds': 12, 'inserted_gba': 0, 'unmatched_kept': 44, 'anim_ds': 13}
 sec  83 <- ds  84  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 26, 'anim_ds': 6}
@@ -106,7 +106,7 @@ sec 104 <- ds 106  {'dropped_ds': 12, 'inserted_gba': 0, 'unmatched_kept': 30, '
 sec 105 <- ds 107  {'dropped_ds': 13, 'inserted_gba': 0, 'unmatched_kept': 77, 'anim_ds': 7}
 sec 106 <- ds 108  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 5, 'anim_ds': 1}
 sec 107 <- ds 109  {'dropped_ds': 8, 'inserted_gba': 0, 'unmatched_kept': 26, 'anim_ds': 6}
-sec 108   KEPT JAPANESE (no DS match)
+sec 108 <- ds 110  {'dropped_ds': 8, 'inserted_gba': 0, 'unmatched_kept': 14, 'anim_ds': 3}
 sec 109 <- ds 111  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 6, 'anim_ds': 1, 'choice_labels': 1}
 sec 110 <- ds 112  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 20, 'anim_ds': 5}
 sec 111 <- ds 113  {'dropped_ds': 13, 'inserted_gba': 5, 'unmatched_kept': 47, 'anim_ds': 12}

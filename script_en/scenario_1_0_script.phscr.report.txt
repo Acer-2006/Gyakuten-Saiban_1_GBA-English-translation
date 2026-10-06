@@ -4,13 +4,13 @@ sec   2 <- ds   2  {'dropped_ds': 11, 'inserted_gba': 1, 'unmatched_kept': 13, '
 sec   3 <- ds   3  {'dropped_ds': 3, 'inserted_gba': 2, 'unmatched_kept': 35}
 sec   4 <- ds   4  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 57, 'anim_ds': 5}
 sec   5 <- ds   5  {'dropped_ds': 32, 'inserted_gba': 5, 'unmatched_kept': 136, 'anim_ds': 27}
-sec   6 <- ds   7  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 5}
-sec   7 <- ds   8  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3}
-sec   8 <- ds   9  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 5}
-sec   9 <- ds  10  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 8}
-sec  10 <- ds  11  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 6}
-sec  11 <- ds  12  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 2}
-sec  12 <- ds  13  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4}
+sec   6 <- ds   6  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 1}
+sec   7 <- ds   7  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 5}
+sec   8 <- ds   8  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3}
+sec   9 <- ds   9  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 5}
+sec  10 <- ds  10  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 8}
+sec  11 <- ds  11  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 6}
+sec  12 <- ds  12  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 2}
 sec  13 <- ds  14  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 24, 'anim_ds': 4}
 sec  14 <- ds  15  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 26, 'anim_ds': 4}
 sec  15 <- ds  16  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 27, 'anim_ds': 7}
@@ -112,7 +112,7 @@ sec 110 <- ds 111  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4}
 sec 111 <- ds 112  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 13}
 sec 112 <- ds 113  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4}
 sec 113 <- ds 114  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 9}
-sec 114 <- ds 115  {'dropped_ds': 0, 'inserted_gba': 5, 'unmatched_kept': 0}
+sec 114 <- ds 116  {'dropped_ds': 1, 'inserted_gba': 2, 'unmatched_kept': 13}
 sec 115 <- ds 117  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 53, 'anim_ds': 5}
 sec 116 <- ds 118  {'dropped_ds': 4, 'inserted_gba': 0, 'unmatched_kept': 52, 'anim_ds': 7}
 sec 117 <- ds 119  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 38, 'anim_ds': 5}
