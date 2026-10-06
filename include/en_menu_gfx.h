@@ -16,9 +16,8 @@ extern const u8 gEnPlateFontAdv[];
 extern const u8 gEnPlateFontOff[];
 
 #define EN_MENU_BG_TILE_BASE 128
-#define EN_MENU_BG_TILE_COUNT 205
+#define EN_MENU_BG_TILE_COUNT 204
 #define EN_MENU_BG_PAL 3
-#define EN_MENU_STRIPE_TILE 129
 #define EN_MENU_SHORT_BUTTON_BYTES 1536
 #define EN_MENU_LONG_BUTTON_BYTES 3072
 #define EN_PLATE_FONT_CODES 272

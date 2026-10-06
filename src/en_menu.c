@@ -7,11 +7,9 @@
 
 // The save, load and erase screens laid out and animated as on the DS
 // English release (timings measured frame by frame on the DS):
-//  - the grey courtroom with the DS scanline stripes over everything but the
-//    plate text: BG0 holds one stripe row in four, alpha-blended (EVA 4,
-//    EVB 16) over BG2 (plate, hint), BG3 (courtroom) and the buttons. Fades
-//    on these screens go through the palettes, as the DS's master brightness
-//    leaves the stripes in place; the hardware fade takes over once black.
+//  - the DS plate, hint and buttons over the GBA's own sepia courtroom (BG3,
+//    as on the Japanese screens; no DS scanlines). Fades on these screens go
+//    through the palettes; the hardware fade takes over once black.
 //  - the plate slides in from the right 12 px a frame (BG2, window 0 hides
 //    the wrapped copy), then the text is typed in the DS menu font (vwf.c);
 //  - the buttons flip in one after the other, the brackets close in on the
@@ -38,7 +36,6 @@
 #define OAM_BRACKETS 36   // 4 corners, over the buttons
 #define OAM_BUTTONS  40   // 3 buttons x 3 sprites
 
-#define STRIPE_BLDCNT (BLDCNT_TGT1_BG0 | BLDCNT_EFFECT_BLEND | BLDCNT_TGT2_BG1 | BLDCNT_TGT2_BG2 | BLDCNT_TGT2_BG3 | BLDCNT_TGT2_OBJ | BLDCNT_TGT2_BD)
 #define DARK_BLDCNT (BLDCNT_TGT1_BG0 | BLDCNT_TGT1_BG1 | BLDCNT_TGT1_BG2 | BLDCNT_TGT1_BG3 | BLDCNT_TGT1_OBJ | BLDCNT_TGT1_BD | BLDCNT_EFFECT_DARKEN)
 
 #define PLATE_LEFT 21     // plate's left edge on screen once in place
@@ -117,14 +114,6 @@ void EnMenuBegin(u32 kind)
         gBG2MapBuffer[i] = map[i];
     for (; i < 32 * 32; i++)
         gBG2MapBuffer[i] = 0;
-    // BG0: the stripes, straight into VRAM (the game's BG0 map is put back
-    // by EnMenuEnd)
-    for (i = 0; i < 32 * 32; i++)
-        ((u16 *)BG_SCREEN_ADDR(28))[i] = EN_MENU_STRIPE_TILE | (EN_MENU_BG_PAL << 12);
-
-    io->lcd_bg0cnt = BGCNT_PRIORITY(0) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(28) | BGCNT_16COLOR | BGCNT_WRAP | BGCNT_TXT256x256;
-    io->lcd_bg0hofs = 0;
-    io->lcd_bg0vofs = 0;
     io->lcd_bg2cnt = BGCNT_PRIORITY(1) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(30) | BGCNT_16COLOR | BGCNT_WRAP | BGCNT_TXT256x256;
     io->lcd_bg2hofs = 8 - SLIDE_START;
     io->lcd_bg2vofs = 0;
@@ -132,7 +121,7 @@ void EnMenuBegin(u32 kind)
     io->lcd_win0v = DISPLAY_HEIGHT;
     io->lcd_winin = 0x3F;            // window 0: every layer, effects on
     io->lcd_winout = 0x3F & ~0x04;   // outside: no BG2
-    io->lcd_dispcnt = DISPCNT_MODE_0 | DISPCNT_OBJ_1D_MAP | DISPCNT_BG0_ON | DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON | DISPCNT_WIN0_ON;
+    io->lcd_dispcnt = DISPCNT_MODE_0 | DISPCNT_OBJ_1D_MAP | DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON | DISPCNT_WIN0_ON;
     gMain.tilemapUpdateBits = 0xC;
     HideSprites();
 }
@@ -151,7 +140,6 @@ void EnMenuEnd(bool32 restorePalettes)
     HideSprites();
     if (restorePalettes)
         DmaCopy16(3, m->backup, PLTT, sizeof(m->backup));
-    DmaCopy16(3, gBG0MapBuffer, BG_SCREEN_ADDR(28), 0x800);
 }
 
 bool32 EnMenuSlideDone(void)
@@ -174,8 +162,7 @@ void EnMenuSetupButtons(u32 kind, u32 selected, bool32 firstDisabled)
     else
     {
         u32 base = OBJ_TILE(0x3800), n = EN_MENU_SHORT_BUTTON_BYTES / TILE_SIZE_4BPP;
-        // DS places, less 8 px across and 20 px up (keeping the stripes on
-        // the same rows of the buttons): Yes (11, 96), No (128, 96);
+        // DS places, less 8 px across and 20 px up: Yes (11, 96), No (128, 96);
         // "Saving..." where Yes ends up, in the middle
         SetButton(&m->buttons[0], 11, 96, base, 2, -1);
         SetButton(&m->buttons[1], 128, 96, base + n, 2, 1);
@@ -501,8 +488,7 @@ static void Blend(void)
     }
     else
     {
-        io->lcd_bldcnt = STRIPE_BLDCNT;
-        io->lcd_bldalpha = BLDALPHA_BLEND(4, 16);
+        io->lcd_bldcnt = 0;
         io->lcd_bldy = 0;
     }
 }

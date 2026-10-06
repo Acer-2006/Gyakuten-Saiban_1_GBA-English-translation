@@ -45,6 +45,15 @@ with open(os.path.join(ROOT, 'data/en_graphics.s'), 'w') as o:
 h_path = os.path.join(ROOT, 'include/graphics.h')
 h = open(h_path).read()
 h = re.sub(r'\n*// English patch relocations.*?// end English patch relocations\n+', '\n\n', h, flags=re.S)
+# assets that are back to their original bytes: their macros go back to the
+# original address (graphics_orig/ keeps the original bytes there anyway)
+ph = open(os.path.join(PRISTINE, 'include/graphics.h')).read()
+names = set(l for l, r in changed)
+for label in re.findall(r'#define (\w+) \(\(\w+\s*\*\)\1_en\)', h):
+    if label not in names:
+        m = re.search(r'#define %s \([^\n]*' % label, ph)
+        h = re.sub(r'#define %s \(\(\w+\s*\*\)%s_en\)' % (label, label), lambda _: m.group(0), h)
+        print('back to the original:', label)
 block = ['// English patch relocations (tools/en/relocate_assets.py)']
 for label, real in changed:
     m = re.search(r'#define %s \(\((\w+)\s*\*\)' % label, h)

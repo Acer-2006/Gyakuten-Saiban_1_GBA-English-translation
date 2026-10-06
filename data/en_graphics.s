@@ -657,11 +657,6 @@ gGfx_BG063_Case3SteelSamurai_en:
 	.incbin "graphics/striped_images/backgrounds/cutscenes/case3/steel_samurai.8bpp.striped"
 
 	.align 2
-	.global gGfx_BG067_CourtroomBackground_en
-gGfx_BG067_CourtroomBackground_en:
-	.incbin "graphics/striped_images/courtroom_background.4bpp.striped"
-
-	.align 2
 	.global gGfx_BG070_GourdLakeEntrance_en
 gGfx_BG070_GourdLakeEntrance_en:
 	.incbin "graphics/striped_images/gourd_lake_entrance.8bpp.striped"

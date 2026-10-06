@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """Save / Load screens laid out as on the DS English release.
 
-Everything is taken from the DS: the plates ("SAVE" / "LOAD"), the Yes / No /
-Saving... / From save point. / From chapter start. buttons with their normal
-and pressed palettes, the orange selection brackets and the "Press START..."
-hint are the DS images (data.bin); the grey courtroom behind them is the DS
-bottom-screen background (assets/ds_menu_courtroom.png, the background layer
-captured from the DS) and the plate lettering uses the DS menu font
-(assets/ds_plate_font.json: every glyph, its advance and offset, measured from
-text the DS itself drew on the save plate).
+The English graphics are taken from the DS: the plates ("SAVE" / "LOAD"), the
+Yes / No / Saving... / From save point. / From chapter start. buttons with
+their normal and pressed palettes, the orange selection brackets and the
+"Press START..." hint are the DS images (data.bin) and the plate lettering
+uses the DS menu font (assets/ds_plate_font.json: every glyph, its advance and
+offset, measured from text the DS itself drew on the save plate). Behind them
+stays the GBA's own sepia courtroom, without the DS scanlines.
 
 The DS screen is 256x192 and the GBA one 240x160: everything keeps its DS size
 and horizontal place (8 px cut on each side); vertically the save screen pulls
@@ -16,8 +15,8 @@ the plate up 8 px and the buttons / hint up 20 / 28 px, the load screen keeps
 the DS layout.
 
 usage: make_menus.py [preview.png]
-writes graphics/en/menu/*, include/en_menu_gfx.h, data/en_menu.s and
-graphics/striped_images/courtroom_background.png"""
+writes graphics/en/menu/*, include/en_menu_gfx.h and data/en_menu.s (and puts
+the original graphics/striped_images/courtroom_background.png back)"""
 import os, sys, json, struct, shutil
 import numpy as np
 from PIL import Image
@@ -81,27 +80,15 @@ def obj_sprites(a, x0, widths):
     return out
 
 # ---------------------------------------------------------------------------
-# background: the DS grey courtroom, centred crop
-BG_CROP = (8, 16)          # x, y of the 240x160 window in the 256x192 DS picture
-src = Image.open(os.path.join(HERE, 'assets/ds_menu_courtroom.png')).convert('RGB')
-crop = np.array(src)[BG_CROP[1]:BG_CROP[1] + 160, BG_CROP[0]:BG_CROP[0] + 240]
-cols = sorted(set(map(tuple, crop.reshape(-1, 3).tolist())))
-assert len(cols) <= 15, len(cols)
-lut = {c: i + 1 for i, c in enumerate(cols)}     # index 0 (transparent) unused
-idx = np.array([[lut[tuple(p)] for p in row] for row in crop.tolist()], np.uint8)
+# background: the GBA's own sepia courtroom, as on the Japanese save screens
+# (an earlier build put the DS grey courtroom here: put the original back)
 bgpath = os.path.join(ROOT, 'graphics/striped_images/courtroom_background.png')
-if not os.path.exists(bgpath + '.orig'):
-    shutil.copy(bgpath, bgpath + '.orig')
-im = Image.fromarray(idx, 'P')
-flat = [0, 0, 0]
-for c in cols:
-    flat += list(c)
-flat += [0, 0, 0] * (16 - 1 - len(cols))
-im.putpalette(flat)
-im.save(bgpath)
+if os.path.exists(bgpath + '.orig'):
+    shutil.copy(bgpath + '.orig', bgpath)
+src = Image.open(bgpath).convert('RGB')
 
 # ---------------------------------------------------------------------------
-# BG layer: plates, hint, stripe tile. One BG palette (EN_MENU_BG_PAL).
+# BG layer: plates, hint. One BG palette (EN_MENU_BG_PAL).
 plate_s, ppal = ds_image('plate_save')
 plate_l, ppal2 = ds_image('plate_load')
 hint, hpal = ds_image('hint')
@@ -114,17 +101,12 @@ def colour(c):
 hint_map = {0: 0}
 for i in range(1, 4):
     hint_map[i] = colour(hpal[0][i])
-STRIPE = colour((112, 112, 112))
 assert len(bgcols) <= 16, bgcols
 hint = np.vectorize(hint_map.get)(hint).astype(np.uint8)
 
 BG_TILE_BASE = 128         # BG VRAM 0x1000 (charblock 0, after the common tiles)
 tiles = [bytes(32)]        # tile 0 of the block: blank
-stripe = np.zeros((8, 8), np.uint8)
-stripe[2, :] = STRIPE
-stripe[6, :] = STRIPE
-tiles.append(tiles_4bpp(stripe))
-tile_ids = {tiles[0]: 0, tiles[1]: 1}
+tile_ids = {tiles[0]: 0}
 
 def flips(t):
     """the four flipped versions of an 8x8 tile, with their map flip bits"""
@@ -239,7 +221,7 @@ with open(os.path.join(ROOT, 'include/en_menu_gfx.h'), 'w') as f:
         t = 'u16' if fn.endswith(('.bin', '.gbapal')) and 'font' not in fn else 'u8'
         f.write('extern const %s %s[];\n' % (t, sym))
     f.write('\n#define EN_MENU_BG_TILE_BASE %d\n#define EN_MENU_BG_TILE_COUNT %d\n' % (BG_TILE_BASE, len(tiles)))
-    f.write('#define EN_MENU_BG_PAL %d\n#define EN_MENU_STRIPE_TILE %d\n' % (EN_MENU_BG_PAL, BG_TILE_BASE + 1))
+    f.write('#define EN_MENU_BG_PAL %d\n' % EN_MENU_BG_PAL)
     f.write('#define EN_MENU_SHORT_BUTTON_BYTES %d\n#define EN_MENU_LONG_BUTTON_BYTES %d\n' % (len(short) // 3, len(long_) // 2))
     f.write('#define EN_PLATE_FONT_CODES %d\n#define EN_PLATE_FONT_ROWS %d\n' % (PLATE_CODES, PLATE_ROWS))
     f.write('\n#endif // GUARD_EN_MENU_GFX_H\n')
@@ -252,7 +234,7 @@ if len(sys.argv) > 1:
     def rgb(img, pal):
         return np.array(pal, np.uint8)[img]
     def compose(kind):
-        scr = np.array(src)[BG_CROP[1]:BG_CROP[1] + 160, BG_CROP[0]:BG_CROP[0] + 240].copy()
+        scr = np.array(src).copy()
         def blit(img, pal, x, y):
             for yy in range(img.shape[0]):
                 for xx in range(img.shape[1]):
@@ -279,8 +261,6 @@ if len(sys.argv) > 1:
         blit(qs[1], kpal[0], bx1 - 15, by0)
         blit(qs[2], kpal[0], bx0, by1 - 15)
         blit(qs[3], kpal[0], bx1 - 15, by1 - 15)
-        for y in range(2, 160, 4):
-            scr[y] = np.minimum(248, scr[y].astype(int) + 24 * (scr[y] > 0)).astype(np.uint8)
         return Image.fromarray(scr)
     a, b = compose('save'), compose('load')
     sheet = Image.new('RGB', (2 * 256 + 8, 2 * 192 + 8), 'white')
