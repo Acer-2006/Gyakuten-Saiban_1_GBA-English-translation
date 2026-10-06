@@ -1,101 +1,101 @@
-sec   0 <- ds   0  {'dropped_ds': 23, 'inserted_gba': 17, 'unmatched_kept': 135, 'anim_ds': 37, 'choice_labels': 1}
-sec   1 <- ds   1  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 20, 'anim_ds': 3}
-sec   2 <- ds   2  {'dropped_ds': 25, 'inserted_gba': 5, 'unmatched_kept': 129, 'anim_ds': 38, 'choice_labels': 1}
-sec   3 <- ds   3  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 23, 'anim_ds': 3}
-sec   4 <- ds   4  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 13, 'anim_ds': 5}
-sec   5 <- ds   5  {'dropped_ds': 6, 'inserted_gba': 0, 'unmatched_kept': 26, 'anim_ds': 7}
-sec   6 <- ds   6  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
-sec   7 <- ds   7  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
-sec   8 <- ds   8  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
-sec   9 <- ds   9  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
-sec  10 <- ds  10  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 2, 'anim_ds': 2}
-sec  11 <- ds  11  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
-sec  12 <- ds  12  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
-sec  13 <- ds  13  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 14, 'anim_ds': 3}
-sec  14 <- ds  14  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 47, 'anim_ds': 13}
-sec  15 <- ds  15  {'dropped_ds': 6, 'inserted_gba': 0, 'unmatched_kept': 45, 'anim_ds': 13}
-sec  16 <- ds  16  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 17, 'anim_ds': 8}
-sec  17 <- ds  17  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 22, 'anim_ds': 7}
-sec  18 <- ds  18  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 13, 'anim_ds': 4}
-sec  19 <- ds  19  {'dropped_ds': 5, 'inserted_gba': 1, 'unmatched_kept': 39, 'anim_ds': 10}
-sec  20 <- ds  20  {'dropped_ds': 29, 'inserted_gba': 12, 'unmatched_kept': 89, 'anim_ds': 21, 'choice_labels': 1}
-sec  21 <- ds  21  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 17, 'anim_ds': 4}
-sec  22 <- ds  22  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 41, 'anim_ds': 9}
+sec   0 <- ds   0  {'dropped_ds': 13, 'inserted_gba': 17, 'unmatched_kept': 129, 'anim_ds': 37, 'ds_fx': 50, 'choice_labels': 1}
+sec   1 <- ds   1  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 19, 'anim_ds': 3, 'ds_fx': 4}
+sec   2 <- ds   2  {'dropped_ds': 8, 'inserted_gba': 5, 'unmatched_kept': 127, 'ds_fx': 47, 'anim_ds': 38, 'choice_labels': 1}
+sec   3 <- ds   3  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 20, 'anim_ds': 3, 'ds_fx': 4}
+sec   4 <- ds   4  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 12, 'anim_ds': 5, 'ds_fx': 5}
+sec   5 <- ds   5  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 27, 'anim_ds': 7, 'ds_fx': 10}
+sec   6 <- ds   6  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2, 'ds_fx': 1}
+sec   7 <- ds   7  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2, 'ds_fx': 1}
+sec   8 <- ds   8  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2, 'ds_fx': 1}
+sec   9 <- ds   9  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2, 'ds_fx': 1}
+sec  10 <- ds  10  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 2, 'anim_ds': 2, 'ds_fx': 1}
+sec  11 <- ds  11  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2, 'ds_fx': 1}
+sec  12 <- ds  12  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2, 'ds_fx': 1}
+sec  13 <- ds  13  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 14, 'anim_ds': 3, 'ds_fx': 2}
+sec  14 <- ds  14  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 44, 'anim_ds': 13, 'ds_fx': 23}
+sec  15 <- ds  15  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 36, 'anim_ds': 13, 'ds_fx': 24}
+sec  16 <- ds  16  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 17, 'anim_ds': 8, 'ds_fx': 13}
+sec  17 <- ds  17  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 21, 'anim_ds': 7, 'ds_fx': 9}
+sec  18 <- ds  18  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 13, 'anim_ds': 4, 'ds_fx': 5}
+sec  19 <- ds  19  {'dropped_ds': 2, 'inserted_gba': 1, 'unmatched_kept': 37, 'anim_ds': 10, 'ds_fx': 14}
+sec  20 <- ds  20  {'dropped_ds': 8, 'inserted_gba': 12, 'unmatched_kept': 75, 'anim_ds': 21, 'ds_fx': 58, 'choice_labels': 1}
+sec  21 <- ds  21  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 16, 'anim_ds': 4, 'ds_fx': 6}
+sec  22 <- ds  22  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 38, 'ds_fx': 25, 'anim_ds': 9}
 sec  23 <- ds  23  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 10, 'anim_ds': 1, 'choice_labels': 1}
-sec  24 <- ds  24  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 15, 'anim_ds': 2}
-sec  25 <- ds  25  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 36, 'anim_ds': 8}
-sec  26 <- ds  26  {'dropped_ds': 153, 'inserted_gba': 71, 'unmatched_kept': 606, 'anim_ds': 104}
-sec  27 <- ds  27  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
-sec  28 <- ds  28  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
-sec  29 <- ds  29  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
-sec  30 <- ds  30  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
-sec  31 <- ds  31  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
-sec  32 <- ds  32  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
-sec  33 <- ds  33  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 15, 'anim_ds': 4}
-sec  34 <- ds  34  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 30, 'anim_ds': 9}
-sec  35 <- ds  35  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 25, 'anim_ds': 7}
-sec  36 <- ds  36  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 28, 'anim_ds': 7}
-sec  37 <- ds  37  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 11, 'anim_ds': 5}
-sec  38 <- ds  38  {'dropped_ds': 11, 'inserted_gba': 5, 'unmatched_kept': 40, 'anim_ds': 11}
-sec  39 <- ds  39  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 13, 'anim_ds': 3}
-sec  40 <- ds  40  {'dropped_ds': 12, 'inserted_gba': 6, 'unmatched_kept': 52, 'anim_ds': 20}
-sec  41 <- ds  41  {'dropped_ds': 44, 'inserted_gba': 18, 'unmatched_kept': 164, 'anim_ds': 39, 'choice_labels': 1}
-sec  42 <- ds  42  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 25, 'anim_ds': 5}
-sec  43 <- ds  43  {'dropped_ds': 20, 'inserted_gba': 0, 'unmatched_kept': 137, 'anim_ds': 28}
-sec  44 <- ds  44  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
-sec  45 <- ds  45  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
-sec  46 <- ds  46  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
-sec  47 <- ds  47  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2}
-sec  48 <- ds  48  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
-sec  49 <- ds  49  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2}
-sec  50 <- ds  50  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 14, 'anim_ds': 3}
-sec  51 <- ds  51  {'dropped_ds': 6, 'inserted_gba': 0, 'unmatched_kept': 29, 'anim_ds': 5}
-sec  52 <- ds  52  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 20, 'anim_ds': 6}
-sec  53 <- ds  53  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 12, 'anim_ds': 6}
-sec  54 <- ds  54  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 11, 'anim_ds': 5}
-sec  55 <- ds  55  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 18, 'anim_ds': 5, 'choice_labels': 1}
+sec  24 <- ds  24  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 14, 'anim_ds': 2, 'ds_fx': 3}
+sec  25 <- ds  25  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 34, 'ds_fx': 16, 'anim_ds': 8}
+sec  26 <- ds  26  {'dropped_ds': 57, 'inserted_gba': 71, 'unmatched_kept': 567, 'anim_ds': 104, 'ds_fx': 224}
+sec  27 <- ds  27  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2, 'ds_fx': 1}
+sec  28 <- ds  28  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2, 'ds_fx': 1}
+sec  29 <- ds  29  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2, 'ds_fx': 1}
+sec  30 <- ds  30  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2, 'ds_fx': 1}
+sec  31 <- ds  31  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2, 'ds_fx': 1}
+sec  32 <- ds  32  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2, 'ds_fx': 1}
+sec  33 <- ds  33  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 15, 'anim_ds': 4, 'ds_fx': 2}
+sec  34 <- ds  34  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 30, 'anim_ds': 9, 'ds_fx': 5}
+sec  35 <- ds  35  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 25, 'anim_ds': 7, 'ds_fx': 9}
+sec  36 <- ds  36  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 28, 'anim_ds': 7, 'ds_fx': 11}
+sec  37 <- ds  37  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 11, 'anim_ds': 5, 'ds_fx': 3}
+sec  38 <- ds  38  {'dropped_ds': 4, 'inserted_gba': 5, 'unmatched_kept': 33, 'ds_fx': 23, 'anim_ds': 11}
+sec  39 <- ds  39  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 11, 'anim_ds': 3, 'ds_fx': 7}
+sec  40 <- ds  40  {'dropped_ds': 5, 'inserted_gba': 6, 'unmatched_kept': 47, 'anim_ds': 20, 'ds_fx': 19}
+sec  41 <- ds  41  {'dropped_ds': 16, 'inserted_gba': 18, 'unmatched_kept': 135, 'anim_ds': 39, 'ds_fx': 97, 'choice_labels': 1}
+sec  42 <- ds  42  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 20, 'anim_ds': 5, 'ds_fx': 7}
+sec  43 <- ds  43  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 132, 'anim_ds': 28, 'ds_fx': 44}
+sec  44 <- ds  44  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2, 'ds_fx': 1}
+sec  45 <- ds  45  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2, 'ds_fx': 1}
+sec  46 <- ds  46  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2, 'ds_fx': 1}
+sec  47 <- ds  47  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2, 'ds_fx': 1}
+sec  48 <- ds  48  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2, 'ds_fx': 1}
+sec  49 <- ds  49  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 2, 'ds_fx': 1}
+sec  50 <- ds  50  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 14, 'anim_ds': 3, 'ds_fx': 1}
+sec  51 <- ds  51  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 21, 'anim_ds': 5, 'ds_fx': 18}
+sec  52 <- ds  52  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 19, 'anim_ds': 6, 'ds_fx': 7}
+sec  53 <- ds  53  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 11, 'anim_ds': 6, 'ds_fx': 5}
+sec  54 <- ds  54  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 11, 'anim_ds': 5, 'ds_fx': 3}
+sec  55 <- ds  55  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 18, 'anim_ds': 5, 'ds_fx': 4, 'choice_labels': 1}
 sec  56 <- ds  56  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 17, 'anim_ds': 4}
-sec  57 <- ds  57  {'dropped_ds': 4, 'inserted_gba': 0, 'unmatched_kept': 24, 'anim_ds': 9}
-sec  58 <- ds  58  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 12, 'anim_ds': 6}
-sec  59 <- ds  59  {'dropped_ds': 11, 'inserted_gba': 1, 'unmatched_kept': 64, 'anim_ds': 15}
-sec  60 <- ds  60  {'dropped_ds': 11, 'inserted_gba': 2, 'unmatched_kept': 69, 'anim_ds': 17}
-sec  61 <- ds  61  {'dropped_ds': 12, 'inserted_gba': 11, 'unmatched_kept': 45, 'anim_ds': 12}
+sec  57 <- ds  57  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 22, 'anim_ds': 9, 'ds_fx': 12}
+sec  58 <- ds  58  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 12, 'anim_ds': 6, 'ds_fx': 5}
+sec  59 <- ds  59  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 56, 'ds_fx': 26, 'anim_ds': 15}
+sec  60 <- ds  60  {'dropped_ds': 2, 'inserted_gba': 2, 'unmatched_kept': 61, 'ds_fx': 25, 'anim_ds': 17}
+sec  61 <- ds  61  {'dropped_ds': 4, 'inserted_gba': 11, 'unmatched_kept': 41, 'anim_ds': 12, 'ds_fx': 24}
 sec  62 <- ds  62  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 8, 'anim_ds': 1, 'choice_labels': 1}
-sec  63 <- ds  63  {'dropped_ds': 11, 'inserted_gba': 1, 'unmatched_kept': 37, 'anim_ds': 10}
-sec  64 <- ds  64  {'dropped_ds': 6, 'inserted_gba': 1, 'unmatched_kept': 17, 'anim_ds': 5}
-sec  65 <- ds  65  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 3}
-sec  66 <- ds  66  {'dropped_ds': 5, 'inserted_gba': 0, 'unmatched_kept': 30, 'anim_ds': 6}
-sec  67 <- ds  67  {'dropped_ds': 20, 'inserted_gba': 16, 'unmatched_kept': 111, 'anim_ds': 36}
+sec  63 <- ds  63  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 32, 'anim_ds': 10, 'ds_fx': 26}
+sec  64 <- ds  64  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 14, 'anim_ds': 5, 'ds_fx': 12}
+sec  65 <- ds  65  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 3, 'ds_fx': 2}
+sec  66 <- ds  66  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 29, 'anim_ds': 6, 'ds_fx': 12}
+sec  67 <- ds  67  {'dropped_ds': 9, 'inserted_gba': 16, 'unmatched_kept': 105, 'anim_ds': 36, 'ds_fx': 39}
 sec  68 <- ds  68  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 7, 'anim_ds': 2}
-sec  69 <- ds  69  {'dropped_ds': 3, 'inserted_gba': 1, 'unmatched_kept': 13, 'anim_ds': 5}
+sec  69 <- ds  69  {'dropped_ds': 2, 'inserted_gba': 1, 'unmatched_kept': 12, 'anim_ds': 5, 'ds_fx': 2}
 sec  70 <- ds  70  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 1, 'anim_ds': 1}
-sec  71 <- ds  71  {'dropped_ds': 4, 'inserted_gba': 2, 'unmatched_kept': 24, 'anim_ds': 9}
-sec  72 <- ds  72  {'dropped_ds': 15, 'inserted_gba': 6, 'unmatched_kept': 69, 'anim_ds': 18}
+sec  71 <- ds  71  {'dropped_ds': 3, 'inserted_gba': 2, 'unmatched_kept': 23, 'anim_ds': 9, 'ds_fx': 4}
+sec  72 <- ds  72  {'dropped_ds': 5, 'inserted_gba': 6, 'unmatched_kept': 61, 'anim_ds': 18, 'ds_fx': 28}
 sec  73 <- ds  73  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 7, 'anim_ds': 1}
-sec  74 <- ds  74  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 13, 'anim_ds': 4}
+sec  74 <- ds  74  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 12, 'anim_ds': 4, 'ds_fx': 2}
 sec  75 <- ds  75  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 1, 'anim_ds': 1}
-sec  76 <- ds  76  {'dropped_ds': 12, 'inserted_gba': 5, 'unmatched_kept': 45, 'anim_ds': 15}
-sec  77 <- ds  77  {'dropped_ds': 44, 'inserted_gba': 21, 'unmatched_kept': 230, 'anim_ds': 53}
+sec  76 <- ds  76  {'dropped_ds': 6, 'inserted_gba': 5, 'unmatched_kept': 41, 'anim_ds': 15, 'ds_fx': 16}
+sec  77 <- ds  77  {'dropped_ds': 12, 'inserted_gba': 21, 'unmatched_kept': 208, 'ds_fx': 86, 'anim_ds': 53}
 sec  78 <- ds  78  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 5, 'anim_ds': 1, 'choice_labels': 1}
-sec  79 <- ds  79  {'dropped_ds': 4, 'inserted_gba': 0, 'unmatched_kept': 34, 'anim_ds': 5}
-sec  80 <- ds  80  {'dropped_ds': 6, 'inserted_gba': 5, 'unmatched_kept': 14, 'anim_ds': 4}
-sec  81 <- ds  81  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 10, 'anim_ds': 2}
-sec  82 <- ds  82  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 32, 'anim_ds': 8}
-sec  83 <- ds  83  {'dropped_ds': 12, 'inserted_gba': 11, 'unmatched_kept': 54, 'anim_ds': 14}
+sec  79 <- ds  79  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 29, 'anim_ds': 5, 'ds_fx': 14}
+sec  80 <- ds  80  {'dropped_ds': 4, 'inserted_gba': 5, 'unmatched_kept': 12, 'ds_fx': 5, 'anim_ds': 4}
+sec  81 <- ds  81  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 8, 'anim_ds': 2, 'ds_fx': 5}
+sec  82 <- ds  82  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 29, 'anim_ds': 8, 'ds_fx': 12}
+sec  83 <- ds  83  {'dropped_ds': 5, 'inserted_gba': 11, 'unmatched_kept': 47, 'anim_ds': 14, 'ds_fx': 20}
 sec  84 <- ds  84  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 9, 'anim_ds': 1, 'choice_labels': 1}
-sec  85 <- ds  85  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 33, 'anim_ds': 5}
+sec  85 <- ds  85  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 26, 'anim_ds': 5, 'ds_fx': 10}
 sec  86 <- ds  86  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 1, 'anim_ds': 1}
-sec  87 <- ds  87  {'dropped_ds': 13, 'inserted_gba': 5, 'unmatched_kept': 70, 'anim_ds': 19}
-sec  88 <- ds  88  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 17, 'anim_ds': 3}
-sec  89 <- ds  89  {'dropped_ds': 16, 'inserted_gba': 3, 'unmatched_kept': 65, 'anim_ds': 15}
-sec  90 <- ds  90  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 7, 'anim_ds': 1}
-sec  91 <- ds  91  {'dropped_ds': 12, 'inserted_gba': 0, 'unmatched_kept': 27, 'anim_ds': 9}
-sec  92 <- ds  92  {'dropped_ds': 9, 'inserted_gba': 0, 'unmatched_kept': 25, 'anim_ds': 8}
-sec  93 <- ds  93  {'dropped_ds': 28, 'inserted_gba': 6, 'unmatched_kept': 112, 'anim_ds': 17, 'choice_labels': 1}
-sec  94 <- ds  94  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 21, 'anim_ds': 4}
-sec  95 <- ds  95  {'dropped_ds': 7, 'inserted_gba': 1, 'unmatched_kept': 41, 'anim_ds': 8, 'choice_labels': 1}
-sec  96 <- ds  96  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 20, 'anim_ds': 6}
-sec  97 <- ds  97  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 11, 'anim_ds': 2}
-sec  98 <- ds  98  {'dropped_ds': 49, 'inserted_gba': 40, 'unmatched_kept': 247, 'anim_ds': 49}
-sec  99 <- ds  99  {'dropped_ds': 28, 'inserted_gba': 7, 'unmatched_kept': 134, 'anim_ds': 2}
-sec 100 <- ds 100  {'dropped_ds': 9, 'inserted_gba': 10, 'unmatched_kept': 25, 'anim_ds': 8}
+sec  87 <- ds  87  {'dropped_ds': 6, 'inserted_gba': 5, 'unmatched_kept': 62, 'anim_ds': 19, 'ds_fx': 31}
+sec  88 <- ds  88  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 15, 'anim_ds': 3, 'ds_fx': 4}
+sec  89 <- ds  89  {'dropped_ds': 1, 'inserted_gba': 3, 'unmatched_kept': 49, 'anim_ds': 15, 'ds_fx': 41}
+sec  90 <- ds  90  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 7, 'ds_fx': 2, 'anim_ds': 1}
+sec  91 <- ds  91  {'dropped_ds': 5, 'inserted_gba': 0, 'unmatched_kept': 23, 'ds_fx': 11, 'anim_ds': 9}
+sec  92 <- ds  92  {'dropped_ds': 4, 'inserted_gba': 0, 'unmatched_kept': 23, 'ds_fx': 7, 'anim_ds': 8}
+sec  93 <- ds  93  {'dropped_ds': 14, 'inserted_gba': 6, 'unmatched_kept': 105, 'ds_fx': 39, 'anim_ds': 17, 'choice_labels': 1}
+sec  94 <- ds  94  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 17, 'anim_ds': 4, 'ds_fx': 7}
+sec  95 <- ds  95  {'dropped_ds': 3, 'inserted_gba': 1, 'unmatched_kept': 37, 'ds_fx': 18, 'anim_ds': 8, 'choice_labels': 1}
+sec  96 <- ds  96  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 16, 'anim_ds': 6, 'ds_fx': 11}
+sec  97 <- ds  97  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 8, 'ds_fx': 8, 'anim_ds': 2}
+sec  98 <- ds  98  {'dropped_ds': 28, 'inserted_gba': 40, 'unmatched_kept': 223, 'anim_ds': 49, 'ds_fx': 72}
+sec  99 <- ds  99  {'dropped_ds': 10, 'inserted_gba': 7, 'unmatched_kept': 126, 'anim_ds': 2, 'ds_fx': 32}
+sec 100 <- ds 100  {'dropped_ds': 8, 'inserted_gba': 10, 'unmatched_kept': 25, 'ds_fx': 8, 'anim_ds': 8}

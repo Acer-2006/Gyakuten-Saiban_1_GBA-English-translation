@@ -1,4 +1,5 @@
 #include "global.h"
+#include "en_effects.h"
 #include "court.h"
 #include "utils.h"
 #include "sound.h"
@@ -194,8 +195,8 @@ void TestimonyAnim(struct Main * main)
             if(!(animation3->flags & ANIM_PLAYING))
             {
                 DestroyAnimation(animation3);
-                PlayAnimationAtCustomOrigin(ANIM_TESTIMONY_START_LEFT, 120, 44); // English banner: two lines, kept above the name tag
-                PlayAnimationAtCustomOrigin(ANIM_TESTIMONY_START_RIGHT, 120, 44);
+                PlayAnimationAtCustomOrigin(ANIM_TESTIMONY_START_LEFT, 120, EN_BANNER_Y); // English banner (en_effects.h)
+                PlayAnimationAtCustomOrigin(ANIM_TESTIMONY_START_RIGHT, 120, EN_BANNER_Y);
                 main->process[GAME_PROCESS_VAR1]++;
             }
             break;
@@ -324,8 +325,8 @@ void QuestioningAnim(struct Main * main)
             if(!(animation3->flags & ANIM_PLAYING))
             {
                 DestroyAnimation(animation3);
-                PlayAnimationAtCustomOrigin(ANIM_CROSS_EXAMINATION_START_LEFT, 120, 44); // English banner: two lines, kept above the name tag
-                PlayAnimationAtCustomOrigin(ANIM_CROSS_EXAMINATION_START_RIGHT, 120, 44);
+                PlayAnimationAtCustomOrigin(ANIM_CROSS_EXAMINATION_START_LEFT, 120, EN_BANNER_Y); // English banner (en_effects.h)
+                PlayAnimationAtCustomOrigin(ANIM_CROSS_EXAMINATION_START_RIGHT, 120, EN_BANNER_Y);
                 main->process[GAME_PROCESS_VAR1]++;
             }
             break;

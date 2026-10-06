@@ -24,6 +24,19 @@ DS_KEEP = {0x01, 0x02, 0x03, 0x07, 0x0B, 0x0C, 0x0D, 0x0E, 0x11, 0x14, 0x16, 0x1
 TEXT_CMDS = {0x01, 0x02, 0x03, 0x07, 0x0B, 0x0C, 0x2D, 0x30}  # never matched from GBA: DS owns text flow
 KEYED_OPS = {0x05, 0x0E, 0x1B, 0x1E}  # align on (op, first arg): music, speaker, background, person
 DS_ARGS_WIN = {0x0E}
+# Commands taken from the DS as they are, at the DS's places, with the GBA's own
+# ones left out: the text box being shown / hidden (1C), screen shakes (27),
+# sound effects (06) and white flashes (12 with blend mode 3). The text is the
+# DS's, so these follow its flow; taking them from the GBA put text in a hidden
+# text box and doubled shakes and sounds where the two scripts differ.
+DS_AUTH = {0x06, 0x1C, 0x27}
+def ds_auth(op, args):
+    return op in DS_AUTH or (op == 0x12 and args and args[0] >> 8 == 3)
+# sound effects the DS added (SE04F, SE050: sounds from the GBA sequels) are
+# added to the GBA song table after its last entry (data/en_sound.s)
+SE_MAP = {121: 111, 122: 112}
+CENTRE = 0x5D      # DS: centre the following lines (1) / stop (0); en_text in vwf.c
+DS_WAIT = 0x4E     # DS: hold for n frames -> GBA wait (0C)
 ANIM_MAP = {}   # 'scenario_x:person:dsval' -> gba value (learn_anim_map.py)
 ANIM_TAG = ''  # matched for alignment, but the DS arguments are used (speaker nametag)
 JUMP_IN_SECTION = 0x35
@@ -148,9 +161,20 @@ def merge_section(gtoks, dtoks, choice_ids=None):
     emitted = set()
     stats = {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 0}
 
+    def emit_ds(op, args):
+        if op == 0x06:  # sound effect: DS uses (id, flag), GBA packs id<<8 | flag
+            sid = SE_MAP.get(args[0], args[0])
+            out.extend([0x06, ((sid & 0xFF) << 8) | (args[1] & 0xFF)])
+        else:
+            out.append(op)
+            out.extend(args)
+
     def emit_g(j):
         pos, kind, op, args = gcmds[j]
         gpos_to_out[pos] = len(out)
+        if ds_auth(op, args):
+            emitted.add(j)
+            return
         out.append(op)
         if op == JUMP_IN_SECTION and not (args[0] & 0x80):
             patches.append((len(out) + 1, args[1] // 2))
@@ -191,10 +215,23 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                     emit_g(nextg)
                     stats['inserted_gba'] += 1
                 nextg += 1
+            gop, gargs = gcmds[j][2], gcmds[j][3]
             if op in DS_ARGS_WIN:
                 out.append(op)
                 out.extend(args)
                 emitted.add(j)
+            elif ds_auth(op, args):
+                if not ds_auth(gop, gargs):
+                    emit_g(j)          # a GBA fade the DS flash was paired with
+                else:
+                    gpos_to_out[gcmds[j][0]] = len(out)
+                    emitted.add(j)
+                emit_ds(op, args)
+                stats['ds_fx'] = stats.get('ds_fx', 0) + 1
+            elif ds_auth(gop, gargs):
+                gpos_to_out[gcmds[j][0]] = len(out)
+                emitted.add(j)
+                emit_ds(op, args)      # the DS command in place of a GBA flash
             else:
                 emit_g(j)
             nextg = j + 1
@@ -202,12 +239,15 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         if op == 0x07 and choice_ids:          # English answer labels for this choice
             out.extend([0x5E] + list(choice_ids))
             stats['choice_labels'] = 1
-        if op in TEXT_CMDS or op in DS_KEEP:
+        if ds_auth(op, args):
+            emit_ds(op, args)
+            stats['ds_fx'] = stats.get('ds_fx', 0) + 1
+        elif op in TEXT_CMDS or op in DS_KEEP or op == CENTRE:
             out.append(op)
             out.extend(args)
             stats['unmatched_kept'] += 1
-        elif op == 0x06:  # sound effect: DS uses (id, flag), GBA packs id<<8 | flag
-            out.extend([0x06, ((args[0] & 0xFF) << 8) | (args[1] & 0xFF)])
+        elif op == DS_WAIT:
+            out.extend([0x0C, args[0]])
             stats['unmatched_kept'] += 1
         else:
             stats['dropped_ds'] += 1

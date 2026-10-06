@@ -17,6 +17,7 @@
 
 void VwfPutChar(u32 code, u32 line, u32 color);
 void VwfClearLine(u32 line);
+void VwfSetCentre(u32 on);
 void VwfRedraw(void);
 void VwfBackup(void);
 void VwfRestore(void);

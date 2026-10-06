@@ -79,3 +79,5 @@ ddump
 *.cs
 *.cheats
 *.ss*
+tools/en/__pycache__/
+build.log

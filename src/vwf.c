@@ -23,8 +23,11 @@ struct VwfState
     u16 choiceIds[4];            // answer labels on screen (choiceIds[3] == 1)
     u8 logLen[4];
     u16 log[VWF_LINES][VWF_LOG_LEN];
+    u8 lineStart[4];             // pen position each line starts at
+    u8 centre;                   // lines are centred (script command 5D, as the DS)
+    u8 pad[3];
 };
-#define VWF_LOG_MAGIC 0x31465756 // "VWF1"
+#define VWF_LOG_MAGIC 0x32465756 // "VWF2"
 #define VWF_SRAM_OFFSET 0x2A00   // after the original 0x29D0-byte save
 
 #define gVwf ((struct VwfState *)(EWRAM_START + 0x11FC0 + 0x10))
@@ -64,6 +67,51 @@ static void VwfShowBlocks(u32 line, u32 lastBlock)
     }
 }
 
+// arguments of each script command, to step over the ones inside a line
+static const u8 sCmdArgs[0x60] = {
+    0, 0, 0, 1, 1, 2, 1, 0, 2, 3, 1, 1, 1, 0, 1, 2, 1, 0, 3, 1, 0, 0, 0, 1, 1, 2, 4, 1, 1, 1, 3, 0,
+    1, 0, 2, 2, 0, 1, 1, 2, 1, 1, 3, 0, 1, 0, 0, 2, 1, 2, 2, 5, 1, 2, 1, 2, 1, 1, 2, 2, 1, 1, 1, 0,
+    0, 0, 1, 1, 1, 0, 1, 2, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 0,
+};
+
+// The DS centres location cards, testimony titles and a few lines with
+// command 5D. Measure the line that starts at the script pointer (up to the
+// next line break or end of message) and start it so it sits in the middle
+// of the screen.
+static u32 VwfCentredLineStart(void)
+{
+    const u16 * p = gScriptContext.scriptPtr;
+    s32 w = 0, x;
+    for (;;)
+    {
+        u32 t = *p;
+        if (t >= 0x80)
+        {
+            t -= 0x80;
+            if (t == 0xFF)
+                w += VWF_SPACE_WIDTH;
+            else if (t < VWF_GLYPH_COUNT)
+                w += gVwfFontWidths[t] + 1;
+            p++;
+            continue;
+        }
+        // line breaks, ends of messages and jumps end the line
+        if (t <= 0x02 || t == 0x07 || t == 0x08 || t == 0x09 || t == 0x0A || t == 0x0D
+         || t == 0x15 || t == 0x2D || t == 0x2E || t == 0x35 || t == 0x36 || t >= 0x5D)
+            break;
+        p += 1 + sCmdArgs[t];
+    }
+    if (w > 0)
+        w--;    // no gap after the last letter
+    x = (DISPLAY_WIDTH / 2 - gScriptContext.textXOffset) - w / 2;
+    return x < 0 ? 0 : x;
+}
+
+void VwfSetCentre(u32 on)
+{
+    gVwf->centre = on ? 1 : 0;
+}
+
 void VwfClearLine(u32 line)
 {
     u32 b;
@@ -76,6 +124,9 @@ void VwfClearLine(u32 line)
     VwfCopyBlocks(line, 0, VWF_BLOCKS_PER_LINE - 1);
     for (b = 0; b < VWF_BLOCKS_PER_LINE; b++)
         gTextBoxCharacters[line * VWF_BLOCKS_PER_LINE + b].state &= ~0x8000;
+    if (!gEnMenu->textMode && gVwf->centre)
+        gVwf->pen[line] = VwfCentredLineStart();
+    gVwf->lineStart[line] = gVwf->pen[line];
     if (gEnMenu->textMode)
     {
         // menu plate: each line is centred, as the DS does
@@ -208,7 +259,11 @@ void VwfRedraw(void)
     if (gVwf->logMagic != VWF_LOG_MAGIC)
     {
         for (line = 0; line < VWF_LINES; line++)
+        {
             gVwf->logLen[line] = 0;
+            gVwf->lineStart[line] = 0;
+        }
+        gVwf->centre = 0;
         gVwf->choiceIds[3] = 0;
         gVwf->logMagic = VWF_LOG_MAGIC;
     }
@@ -217,7 +272,7 @@ void VwfRedraw(void)
         n = gVwf->logLen[line];
         if (n > VWF_LOG_LEN)
             n = gVwf->logLen[line] = 0;
-        gVwf->pen[line] = 0;
+        gVwf->pen[line] = gVwf->lineStart[line];
         DmaFill16(3, 0, gVwf->tiles[line], sizeof(gVwf->tiles[line]));
         for (i = 0; i < n; i++)
         {

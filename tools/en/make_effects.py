@@ -3,9 +3,11 @@
 
   Testimony / cross-examination banners  DS data.bin archive 0x2202220,
       graphics 312 and the six sequences packed in 313 (full banner with its
-      shine for each, and the two halves that slide in). The GBA animation
-      engine reads this format as it is (compressed tiles, 8 palettes), so the
-      DS bytes are used unchanged.
+      shine for each, and the two halves that slide in). Every frame is drawn
+      from the DS data, scaled so the "Witness Testimony" lettering is as wide
+      as the Japanese GBA banner (128 px), and cut into GBA sprites again; the
+      DS palettes, palette flashes, frame timings and both banners' relative
+      size are kept. Stored in the same compressed-tile format the DS uses.
   Objection! / Hold it! / Take that!     DS entries 316, 322, 328. The DS
       bubbles fill the 256x192 screen; they are drawn at 60% (154x115) so they
       fit the GBA sprite memory the original bubbles used, re-tiled into GBA
@@ -61,14 +63,88 @@ def vram_need(seq, fr):
         best = max(best, sum(animfmt.SIZES[d >> 12][0] * animfmt.SIZES[d >> 12][1] // 2 for _, _, d in sp))
     return best, max(len(animfmt.sprites(seq, f[0])) for f in fr)
 
+BANNER_JP_WIDTH = 128              # Japanese GBA banner (4 kanji with their outline)
+BANNER_JP_CENTRE_Y = 76            # ... and its vertical centre on screen
+BANNER_MAX_BOTTOM = 99             # keep clear of the name tag
+BANNER_CANVAS, BANNER_ORIGIN = (512, 384), (256, 192)
+
+def frame_palette(q, f):
+    pals = set((d >> 9) & 7 for _, _, d in animfmt.sprites(q, f[0]))
+    assert len(pals) == 1, pals
+    return pals.pop()
+
 def banners(report):
+    """-> (scale, y origin, {name: max sprites per frame})"""
     gfx = ds_entry(BANNER_GFX)
-    write('banner.gfx', gfx + b'\0' * (-len(gfx) % 4))
+    pals = animfmt.palettes(gfx)
     seq = ds_entry(BANNER_SEQ)
-    for name, start in BANNER_SUBS:
-        q, fr = sub_seq(seq, start)
-        write('banner_%s.seq' % name, q)
-        report.append('banner %-16s %2d frames, %5d bytes VRAM, %2d sprites' % ((name, len(fr)) + vram_need(q, fr)))
+    subs = {name: sub_seq(seq, start) for name, start in BANNER_SUBS}
+    # scale: the settled "Witness Testimony" frame as wide as the Japanese banner
+    q, fr = subs['testimony']
+    idx, _ = render_indexed(gfx, q, len(fr) - 2, BANNER_CANVAS, BANNER_ORIGIN)
+    xs = np.nonzero(idx.any(0))[0]
+    scale = BANNER_JP_WIDTH / (xs[-1] - xs[0] + 1)
+    streams, stream_ids, seqs, counts, extent = [], {}, {}, {}, [0, 0]
+    for name, _ in BANNER_SUBS:
+        q, fr = subs[name]
+        lists = []
+        for k, f in enumerate(fr):
+            p = frame_palette(q, f)
+            idx, _ = render_indexed(gfx, q, k, BANNER_CANVAS, BANNER_ORIGIN)
+            used = sorted(set(np.unique(idx)) - {0})
+            img = scale_indexed(idx, pals[p], scale, used)
+            ox, oy = BANNER_ORIGIN[0] * scale, BANNER_ORIGIN[1] * scale
+            # tiles aligned on the origin
+            ax, ay = int(round(ox)) % 8, int(round(oy)) % 8
+            H, W = (img.shape[0] + 8 + 7) // 8, (img.shape[1] + 8 + 7) // 8
+            pad = np.zeros((H * 8, W * 8), np.uint8)
+            pad[(8 - ay) % 8:(8 - ay) % 8 + img.shape[0], (8 - ax) % 8:(8 - ax) % 8 + img.shape[1]] = img
+            cx, cy = int(round(ox)) + (8 - ax) % 8, int(round(oy)) + (8 - ay) % 8
+            ys_, xs_ = np.nonzero(pad)
+            extent[0] = min(extent[0], ys_.min() - cy); extent[1] = max(extent[1], ys_.max() - cy)
+            filled = pad.reshape(H, 8, W, 8).any(3).any(1)
+            rects = min((cover(filled, wc) for wc in (0.25, 0.5, 1.0, 2.0)), key=len)
+            sprites = []
+            for tx, ty, tw, th in rects:
+                t = tiles_of(np.pad(pad, ((0, 64), (0, 64))), tx * 8, ty * 8, tw * 8, th * 8) if tx >= 0 and ty >= 0 else None
+                assert t is not None
+                if t not in stream_ids:
+                    stream_ids[t] = len(streams); streams.append(t)
+                x, y = tx * 8 - cx, ty * 8 - cy
+                assert -128 <= x and x + tw * 8 <= 127 and -128 <= y and y + th * 8 <= 127, (name, x, y)
+                sprites.append(struct.pack('<bbH', x, y, SIZE_INDEX[(tw, th)] << 12 | p << 9 | stream_ids[t]))
+            lists.append(sprites)
+        counts[name] = max(len(l) for l in lists)
+        out = bytearray(q[:8])
+        body = bytearray(); offs = []
+        base = 8 + 8 * len(fr)
+        for sprites in lists:
+            offs.append(base + len(body))
+            body += struct.pack('<HH', len(sprites), 0) + b''.join(sprites)
+        for (sd, dur, fl, song, act), o in zip(fr, offs):
+            out += struct.pack('<HBBBBH', o, dur, fl, song, act, 0)
+        seqs[name] = bytes(out + body)
+        need = max(sum(animfmt.SIZES[struct.unpack_from('<H', sp, 2)[0] >> 12][0] * animfmt.SIZES[struct.unpack_from('<H', sp, 2)[0] >> 12][1] // 2 for sp in l) for l in lists)
+        report.append('banner %-16s %2d frames, %5d bytes VRAM, %2d sprites' % (name, len(fr), need, counts[name]))
+    assert len(streams) < 512
+    # compressed-tile block: offset table, then each sprite's tiles as one literal run
+    g = bytearray(struct.pack('<I', 0x80000000 | len(pals)))
+    g += gfx[4:4 + 32 * len(pals)]
+    table = bytearray(); data_ = bytearray()
+    for t in streams:
+        table += struct.pack('<I', 4 * len(streams) + len(data_))
+        words = len(t) // 2
+        while words:
+            n = min(words, 0x7FFF)
+            data_ += struct.pack('<H', n) + t[:2 * n]; t = t[2 * n:]; words -= n
+    g += table + data_
+    write('banner.gfx', bytes(g) + b'\0' * (-len(g) % 4))
+    for name, _ in BANNER_SUBS:
+        write('banner_%s.seq' % name, seqs[name])
+    y = int(round(BANNER_JP_CENTRE_Y - (extent[0] + extent[1]) / 2))
+    y = min(y, BANNER_MAX_BOTTOM - extent[1])
+    report.append('banners scaled to %.3f, %d tile blocks, y origin %d (rows %d..%d)' % (scale, len(streams), y, y + extent[0], y + extent[1]))
+    return scale, y, counts
 
 # ------------------------------------------------------------------ bubbles
 BUBBLES = [('objection', 316), ('holdit', 322), ('takethat', 328)]
@@ -210,7 +286,7 @@ def verdict(report):
 def main():
     os.makedirs(OUT, exist_ok=True)
     report = []
-    banners(report)
+    bscale, by, bcounts = banners(report)
     counts = {name: bubble(name, e, report) for name, e in BUBBLES}
     verdict_tables = verdict(report)
     h = ['// generated by tools/en/make_effects.py',
@@ -218,6 +294,8 @@ def main():
          'extern u8 gEnBannerGfx[];']
     for name, _ in BANNER_SUBS:
         h.append('extern u8 gEnBannerSeq_%s[];' % name)
+        h.append('#define EN_BANNER_SPRITES_%s %d' % (name.upper(), bcounts[name]))
+    h.append('#define EN_BANNER_Y %d   // banners scaled to %.0f%% of the DS size' % (by, bscale * 100))
     for name, _ in BUBBLES:
         h += ['extern u8 gEnBubbleGfx_%s[];' % name, 'extern u8 gEnBubbleSeq_%s[];' % name,
               '#define EN_BUBBLE_SPRITES_%s %d' % (name.upper(), counts[name])]

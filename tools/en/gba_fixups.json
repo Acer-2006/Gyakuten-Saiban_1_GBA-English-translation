@@ -1,5 +1,5 @@
 {
-  "_comment": "Wording the DS gives in terms of the touch screen, changed to the GBA controls (R opens the Court Record). Keys: scenario index -> DS section -> [old, new] pairs in tools/en/pseudo.py notation.",
+  "_comment": "Wording the DS gives in terms of the touch screen, changed to the GBA controls (R opens the Court Record). Keys: scenario index -> DS section -> [old, new] pairs in tools/en/pseudo.py notation. Also: leftover Japanese developer notes in the DS script that would be printed in the text box.",
   "0": {
     "6":  [["Just touch the <3:1>Court Record<3:0>\\nbutton to check it at anytime,", "Just press R for the <3:1>Court Record<3:0>\\nto check it at anytime,"]],
     "8":  [["<3:1>Court Record<3:0> button!", "<3:1>Court Record<3:0>!"]],
@@ -8,5 +8,8 @@
     "14": [["Touch the <3:1>Court Record<3:0>\\nbutton to check the Court\\nRecord frequently.", "Press R and check the\\n<3:1>Court Record<3:0> frequently."]],
     "36": [["Touch the <3:1>Court Record<3:0> button<c:a>\\nand point out", "Press R for the <3:1>Court Record<3:0><c:a>\\nand point out"]],
     "48": [["<3:1>Court Record<3:0> button<c:e>", "<3:1>Court Record<3:0><c:e>"]]
+  },
+  "1": {
+    "96": [["<2d><14>{16c}BGM{175}{2f9}{c1}<1c:1>", "<2d><14><1c:1>"]]
   }
 }

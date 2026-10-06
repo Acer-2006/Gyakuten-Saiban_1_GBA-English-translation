@@ -311,8 +311,13 @@ bool32 Command5C(struct ScriptContext *scriptCtx)
     return 0;
 }
 
+// English patch: the DS's centring command. 1: centre the lines that follow,
+// 0: back to normal (vwf.c)
 bool32 Command5D(struct ScriptContext *scriptCtx)
 {
+    scriptCtx->scriptPtr++;
+    VwfSetCentre(*scriptCtx->scriptPtr);
+    scriptCtx->scriptPtr++;
     return 0;
 }
 

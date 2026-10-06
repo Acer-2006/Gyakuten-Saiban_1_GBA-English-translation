@@ -3671,6 +3671,8 @@ gSongTable:	@ 0x0804132C
 	song gUnknown_08088D3C, 1, 1
 	song gUnknown_08088D58, 1, 1
 	song gUnknown_08088D74, 1, 1
+	song gEnSongSE04F, 1, 1 @ English patch: DS SE04F (tools/en/port_new_sounds.py)
+	song gEnSongSE050, 1, 1 @ English patch: DS SE050
 dmy_song:
 	.byte 0,0,0,0
 
