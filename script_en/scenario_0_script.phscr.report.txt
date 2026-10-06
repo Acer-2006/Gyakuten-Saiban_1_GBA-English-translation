@@ -12,7 +12,7 @@ sec  10 <- ds  10  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 9, 'an
 sec  11 <- ds  11  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 1, 'choice_labels': 1}
 sec  12 <- ds  12  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 29, 'anim_ds': 6}
 sec  13 <- ds  13  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 17, 'anim_ds': 4}
-sec  14 <- ds  14  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 76, 'anim_ds': 16}
+sec  14 <- ds  14  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 75, 'anim_ds': 16}
 sec  15 <- ds  15  {'dropped_ds': 5, 'inserted_gba': 4, 'unmatched_kept': 34, 'anim_ds': 6}
 sec  16 <- ds  16  {'dropped_ds': 10, 'inserted_gba': 1, 'unmatched_kept': 142, 'anim_ds': 20, 'choice_labels': 1}
 sec  17 <- ds  17  {'dropped_ds': 3, 'inserted_gba': 1, 'unmatched_kept': 23, 'anim_ds': 7}

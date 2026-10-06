@@ -225,6 +225,19 @@ def merge_section(gtoks, dtoks, choice_ids=None):
     return out, gpos_to_out, patches, stats
 
 
+def apply_fixups(dtoks, fixes):
+    """DS wording that refers to the touch screen -> GBA controls (gba_fixups.json)"""
+    if not fixes:
+        return dtoks
+    import pseudo
+    s = pseudo.to_pseudo(list(dtoks), DS_ARGS)
+    for old, new in fixes:
+        if old not in s:
+            raise ValueError('fixup not found: ' + old)
+        s = s.replace(old, new)
+    return pseudo.from_pseudo(s)
+
+
 def map_pos(gpos_to_out, target):
     keys = sorted(gpos_to_out)
     for k in keys:
@@ -250,6 +263,8 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
         for c in json.load(open(cp)):
             if c['scenario'] == scenario_idx:
                 choices[c['ds_section']] = c['ids']
+    fp = os.path.join(os.path.dirname(__file__), 'gba_fixups.json')
+    fixups = json.load(open(fp)).get(str(scenario_idx), {}) if scenario_idx is not None and os.path.exists(fp) else {}
     # find header entries used as jump descriptors
     desc_idx = set()
     for x in G:
@@ -270,7 +285,8 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             continue
         gt = tokens(gb, *x)
         if gi in pairs and D[pairs[gi]]:
-            out, m, patches, st = merge_section(gt, tokens(db, *D[pairs[gi]]), choices.get(pairs[gi]))
+            dt = apply_fixups(tokens(db, *D[pairs[gi]]), fixups.get(str(pairs[gi]), []))
+            out, m, patches, st = merge_section(gt, dt, choices.get(pairs[gi]))
             for idx, tgt in patches:
                 out[idx] = map_pos(m, tgt) * 2
             lines.append('sec %3d <- ds %3d  %s' % (gi, pairs[gi], st))
