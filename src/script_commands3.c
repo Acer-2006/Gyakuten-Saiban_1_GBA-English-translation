@@ -353,7 +353,7 @@ bool32 Command5E(struct ScriptContext *scriptCtx)
         for (b = 0; b < 7; b++)
         {
             struct TextBoxCharacter *c = &gTextBoxCharacters[32 + k * 7 + b];
-            c->x = 4 + b * 32; // clear of the pointer
+            c->x = 2 + b * 32; // text starts just right of the pointer, as in Japanese
             c->y = k * 20;
             c->objAttr2 = (sChoiceLabelVram[k] / 32 + b * 8) + 0x400;
             c->state = 0x8000 | (b == 6 ? 0x4000 : 0);

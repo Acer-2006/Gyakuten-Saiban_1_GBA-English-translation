@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Backport the DS English choice-answer buttons.
+"""English choice answers.
 
 The DS draws each answer as a 256x32 button image (archive at 0x263bf4c in the
-US data.bin, 4bpp linear). We take just the anti-aliased English text from each
-button and store it as a GBA sprite strip: 208x16 = six 32x16 sprites + one
-16x16 sprite (52 tiles, 0x680 bytes), white text for the GBA choice window.
+US data.bin). Their text (answer_text.py, checked by check_answer_text.py) is
+drawn here with the DS dialogue font, so the answers look like the rest of the
+text, as the Japanese GBA answers do. Each answer is a GBA sprite strip:
+208x16 = six 32x16 sprites + one 16x16 sprite (52 tiles, 0x680 bytes).
 
 Also writes tools/en/choice_table.json: which buttons each choice shows, read
 from the table the DS code uses (US arm9: keys at 0x020b4954, English button
@@ -15,6 +16,8 @@ import os, sys, json, struct
 import numpy as np
 sys.path.insert(0, os.path.dirname(__file__))
 from dsdata import archive, entry
+from answer_text import ANSWERS
+import dsfont
 ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
 EN_BTN = 0x263bf4c
 W, H = 208, 16
@@ -25,29 +28,19 @@ def button(i):
     body = np.frombuffer(raw[0x14:0x1014], dtype=np.uint8)
     return np.stack([body & 15, body >> 4], 1).flatten().reshape(32, 256)
 
+GLYPH_Y = 1   # glyph row 0 -> strip row 1, like the text box lines
+
 def label(i):
-    a = button(i)
-    inner = a[6:26, 18:237].astype(int)
-    ink = np.where(inner >= 4, inner - 3, 0)            # 0..12 darkness
-    rows = np.where(ink.any(1))[0]; cols = np.where(ink.any(0))[0]
-    if len(rows) == 0:
-        return np.zeros((H, W), np.uint8)
-    # 16-row window holding most of the ink
-    top = rows[0]
-    if rows[-1] - top + 1 > H:
-        top = rows[-1] - H + 1 if ink[rows[-1]].sum() > ink[top].sum() else top
-    ink = ink[top:top + H, cols[0]:cols[-1] + 1]
-    if ink.shape[1] > W:                                 # squeeze the few widest labels
-        x = np.linspace(0, ink.shape[1], W + 1)
-        ink = np.stack([ink[:, int(x[k]):max(int(x[k]) + 1, int(x[k + 1]))].max(1) for k in range(W)], 1)
+    """answer i as text-palette indices (3 = white, the text colour)"""
     out = np.zeros((H, W), np.uint8)
-    out[:ink.shape[0], :ink.shape[1]] = ink
-    # darkness -> GBA text palette: 3 white, 2 light grey, 1 dark grey
-    pix = np.zeros_like(out)
-    pix[out >= 9] = 3
-    pix[(out >= 5) & (out < 9)] = 2
-    pix[(out >= 2) & (out < 5)] = 1
-    return pix
+    text = ANSWERS[i]
+    if not text:
+        return out
+    m = dsfont.render(text, space=4)
+    if m.shape[1] > W:
+        raise ValueError('answer %d too wide: %r' % (i, text))
+    out[GLYPH_Y:GLYPH_Y + m.shape[0], :m.shape[1]][m > 0] = 3
+    return out
 
 def to_tiles(pix):
     out = bytearray()
