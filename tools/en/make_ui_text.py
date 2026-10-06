@@ -11,6 +11,7 @@ DS English data where the DS has the very same graphic.
   Continue options         Resume from save / Restart chapter
   Episode select           the four DS English episode titles
   Testimony label          DS English graphic (same GBA format in data.bin)
+  Move / Talk menu plates  location and topic labels (tools/en/topics.py)
 
 The Japanese originals are kept as *.png.orig. Run relocate_assets.py after."""
 import os, sys, shutil, struct
@@ -131,6 +132,15 @@ def plate_texts(rel, texts, first=0):
         plain(a, s, y + 9, 13, (2, 125))
     save(path, a, pal)
 
+def menu_plates():
+    import glob
+    from topics import LOCATIONS, TALK
+    for d, labels in (('location_choices', LOCATIONS), ('talk_choices', TALK)):
+        files = sorted(glob.glob(os.path.join(ROOT, 'graphics', d, '*.png')))
+        assert len(files) == len(labels), d
+        for f, label in zip(files, labels):
+            plate_texts(os.path.relpath(f, ROOT), (label,))
+
 # ---------------------------------------------------------------- save header
 def save_header():
     """記録 header of the save screen -> "Save" (DS font at 2x, slanted like the
@@ -171,9 +181,11 @@ if __name__ == '__main__':
     action_buttons()
     press_present()
     save_yes_no()
-    plate_texts('graphics/from_save_or_beginning_options.png', ('Resume from save', 'Restart chapter'))
+    # the DS English wording of these two options (DS images too wide for the GBA plates)
+    plate_texts('graphics/from_save_or_beginning_options.png', ('From save point.', 'From chapter start.'))
     plate_texts('graphics/episode_select_options.png',
                 ('The First Turnabout', 'Turnabout Sisters', 'Turnabout Samurai', 'Turnabout Goodbyes'), first=1)
     testimony()
     save_header()
+    menu_plates()
     print('UI labels written')

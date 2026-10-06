@@ -14,7 +14,14 @@ ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
 PRISTINE = sys.argv[1]
 gs_path = os.path.join(ROOT, 'data/graphics.s')
 gs = open(gs_path).read()
-items = re.findall(r'\.global (\w+)\n\1:[^\n]*\n\s*\.incbin "([^"]+)"', gs)
+items = re.findall(r'\.global (\w+)\n\1:[^\n]*\n\s*\.incbin "([^"]+)"(?!\n\s*\.incbin)', gs)
+# Labels that cover several files (talk/location menu plates) are edited in
+# place; their files must keep their size.
+for block in re.findall(r'\.global \w+\n\w+:[^\n]*\n((?:\s*\.incbin "[^"]+"\n){2,})', gs):
+    for f in re.findall(r'"([^"]+)"', block):
+        new_f = os.path.join(ROOT, f); old_f = os.path.join(PRISTINE, f)
+        if os.path.exists(new_f) and os.path.exists(old_f):
+            assert os.path.getsize(new_f) == os.path.getsize(old_f), 'size changed: ' + f
 changed = []
 for label, f in items:
     real = f.replace('graphics_orig/', 'graphics/', 1)
