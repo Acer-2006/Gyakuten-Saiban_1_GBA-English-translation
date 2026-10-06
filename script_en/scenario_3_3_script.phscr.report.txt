@@ -56,7 +56,7 @@ sec  54 <- ds  54  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 11, 'a
 sec  55 <- ds  55  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 18, 'anim_ds': 5, 'ds_fx': 4, 'choice_labels': 1, 'pan_waits': 1}
 sec  56 <- ds  56  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 17, 'anim_ds': 4}
 sec  57 <- ds  57  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 22, 'anim_ds': 9, 'ds_fx': 12, 'pan_waits': 2}
-sec  58 <- ds  58  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 12, 'anim_guess': 0, 'anim_ds': 6, 'ds_fx': 5, 'pan_waits': 2}
+sec  58 <- ds  58  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 12, 'anim_guess': 0, 'anim_ds': 6, 'ds_fx': 5, 'moving': '1 poses that jumped replaced', 'pan_waits': 2}
 sec  59 <- ds  59  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 56, 'ds_fx': 26, 'anim_ds': 15, 'pan_waits': 2}
 sec  60 <- ds  60  {'dropped_ds': 2, 'inserted_gba': 2, 'unmatched_kept': 61, 'ds_fx': 25, 'anim_ds': 17, 'pan_waits': 2}
 sec  61 <- ds  61  {'dropped_ds': 3, 'inserted_gba': 11, 'unmatched_kept': 41, 'anim_ds': 12, 'ds_fx': 24, 'gavels': 1, 'pan_waits': 1}
@@ -96,6 +96,6 @@ sec  94 <- ds  94  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 17, 'a
 sec  95 <- ds  95  {'dropped_ds': 3, 'inserted_gba': 1, 'unmatched_kept': 37, 'ds_fx': 18, 'anim_ds': 8, 'choice_labels': 1, 'pan_waits': 1}
 sec  96 <- ds  96  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 16, 'anim_ds': 6, 'ds_fx': 11, 'pan_waits': 1}
 sec  97 <- ds  97  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 8, 'ds_fx': 8, 'anim_ds': 2, 'pan_waits': 1}
-sec  98 <- ds  98  {'dropped_ds': 23, 'inserted_gba': 40, 'unmatched_kept': 223, 'anim_ds': 57, 'ds_fx': 72, 'gavels': 4, 'anim_guess': 0}
+sec  98 <- ds  98  {'dropped_ds': 23, 'inserted_gba': 40, 'unmatched_kept': 223, 'anim_ds': 57, 'ds_fx': 72, 'gavels': 4, 'anim_guess': 0, 'moving': '1 poses that jumped replaced'}
 sec  99 <- ds  99  {'dropped_ds': 6, 'inserted_gba': 6, 'unmatched_kept': 126, 'anim_ds': 32, 'ds_fx': 32, 'anim_guess': 6}
 sec 100 <- ds 100  {'dropped_ds': 6, 'inserted_gba': 10, 'unmatched_kept': 25, 'ds_fx': 8, 'anim_ds': 8, 'gavels': 2}

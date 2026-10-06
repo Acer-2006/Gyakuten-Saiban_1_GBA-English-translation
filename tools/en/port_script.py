@@ -842,6 +842,115 @@ def fix_scene_poses(out, seen):
     return out, ('%d poses from another place replaced' % fixed) if fixed else None
 
 
+POSE_HEADS = None   # (person, animation) -> (head centre x, head top y), measured in the game
+JP_TRANS = None
+
+
+def pose_events(toks):
+    """Each pose command with the one shown just before it (same person, no
+    background change or pan in between) and whether text came between."""
+    ev = []
+    cur = None
+    text = False
+    bg = None
+    for pos, kind, op, a in parse(toks, GBA_ARGS)[0]:
+        if kind == 'text':
+            text = True
+            continue
+        if op in (0x1B, 0x1A):
+            cur = None
+            if op == 0x1B and a:
+                bg = a[0] & 0x7FFF
+        elif op == 0x1E and a:
+            e = [pos, a[0] & 0xFF, a[1], a[2], None, text, bg]
+            if a[0] & 0xFF and cur is not None and cur[1] == e[1]:
+                e[4] = cur
+            ev.append(e)
+            cur = e if a[0] & 0xFF else None
+            text = False
+    return ev
+
+
+def jp_transitions(gdir):
+    """Changes from one animation to another that the GBA script makes: the
+    pose before (its idle one after text, else its talking one) to the new
+    talking animation, and each talking animation to its idle partner."""
+    global JP_TRANS
+    if JP_TRANS is None:
+        JP_TRANS = set()
+        for f in glob.glob(os.path.join(gdir, 'scenario_*.phscr')):
+            b, n, offs = load(f)
+            for x in section_bounds(b, offs):
+                if x:
+                    for pos, p, t, i, prev, text, bg in pose_events(tokens(b, *x)):
+                        if not p:
+                            continue
+                        JP_TRANS.add((p, t, i))
+                        if prev:
+                            JP_TRANS.add((p, prev[3] if text else prev[2], t))
+    return JP_TRANS
+
+
+def moves(p, a, b):
+    """True when going from animation a to b moves the head 4 pixels or more"""
+    global POSE_HEADS
+    if POSE_HEADS is None:
+        hp = os.path.join(os.path.dirname(__file__), 'pose_heads.json')
+        POSE_HEADS = {tuple(int(v, 16) for v in k.split(':')): h for k, h in json.load(open(hp)).items()}
+    ha, hb = POSE_HEADS.get((p, a)), POSE_HEADS.get((p, b))
+    return bool(ha and hb and (abs(ha[0] - hb[0]) >= 4 or abs(ha[1] - hb[1]) >= 4))
+
+
+def fix_moving_poses(out, gdir):
+    """A DS expression the GBA has no line for can put a character in a pose
+    the GBA never goes to from the one before (or never leaves to the next
+    one), and where the two are drawn with the head in another place the
+    character jumps on screen. Such a pose is replaced by one of the
+    person's GBA poses that the GBA itself goes to from the previous pose and
+    on to the next (the same kind: talking or silent), if there is one."""
+    out = list(out)
+    jt = jp_transitions(gdir)
+    pairs = jp_pairs()[0]
+    def ok(p, a, b):
+        return a == b or (p, a, b) in jt or not moves(p, a, b)
+    ev = pose_events(out)
+    fixed = 0
+    for k, e in enumerate(ev):
+        pos, p, t, i, prev, text, bg = e
+        if not p:
+            continue
+        here = POSES_BG.get((bg, p)) if bg is not None else None
+        nxt = ev[k + 1] if k + 1 < len(ev) and ev[k + 1][4] is e else None
+        def score(t2, i2):
+            src = (prev[3] if text else prev[2]) if prev else None
+            res = []
+            if src is not None:
+                res.append(ok(p, src, t2) + ((p, src, t2) in jt))
+            if nxt is not None:
+                n_src = i2 if nxt[5] else t2
+                res.append(ok(p, n_src, nxt[2]) + ((p, n_src, nxt[2]) in jt))
+            return res
+        now = score(t, i)
+        if not now or all(v >= 1 for v in now):
+            continue
+        best = None
+        for (t2, i2), cnt in pairs.get(p, {}).items():
+            if (t2 == i2) != (t == i):
+                continue
+            if here is not None and not (t2 in here and i2 in here):
+                continue      # drawn for another place
+            sc = score(t2, i2)
+            if all(v >= (1 if here is not None else 2) for v in sc):
+                key = (sum(sc), cnt)
+                if best is None or key > best[0]:
+                    best = (key, t2, i2)
+        if best:
+            out[pos + 2], out[pos + 3] = best[1], best[2]
+            e[2], e[3] = best[1], best[2]
+            fixed += 1
+    return out, ('%d poses that jumped replaced' % fixed) if fixed else None
+
+
 PAN_WAIT = 0x23   # frames the GBA script waits after a court pan (1A)
 
 
@@ -953,6 +1062,9 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             out, note = fix_scene_poses(out, seen_poses(os.path.dirname(gfile)))
             if note:
                 st = dict(st, poses=note)
+            out, note = fix_moving_poses(out, os.path.dirname(gfile))
+            if note:
+                st = dict(st, moving=note)
             out, n = fix_pan_waits(out)
             if n:
                 st = dict(st, pan_waits=n)

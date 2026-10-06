@@ -9,7 +9,7 @@ sec   7 <- ds   7  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 14, 'a
 sec   8 <- ds   8  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 9, 'anim_ds': 2, 'ds_fx': 2}
 sec   9 <- ds   9  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 11, 'anim_ds': 3, 'ds_fx': 4}
 sec  10 <- ds  10  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 9, 'anim_ds': 2, 'ds_fx': 4}
-sec  11 <- ds  11  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 51, 'anim_ds': 15, 'anim_guess': 0, 'ds_fx': 16}
+sec  11 <- ds  11  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 51, 'anim_ds': 15, 'anim_guess': 0, 'ds_fx': 16, 'moving': '1 poses that jumped replaced'}
 sec  12 <- ds  12  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 10, 'anim_ds': 3, 'ds_fx': 1}
 sec  13 <- ds  13  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 16, 'anim_ds': 5, 'ds_fx': 1}
 sec  14 <- ds  14  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 7, 'anim_ds': 4, 'anim_guess': 0, 'ds_fx': 1}

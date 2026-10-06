@@ -178,7 +178,74 @@ def testimony():
     # is black in this palette (and on the DS): black notches inside the green
     # outline. They are outline here, as on the Japanese label (colour 1)
     a[a == 3] = 1
+    a[:32] = jp_size_label(a[:32])
     save(path, a, pal)
+
+# Columns taken out of each DS letter (counted from the letter's left edge) so
+# the word fits the Japanese label's box (55 x 30): the T's bar ends, one
+# column of each 2-3 pixel wide counter (e, m, o, n). Strokes stay 2 pixels.
+# s, t, i and y have no column that can go without thinning a stroke.
+TESTIMONY_CUTS = {'T': (0, 7), 'e': (3,), 'm': (3, 6), 'o': (3,), 'n': (3,)}
+
+def jp_size_label(a):
+    """The DS "Testimony" lettering (64 x 32) narrowed and shortened to the
+    size of the Japanese label: whole letters are moved, columns are only
+    taken out of horizontal runs inside letters, and two rows out of the
+    straight middle of every letter (rows identical to the one above)."""
+    from scipy import ndimage
+    fill = a == 2
+    lab, n = ndimage.label(fill)
+    boxes = sorted((np.nonzero(lab == k)[1].min(), k) for k in range(1, n + 1))
+    # the dot of the i joins its stem
+    glyphs = []
+    for x0, k in boxes:
+        xs = np.nonzero(lab == k)[1]
+        if glyphs and xs.min() >= glyphs[-1][1] and xs.max() <= glyphs[-1][2]:
+            glyphs[-1][0].append(k)
+        else:
+            glyphs.append([[k], xs.min(), xs.max()])
+    assert len(glyphs) == 9, len(glyphs)
+    gid = np.zeros_like(lab)
+    for g, (ks, x0, x1) in enumerate(glyphs):
+        for k in ks:
+            gid[lab == k] = g + 1
+    # every outline pixel belongs to the nearest letter
+    _, (iy, ix) = ndimage.distance_transform_edt(gid == 0, return_indices=True)
+    owner = gid[iy, ix]
+    owner[a == 0] = 0
+    cuts = [TESTIMONY_CUTS.get(c, ()) for c in 'Testimony']
+    def edges(piece, val=2):
+        return {y: (np.nonzero(r == val)[0].min(), np.nonzero(r == val)[0].max())
+                for y, r in enumerate(piece) if (r == val).any()}
+    layers = []
+    for g, (ks, x0, x1) in enumerate(glyphs):
+        cols = [x for x in range(a.shape[1]) if (owner[:, x] == g + 1).any()]
+        lo, hi = min(cols), max(cols)
+        piece = np.where(owner[:, lo:hi + 1] == g + 1, a[:, lo:hi + 1], 0)
+        cut = np.delete(piece, [x0 + c - lo for c in cuts[g]], 1)
+        if not layers:
+            layers.append((lo, lo, piece, cut))
+            continue
+        # keep the closest distance between this letter's fill and the
+        # previous one's, row by row, as on the DS
+        px, plo, ppiece, pcut = layers[-1]
+        pe, e, pec, ec = edges(ppiece), edges(piece), edges(pcut), edges(cut)
+        both = [y for y in e if y in pe]
+        gap = min(lo + e[y][0] - (plo + pe[y][1]) for y in both)
+        x = max(px + pec[y][1] + gap - ec[y][0] for y in both)
+        layers.append((x, lo, piece, cut))
+    out = np.zeros_like(a)
+    for val in (1, 2):                           # outlines first, then the fill
+        for x, lo, piece, cut in layers:
+            m = cut == val
+            out[:, x:x + cut.shape[1]][m] = val
+    # two rows out of the straight middle of the letters (each the same as the row above)
+    for y in (14, 12):
+        assert (a[y] == a[y - 1]).all() and (out[y] == out[y - 1]).all()
+        out = np.delete(out, y, 0)
+    res = np.zeros_like(a)
+    res[1:1 + out.shape[0]] = out                 # one empty row on top, as on the Japanese label
+    return res
 
 if __name__ == '__main__':
     court_record_tabs()
