@@ -25,5 +25,9 @@ void CourtProcess(struct Main *);
 void TestimonyProcess(struct Main *);
 void QuestioningProcess(struct Main *);
 extern void VerdictProcess(struct Main *);
+// en_verdict.c
+void EnVerdictLoad(bool32 notGuilty);
+bool32 EnVerdictAnimate(struct Main * main);
+void EnVerdictHide(void);
 
 #endif//GUARD_COURT_H

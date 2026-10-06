@@ -87,31 +87,15 @@ bool32 Command43(struct ScriptContext * scriptCtx)
 
 bool32 Command44(struct ScriptContext * scriptCtx)
 {
-    u32 i;
-    struct OamAttrs *oam;
-    oam = &gOamObjects[OAM_IDX_VERDICT_KANJI];
+    bool32 notGuilty;
     scriptCtx->scriptPtr++;
-    gMain.affineScale = 0x280;
+    gMain.affineScale = 0x100;
     BACKUP_PROCESS();
-    if(*scriptCtx->scriptPtr) 
-    {
-        DmaCopy16(3, gGfxTrialGuilty1, OBJ_VRAM0+0x3400, 0x1000);
-        DmaCopy16(3, gPalTrialGuilty, OBJ_PLTT+0xA0, 0x20);
-        SET_PROCESS(VERDICT_PROCESS,0,0,0);
-    }
-    else 
-    {
-        DmaCopy16(3, gGfxTrialNotGuilty1, OBJ_VRAM0+0x3400, 0x800);
-        DmaCopy16(3, gGfxTrialGuiltyNotGuilty2, OBJ_VRAM0+0x3C00, 0x800);
-        DmaCopy16(3, gPalTrialNotGuilty, OBJ_PLTT+0xA0, 0x20);
-        SET_PROCESS(VERDICT_PROCESS,0,0,1);
-    }
+    notGuilty = *scriptCtx->scriptPtr == 0;
+    // English: the DS English letters instead of the two kanji (en_verdict.c)
+    EnVerdictLoad(notGuilty);
+    SET_PROCESS(VERDICT_PROCESS, 0, 0, notGuilty);
     scriptCtx->scriptPtr++;
-    oam->attr0 = SPRITE_ATTR0((~16 & 255), ST_OAM_AFFINE_DOUBLE, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
-    oam->attr1 = SPRITE_ATTR1_AFFINE((~16 & 511), 0, 3);
-    oam->attr2 = SPRITE_ATTR2(0x1A0, 0, 5);
-    oam++;
-    oam->attr0 = SPRITE_ATTR0_CLEAR;
     return 0;
 }
 

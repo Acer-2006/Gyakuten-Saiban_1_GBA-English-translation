@@ -194,8 +194,8 @@ void TestimonyAnim(struct Main * main)
             if(!(animation3->flags & ANIM_PLAYING))
             {
                 DestroyAnimation(animation3);
-                PlayAnimationAtCustomOrigin(ANIM_TESTIMONY_START_LEFT, 120, 60);
-                PlayAnimationAtCustomOrigin(ANIM_TESTIMONY_START_RIGHT, 120, 60);
+                PlayAnimationAtCustomOrigin(ANIM_TESTIMONY_START_LEFT, 120, 44); // English banner: two lines, kept above the name tag
+                PlayAnimationAtCustomOrigin(ANIM_TESTIMONY_START_RIGHT, 120, 44);
                 main->process[GAME_PROCESS_VAR1]++;
             }
             break;
@@ -209,7 +209,7 @@ void TestimonyAnim(struct Main * main)
             gTestimony.testimonyAnimMoveAmount++;
             if(gTestimony.testimonyAnimMoveAmount > 12)
                 gTestimony.testimonyAnimMoveAmount = 12;
-            if(animation->animationInfo.xOrigin > 300)
+            if(animation->animationInfo.xOrigin > 336) // the English halves are up to 192 px wide
             {
                 DestroyAnimation(animation);
                 DestroyAnimation(animation2);
@@ -324,8 +324,8 @@ void QuestioningAnim(struct Main * main)
             if(!(animation3->flags & ANIM_PLAYING))
             {
                 DestroyAnimation(animation3);
-                PlayAnimationAtCustomOrigin(ANIM_CROSS_EXAMINATION_START_LEFT, 120, 60);
-                PlayAnimationAtCustomOrigin(ANIM_CROSS_EXAMINATION_START_RIGHT, 120, 60);
+                PlayAnimationAtCustomOrigin(ANIM_CROSS_EXAMINATION_START_LEFT, 120, 44); // English banner: two lines, kept above the name tag
+                PlayAnimationAtCustomOrigin(ANIM_CROSS_EXAMINATION_START_RIGHT, 120, 44);
                 main->process[GAME_PROCESS_VAR1]++;
             }
             break;
@@ -597,101 +597,24 @@ void VerdictProcess(struct Main * main)
     u32 temp2;
     struct OamAttrs *oam = &gOamObjects[OAM_IDX_VERDICT_KANJI];
     switch(main->process[GAME_PROCESS_STATE]) {
-        case VERDICT_SHRINK_KANJI1: { // B088
-            gMain.affineScale -= 0x10; // 1/16 steps 
-            if(gMain.affineScale <= Q_8_8(1.0)) 
-            {
-                temp = fix_inverse(Q_8_8(1.0));
-                gOamObjects[0].attr3 = fix_mul(_Cos(0), temp);
-                gOamObjects[1].attr3 = fix_mul(_Sin(0), temp);
-                gOamObjects[2].attr3 = fix_mul(-_Sin(0), temp);
-                gOamObjects[3].attr3 = fix_mul(_Cos(0), temp);
-                StartHardwareBlend(3, 1, 4, 0x1F);
-                PlaySE(SE02C_GAME_OVER);
-                main->process[GAME_PROCESS_STATE]++;
-                main->process[GAME_PROCESS_VAR1] = 0;
-            }
-            else {
-                temp = fix_inverse(main->affineScale);
-                gOamObjects[0].attr3 = fix_mul(_Cos(0), temp);
-                gOamObjects[1].attr3 = fix_mul(_Sin(0), temp);
-                gOamObjects[2].attr3 = fix_mul(-_Sin(0), temp);
-                gOamObjects[3].attr3 = fix_mul(_Cos(0), temp);
-            }
-            break;
-        }
-        case VERDICT_WAIT_INIT_KANJI2: { // B164
-            if(main->process[GAME_PROCESS_VAR1]++ > 40) {
-                gMain.affineScale = Q_8_8(2.5); // 2.5 times scale
-                oam++;
-                oam->attr0 = SPRITE_ATTR0(255-16, ST_OAM_AFFINE_DOUBLE, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
-                oam->attr1 = SPRITE_ATTR1_AFFINE(128, 1, 3);
-                oam->attr2 = SPRITE_ATTR2(0x1E0, 0, 5);
-                temp = fix_inverse(main->affineScale);
-                gOamObjects[4].attr3 = fix_mul(_Cos(0), temp);
-                gOamObjects[5].attr3 = fix_mul(_Sin(0), temp);
-                gOamObjects[6].attr3 = fix_mul(-_Sin(0), temp);
-                gOamObjects[7].attr3 = fix_mul(_Cos(0), temp);
-                main->process[GAME_PROCESS_STATE]++;
-            }
-            break;
-        }
-        case VERDICT_SHRINK_KANJI2: { // B1FC
-            gMain.affineScale -= 0x10; // 1/16 steps
-            if(gMain.affineScale <= Q_8_8(1.0)) {
-                temp = fix_inverse(Q_8_8(1.0));
-                gOamObjects[4].attr3 = fix_mul(_Cos(0), temp);
-                gOamObjects[5].attr3 = fix_mul(_Sin(0), temp);
-                gOamObjects[6].attr3 = fix_mul(-_Sin(0), temp);
-                gOamObjects[7].attr3 = fix_mul(_Cos(0), temp);
-                StartHardwareBlend(3, 1, 4, 0x1F);
-                PlaySE(SE02C_GAME_OVER);
-                gMain.affineScale = Q_8_8(1.0);
-                main->process[GAME_PROCESS_STATE]++;
-                main->process[GAME_PROCESS_VAR1] = 0;
-            }
-            else {
-                temp = fix_inverse(main->affineScale);
-                gOamObjects[4].attr3 = fix_mul(_Cos(0), temp);
-                gOamObjects[5].attr3 = fix_mul(_Sin(0), temp);
-                gOamObjects[6].attr3 = fix_mul(-_Sin(0), temp);
-                gOamObjects[7].attr3 = fix_mul(_Cos(0), temp);
-            }
-            break;
-        }
-        case VERDICT_WAIT: { // B2E4
-            if(main->process[GAME_PROCESS_VAR1]++ > 64) {
-                main->process[GAME_PROCESS_STATE]++;
+        // English: the DS English letters (en_verdict.c) replace the two
+        // kanji that shrank into place one after the other
+        case VERDICT_SHRINK_KANJI1: {
+            if(EnVerdictAnimate(main)) {
+                main->process[GAME_PROCESS_STATE] = VERDICT_WAIT;
                 main->process[GAME_PROCESS_VAR1] = 0;
             }
             break;
         }
-        case VERDICT_GROW_KANJI: { // B300
-            if(main->process[GAME_PROCESS_VAR1]++ > 32) {
-                oam->attr0 = SPRITE_ATTR0_CLEAR;
-                oam++;
-                oam->attr0 = SPRITE_ATTR0_CLEAR;
+        case VERDICT_WAIT: {
+            if(main->process[GAME_PROCESS_VAR1]++ >= 60) {
+                EnVerdictHide();
                 if(main->process[GAME_PROCESS_VAR2]) {
-                    main->process[GAME_PROCESS_STATE]++;
+                    main->process[GAME_PROCESS_STATE] = VERDICT_INIT_CONFETTI;
                     main->process[GAME_PROCESS_VAR1] = 0;
                     break;
                 }
                 RESTORE_PROCESS_PTR(main);
-            }
-            else {
-                main->affineScale += 8; // 1/32 steps
-                temp = fix_inverse(main->affineScale);
-                gOamObjects[0].attr3 = fix_mul(_Cos(0), temp);
-                gOamObjects[1].attr3 = fix_mul(_Sin(0), temp);
-                gOamObjects[2].attr3 = fix_mul(-_Sin(0), temp);
-                gOamObjects[3].attr3 = fix_mul(_Cos(0), temp);
-                gOamObjects[4].attr3 = fix_mul(_Cos(0), temp);
-                gOamObjects[5].attr3 = fix_mul(_Sin(0), temp);
-                gOamObjects[6].attr3 = fix_mul(-_Sin(0), temp);
-                gOamObjects[7].attr3 = fix_mul(_Cos(0), temp);
-                oam->attr0--;
-                oam++;
-                oam->attr0--;
             }
             break;
         }
