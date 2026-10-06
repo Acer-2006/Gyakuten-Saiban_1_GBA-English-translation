@@ -174,6 +174,10 @@ def testimony():
     t = np.stack([raw & 15, raw >> 4], 1).reshape(64, 8, 8)
     for k in range(64):
         a[(k // 8) * 8:(k // 8) * 8 + 8, (k % 8) * 8:(k % 8) * 8 + 8] = t[k]
+    # the DS lettering rounds the corners of its strokes with colour 3, which
+    # is black in this palette (and on the DS): black notches inside the green
+    # outline. They are outline here, as on the Japanese label (colour 1)
+    a[a == 3] = 1
     save(path, a, pal)
 
 if __name__ == '__main__':
