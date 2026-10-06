@@ -5,7 +5,7 @@
   ported section against the DS section it came from (the DS decides these)
 - text printed while the text box is hidden (1C 1 ... 1C 0)
 - text characters outside the DS English character set
-- each gavel (three pictures, slam, shake) exactly as in the GBA script
+- a GBA gavel (three pictures, slam, shake) wherever the DS bangs its gavel
 
 usage: audit_script.py [GBA_SCRIPT_DIR PORTED_DIR DS_MES_DIR]
 Some section table entries are not offsets (they point past the end of the
@@ -25,15 +25,30 @@ FX = {0x27: 'shake', 0x06: 'sound', 0x12: 'flash'}
 LATIN = set(range(0x80, 0x80 + 62)) | set(SPECIAL) | set(range(0x16c, 0x190))
 
 
-def effects(b, x, args, gavel_of=None):
-    """the gavel's own slam and shake (GBA gavel runs, kept from the GBA script)
-    are inside the DS gavel animation command, so they are not counted"""
+def gavels(t):
+    """(start, end, bangs) of each GBA gavel block in a ported section"""
+    res = []
+    for s, e, n in port_script.gavel_runs(t):
+        for k, blk in port_script.GAVEL_GBA.items():
+            if list(t[s:s + len(blk)]) == blk:
+                res.append((s, s + len(blk), k))
+                break
+        else:
+            res.append((s, e, 0))
+    return res
+
+
+def ds_gavels(b, x):
+    return [port_script.DS_GAVELS[a[1]] for pos, kind, op, a in parse(tokens(b, *x), port_script.DS_ARGS)[0]
+            if kind == 'cmd' and op == 0x69 and len(a) == 2 and a[0] == 0x62 and a[1] in port_script.DS_GAVELS]
+
+
+def effects(b, x, args, port=False):
+    """the gavel's own slam and shake (the GBA gavel put where the DS bangs
+    its gavel) are inside the DS gavel animation command: not counted"""
     c = collections.Counter()
     t = tokens(b, *x)
-    runs = []
-    if gavel_of is not None:     # the GBA section the port came from: skip as much as its gavels
-        gl = [e - s for s, e, n in port_script.gavel_runs(gavel_of)]
-        runs = [(s, s + l, n) for (s, e, n), l in zip(port_script.gavel_runs(t), gl)]
+    runs = gavels(t) if port else []
     for pos, kind, op, a in parse(t, args)[0]:
         if any(s <= pos < e for s, e, n in runs):
             continue
@@ -64,7 +79,11 @@ for idx, f in enumerate(files):
     O = [(o, real[real.index(o) + 1]) if G[i] is not None else None for i, o in enumerate(ooffs)]
     db, dn, doffs = load(os.path.join(ddir, '%02d.bin' % (2 * idx + 1))); D = section_bounds(db, doffs)
     for gi, dj in pairs.items():
-        cd = effects(db, D[dj], port_script.DS_ARGS); co = effects(ob, O[gi], GBA_ARGS, tokens(gb, *G[gi]))
+        cd = effects(db, D[dj], port_script.DS_ARGS); co = effects(ob, O[gi], GBA_ARGS, True)
+        dg = ds_gavels(db, D[dj]); og = [k for s, e, k in gavels(tokens(ob, *O[gi]))]
+        tot['gavel'] += len(dg)
+        if dg != og:
+            problems.append('%s section %#x: gavels DS %s, port %s' % (f, gi + 0x80, dg, og))
         for k in FX.values():
             tot[(k, 'ds')] += cd[k]; tot[(k, 'port')] += co[k]
             if cd[k] != co[k]:
@@ -72,12 +91,6 @@ for idx, f in enumerate(files):
     for i, x in enumerate(O):
         if not x:
             continue
-        gt, ot = tokens(gb, *G[i]), tokens(ob, *x)
-        gg = [tuple(gt[s:e]) for s, e, c in port_script.gavel_runs(gt)]
-        og = [tuple(ot[s:s + len(g)]) for (s, e, c), g in zip(port_script.gavel_runs(ot), gg)]
-        tot['gavel'] += len(gg)
-        if gg != og:
-            problems.append('%s section %#x: gavel differs from the GBA' % (f, i + 0x80))
         n, ng = hidden_text(ob, x), hidden_text(gb, G[i])
         if n and (ng == 0 or n > 2 * ng + 20):
             problems.append('%s section %#x: %d characters printed in a hidden text box' % (f, i + 0x80, n))
@@ -86,5 +99,5 @@ for idx, f in enumerate(files):
             problems.append('%s section %#x: characters outside the English set %s' % (f, i + 0x80, ' '.join('%x' % v for v in odd)))
 for k in FX.values():
     print('%-6s DS %5d  port %5d' % (k, tot[(k, 'ds')], tot[(k, 'port')]))
-print('gavels %d, as in the GBA script' % tot['gavel'] if not any('gavel' in p for p in problems) else '')
+print('gavels %d, one GBA gavel at each DS gavel' % tot['gavel'] if not any('gavel' in p for p in problems) else '')
 print('\n'.join(problems) or 'no problems')

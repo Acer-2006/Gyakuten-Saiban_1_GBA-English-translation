@@ -12,7 +12,7 @@ and header jump descriptors) are remapped to the new token positions.
 
 usage: port_script.py GBA.phscr DS.bin OUT.phscr [report.txt]
 """
-import sys, struct, json, difflib, os
+import sys, collections, struct, json, difflib, os, glob
 sys.path.insert(0, os.path.dirname(__file__))
 from phscr import GBA_ARGS, load, section_bounds, tokens, parse
 
@@ -38,8 +38,10 @@ SE_MAP = {121: 111, 122: 112}
 CENTRE = 0x5D      # DS: centre the following lines (1) / stop (0); en_text in vwf.c
 DS_WAIT = 0x4E     # DS: hold for n frames -> GBA wait (0C)
 ANIM_MAP = {}   # 'scenario_x:person:dsval' -> gba value (learn_anim_map.py)
+CHAPTER_POSES, CHAPTER_USUAL = {}, {}
 ANIM_TAG = ''  # matched for alignment, but the DS arguments are used (speaker nametag)
 JUMP_IN_SECTION = 0x35
+GBA_BG_COUNT = 0x70  # entries in gBackgroundTable
 
 
 def sig(toks):
@@ -147,8 +149,12 @@ def merge_section(gtoks, dtoks, choice_ids=None):
     dcmds = [x for x in d if x[1] == 'cmd' and x[2] not in DS_ONLY and x[2] not in TEXT_CMDS]
     def key(x):
         op, args = x[2], x[3]
+        if op == 0x1B and args and args[0] == 0xFFF:   # DS "no background" is the GBA's FF
+            return (op, 0xFF)
         if op in KEYED_OPS and args:
             return (op, args[0])
+        if op == 0x12 and args:     # screen blends pair by kind: fades only with fades, flashes with flashes
+            return (op, args[0] >> 8)
         return (op,)
     sm = difflib.SequenceMatcher(None, [key(x) for x in gcmds], [key(x) for x in dcmds], autojunk=False)
     d2g = {}
@@ -160,6 +166,14 @@ def merge_section(gtoks, dtoks, choice_ids=None):
     patches = []  # (out_index_of_arg, gba_target_token_pos)
     emitted = set()
     stats = {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 0}
+
+    def gba_only_ok(j):
+        """GBA-only commands are kept, except poses (the DS decides who is
+        shown); a GBA "nobody" right before a GBA background change stays, so
+        a picture the DS moved to its touch screen (a map) is not drawn over"""
+        if gcmds[j][2] != 0x1E:
+            return True
+        return tuple(gcmds[j][3][:1]) == (0,) and j + 1 < len(gcmds) and gcmds[j + 1][2] == 0x1B
 
     def emit_ds(op, args):
         if op == 0x06:  # sound effect: DS uses (id, flag), GBA packs id<<8 | flag
@@ -181,37 +195,76 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         out.extend(args)
         emitted.add(j)
 
-    def conv_anim(args):
+    # Character poses (1E person, talking, idle). Where the DS command lines up
+    # with a GBA one for the same person, the GBA's own pose is used: the same
+    # DS pose can stand for different GBA animations in different scenes (Maya
+    # in the dark office, behind the glass...), and those animations place the
+    # sprite differently. Other DS poses use what that DS pose stood for in
+    # this section, else the chapter-wide map (learn_anim_map.py).
+    local, last = {}, {}
+    for pos, kind, op, args in d:
+        if kind == 'cmd' and op == 0x1E and pos in d2g:
+            ga = gcmds[d2g[pos]][3]
+            if ga and ga[0] == args[0]:
+                for dv, gv in zip(args[1:3], ga[1:3]):
+                    local.setdefault((args[0], dv), gv)
+
+    def conv_anim(args, pos=None):
         person = args[0]
-        try:
-            return [0x1E, person] + [ANIM_MAP['%s:%x:%x' % (ANIM_TAG, person, v)] for v in args[1:3]]
-        except KeyError:
-            return None
+        if pos in d2g:
+            ga = gcmds[d2g[pos]][3]
+            if ga and ga[0] == person:
+                return [0x1E] + list(ga)
+        if person == 0:
+            return [0x1E] + list(args)
+        res = [0x1E, person]
+        for v in args[1:3]:
+            gv = local.get((person, v), ANIM_MAP.get('%s:%x:%x' % (ANIM_TAG, person, v), ANIM_ANY.get((person, v))))
+            if gv is None or (CHAPTER_POSES.get(person) and gv not in CHAPTER_POSES[person]):
+                # never seen, or a pose of this person the chapter never uses (it
+                # belongs to another setting): their last pose here, else their
+                # most used pose in the chapter
+                gv = last.get(person, CHAPTER_USUAL.get(person, ANIM_USUAL.get(person)))
+            if gv is None:
+                return None
+            res.append(gv)
+        stats['anim_guess'] = stats.get('anim_guess', 0) + (gv is not None and (person, v) not in local
+                                                             and '%s:%x:%x' % (ANIM_TAG, person, v) not in ANIM_MAP)
+        return res
 
     nextg = 0
+    prev_ds_cmd, this_cmd = None, None
     for pos, kind, op, args in d:
         if kind == 'text':
             out.append(op)
+            prev_ds_cmd = this_cmd = None
+            continue
+        prev_ds_cmd, this_cmd = this_cmd, (op, tuple(args))
+        if op == 0x69 and len(args) == 2 and args[0] == 0x62 and args[1] in DS_GAVELS:
+            out.extend([GAVEL_MARK, DS_GAVELS[args[1]]])   # fix_gavel puts the GBA gavel here
+            stats['gavels'] = stats.get('gavels', 0) + 1
             continue
         if op == 0x1E:
-            conv = conv_anim(args)
+            conv = conv_anim(args, pos)
             if conv is not None:
                 if pos in d2g:
                     j = d2g[pos]
                     while nextg < j:
-                        if nextg not in emitted and gcmds[nextg][2] != 0x1E:
+                        if nextg not in emitted and gba_only_ok(nextg):
                             emit_g(nextg)
                             stats['inserted_gba'] += 1
                         nextg += 1
                     emitted.add(j)
                     nextg = j + 1
                 out.extend(conv)
+                if len(conv) >= 3:
+                    last[conv[1]] = conv[2]
                 stats['anim_ds'] = stats.get('anim_ds', 0) + 1
                 continue
         if pos in d2g:
             j = d2g[pos]
             while nextg < j:  # GBA-only commands that come before this one
-                if nextg not in emitted and gcmds[nextg][2] != 0x1E:
+                if nextg not in emitted and gba_only_ok(nextg):
                     emit_g(nextg)
                     stats['inserted_gba'] += 1
                 nextg += 1
@@ -249,10 +302,21 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         elif op == DS_WAIT:
             out.extend([0x0C, args[0]])
             stats['unmatched_kept'] += 1
+        elif op == 0x1B and args and args[0] == 0xFFF and prev_ds_cmd and prev_ds_cmd[0] == 0x1E \
+                and prev_ds_cmd[1][:1] == (0,):
+            # the DS hides the person and blanks the picture for this line
+            out.extend([0x1B, 0xFF])
+            stats['ds_bg'] = stats.get('ds_bg', 0) + 1
+        elif op == 0x1B and args and args[0] != 0xFFF and (args[0] & 0x7FFF) < GBA_BG_COUNT:
+            # a DS background change with no GBA one beside it: the DS
+            # backgrounds have the GBA numbers, and the person the DS shows
+            # next belongs on it (else e.g. the judge stood on the gavel)
+            out.extend([0x1B, args[0]])
+            stats['ds_bg'] = stats.get('ds_bg', 0) + 1
         else:
             stats['dropped_ds'] += 1
     # leftovers: insert before the final terminator if there is one
-    tail = [j for j in range(len(gcmds)) if j not in emitted and gcmds[j][2] != 0x1E]
+    tail = [j for j in range(len(gcmds)) if j not in emitted and gba_only_ok(j)]
     if tail:
         term = None
         if out and out[-1] == 0x0D:
@@ -282,12 +346,22 @@ def apply_fixups(dtoks, fixes):
 # swinging, down) and plays the slam sound and the shake itself:
 #   1B 2F, 0C 5, 1B 1B, 0C 1, 1B 1C, 06 3A01, 27 A 1, 0C 3C   (one bang)
 # and a longer run for three bangs. The DS plays its gavel with its own
-# animation command (69 62 111 / 113), which brings the sound and shake with
-# it and is not ported, so the merged script lost the slam, the shake and the
-# pauses between the pictures. Each gavel is put back exactly as the GBA has
-# it; DS commands that landed inside it (who speaks next) follow it.
+# animation command (69 62 111 for one bang, 69 62 113 for three), which
+# brings the sound and the shake with it and is not ported. The merge marks
+# where the DS bangs the gavel; each mark gets the GBA gavel exactly as the
+# GBA plays it, and gavel pictures the merge placed anywhere else are taken
+# out (they were matched to the wrong lines in places). Who is shown after
+# the gavel then follows the DS, on the right background.
 GAVEL_BGS = {0x2F, 0x1B, 0x1C}
 GAVEL_PARTS = {0x0C, 0x06, 0x27}
+GAVEL_MARK = 0x7F                        # placeholder command between merge and fix_gavel
+DS_GAVELS = {0x111: 1, 0x113: 3}
+GAVEL_GBA = {
+    1: [0x1B, 0x2F, 0x0C, 5, 0x1B, 0x1B, 0x0C, 1, 0x1B, 0x1C, 0x06, 0x3A01, 0x27, 0xA, 1, 0x0C, 0x3C],
+    3: [0x1B, 0x2F, 0x0C, 5, 0x1B, 0x1B, 0x0C, 1, 0x1B, 0x1C, 0x06, 0x3B01, 0x27, 0xE, 1, 0x0C, 0xF,
+        0x1B, 0x1B, 0x1B, 0x1C, 0x27, 0xE, 1, 0x0C, 0xF, 0x1B, 0x1B, 0x1B, 0x1C, 0x27, 0xA, 1, 0x0C, 0x3C],
+}
+GAVEL_ARGS = {**GBA_ARGS, GAVEL_MARK: 1}
 
 
 def gavel_runs(toks):
@@ -311,45 +385,25 @@ def gavel_runs(toks):
 
 
 def fix_gavel(out, gtoks):
-    """put each GBA gavel back; returns (tokens, old->new position list, note)"""
-    gr = gavel_runs(gtoks)
-    if not gr:
-        return out, list(range(len(out) + 1)), None
-    items, _ = parse(out, GBA_ARGS)
-    size = {x[0]: 1 + len(x[3]) for x in items if x[1] == 'cmd'}
-    is_bg = lambda x, ids: x[1] == 'cmd' and x[2] == 0x1B and x[3][0] in ids
-    edits, k, note = [], 0, None
-    for gs, ge, n in gr:
-        while k < len(items) and not is_bg(items[k], {0x2F}):
-            k += 1
-        if k == len(items):
-            return out, list(range(len(out) + 1)), 'gavel not found'
-        start, seen, j, lastbg = items[k][0], 0, k, k
-        while j < len(items) and seen < n and items[j][1] == 'cmd':
-            if is_bg(items[j], GAVEL_BGS):
-                seen += 1
-                lastbg = j
-            j += 1
-        # between the pictures only other commands (who speaks next) stay;
-        # when text follows before the last pictures, what the DS does after
-        # its gavel (sound, shake, flash for the next line) stays too, its
-        # gavel wait goes
-        carry = [items[q][0] for q in range(k, j)
-                 if not is_bg(items[q], GAVEL_BGS)
-                 and (items[q][2] not in GAVEL_PARTS if q < lastbg else items[q][2] != 0x0C)]
-        end = items[j][0] if j < len(items) else len(out)
-        edits.append((start, end, list(gtoks[gs:ge]) + [t for p in carry for t in out[p:p + size[p]]]))
-        # pictures of this gavel the merge put further down (after text) go
-        while seen < n:
-            note = 'gavel pictures moved back from later lines'
-            while j < len(items) and not is_bg(items[j], GAVEL_BGS - {0x2F}):
-                j += 1
-            if j == len(items):
-                return out, list(range(len(out) + 1)), 'gavel incomplete'
-            edits.append((items[j][0], items[j][0] + 2, []))
-            seen += 1
-            j += 1
-        k = j
+    """GBA gavel at each DS gavel mark; returns (tokens, old->new position list, note)"""
+    items, _ = parse(out, GAVEL_ARGS)
+    edits, note = [], None
+    for q, (pos, kind, op, a) in enumerate(items):
+        if kind != 'cmd':
+            continue
+        if op == GAVEL_MARK:
+            end = pos + 2
+            # the DS holds on its gavel picture; the GBA gavel ends with its own hold
+            if q + 1 < len(items) and items[q + 1][1] == 'cmd' and items[q + 1][2] == 0x0C:
+                end = items[q + 1][0] + 2
+            edits.append((pos, end, list(GAVEL_GBA[a[0]])))
+        elif op == 0x1B and a[0] in GAVEL_BGS:
+            if not edits or edits[-1][1] <= pos:
+                edits.append((pos, pos + 2, []))
+    marks = [a[0] for p, k, op, a in items if k == 'cmd' and op == GAVEL_MARK]
+    gba = [3 if n > 3 else 1 for s, e, n in gavel_runs(gtoks)]
+    if marks != gba:
+        note = 'gavels: DS %s, GBA %s' % (marks, gba)
     new, f, last = [], [0] * (len(out) + 1), 0
     for start, end, rep in edits:
         for p in range(last, start):
@@ -365,6 +419,181 @@ def fix_gavel(out, gtoks):
     return new, f, note
 
 
+# Fades. On the GBA a fade to black (12, mode 2) darkens every layer, the
+# text box and its letters included, so the GBA fades back in (mode 1)
+# before a line is read. The DS darkens only the picture and sometimes fades
+# back in only after a narration; merged in that order the narration ran on
+# a black screen. A line printed in the dark is fine when the fade-in follows
+# before the reader has to press on ("To be continued.") and the GBA does the
+# same in that section; otherwise a fade-in goes just before it: the next one
+# is moved there when the GBA section never shows text in the dark, else a
+# new one is added.
+FADE_IN = [0x12, 0x101, 1, 0x1F]
+
+
+def starts_dark(toks):
+    """the section fades in before its first line: it begins on a black screen"""
+    for pos, kind, op, a in parse(toks, GBA_ARGS)[0]:
+        if kind == 'text':
+            return False
+        if kind == 'cmd' and op == 0x12 and a and a[0] >> 8 in (1, 2):
+            return a[0] >> 8 == 1
+    return False
+
+
+def dark_runs(toks, dark=False):
+    """(position of the first text printed while faded to black, needs a fade-in)"""
+    items, _ = parse(toks, GBA_ARGS)
+    res, prev_text = [], False
+    for q, (pos, kind, op, a) in enumerate(items):
+        if kind == 'text':
+            if dark and not prev_text:
+                bad = True
+                for pos2, kind2, op2, a2 in items[q:]:
+                    if kind2 == 'cmd' and op2 in (0x02, 0x2D, 0x0D):   # page break / wait for A / end
+                        break
+                    if kind2 == 'cmd' and op2 == 0x12 and a2 and a2[0] >> 8 == 1:
+                        bad = False
+                        break
+                res.append((pos, bad))
+            prev_text = True
+            continue
+        if kind == 'cmd' and op == 0x12 and a:
+            dark = {1: False, 2: True}.get(a[0] >> 8, dark)
+        if not (kind == 'cmd' and op in (0x01, 0x03, 0x0B, 0x0C)):
+            prev_text = False
+    return res
+
+
+def fix_dark(out, gtoks):
+    f = list(range(len(out) + 1))
+    start = starts_dark(gtoks)
+    gba_dark = bool(dark_runs(gtoks, start))   # the GBA itself prints some line in the dark here
+    notes = []
+    while True:
+        runs = [p for p, bad in dark_runs(out, start) if bad or not gba_dark]
+        if not runs:
+            break
+        at = runs[0]
+        items, _ = parse(out, GBA_ARGS)
+        nxt = next((x for x in items if x[0] > at and x[1] == 'cmd' and x[2] == 0x12 and x[3] and x[3][0] >> 8 in (1, 2)), None)
+        if not gba_dark and nxt is not None and nxt[3][0] >> 8 == 1:
+            p = nxt[0]
+            out = out[:at] + out[p:p + 4] + out[at:p] + out[p + 4:]
+            f = [q + 4 if at <= q < p else (at if p <= q < p + 4 else q) for q in f]
+            notes.append('moved')
+        else:
+            out = out[:at] + FADE_IN + out[at:]
+            f = [q + 4 if q >= at else q for q in f]
+            notes.append('added')
+        if len(notes) > 20:
+            return out, f, 'fade loop'
+    # a fade-in on a bright screen starts from black: drop the ones the moves
+    # above left behind (unless the GBA section has such a fade itself)
+    if notes and not bright_fade_ins(gtoks):
+        for p in reversed(bright_fade_ins(out, 'dark' if start else None)):
+            out = out[:p] + out[p + 4:]
+            f = [q - 4 if q >= p + 4 else (p if q >= p else q) for q in f]
+            notes.append('dropped')
+    return out, f, ('fade-in %s before lines in the dark' % ','.join(notes)) if notes else None
+
+
+def bright_fade_ins(toks, start=None):
+    """fade-ins (12, mode 1) run while the screen is known to be bright"""
+    state, res = start, []
+    for pos, kind, op, a in parse(toks, GBA_ARGS)[0]:
+        if kind == 'cmd' and op == 0x12 and a:
+            m = a[0] >> 8
+            if m == 1:
+                if state == 'bright':
+                    res.append(pos)
+                state = 'bright'
+            elif m == 2:
+                state = 'dark'
+    return res
+
+
+# Who is shown on which background. Every line is checked against the
+# person / background pairs the GBA itself shows lines with; when a line
+# would put someone on a background the GBA never shows them on, the GBA
+# background changes merged in since the previous line (strays from GBA
+# lines the DS words differently) are taken out, latest first, with their
+# name tags (unless the tag names the person shown), until the pair is one
+# the GBA uses.
+SEEN_PAIRS = None
+
+
+def text_states(toks):
+    """(first text position, background, person, [(pos, op, args) commands since the previous text])"""
+    bg = person = None
+    res, since, intext = [], [], False
+    for pos, kind, op, a in parse(toks, GBA_ARGS)[0]:
+        if kind == 'text':
+            if not intext:
+                res.append((pos, bg, person, since))
+                since = []
+            intext = True
+            continue
+        if op not in (0x01, 0x03, 0x0B, 0x0C):
+            intext = False
+        since.append((pos, op, a))
+        if op == 0x1B and a:
+            bg = a[0]
+        elif op == 0x1E and a:
+            person = a[0]
+    return res
+
+
+def seen_pairs(gdir):
+    global SEEN_PAIRS
+    if SEEN_PAIRS is None:
+        SEEN_PAIRS = set()
+        for f in glob.glob(os.path.join(gdir, 'scenario_*.phscr')):
+            b, n, offs = load(f)
+            for x in section_bounds(b, offs):
+                if x:
+                    SEEN_PAIRS |= {(bg, pe) for p, bg, pe, c in text_states(tokens(b, *x))}
+    return SEEN_PAIRS
+
+
+def fix_pairs(out, seen):
+    f = list(range(len(out) + 1))
+    removed = 0
+    for _ in range(50):
+        bad = None
+        prev_bg = None
+        for pos, bg, pe, since in text_states(out):
+            if bg is not None and pe not in (None, 0) and (bg, pe) not in seen:
+                bad = (pos, bg, pe, since, prev_bg)
+                break
+            prev_bg = bg
+        if bad is None:
+            break
+        pos, bg, pe, since, prev_bg = bad
+        bgs = [q for q, (p, op, a) in enumerate(since) if op == 0x1B]
+        # background in force before this run of commands
+        cut = None
+        for k in range(len(bgs) - 1, -1, -1):
+            rest = [since[q][2][0] for q in bgs[:k]]
+            now = rest[-1] if rest else prev_bg
+            if now is not None and (now, pe) in seen:
+                cut = bgs[k:]
+                break
+        if cut is None:
+            break
+        drop = []
+        for q in cut:
+            drop.append((since[q][0], 2))
+            # its name tag goes too, unless it names the person shown
+            if q + 1 < len(since) and since[q + 1][1] == 0x0E and (since[q + 1][2][0] >> 8) & 0x7F != pe:
+                drop.append((since[q + 1][0], 2))
+        for p, n in sorted(drop, reverse=True):
+            out = out[:p] + out[p + n:]
+            f = [x - n if x >= p + n else (p if x >= p else x) for x in f]
+            removed += 1
+    return out, f, ('%d stray background commands removed' % removed) if removed else None
+
+
 def map_pos(gpos_to_out, target):
     keys = sorted(gpos_to_out)
     for k in keys:
@@ -374,10 +603,30 @@ def map_pos(gpos_to_out, target):
 
 
 def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
-    global ANIM_MAP, ANIM_TAG
+    global ANIM_MAP, ANIM_TAG, ANIM_ANY, ANIM_USUAL
     mp = os.path.join(os.path.dirname(__file__), 'anim_map.json')
     ANIM_MAP = json.load(open(mp)) if os.path.exists(mp) else {}
     ANIM_TAG = os.path.basename(gfile).split('_script')[0]
+    # a person's animations are the same in every chapter: what a DS pose
+    # stands for elsewhere, and each person's most used GBA pose
+    votes, usual = collections.defaultdict(collections.Counter), collections.defaultdict(collections.Counter)
+    for k, gv in ANIM_MAP.items():
+        tag, person, dv = k.split(':')
+        votes[(int(person, 16), int(dv, 16))][gv] += 1
+        usual[int(person, 16)][gv] += 1
+    ANIM_ANY = {k: c.most_common(1)[0][0] for k, c in votes.items()}
+    ANIM_USUAL = {k: c.most_common(1)[0][0] for k, c in usual.items()}
+    global CHAPTER_POSES, CHAPTER_USUAL
+    gb0, gn0, goffs0 = load(gfile)
+    cp = collections.defaultdict(collections.Counter)
+    for x in section_bounds(gb0, goffs0):
+        if x:
+            for pos, kind, op, a in parse(tokens(gb0, *x), GBA_ARGS)[0]:
+                if kind == 'cmd' and op == 0x1E and a and a[0]:
+                    cp[a[0]][a[1]] += 1
+                    cp[a[0]][a[2]] += 1
+    CHAPTER_POSES = {k: set(c) for k, c in cp.items()}
+    CHAPTER_USUAL = {k: c.most_common(1)[0][0] for k, c in cp.items()}
     gb, gn, goffs = load(gfile)
     db, dn, doffs = load(dfile)
     G = section_bounds(gb, goffs)
@@ -419,6 +668,16 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             patches = [(f[idx], tgt) for idx, tgt in patches]
             if note:
                 st = dict(st, gavel=note)
+            out, f, note = fix_dark(out, gt)
+            m = {g: f[o] for g, o in m.items()}
+            patches = [(f[idx], tgt) for idx, tgt in patches]
+            if note:
+                st = dict(st, fade=note)
+            out, f, note = fix_pairs(out, seen_pairs(os.path.dirname(gfile)))
+            m = {g: f[o] for g, o in m.items()}
+            patches = [(f[idx], tgt) for idx, tgt in patches]
+            if note:
+                st = dict(st, pairs=note)
             for idx, tgt in patches:
                 out[idx] = map_pos(m, tgt) * 2
             lines.append('sec %3d <- ds %3d  %s' % (gi, pairs[gi], st))
