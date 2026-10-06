@@ -106,7 +106,7 @@ sec 104 <- ds 104  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 19, 'a
 sec 105 <- ds 105  {'dropped_ds': 4, 'inserted_gba': 0, 'unmatched_kept': 9, 'anim_ds': 3, 'ds_fx': 6, 'ds_bg': 1, 'gavels': 1, 'anim_guess': 0, 'gavel': 'gavels: DS [1], GBA []'}
 sec 106 <- ds 106  {'dropped_ds': 6, 'inserted_gba': 7, 'unmatched_kept': 21, 'anim_ds': 8, 'ds_fx': 20, 'gavels': 1, 'moving': '1 poses that jumped replaced'}
 sec 107 <- ds 107  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 5, 'anim_ds': 1}
-sec 108 <- ds 108  {'dropped_ds': 4, 'inserted_gba': 2, 'unmatched_kept': 16, 'ds_bg': 2, 'ds_fx': 5, 'anim_guess': 0, 'anim_ds': 6}
+sec 108 <- ds 108  {'dropped_ds': 4, 'inserted_gba': 2, 'unmatched_kept': 16, 'ds_bg': 2, 'ds_fx': 5, 'anim_guess': 0, 'anim_ds': 6, 'bg_order': '1 person changes moved before the background change'}
 sec 109 <- ds 109  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 13, 'ds_bg': 2, 'ds_fx': 5, 'anim_guess': 0, 'anim_ds': 7}
 sec 110 <- ds 110  {'dropped_ds': 2, 'inserted_gba': 1, 'unmatched_kept': 9, 'anim_ds': 2, 'ds_fx': 2}
 sec 111 <- ds 111  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 28, 'ds_bg': 2, 'ds_fx': 7, 'anim_guess': 0, 'anim_ds': 9}

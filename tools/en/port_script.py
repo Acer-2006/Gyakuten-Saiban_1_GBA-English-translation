@@ -509,6 +509,16 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         emit_batch(tail)
         if term is not None:
             out.append(term)
+    # every GBA section starts with 00 (reset the text box and script state
+    # for the new section); when the DS has a second 00 further on, the GBA's
+    # could be paired with that one and the section started without it
+    if gtoks and gtoks[0] == 0x00 and (not out or out[0] != 0x00):
+        k = next((p for p, kind, op, a in parse(out, GBA_ARGS)[0] if kind == 'cmd' and op == 0x00), None)
+        if k is not None:
+            out = [0x00] + out[:k] + out[k + 1:]
+            gpos_to_out = {g: (o + 1 if o < k else 0 if o == k else o) for g, o in gpos_to_out.items()}
+            patches = [(i + 1 if i < k else i, t) for i, t in patches]
+            stats['start_00'] = 1
     return out, gpos_to_out, patches, stats
 
 
@@ -988,6 +998,54 @@ def fix_moving_poses(out, gdir, carry=None):
     return out, ('%d poses that jumped replaced' % fixed) if fixed else None
 
 
+BG_ORDER_FREE = {0x0E, 0x1C, 0x06, 0x27}   # name tag, text box, sound, shake: take no time
+
+
+def bg_then_person(toks):
+    """(position of 1B, position of the 1E after it, bg, shown, new) where a
+    background change is followed straight away by a different person"""
+    items = parse(toks, GBA_ARGS)[0]
+    res, shown = [], None
+    for j, (pos, kind, op, a) in enumerate(items):
+        if kind != 'cmd':
+            continue
+        if op == 0x1B and a:
+            jj = j + 1
+            while jj < len(items) and items[jj][1] == 'cmd' and items[jj][2] in BG_ORDER_FREE:
+                jj += 1
+            if jj < len(items) and items[jj][1] == 'cmd' and items[jj][2] == 0x1E:
+                new = items[jj][3][0] & 0xFF
+                if shown and new and new != shown:
+                    res.append((pos, items[jj][0], a[0], shown, new))
+        if op == 0x1E and a:
+            shown = (a[0] & 0xFF) or None
+        elif op == 0x1A and len(a) > 2:
+            shown = a[2] & 0xFF
+    return res
+
+
+def fix_bg_order(out, gtoks):
+    """The GBA sets the new person before the new background (1E, then 1B): a
+    background change makes the script wait a few frames, so with the DS's
+    order (1B, then 1E) the person from before stood on the new background
+    for about 10 frames (Phoenix in front of the judge's bench). Where the
+    GBA script itself doesn't do it, the person now comes first."""
+    out = list(out)
+    f = list(range(len(out) + 1))
+    jp = set(x[2:] for x in bg_then_person(gtoks))
+    n = 0
+    for p1b, p1e, bg, shown, new in reversed(bg_then_person(out)):
+        if (bg, shown, new) in jp:
+            continue
+        seg = out[p1e:p1e + 4] + out[p1b:p1e]
+        old_idx = list(range(p1e, p1e + 4)) + list(range(p1b, p1e))
+        out[p1b:p1e + 4] = seg
+        for new_pos, o in enumerate(old_idx, p1b):
+            f[o] = new_pos
+        n += 1
+    return out, f, ('%d person changes moved before the background change' % n) if n else None
+
+
 PAN_WAIT = 0x23   # frames the GBA script waits after a court pan (1A)
 
 
@@ -1098,6 +1156,11 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             patches = [(f[idx], tgt) for idx, tgt in patches]
             if note:
                 st = dict(st, pairs=note)
+            out, f, note = fix_bg_order(out, gt)
+            m = {g: f[o] for g, o in m.items()}
+            patches = [(f[idx], tgt) for idx, tgt in patches]
+            if note:
+                st = dict(st, bg_order=note)
             out, note = fix_scene_poses(out, seen_poses(os.path.dirname(gfile)))
             if note:
                 st = dict(st, poses=note)

@@ -1,4 +1,4 @@
-sec   0 <- ds   1  {'dropped_ds': 4, 'inserted_gba': 7, 'unmatched_kept': 99, 'anim_ds': 26, 'ds_fx': 44, 'anim_guess': 3, 'ds_bg': 1, 'poses': '1 poses from another place replaced', 'moving': '1 poses that jumped replaced'}
+sec   0 <- ds   1  {'dropped_ds': 4, 'inserted_gba': 7, 'unmatched_kept': 99, 'anim_ds': 26, 'ds_fx': 44, 'anim_guess': 3, 'ds_bg': 1, 'bg_order': '1 person changes moved before the background change', 'poses': '1 poses from another place replaced', 'moving': '1 poses that jumped replaced'}
 sec   1 <- ds   2  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 30, 'ds_fx': 10, 'anim_guess': 0, 'anim_ds': 7}
 sec   2 <- ds   3  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 7, 'ds_fx': 1}
 sec   3 <- ds   4  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 10, 'ds_fx': 1}
