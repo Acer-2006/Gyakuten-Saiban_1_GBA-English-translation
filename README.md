@@ -1,4 +1,4 @@
-#Gyakuten Saiban 1 English
+# Gyakuten Saiban 1 English
 
 <img width="450" height="282" alt="image" src="https://github.com/user-attachments/assets/b0044f05-d641-4705-8bd4-0b9d4a69b693" />
 
