@@ -31,9 +31,13 @@ logo = src.crop((4, 14, 252, 165))
 scale = 111 / logo.height
 logo = logo.resize((round(logo.width * scale), 111), Image.LANCZOS)
 out.paste(logo, ((240 - logo.width) // 2, 0))
-# copyright line, unscaled, at the bottom
-cr = src.crop((8, 180, 248, 191))
-out.paste(cr, (0, 149))
+# copyright line, unscaled, at the bottom. It is 245 px wide on the DS, so
+# narrow each of the five word gaps (3-4 px) by 1 px to fit the GBA's 240 px.
+drop = {55, 94, 145, 166, 201}
+keep = [x for x in range(7, 252) if x not in drop]
+s = np.array(src)[180:192]
+cr = Image.fromarray(s[:, keep])
+out.paste(cr, ((240 - len(keep)) // 2, 149))
 # 15-bit colour, then a 255-colour palette with black at index 0
 a = (np.array(out) >> 3) << 3
 q = Image.fromarray(a.astype(np.uint8)).quantize(colors=255, method=Image.MEDIANCUT, dither=Image.NONE)

@@ -13,6 +13,8 @@
 
 
 
+
+
 // English patch relocations (tools/en/relocate_assets.py)
 extern u8 gPalTitleScreen_en[];
 extern u8 gGfx8lzTitleScreen_en[];
