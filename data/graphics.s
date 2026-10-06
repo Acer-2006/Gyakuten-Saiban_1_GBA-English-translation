@@ -1191,11 +1191,11 @@ gGfx_BG010_Case2MayaSeeingDeadMia:
 
 	.global gGfx_BG011_GlobalStudiosStudioPath
 gGfx_BG011_GlobalStudiosStudioPath:
-	.incbin "graphics/striped_images/backgrounds/global_studios/studio_path.8bpp.striped"
+	.incbin "graphics_orig/striped_images/backgrounds/global_studios/studio_path.8bpp.striped"
 
 	.global gGfx_BG012_GlobalStudiosStaffArea
 gGfx_BG012_GlobalStudiosStaffArea:
-	.incbin "graphics/striped_images/backgrounds/global_studios/staff_area.8bpp.striped"
+	.incbin "graphics_orig/striped_images/backgrounds/global_studios/staff_area.8bpp.striped"
 
 	.global gGfx_BG013_WitnessMiaDodgingRight
 gGfx_BG013_WitnessMiaDodgingRight:
@@ -1271,7 +1271,7 @@ gGfx_BG030_DetentionCenter:
 
 	.global gGfx_BG031_BlueCorpCeoOffice
 gGfx_BG031_BlueCorpCeoOffice:
-	.incbin "graphics/striped_images/backgrounds/bluecorp_ceo_office.8bpp.striped"
+	.incbin "graphics_orig/striped_images/backgrounds/bluecorp_ceo_office.8bpp.striped"
 
 	.global gGfx_BG032_GatewaterHotelRoom
 gGfx_BG032_GatewaterHotelRoom:
@@ -1327,10 +1327,10 @@ gGfx_BG044_GlobalStudiosStudio2:
 
 	.global gGfx_BG045_EvidenceMayaPhoneCall1
 gGfx_BG045_EvidenceMayaPhoneCall1:
-	.incbin "graphics/striped_images/backgrounds/evidence/maya_phone_call_page_1.4bpp.striped"
+	.incbin "graphics_orig/striped_images/backgrounds/evidence/maya_phone_call_page_1.4bpp.striped"
 	.global gGfx_BG046_EvidenceMayaPhoneCall2
 gGfx_BG046_EvidenceMayaPhoneCall2:
-	.incbin "graphics/striped_images/backgrounds/evidence/maya_phone_call_page_2.4bpp.striped"
+	.incbin "graphics_orig/striped_images/backgrounds/evidence/maya_phone_call_page_2.4bpp.striped"
 
 	.global gGfx_BG047_Gavel1
 gGfx_BG047_Gavel1:
@@ -1338,7 +1338,7 @@ gGfx_BG047_Gavel1:
 
 	.global gGfx_BG048_EvidenceMayaPhoneCall3
 gGfx_BG048_EvidenceMayaPhoneCall3:
-	.incbin "graphics/striped_images/backgrounds/evidence/maya_phone_call_page_3.4bpp.striped"
+	.incbin "graphics_orig/striped_images/backgrounds/evidence/maya_phone_call_page_3.4bpp.striped"
 
 	.global gGfx_BG049_WitnessJackAtGate
 gGfx_BG049_WitnessJackAtGate:
@@ -1382,7 +1382,7 @@ gGfx_BG058_GlobalStudiosStudio2TrailerMafia:
 
 	.global gGfx_BG059_Case3PinkPrincess
 gGfx_BG059_Case3PinkPrincess:
-	.incbin "graphics/striped_images/backgrounds/cutscenes/case3/pink_princess.8bpp.striped"
+	.incbin "graphics_orig/striped_images/backgrounds/cutscenes/case3/pink_princess.8bpp.striped"
 
 	.global gGfx_BG060_GlobalStudiosMonkeyOnStudio2Path
 gGfx_BG060_GlobalStudiosMonkeyOnStudio2Path:
@@ -1390,7 +1390,7 @@ gGfx_BG060_GlobalStudiosMonkeyOnStudio2Path:
 
 	.global gGfx_BG061_EvidenceGlobalStudiosDiagram
 gGfx_BG061_EvidenceGlobalStudiosDiagram:
-	.incbin "graphics/striped_images/backgrounds/evidence/global_studio_diagram.4bpp.striped"
+	.incbin "graphics_orig/striped_images/backgrounds/evidence/global_studio_diagram.4bpp.striped"
 
 	.global gGfx_BG062_WitnessWillPowerInjury
 gGfx_BG062_WitnessWillPowerInjury:
@@ -1398,7 +1398,7 @@ gGfx_BG062_WitnessWillPowerInjury:
 
 	.global gGfx_BG063_Case3SteelSamurai
 gGfx_BG063_Case3SteelSamurai:
-	.incbin "graphics/striped_images/backgrounds/cutscenes/case3/steel_samurai.8bpp.striped"
+	.incbin "graphics_orig/striped_images/backgrounds/cutscenes/case3/steel_samurai.8bpp.striped"
 	
 @ ; END BACKGROUNDS
 
@@ -1446,15 +1446,15 @@ gGfx_BG069_SteelSamuraiNight:
 
 	.global gGfx_BG070_GourdLakeEntrance
 gGfx_BG070_GourdLakeEntrance:
-	.incbin "graphics/striped_images/gourd_lake_entrance.8bpp.striped"
+	.incbin "graphics_orig/striped_images/gourd_lake_entrance.8bpp.striped"
 
 	.global gGfx_BG071_GourdLakePark
 gGfx_BG071_GourdLakePark:
-	.incbin "graphics/striped_images/gourd_lake_park.8bpp.striped"
+	.incbin "graphics_orig/striped_images/gourd_lake_park.8bpp.striped"
 
 	.global gGfx_BG072_GourdLakeParkNoBalloon
 gGfx_BG072_GourdLakeParkNoBalloon:
-	.incbin "graphics/striped_images/gourd_lake_park_no_balloon.8bpp.striped"
+	.incbin "graphics_orig/striped_images/gourd_lake_park_no_balloon.8bpp.striped"
 
 	.global gGfx_BG073_GourdLakeBeach
 gGfx_BG073_GourdLakeBeach:
@@ -1474,7 +1474,7 @@ gGfx_BG076_Case3IntroSteelSamuraiPosing:
 
 	.global gGfx_BG077_GourdLakeBoatRental
 gGfx_BG077_GourdLakeBoatRental:
-	.incbin "graphics/striped_images/gourd_lake_boat_rental.8bpp.striped"
+	.incbin "graphics_orig/striped_images/gourd_lake_boat_rental.8bpp.striped"
 
 	.global gGfx_BG078_GourdLakeBoatRentalHouse
 gGfx_BG078_GourdLakeBoatRentalHouse:
@@ -1494,15 +1494,15 @@ gGfx_BG081_Case3IntroFaceoff:
 
 	.global gGfx_BG082_EvidenceDL6CaseFile1
 gGfx_BG082_EvidenceDL6CaseFile1:
-	.incbin "graphics/striped_images/backgrounds/evidence/dl6_case_file_page_1.4bpp.striped"
+	.incbin "graphics_orig/striped_images/backgrounds/evidence/dl6_case_file_page_1.4bpp.striped"
 
 	.global gGfx_BG083_EvidenceDL6CaseFile2
 gGfx_BG083_EvidenceDL6CaseFile2:
-	.incbin "graphics/striped_images/backgrounds/evidence/dl6_case_file_page_2.4bpp.striped"
+	.incbin "graphics_orig/striped_images/backgrounds/evidence/dl6_case_file_page_2.4bpp.striped"
 
 	.global gGfx_BG084_EvidenceDL6CaseFile3
 gGfx_BG084_EvidenceDL6CaseFile3:
-	.incbin "graphics/striped_images/backgrounds/evidence/dl6_case_file_page_3.4bpp.striped"
+	.incbin "graphics_orig/striped_images/backgrounds/evidence/dl6_case_file_page_3.4bpp.striped"
 
 	.global gGfx_BG085_Case4TrainStation
 gGfx_BG085_Case4TrainStation:
@@ -1522,7 +1522,7 @@ gGfx_BG088_Case4ElevatorPhoto:
 
 	.global gGfx_BG089_Case4Newspaper
 gGfx_BG089_Case4Newspaper:
-	.incbin "graphics/striped_images/case4_newspaper.8bpp.striped"
+	.incbin "graphics_orig/striped_images/case4_newspaper.8bpp.striped"
 
 	.global gGfx_BG090_Case4BalloonLaunching
 gGfx_BG090_Case4BalloonLaunching:
@@ -1586,7 +1586,7 @@ gGfx_BG104_Case4TrainStationMayaLeaving:
 
 	.global gGfx_BG105_TrialWon
 gGfx_BG105_TrialWon:
-	.incbin "graphics/striped_images/trial_won.8bpp.striped"
+	.incbin "graphics_orig/striped_images/trial_won.8bpp.striped"
 
 	.global gGfx_BG106_Case4IntroLakeOneInBoat
 gGfx_BG106_Case4IntroLakeOneInBoat:

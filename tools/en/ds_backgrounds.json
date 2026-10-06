@@ -1,0 +1,74 @@
+{
+ "gGfx_BG011_GlobalStudiosStudioPath": [
+  "0x1c6d8ac",
+  "0x1c75dd8"
+ ],
+ "gGfx_BG012_GlobalStudiosStaffArea": [
+  "0x1c7e428",
+  "0x1c8b6a8"
+ ],
+ "gGfx_BG031_BlueCorpCeoOffice": [
+  "0x1cfa354",
+  "0x1d02148"
+ ],
+ "gGfx_BG059_Case3PinkPrincess": [
+  "0x1d8ff3c",
+  "0x1d998c4"
+ ],
+ "gGfx_BG061_EvidenceGlobalStudiosDiagram": [
+  "0x1dade10",
+  "0x1daeebc"
+ ],
+ "gGfx_BG063_Case3SteelSamurai": [
+  "0x1db40bc",
+  "0x1dbc090"
+ ],
+ "gGfx_BG070_GourdLakeEntrance": [
+  "0x1dccb88",
+  "0x1dd7184"
+ ],
+ "gGfx_BG071_GourdLakePark": [
+  "0x1de1708",
+  "0x1de9608"
+ ],
+ "gGfx_BG072_GourdLakeParkNoBalloon": [
+  "0x1df15f0",
+  "0x1df7f3c"
+ ],
+ "gGfx_BG077_GourdLakeBoatRental": [
+  "0x1e1118c",
+  "0x1e18074"
+ ],
+ "gGfx_BG105_TrialWon": [
+  "0x1eada30",
+  "0x1eb6c1c"
+ ],
+ "gGfx_BG045_EvidenceMayaPhoneCall1": [
+  "0x1d5e9a8",
+  "0x2196290"
+ ],
+ "gGfx_BG046_EvidenceMayaPhoneCall2": [
+  "0x1d5f924",
+  "0x2197290"
+ ],
+ "gGfx_BG048_EvidenceMayaPhoneCall3": [
+  "0x1d6287c",
+  "0x2198274"
+ ],
+ "gGfx_BG082_EvidenceDL6CaseFile1": [
+  "0x1e3933c",
+  "0x219926c"
+ ],
+ "gGfx_BG083_EvidenceDL6CaseFile2": [
+  "0x1e3a360",
+  "0x219a15c"
+ ],
+ "gGfx_BG084_EvidenceDL6CaseFile3": [
+  "0x1e3b3ec",
+  "0x219b160"
+ ],
+ "gGfx_BG089_Case4Newspaper": [
+  "0x1e4cfa8",
+  "0x1e568d0"
+ ]
+}

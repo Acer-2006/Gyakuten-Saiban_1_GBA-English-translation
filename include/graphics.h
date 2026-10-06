@@ -15,6 +15,7 @@
 
 
 
+
 // English patch relocations (tools/en/relocate_assets.py)
 extern u8 gPalTitleScreen_en[];
 extern u8 gGfx8lzTitleScreen_en[];
@@ -138,6 +139,24 @@ extern u8 gGfxEvidenceGenericPhoto9_description_en[];
 extern u8 gGfxEvidenceGenericLetter3_description_en[];
 extern u8 gGfxEvidenceDl6Bullet_description_en[];
 extern u8 gGfxEvidenceMissileAngry_description_en[];
+extern u8 gGfx_BG011_GlobalStudiosStudioPath_en[];
+extern u8 gGfx_BG012_GlobalStudiosStaffArea_en[];
+extern u8 gGfx_BG031_BlueCorpCeoOffice_en[];
+extern u8 gGfx_BG045_EvidenceMayaPhoneCall1_en[];
+extern u8 gGfx_BG046_EvidenceMayaPhoneCall2_en[];
+extern u8 gGfx_BG048_EvidenceMayaPhoneCall3_en[];
+extern u8 gGfx_BG059_Case3PinkPrincess_en[];
+extern u8 gGfx_BG061_EvidenceGlobalStudiosDiagram_en[];
+extern u8 gGfx_BG063_Case3SteelSamurai_en[];
+extern u8 gGfx_BG070_GourdLakeEntrance_en[];
+extern u8 gGfx_BG071_GourdLakePark_en[];
+extern u8 gGfx_BG072_GourdLakeParkNoBalloon_en[];
+extern u8 gGfx_BG077_GourdLakeBoatRental_en[];
+extern u8 gGfx_BG082_EvidenceDL6CaseFile1_en[];
+extern u8 gGfx_BG083_EvidenceDL6CaseFile2_en[];
+extern u8 gGfx_BG084_EvidenceDL6CaseFile3_en[];
+extern u8 gGfx_BG089_Case4Newspaper_en[];
+extern u8 gGfx_BG105_TrialWon_en[];
 // end English patch relocations
 
 #define GFX_BASE_ADDR (ROM_START + 0x180000)
@@ -332,8 +351,8 @@ extern u8 gGfxEvidenceMissileAngry_description_en[];
 #define gGfx_BG008_CourtJudgeSeat ((u8*)(ROM_START + 0x271DE8))
 #define gGfx_BG009_FeyCoEntranceNight ((u8*)(ROM_START + 0x278824))
 #define gGfx_BG010_Case2MayaSeeingDeadMia ((u8*)(ROM_START + 0x27CEEC))
-#define gGfx_BG011_GlobalStudiosStudioPath ((u8*)(ROM_START + 0x282870))
-#define gGfx_BG012_GlobalStudiosStaffArea ((u8*)(ROM_START + 0x288AE0))
+#define gGfx_BG011_GlobalStudiosStudioPath ((u8*)gGfx_BG011_GlobalStudiosStudioPath_en)
+#define gGfx_BG012_GlobalStudiosStaffArea ((u8*)gGfx_BG012_GlobalStudiosStaffArea_en)
 #define gGfx_BG013_WitnessMiaDodgingRight ((u8*)(ROM_START + 0x291ADC))
 #define gGfx_BG014_WitnessMiaDodgingLeft ((u8*)(ROM_START + 0x293DC0))
 #define gGfx_BG015_EvidenceFeyCoDiagram ((u8*)(ROM_START + 0x296138))
@@ -352,7 +371,7 @@ extern u8 gGfxEvidenceMissileAngry_description_en[];
 #define gGfx_BG028_Gavel3 ((u8*)(ROM_START + 0x2D1A90))
 #define gGfx_BG029_EvidenceFeyCoDiagramLight ((u8*)(ROM_START + 0x2D79EC))
 #define gGfx_BG030_DetentionCenter ((u8*)(ROM_START + 0x2D8974))
-#define gGfx_BG031_BlueCorpCeoOffice ((u8*)(ROM_START + 0x2DC188))
+#define gGfx_BG031_BlueCorpCeoOffice ((u8*)gGfx_BG031_BlueCorpCeoOffice_en)
 #define gGfx_BG032_GatewaterHotelRoom ((u8*)(ROM_START + 0x2E1FA4))
 #define gGfx_BG033_Case1FrankHoldingThinker ((u8*)(ROM_START + 0x2E6BBC))
 #define gGfx_BG034_Case1CindyDeadOnFloor ((u8*)(ROM_START + 0x2EB2B8))
@@ -366,10 +385,10 @@ extern u8 gGfxEvidenceMissileAngry_description_en[];
 #define gGfx_BG042_WitnessFrankWitnessingLarry ((u8*)(ROM_START + 0x31002C))
 #define gGfx_BG043_WitnessFrankFindingCindy ((u8*)(ROM_START + 0x312664))
 #define gGfx_BG044_GlobalStudiosStudio2 ((u8*)(ROM_START + 0x314F8C))
-#define gGfx_BG045_EvidenceMayaPhoneCall1 ((u8*)(ROM_START + 0x31E8E0))
-#define gGfx_BG046_EvidenceMayaPhoneCall2 ((u8*)(ROM_START + 0x31F624))
+#define gGfx_BG045_EvidenceMayaPhoneCall1 ((u8*)gGfx_BG045_EvidenceMayaPhoneCall1_en)
+#define gGfx_BG046_EvidenceMayaPhoneCall2 ((u8*)gGfx_BG046_EvidenceMayaPhoneCall2_en)
 #define gGfx_BG047_Gavel1 ((u8*)(ROM_START + 0x320328))
-#define gGfx_BG048_EvidenceMayaPhoneCall3 ((u8*)(ROM_START + 0x3230C0))
+#define gGfx_BG048_EvidenceMayaPhoneCall3 ((u8*)gGfx_BG048_EvidenceMayaPhoneCall3_en)
 #define gGfx_BG049_WitnessJackAtGate ((u8*)(ROM_START + 0x323EDC))
 #define gGfx_BG050_WitnessJackDeadAtStudio1 ((u8*)(ROM_START + 0x327074))
 #define gGfx_BG051_WitnessJackWearingSamuraiSuit ((u8*)(ROM_START + 0x32AFB8))
@@ -380,11 +399,11 @@ extern u8 gGfxEvidenceMissileAngry_description_en[];
 #define gGfx_BG056_WitnessSamuraiAtStudio2 ((u8*)(ROM_START + 0x33DC0C))
 #define gGfx_BG057_Witness5YearOldPhoto ((u8*)(ROM_START + 0x33F720))
 #define gGfx_BG058_GlobalStudiosStudio2TrailerMafia ((u8*)(ROM_START + 0x342908))
-#define gGfx_BG059_Case3PinkPrincess ((u8*)(ROM_START + 0x34863C))
+#define gGfx_BG059_Case3PinkPrincess ((u8*)gGfx_BG059_Case3PinkPrincess_en)
 #define gGfx_BG060_GlobalStudiosMonkeyOnStudio2Path ((u8*)(ROM_START + 0x34F218))
-#define gGfx_BG061_EvidenceGlobalStudiosDiagram ((u8*)(ROM_START + 0x35699C))
+#define gGfx_BG061_EvidenceGlobalStudiosDiagram ((u8*)gGfx_BG061_EvidenceGlobalStudiosDiagram_en)
 #define gGfx_BG062_WitnessWillPowerInjury ((u8*)(ROM_START + 0x357870))
-#define gGfx_BG063_Case3SteelSamurai ((u8*)(ROM_START + 0x35ABD8))
+#define gGfx_BG063_Case3SteelSamurai ((u8*)gGfx_BG063_Case3SteelSamurai_en)
 	
 #define gPal_BG064_BustupPhoenix ((u8*)(ROM_START + 0x360834))
 #define gMap_BG064_BustupPhoenix ((u16*)(ROM_START + 0x360854))
@@ -396,26 +415,26 @@ extern u8 gGfxEvidenceMissileAngry_description_en[];
 #define gGfx_BG067_CourtroomBackground ((u8*)(ROM_START + 0x365640))
 #define gGfx_BG068_CapcomScreen ((u8*)(ROM_START + 0x368BC4))
 #define gGfx_BG069_SteelSamuraiNight ((u8*)(GFX_BASE_ADDR + 0x1E9890))
-#define gGfx_BG070_GourdLakeEntrance ((u8*)(ROM_START + 0x36B924))
-#define gGfx_BG071_GourdLakePark ((u8*)(ROM_START + 0x372D2C))
-#define gGfx_BG072_GourdLakeParkNoBalloon ((u8*)(ROM_START + 0x37920C))
+#define gGfx_BG070_GourdLakeEntrance ((u8*)gGfx_BG070_GourdLakeEntrance_en)
+#define gGfx_BG071_GourdLakePark ((u8*)gGfx_BG071_GourdLakePark_en)
+#define gGfx_BG072_GourdLakeParkNoBalloon ((u8*)gGfx_BG072_GourdLakeParkNoBalloon_en)
 #define gGfx_BG073_GourdLakeBeach ((u8*)(ROM_START + 0x37E52C))
 #define gGfx_BG074_Case3IntroGrass ((u8*)(GFX_BASE_ADDR + 0x2099C4))
 #define gGfx_BG075_Case3IntroTrees ((u8*)(ROM_START + 0x38A6F4))
 #define gGfx_BG076_Case3IntroSteelSamuraiPosing ((u8*)(ROM_START + 0x38B364))
-#define gGfx_BG077_GourdLakeBoatRental ((u8*)(ROM_START + 0x38D370))
+#define gGfx_BG077_GourdLakeBoatRental ((u8*)gGfx_BG077_GourdLakeBoatRental_en)
 #define gGfx_BG078_GourdLakeBoatRentalHouse ((u8*)(ROM_START + 0x392118))
 #define gGfx_BG079_PoliceStationLobby ((u8*)(ROM_START + 0x396EB0))
 #define gGfx_BG080_PoliceStationEvidenceStorage ((u8*)(ROM_START + 0x39CD04))
 #define gGfx_BG081_Case3IntroFaceoff ((u8*)(ROM_START + 0x3A3504))
-#define gGfx_BG082_EvidenceDL6CaseFile1 ((u8*)(ROM_START + 0x3A6934))
-#define gGfx_BG083_EvidenceDL6CaseFile2 ((u8*)(ROM_START + 0x3A7790))
-#define gGfx_BG084_EvidenceDL6CaseFile3 ((u8*)(ROM_START + 0x3A8648))
+#define gGfx_BG082_EvidenceDL6CaseFile1 ((u8*)gGfx_BG082_EvidenceDL6CaseFile1_en)
+#define gGfx_BG083_EvidenceDL6CaseFile2 ((u8*)gGfx_BG083_EvidenceDL6CaseFile2_en)
+#define gGfx_BG084_EvidenceDL6CaseFile3 ((u8*)gGfx_BG084_EvidenceDL6CaseFile3_en)
 #define gGfx_BG085_Case4TrainStation ((u8*)(ROM_START + 0x3A9514))
 #define gGfx_BG086_Case4GourdLakeMap ((u8*)(ROM_START + 0x3AFCC8))
 #define gGfx_BG087_Case4LottasPhotoZoomed ((u8*)(ROM_START + 0x3B0A94))
 #define gGfx_BG088_Case4ElevatorPhoto ((u8*)(ROM_START + 0x3B3724))
-#define gGfx_BG089_Case4Newspaper ((u8*)(ROM_START + 0x3B6C8C))
+#define gGfx_BG089_Case4Newspaper ((u8*)gGfx_BG089_Case4Newspaper_en)
 #define gGfx_BG090_Case4BalloonLaunching ((u8*)(ROM_START + 0x3BF1BC))
 #define gGfx_BG091_Case4BalloonLandingInLake ((u8*)(ROM_START + 0x3C3724))
 #define gGfx_BG092_Case4LarrySearchingLake ((u8*)(ROM_START + 0x3C7654))
@@ -431,7 +450,7 @@ extern u8 gGfxEvidenceMissileAngry_description_en[];
 #define gGfx_BG102_Case4ElevatorVonKarmaShot ((u8*)(ROM_START + 0x3F6C48))
 #define gGfx_BG103_Case4ElevatorVonKarmaInDoor ((u8*)(ROM_START + 0x3FB1D4))
 #define gGfx_BG104_Case4TrainStationMayaLeaving ((u8*)(ROM_START + 0x3FD8D4))
-#define gGfx_BG105_TrialWon ((u8*)(ROM_START + 0x4037F8))
+#define gGfx_BG105_TrialWon ((u8*)gGfx_BG105_TrialWon_en)
 #define gGfx_BG106_Case4IntroLakeOneInBoat ((u8*)(ROM_START + 0x40AC3C))
 #define gGfx_BG107_Case4IntroThreatenedToShoot ((u8*)(ROM_START + 0x40D3C8))
 #define gGfx_BG108_Case4IntroEdgeworthPicksUpGun ((u8*)(ROM_START + 0x40F8C0))

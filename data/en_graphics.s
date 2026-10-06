@@ -610,3 +610,93 @@ gGfxEvidenceDl6Bullet_description_en:
 	.global gGfxEvidenceMissileAngry_description_en
 gGfxEvidenceMissileAngry_description_en:
 	.incbin "graphics/evidence_profile_descriptions/evidence/missile_angry.4bpp.lz"
+
+	.align 2
+	.global gGfx_BG011_GlobalStudiosStudioPath_en
+gGfx_BG011_GlobalStudiosStudioPath_en:
+	.incbin "graphics/striped_images/backgrounds/global_studios/studio_path.8bpp.striped"
+
+	.align 2
+	.global gGfx_BG012_GlobalStudiosStaffArea_en
+gGfx_BG012_GlobalStudiosStaffArea_en:
+	.incbin "graphics/striped_images/backgrounds/global_studios/staff_area.8bpp.striped"
+
+	.align 2
+	.global gGfx_BG031_BlueCorpCeoOffice_en
+gGfx_BG031_BlueCorpCeoOffice_en:
+	.incbin "graphics/striped_images/backgrounds/bluecorp_ceo_office.8bpp.striped"
+
+	.align 2
+	.global gGfx_BG045_EvidenceMayaPhoneCall1_en
+gGfx_BG045_EvidenceMayaPhoneCall1_en:
+	.incbin "graphics/striped_images/backgrounds/evidence/maya_phone_call_page_1.4bpp.striped"
+
+	.align 2
+	.global gGfx_BG046_EvidenceMayaPhoneCall2_en
+gGfx_BG046_EvidenceMayaPhoneCall2_en:
+	.incbin "graphics/striped_images/backgrounds/evidence/maya_phone_call_page_2.4bpp.striped"
+
+	.align 2
+	.global gGfx_BG048_EvidenceMayaPhoneCall3_en
+gGfx_BG048_EvidenceMayaPhoneCall3_en:
+	.incbin "graphics/striped_images/backgrounds/evidence/maya_phone_call_page_3.4bpp.striped"
+
+	.align 2
+	.global gGfx_BG059_Case3PinkPrincess_en
+gGfx_BG059_Case3PinkPrincess_en:
+	.incbin "graphics/striped_images/backgrounds/cutscenes/case3/pink_princess.8bpp.striped"
+
+	.align 2
+	.global gGfx_BG061_EvidenceGlobalStudiosDiagram_en
+gGfx_BG061_EvidenceGlobalStudiosDiagram_en:
+	.incbin "graphics/striped_images/backgrounds/evidence/global_studio_diagram.4bpp.striped"
+
+	.align 2
+	.global gGfx_BG063_Case3SteelSamurai_en
+gGfx_BG063_Case3SteelSamurai_en:
+	.incbin "graphics/striped_images/backgrounds/cutscenes/case3/steel_samurai.8bpp.striped"
+
+	.align 2
+	.global gGfx_BG070_GourdLakeEntrance_en
+gGfx_BG070_GourdLakeEntrance_en:
+	.incbin "graphics/striped_images/gourd_lake_entrance.8bpp.striped"
+
+	.align 2
+	.global gGfx_BG071_GourdLakePark_en
+gGfx_BG071_GourdLakePark_en:
+	.incbin "graphics/striped_images/gourd_lake_park.8bpp.striped"
+
+	.align 2
+	.global gGfx_BG072_GourdLakeParkNoBalloon_en
+gGfx_BG072_GourdLakeParkNoBalloon_en:
+	.incbin "graphics/striped_images/gourd_lake_park_no_balloon.8bpp.striped"
+
+	.align 2
+	.global gGfx_BG077_GourdLakeBoatRental_en
+gGfx_BG077_GourdLakeBoatRental_en:
+	.incbin "graphics/striped_images/gourd_lake_boat_rental.8bpp.striped"
+
+	.align 2
+	.global gGfx_BG082_EvidenceDL6CaseFile1_en
+gGfx_BG082_EvidenceDL6CaseFile1_en:
+	.incbin "graphics/striped_images/backgrounds/evidence/dl6_case_file_page_1.4bpp.striped"
+
+	.align 2
+	.global gGfx_BG083_EvidenceDL6CaseFile2_en
+gGfx_BG083_EvidenceDL6CaseFile2_en:
+	.incbin "graphics/striped_images/backgrounds/evidence/dl6_case_file_page_2.4bpp.striped"
+
+	.align 2
+	.global gGfx_BG084_EvidenceDL6CaseFile3_en
+gGfx_BG084_EvidenceDL6CaseFile3_en:
+	.incbin "graphics/striped_images/backgrounds/evidence/dl6_case_file_page_3.4bpp.striped"
+
+	.align 2
+	.global gGfx_BG089_Case4Newspaper_en
+gGfx_BG089_Case4Newspaper_en:
+	.incbin "graphics/striped_images/case4_newspaper.8bpp.striped"
+
+	.align 2
+	.global gGfx_BG105_TrialWon_en
+gGfx_BG105_TrialWon_en:
+	.incbin "graphics/striped_images/trial_won.8bpp.striped"
