@@ -1574,20 +1574,22 @@ void UpdateRecordPresentActionSprites(bool32 showSprites)
         }
         else
         {
+            // English patch: 8 px further left than the Japanese labels, so
+            // "Back" (27 px, the Japanese label was 24) ends inside the screen
             oam->attr0 = SPRITE_ATTR0(96, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
-            oam->attr1 = SPRITE_ATTR1_NONAFFINE(140, FALSE, FALSE, 1);
+            oam->attr1 = SPRITE_ATTR1_NONAFFINE(132, FALSE, FALSE, 1);
             oam->attr2 = SPRITE_ATTR2(0x1C0, 0, 4);
             oam++;
             oam->attr0 = SPRITE_ATTR0(96, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_H_RECTANGLE);
-            oam->attr1 = SPRITE_ATTR1_NONAFFINE(156, FALSE, FALSE, 2);
+            oam->attr1 = SPRITE_ATTR1_NONAFFINE(148, FALSE, FALSE, 2);
             oam->attr2 = SPRITE_ATTR2(0x1D0, 0, 4);
             oam++;
             oam->attr0 = SPRITE_ATTR0(96, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
-            oam->attr1 = SPRITE_ATTR1_NONAFFINE(200, FALSE, FALSE, 1);
+            oam->attr1 = SPRITE_ATTR1_NONAFFINE(192, FALSE, FALSE, 1);
             oam->attr2 = SPRITE_ATTR2(0x1C4, 0, 4);
             oam++;
             oam->attr0 = SPRITE_ATTR0(96, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_H_RECTANGLE);
-            oam->attr1 = SPRITE_ATTR1_NONAFFINE(216, FALSE, FALSE, 2);
+            oam->attr1 = SPRITE_ATTR1_NONAFFINE(208, FALSE, FALSE, 2);
             oam->attr2 = SPRITE_ATTR2(0x1D8, 0, 4);
         }
     }
@@ -1609,16 +1611,17 @@ void UpdateEvidenceDetailActionSprites(bool32 showSprites)
     
     oam->attr0 = SPRITE_ATTR0_CLEAR;
     oam++;
+    // English patch: 8 px left so "Back" ends inside the screen (see above)
     oam->attr0 = SPRITE_ATTR0(144, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
-    oam->attr1 = SPRITE_ATTR1_NONAFFINE(184, FALSE, FALSE, 1);
+    oam->attr1 = SPRITE_ATTR1_NONAFFINE(176, FALSE, FALSE, 1);
     oam->attr2 = SPRITE_ATTR2(0x1C4, 0, 4);
     oam++;
     oam->attr0 = SPRITE_ATTR0(144, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
-    oam->attr1 = SPRITE_ATTR1_NONAFFINE(200, FALSE, FALSE, 1);
+    oam->attr1 = SPRITE_ATTR1_NONAFFINE(192, FALSE, FALSE, 1);
     oam->attr2 = SPRITE_ATTR2(0x1CC, 0, 4);
     oam++;
     oam->attr0 = SPRITE_ATTR0(144, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_H_RECTANGLE);
-    oam->attr1 = SPRITE_ATTR1_NONAFFINE(216, FALSE, FALSE, 2);
+    oam->attr1 = SPRITE_ATTR1_NONAFFINE(208, FALSE, FALSE, 2);
     oam->attr2 = SPRITE_ATTR2(0x1D8, 0, 4);
 }
 

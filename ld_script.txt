@@ -121,6 +121,7 @@ SECTIONS {
         src/vwf.o(.rodata);
         src/en_verdict.o(.rodata);
         src/en_menu.o(.rodata);
+        src/episode_load_processes.o(.rodata);
     } =0
     /* capcom :^)) */
     . += 0x100;

@@ -20,6 +20,16 @@ void EpisodeInit(struct Main * main)
     main->process[GAME_PROCESS_STATE]++;
 }
 
+// English patch: the episode select draws its text box with BG palettes 0-1
+// and never loads them; the Japanese title screen left the text box colours
+// there (the first 32 entries of its palette). The English title picture uses
+// all 256 colours, so they are put back here (else the box is white and the
+// white "Select an episode." line disappears into it).
+static const u16 sEpisodeSelectTextboxPal[32] = {
+    0x0000, 0x0400, 0x1ce7, 0x4210, 0x739c, 0x3800, 0x3cc5, 0x5a0c, 0x7fff, 0x0c6c, 0x3191, 0x4656, 0x631b, 0x3def, 0x028c, 0x03ff,
+    0x0000, 0x0422, 0x0422, 0x0c6c, 0x3191, 0x4656, 0x631b, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+};
+
 void EpisodeLoadGfx(struct Main * main)
 {
     struct OamAttrs * oam;
@@ -31,6 +41,7 @@ void EpisodeLoadGfx(struct Main * main)
     DmaCopy16(3, gGfxSaveGameTiles, VRAM, 0x1000);
     DecompressBackgroundIntoBuffer(0x43);
     CopyBGDataToVram(0x43);
+    DmaCopy16(3, sEpisodeSelectTextboxPal, PLTT, sizeof(sEpisodeSelectTextboxPal));
     gMain.animationFlags &= ~3;
     oam = gOamObjects;
     for(i = 0; i < MAX_OAM_OBJ_COUNT; i++)
