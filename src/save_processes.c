@@ -1,4 +1,5 @@
 #include "global.h"
+#include "vwf.h"
 #include "save.h"
 #include "animation.h"
 #include "ewram.h"
@@ -34,6 +35,7 @@ u32 SaveGameData()
     gSaveDataBuffer.main.saveContinueFlags |= 0x10;
     DmaCopy16(3, gSaveVersion, gSaveDataBuffer.saveDataVer, sizeof(gSaveVersion));
     CalculateSaveChecksum();
+    VwfSaveLog(); // English patch: text box contents, stored after the save data
     return WriteSramEx((void*)&gSaveDataBuffer, SRAM_START, sizeof(gSaveDataBuffer));
 }
 
@@ -42,6 +44,7 @@ u32 LoadSaveData()
     u32 i;
     char * sramVer;
     ReadSram(SRAM_START, (void*)&gSaveDataBuffer, 0x29D0);
+    VwfLoadLog(); // English patch
     sramVer = gSaveDataBuffer.saveDataVer;
     for(i = 0; i < 0x30; i++)
     {
@@ -232,6 +235,7 @@ void SaveGameInit1(struct Main *main)
     DmaCopy16(3, gBG1MapBuffer, gSaveDataBuffer.bg1Map, sizeof(gBG1MapBuffer));
     DmaCopy16(3, gBG2MapBuffer, gSaveDataBuffer.bg2Map, sizeof(gBG2MapBuffer));
     DmaCopy16(3, gTextBoxCharacters, gSaveDataBuffer.textBoxCharacters, sizeof(gTextBoxCharacters));
+    VwfBackup(); // English patch: the save prompt reuses the text box line buffers
     DmaCopy16(3, &gScriptContext, &gSaveDataBuffer.scriptCtx, sizeof(gScriptContext));
     DmaCopy16(3, &gIORegisters, &gSaveDataBuffer.ioRegs, sizeof(gIORegisters));
     DmaCopy16(3, gMapMarker, gSaveDataBuffer.mapMarker, sizeof(gMapMarker));
@@ -444,6 +448,7 @@ void SaveGameExitSaveScreen(struct Main *main)
     CopyBGDataToVramAndScrollBG(main->currentBG);
     DmaCopy16(3, gSaveDataBuffer.bg2Map, gBG2MapBuffer, sizeof(gBG2MapBuffer));
     DmaCopy16(3, gSaveDataBuffer.textBoxCharacters, gTextBoxCharacters, sizeof(gTextBoxCharacters));
+    VwfRestore();
     RedrawTextboxCharacters();
     DmaCopy16(3, &gSaveDataBuffer.scriptCtx, &gScriptContext, sizeof(gScriptContext));
     DmaCopy16(3, &gSaveDataBuffer.ioRegs, &gIORegisters, sizeof(gIORegisters));
@@ -466,6 +471,7 @@ void SaveGameExitSaveScreen(struct Main *main)
         else if(main->process[GAME_PROCESS_STATE] == INVESTIGATION_TALK)
             LoadTalkChoiceGraphics();
     }
+    VwfReloadChoiceLabels(); // English patch
     FadeInBGM(0x1E, 0xFF); // unpause BGM
     StartHardwareBlend(1, 0, 1, 0x1F);
 }

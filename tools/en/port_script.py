@@ -169,7 +169,7 @@ def map_pos(gpos_to_out, target):
     return gpos_to_out[keys[-1]] if keys else 0
 
 
-def port(gfile, dfile, outfile, report=None, scenario_idx=None):
+def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
     global ANIM_MAP, ANIM_TAG
     mp = os.path.join(os.path.dirname(__file__), 'anim_map.json')
     ANIM_MAP = json.load(open(mp)) if os.path.exists(mp) else {}
@@ -178,7 +178,8 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None):
     db, dn, doffs = load(dfile)
     G = section_bounds(gb, goffs)
     D = section_bounds(db, doffs)
-    pairs = pair_sections(gb, G, db, D)
+    if pairs is None:
+        pairs = pair_sections(gb, G, db, D)
     choices = {}
     cp = os.path.join(os.path.dirname(__file__), 'choice_table.json')
     if scenario_idx is not None and os.path.exists(cp):

@@ -1,4 +1,5 @@
 #include "global.h"
+#include "vwf.h"
 #include "background.h"
 #include "ewram.h"
 #include "sound.h"
@@ -776,6 +777,7 @@ void ContinueSaveProcess(struct Main * main) {
             // 9FD0
             // sizeof(gTextBoxCharacters) != sizeof(gSaveDataBuffer.textBoxCharacters)
             DmaCopy16(3, gSaveDataBuffer.textBoxCharacters, gTextBoxCharacters, sizeof(gTextBoxCharacters));
+            VwfRestore(); // English patch: text box contents loaded with the save
             RedrawTextboxCharacters();
             DmaCopy16(3, &gSaveDataBuffer.scriptCtx, &gScriptContext, sizeof(gScriptContext));
             DmaCopy16(3, &gSaveDataBuffer.ioRegs, &gIORegisters, sizeof(gIORegisters));
@@ -805,6 +807,7 @@ void ContinueSaveProcess(struct Main * main) {
             if (main->itemPlateState > 3) {
                 LoadItemPlateGfx(main);
             }
+            VwfReloadChoiceLabels(); // English patch: after the nametag etc. are loaded
             // A112
             FadeInBGM(20, main->currentPlayingBgm);
             StartHardwareBlend(1, 1, 1, 0x1F);

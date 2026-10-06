@@ -12,14 +12,64 @@ gGfx8lzTitleScreen_en:
 	.incbin "graphics/title_screen.8bpp.lz"
 
 	.align 2
+	.global gGfxSaveGameTiles_en
+gGfxSaveGameTiles_en:
+	.incbin "graphics/ui/message_box/save_game_tiles.4bpp"
+
+	.align 2
 	.global gGfx4bppNametags_en
 gGfx4bppNametags_en:
 	.incbin "graphics/ui/message_box/nametags.4bpp"
 
 	.align 2
+	.global gGfx4bppInvestigationActions_en
+gGfx4bppInvestigationActions_en:
+	.incbin "graphics/ui/investigation/action_buttons.4bpp"
+
+	.align 2
+	.global gGfx4bppTestimonyTextTiles_en
+gGfx4bppTestimonyTextTiles_en:
+	.incbin "graphics/ui/trial/testimony_text_tiles.4bpp"
+
+	.align 2
+	.global gGfxTrialPressPresentButtons_en
+gGfxTrialPressPresentButtons_en:
+	.incbin "graphics/ui/trial/press_present_buttons.4bpp"
+
+	.align 2
+	.global gGfxCourtRecordPresentBackText_en
+gGfxCourtRecordPresentBackText_en:
+	.incbin "graphics/ui/court_record/present_back_text.4bpp"
+
+	.align 2
+	.global gGfxCourtRecordProfilesText_en
+gGfxCourtRecordProfilesText_en:
+	.incbin "graphics/ui/court_record/profiles_text.4bpp"
+
+	.align 2
+	.global gGfxCourtRecordEvidenceText_en
+gGfxCourtRecordEvidenceText_en:
+	.incbin "graphics/ui/court_record/evidence_text.4bpp"
+
+	.align 2
 	.global gGfxNewGameContinue_en
 gGfxNewGameContinue_en:
 	.incbin "graphics/ui/new_game_continue.4bpp"
+
+	.align 2
+	.global gGfx4lzEpisodeSelectOptions_en
+gGfx4lzEpisodeSelectOptions_en:
+	.incbin "graphics/episode_select_options.4bpp.lz"
+
+	.align 2
+	.global gGfxFromSaveOrBeginning_en
+gGfxFromSaveOrBeginning_en:
+	.incbin "graphics/from_save_or_beginning_options.4bpp"
+
+	.align 2
+	.global gGfxSaveYesOrNo_en
+gGfxSaveYesOrNo_en:
+	.incbin "graphics/save_yes_no.4bpp"
 
 	.align 2
 	.global gGfxProfilesMiaFey0_description_en

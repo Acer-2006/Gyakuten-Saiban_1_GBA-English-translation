@@ -27,7 +27,7 @@ gPalEvidenceProfileDesc:
 
 	.global gGfxSaveGameTiles
 gGfxSaveGameTiles:
-	.incbin "graphics/ui/message_box/save_game_tiles.4bpp"
+	.incbin "graphics_orig/ui/message_box/save_game_tiles.4bpp"
 
 	.global gGfx4bppNametags
 gGfx4bppNametags:
@@ -47,7 +47,7 @@ gGfx4bppUnusedTestimonyCharacters:
 
 	.global gGfx4bppInvestigationActions
 gGfx4bppInvestigationActions:
-	.incbin "graphics/ui/investigation/action_buttons.4bpp"
+	.incbin "graphics_orig/ui/investigation/action_buttons.4bpp"
 
 	.global gGfx4bppControllerButtons
 gGfx4bppControllerButtons:
@@ -59,23 +59,23 @@ gGfx4bppInvestigationScrollButton:
 
 	.global gGfx4bppTestimonyTextTiles
 gGfx4bppTestimonyTextTiles:
-	.incbin "graphics/ui/trial/testimony_text_tiles.4bpp"
+	.incbin "graphics_orig/ui/trial/testimony_text_tiles.4bpp"
 
 	.global gGfxTrialPressPresentButtons
 gGfxTrialPressPresentButtons:
-	.incbin "graphics/ui/trial/press_present_buttons.4bpp"
+	.incbin "graphics_orig/ui/trial/press_present_buttons.4bpp"
 
 	.global gGfxCourtRecordPresentBackText
 gGfxCourtRecordPresentBackText:
-	.incbin "graphics/ui/court_record/present_back_text.4bpp"
+	.incbin "graphics_orig/ui/court_record/present_back_text.4bpp"
 
 	.global gGfxCourtRecordProfilesText
 gGfxCourtRecordProfilesText:
-	.incbin "graphics/ui/court_record/profiles_text.4bpp"
+	.incbin "graphics_orig/ui/court_record/profiles_text.4bpp"
 
 	.global gGfxCourtRecordEvidenceText
 gGfxCourtRecordEvidenceText:
-	.incbin "graphics/ui/court_record/evidence_text.4bpp"
+	.incbin "graphics_orig/ui/court_record/evidence_text.4bpp"
 
 	.global gGfxInvestigationExamineCursor
 gGfxInvestigationExamineCursor:
@@ -198,15 +198,15 @@ gPalConfetti:
 
 	.global gGfx4lzEpisodeSelectOptions
 gGfx4lzEpisodeSelectOptions:
-	.incbin "graphics/episode_select_options.4bpp.lz"
+	.incbin "graphics_orig/episode_select_options.4bpp.lz"
 
 	.global gGfxFromSaveOrBeginning
 gGfxFromSaveOrBeginning:
-	.incbin "graphics/from_save_or_beginning_options.4bpp"
+	.incbin "graphics_orig/from_save_or_beginning_options.4bpp"
 
 	.global gGfxSaveYesOrNo
 gGfxSaveYesOrNo:
-	.incbin "graphics/save_yes_no.4bpp"
+	.incbin "graphics_orig/save_yes_no.4bpp"
 
 @ BEGIN PROFILE AND EVIDENCE DESCRIPTIONS
 

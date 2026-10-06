@@ -8,11 +8,25 @@
 #endif
 
 
+
+
+
+
 // English patch relocations (tools/en/relocate_assets.py)
 extern u8 gPalTitleScreen_en[];
 extern u8 gGfx8lzTitleScreen_en[];
+extern u8 gGfxSaveGameTiles_en[];
 extern u8 gGfx4bppNametags_en[];
+extern u8 gGfx4bppInvestigationActions_en[];
+extern u8 gGfx4bppTestimonyTextTiles_en[];
+extern u8 gGfxTrialPressPresentButtons_en[];
+extern u8 gGfxCourtRecordPresentBackText_en[];
+extern u8 gGfxCourtRecordProfilesText_en[];
+extern u8 gGfxCourtRecordEvidenceText_en[];
 extern u8 gGfxNewGameContinue_en[];
+extern u8 gGfx4lzEpisodeSelectOptions_en[];
+extern u8 gGfxFromSaveOrBeginning_en[];
+extern u8 gGfxSaveYesOrNo_en[];
 extern u8 gGfxProfilesMiaFey0_description_en[];
 extern u8 gGfxProfilesMayaFey0_description_en[];
 extern u8 gGfxProfilesLarryButz0_description_en[];
@@ -131,18 +145,18 @@ extern u8 gGfxEvidenceMissileAngry_description_en[];
 #define gGfx8lzTitleScreenDemo ((u8*)(ROM_START + 0x182F08))
 #define gUnusedAsciiCharSet ((u8*)(ROM_START + 0x185D20))
 #define gPalEvidenceProfileDesc ((u8*)(GFX_BASE_ADDR + 0x6520))
-#define gGfxSaveGameTiles ((u8*)(ROM_START + 0x186540))
+#define gGfxSaveGameTiles ((u8*)gGfxSaveGameTiles_en)
 #define gGfx4bppNametags ((u8*)gGfx4bppNametags_en)
 #define gGfx4bppTestimonyArrows ((u8*)(GFX_BASE_ADDR + 0xBD40))
 #define gGfx4bppTrialLife ((u8*)(GFX_BASE_ADDR + 0xC040))
-#define gGfx4bppInvestigationActions ((u8*)(ROM_START + 0x18E4C0))
+#define gGfx4bppInvestigationActions ((u8*)gGfx4bppInvestigationActions_en)
 #define gGfx4bppControllerButtons ((u8*)(GFX_BASE_ADDR + 0xF4C0))
 #define gGfx4bppInvestigationScrollButton ((u8*)(ROM_START + 0x18F6C0))
-#define gGfx4bppTestimonyTextTiles ((u8*)(ROM_START + 0x18F8C0))
-#define gGfxTrialPressPresentButtons ((u8*)(ROM_START + 0x1900C0))
-#define gGfxCourtRecordPresentBackText ((u8*)(GFX_BASE_ADDR + 0x104C0))
-#define gGfxCourtRecordProfilesText ((u8*)(GFX_BASE_ADDR + 0x106C0))
-#define gGfxCourtRecordEvidenceText ((u8*)(ROM_START + 0x1908C0))
+#define gGfx4bppTestimonyTextTiles ((u8*)gGfx4bppTestimonyTextTiles_en)
+#define gGfxTrialPressPresentButtons ((u8*)gGfxTrialPressPresentButtons_en)
+#define gGfxCourtRecordPresentBackText ((u8*)gGfxCourtRecordPresentBackText_en)
+#define gGfxCourtRecordProfilesText ((u8*)gGfxCourtRecordProfilesText_en)
+#define gGfxCourtRecordEvidenceText ((u8*)gGfxCourtRecordEvidenceText_en)
 #define gGfxInvestigationExamineCursor ((u8*)(ROM_START + 0x190AC0))
 #define gGfxInvestigationCheckmark ((u8*)(ROM_START + 0x190FC0))
 #define gGfxTrialGameOverDoors ((u8*)(ROM_START + 0x1911C0))
@@ -166,9 +180,9 @@ extern u8 gGfxEvidenceMissileAngry_description_en[];
 #define gPalTrialGameOverText ((u8*)(ROM_START + 0x194560))
 #define gPalNewGameContinue ((u8*)(ROM_START + 0x194580))
 #define gPalConfetti ((u8*)(ROM_START + 0x194640))
-#define gGfx4lzEpisodeSelectOptions ((u8*)(ROM_START + 0x1946C0))
-#define gGfxFromSaveOrBeginning ((u8*)(ROM_START + 0x1954A8))
-#define gGfxSaveYesOrNo ((u8*)(ROM_START + 0x1964A8))
+#define gGfx4lzEpisodeSelectOptions ((u8*)gGfx4lzEpisodeSelectOptions_en)
+#define gGfxFromSaveOrBeginning ((u8*)gGfxFromSaveOrBeginning_en)
+#define gGfxSaveYesOrNo ((u8*)gGfxSaveYesOrNo_en)
 #define gGfxProfilesMiaFey0_description ((u8*)gGfxProfilesMiaFey0_description_en)
 #define gGfxProfilesMayaFey0_description ((u8*)gGfxProfilesMayaFey0_description_en)
 #define gGfxProfilesLarryButz0_description ((u8*)gGfxProfilesLarryButz0_description_en)

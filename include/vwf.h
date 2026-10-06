@@ -13,9 +13,17 @@
 #define VWF_GLYPH_COUNT 1400
 #define VWF_SPACE_WIDTH 4
 #define VWF_LINE_VRAM_STRIDE 0x800     // same per-line VRAM stride as the original text
+#define VWF_LOG_LEN 64
 
 void VwfPutChar(u32 code, u32 line, u32 color);
 void VwfClearLine(u32 line);
 void VwfRedraw(void);
+void VwfBackup(void);
+void VwfRestore(void);
+void VwfSaveLog(void);
+void VwfSetChoiceLabels(const u16 *ids);
+void VwfReloadChoiceLabels(void);
+void ReloadChoiceLabelGfx(const u16 *ids);
+void VwfLoadLog(void);
 
 #endif // GUARD_VWF_H

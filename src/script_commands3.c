@@ -1,4 +1,5 @@
 #include "global.h"
+#include "vwf.h"
 #include "script.h"
 #include "sound.h"
 #include "ewram.h"
@@ -359,8 +360,19 @@ bool32 Command5E(struct ScriptContext *scriptCtx)
             c->color = 0;
         }
     }
+    VwfSetChoiceLabels(scriptCtx->scriptPtr); // so they can be reloaded after a save
     scriptCtx->scriptPtr += 3;
     return 0;
+}
+
+// English patch: the label graphics live in VRAM only; put them back after
+// the save screen or after loading a save that was made with a choice pending.
+void ReloadChoiceLabelGfx(const u16 *ids)
+{
+    u32 k;
+    for (k = 0; k < 3; k++)
+        if (ids[k] != 0xFFFF)
+            DmaCopy16(3, gChoiceLabels + ids[k] * 0x680, OBJ_VRAM0 + sChoiceLabelVram[k], 0x680);
 }
 
 // English patch: called when a choice is confirmed; puts back the graphics the
@@ -368,6 +380,7 @@ bool32 Command5E(struct ScriptContext *scriptCtx)
 void ChoiceLabelsDone(void)
 {
     u32 k;
+    VwfSetChoiceLabels(NULL);
     for (k = 32; k < ARRAY_COUNT(gTextBoxCharacters); k++)
         gTextBoxCharacters[k].state &= ~0x8000;
     if (gMain.process[GAME_PROCESS] == INVESTIGATION_PROCESS)

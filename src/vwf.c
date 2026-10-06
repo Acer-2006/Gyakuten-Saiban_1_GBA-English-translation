@@ -3,6 +3,8 @@
 #include "script.h"
 #include "ewram.h"
 #include "vwf.h"
+#include "agb_sram.h"
+#include <stddef.h>
 
 // English VWF text renderer.
 // The scripts now run straight from ROM, so the old 108KB script heap in
@@ -13,9 +15,19 @@ struct VwfState
 {
     u8 pen[4];
     u8 tiles[VWF_LINES][VWF_BLOCKS_PER_LINE * 8 * 32];
+    // what is on each line (code | color << 11), so the text box can be
+    // redrawn after the save screen or after loading a save
+    u32 logMagic;
+    u16 choiceIds[4];            // answer labels on screen (choiceIds[3] == 1)
+    u8 logLen[4];
+    u16 log[VWF_LINES][VWF_LOG_LEN];
 };
+#define VWF_LOG_MAGIC 0x31465756 // "VWF1"
+#define VWF_SRAM_OFFSET 0x2A00   // after the original 0x29D0-byte save
 
 #define gVwf ((struct VwfState *)(EWRAM_START + 0x11FC0 + 0x10))
+// copy kept while the save screen borrows the text box
+#define gVwfBackup ((struct VwfState *)(EWRAM_START + 0x11FC0 + 0x2000))
 
 extern const u8 gVwfFontGlyphs[];
 extern const u8 gVwfFontWidths[];
@@ -47,22 +59,33 @@ void VwfClearLine(u32 line)
     if (line >= VWF_LINES)
         return;
     gVwf->pen[line] = 0;
+    gVwf->logLen[line] = 0;
+    gVwf->logMagic = VWF_LOG_MAGIC;
     DmaFill16(3, 0, gVwf->tiles[line], sizeof(gVwf->tiles[line]));
     VwfCopyBlocks(line, 0, VWF_BLOCKS_PER_LINE - 1);
     for (b = 0; b < VWF_BLOCKS_PER_LINE; b++)
         gTextBoxCharacters[line * VWF_BLOCKS_PER_LINE + b].state &= ~0x8000;
 }
 
+static void VwfDrawChar(u32 code, u32 line, u32 color, bool32 copy);
+
 void VwfPutChar(u32 code, u32 line, u32 color)
+{
+    if (line >= VWF_LINES)
+        line = VWF_LINES - 1;
+    if (code >= VWF_GLYPH_COUNT)
+        code = 0xFF;
+    if (gVwf->logLen[line] < VWF_LOG_LEN)
+        gVwf->log[line][gVwf->logLen[line]++] = code | (color << 11);
+    VwfDrawChar(code, line, color, TRUE);
+}
+
+static void VwfDrawChar(u32 code, u32 line, u32 color, bool32 copy)
 {
     const u8 * glyph;
     u8 * buf;
     u32 width, pen, x, y;
 
-    if (line >= VWF_LINES)
-        line = VWF_LINES - 1;
-    if (code >= VWF_GLYPH_COUNT)
-        code = 0xFF;
     pen = gVwf->pen[line];
     if (code == 0xFF) // space
     {
@@ -95,6 +118,7 @@ void VwfPutChar(u32 code, u32 line, u32 color)
         }
     }
     gVwf->pen[line] = pen + width + 1;
+    if (copy)
     {
         u32 first = pen >> 5;
         u32 last = (pen + width) >> 5;
@@ -105,11 +129,71 @@ void VwfPutChar(u32 code, u32 line, u32 color)
     }
 }
 
-// Called after loading a save: the line buffers survive in EWRAM only if the
-// game was not power-cycled, so just push whatever is there back to VRAM.
+// Rebuild the text box from the per-line log (after the save screen, or
+// after loading a save) and push it to VRAM.
 void VwfRedraw(void)
 {
-    u32 line;
+    u32 line, i, n;
+    if (gVwf->logMagic != VWF_LOG_MAGIC)
+    {
+        for (line = 0; line < VWF_LINES; line++)
+            gVwf->logLen[line] = 0;
+        gVwf->choiceIds[3] = 0;
+        gVwf->logMagic = VWF_LOG_MAGIC;
+    }
     for (line = 0; line < VWF_LINES; line++)
+    {
+        n = gVwf->logLen[line];
+        if (n > VWF_LOG_LEN)
+            n = gVwf->logLen[line] = 0;
+        gVwf->pen[line] = 0;
+        DmaFill16(3, 0, gVwf->tiles[line], sizeof(gVwf->tiles[line]));
+        for (i = 0; i < n; i++)
+        {
+            u32 code = gVwf->log[line][i] & 0x7FF;
+            if (code >= VWF_GLYPH_COUNT)
+                code = 0xFF;
+            VwfDrawChar(code, line, gVwf->log[line][i] >> 11, FALSE);
+        }
         VwfCopyBlocks(line, 0, VWF_BLOCKS_PER_LINE - 1);
+    }
+    VwfReloadChoiceLabels();
+}
+
+void VwfReloadChoiceLabels(void)
+{
+    if (gVwf->logMagic == VWF_LOG_MAGIC && gVwf->choiceIds[3] == 1)
+        ReloadChoiceLabelGfx(gVwf->choiceIds);
+}
+
+void VwfSetChoiceLabels(const u16 *ids)
+{
+    u32 k;
+    for (k = 0; k < 3; k++)
+        gVwf->choiceIds[k] = ids ? ids[k] : 0xFFFF;
+    gVwf->choiceIds[3] = ids ? 1 : 0;
+}
+
+void VwfBackup(void)
+{
+    DmaCopy16(3, gVwf, gVwfBackup, sizeof(struct VwfState));
+}
+
+void VwfRestore(void)
+{
+    DmaCopy16(3, gVwfBackup, gVwf, sizeof(struct VwfState));
+}
+
+// The save screen runs while the backup holds the game's text box; that is
+// what gets stored next to the save data.
+void VwfSaveLog(void)
+{
+    WriteSramEx((const u8 *)&gVwfBackup->logMagic, (u8 *)SRAM_START + VWF_SRAM_OFFSET,
+                sizeof(struct VwfState) - offsetof(struct VwfState, logMagic));
+}
+
+void VwfLoadLog(void)
+{
+    ReadSram((const u8 *)SRAM_START + VWF_SRAM_OFFSET, (u8 *)&gVwfBackup->logMagic,
+             sizeof(struct VwfState) - offsetof(struct VwfState, logMagic));
 }

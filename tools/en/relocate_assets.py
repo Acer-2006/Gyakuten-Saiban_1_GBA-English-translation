@@ -42,6 +42,7 @@ block = ['// English patch relocations (tools/en/relocate_assets.py)']
 for label, real in changed:
     m = re.search(r'#define %s \(\((\w+)\s*\*\)' % label, h)
     if not m:
+        print('warning: no address macro for %s; the code would still see the original' % label)
         continue
     t = m.group(1)
     h = re.sub(r'#define %s \(\(%s\s*\*\)\([^)]*\)\)' % (label, t), '#define %s ((%s*)%s_en)' % (label, t, label), h)
