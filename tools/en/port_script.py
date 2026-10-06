@@ -873,55 +873,98 @@ POSE_HEADS = None   # (person, animation) -> (head centre x, head top y), measur
 JP_TRANS = None
 
 
-def pose_events(toks):
-    """Each pose command with the one shown just before it (same person, no
-    background change or pan in between) and whether that one was showing
-    its idle animation by then: the engine switches to idle while it waits
-    for a button (02, 07, 0A, 2D) and back to talking when a page break (02)
-    goes on to the next page."""
+def pose_events(toks, start_bg=None):
+    """Each pose command with the one shown just before it (same person, same
+    view) and whether that one was showing its idle animation by then: the
+    engine switches to idle while it waits for a button (02, 07, 0A, 2D, and 15 between statements) and
+    back to talking when a page break (02) goes on to the next page. The GBA
+    sets a person and then their background (1E, 1B); that background change
+    starts a new view unless it is the one already shown. start_bg: the
+    background the section starts on, if known."""
     ev = []
     cur = None
     text = False   # True: the previous pose is on its idle animation
-    bg = None
+    bg = start_bg
     reset = False
+    sig = None     # the last command that takes time or changes the picture
     for pos, kind, op, a in parse(toks, GBA_ARGS)[0]:
         if kind == 'text':
+            sig = 'text'
             continue
-        if op in (0x07, 0x0A, 0x2D):
+        if op in (0x07, 0x0A, 0x2D, 0x15):
             text = True
         elif op == 0x02:
             text = False
-        if op in (0x1B, 0x1A):
+        if op == 0x1B and a and sig == 0x1E and ev and ev[-1][0] is not None:
+            new_bg = a[0] & 0x7FFF
+            if new_bg != bg:          # a new view: the pose just set starts it
+                ev[-1][4] = None
+                ev[-1][7] = False
+                reset = True
+            bg = new_bg
+            ev[-1][6] = bg
+        elif op in (0x1B, 0x1A):
             cur = None
             reset = True
             if op == 0x1B and a:
                 bg = a[0] & 0x7FFF
         elif op == 0x1E and a:
-            e = [pos, a[0] & 0xFF, a[1], a[2], None, text, bg, not ev and bg is None and not reset]
+            e = [pos, a[0] & 0xFF, a[1], a[2], None, text, bg, not ev and not reset]
             if a[0] & 0xFF and cur is not None and cur[1] == e[1]:
                 e[4] = cur
             ev.append(e)
             cur = e if a[0] & 0xFF else None
             text = False
+        if op not in BG_ORDER_FREE:
+            sig = op
     return ev
 
 
 def end_state(toks):
-    """(person, talking, idle, on idle) shown when the section ends, if nobody
-    was cleared and no background change or pan came after the last pose"""
+    """(person, talking, idle, on idle, background) shown when the section
+    ends, if nobody was cleared and no other view came after the last pose"""
+    ev = pose_events(toks)
     st = None
+    sig = None
+    bg = None
     for pos, kind, op, a in parse(toks, GBA_ARGS)[0]:
         if kind == 'text':
+            sig = 'text'
             continue
-        if op in (0x07, 0x0A, 0x2D) and st:
-            st = st[:3] + (True,)
+        if op in (0x07, 0x0A, 0x2D, 0x15) and st:
+            st = st[:3] + (True,) + st[4:]
         elif op == 0x02 and st:
-            st = st[:3] + (False,)
-        if op in (0x1B, 0x1A):
+            st = st[:3] + (False,) + st[4:]
+        if op == 0x1B and a and sig == 0x1E and st:
+            bg = a[0] & 0x7FFF
+            st = st[:4] + (bg,)
+        elif op in (0x1B, 0x1A):
             st = None
+            if op == 0x1B and a:
+                bg = a[0] & 0x7FFF
         elif op == 0x1E and a:
-            st = (a[0] & 0xFF, a[1], a[2], False) if a[0] & 0xFF else None
+            st = (a[0] & 0xFF, a[1], a[2], False, bg) if a[0] & 0xFF else None
+        if op not in BG_ORDER_FREE:
+            sig = op
     return st
+
+
+JP_POSES_ALL = None
+
+
+def jp_poses_all(gdir):
+    """(background, person) -> every animation the GBA script gives them there"""
+    global JP_POSES_ALL
+    if JP_POSES_ALL is None:
+        JP_POSES_ALL = collections.defaultdict(set)
+        for f in glob.glob(os.path.join(gdir, 'scenario_*.phscr')):
+            b, n, offs = load(f)
+            for x in section_bounds(b, offs):
+                if x:
+                    for pos, p, t, i, prev, text, bg, clean in pose_events(tokens(b, *x)):
+                        if p and bg is not None:
+                            JP_POSES_ALL[(bg, p)].update((t, i))
+    return JP_POSES_ALL
 
 
 def jp_transitions(gdir):
@@ -939,7 +982,7 @@ def jp_transitions(gdir):
                     carry = None
                     continue
                 toks = tokens(b, *x)
-                for k, (pos, p, t, i, prev, text, bg, clean) in enumerate(pose_events(toks)):
+                for k, (pos, p, t, i, prev, text, bg, clean) in enumerate(pose_events(toks, carry[4] if carry else None)):
                     if not p:
                         continue
                     JP_TRANS.add((p, t, i))
@@ -973,7 +1016,7 @@ def fix_moving_poses(out, gdir, carry=None):
     pairs = jp_pairs()[0]
     def ok(p, a, b):
         return a == b or (p, a, b) in jt or not moves(p, a, b)
-    ev = pose_events(out)
+    ev = pose_events(out, carry[4] if carry else None)
     if ev and ev[0][7] and carry and carry[0] == ev[0][1]:
         # the section goes on from the one before with the same person shown
         ev[0][4] = [None, carry[0], carry[1], carry[2], None, None, None, False]
@@ -983,7 +1026,7 @@ def fix_moving_poses(out, gdir, carry=None):
         pos, p, t, i, prev, text, bg, clean = e
         if not p:
             continue
-        here = POSES_BG.get((bg, p)) if bg is not None else None
+        here = jp_poses_all(gdir).get((bg, p)) if bg is not None else None
         nxt = ev[k + 1] if k + 1 < len(ev) and ev[k + 1][4] is e else None
         def score(t2, i2):
             src = (prev[3] if text else prev[2]) if prev else None

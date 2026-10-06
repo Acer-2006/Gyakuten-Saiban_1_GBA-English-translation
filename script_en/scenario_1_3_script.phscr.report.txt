@@ -54,9 +54,9 @@ sec  52 <- ds  52  {'dropped_ds': 4, 'inserted_gba': 6, 'unmatched_kept': 126, '
 sec  53 <- ds  53  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 13, 'ds_fx': 2, 'anim_ds': 1}
 sec  54 <- ds  54  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 9, 'anim_ds': 2, 'ds_fx': 2}
 sec  55 <- ds  55  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_guess': 0, 'anim_ds': 2, 'ds_fx': 1}
-sec  56 <- ds  56  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_guess': 0, 'anim_ds': 2, 'ds_fx': 1, 'moving': '1 poses that jumped replaced'}
+sec  56 <- ds  56  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_guess': 0, 'anim_ds': 2, 'ds_fx': 1}
 sec  57 <- ds  57  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_guess': 0, 'anim_ds': 2, 'ds_fx': 1}
-sec  58 <- ds  58  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_guess': 0, 'anim_ds': 2, 'ds_fx': 1, 'moving': '1 poses that jumped replaced'}
+sec  58 <- ds  58  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_guess': 0, 'anim_ds': 2, 'ds_fx': 1}
 sec  59 <- ds  59  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 11, 'anim_ds': 3, 'ds_fx': 1}
 sec  60 <- ds  60  {'dropped_ds': 3, 'inserted_gba': 2, 'unmatched_kept': 21, 'anim_ds': 4, 'ds_fx': 7, 'choice_labels': 1, 'pan_waits': 1}
 sec  61 <- ds  61  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 10, 'anim_ds': 3, 'ds_fx': 3}
