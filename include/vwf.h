@@ -26,5 +26,6 @@ void VwfSetChoiceLabels(const u16 *ids);
 void VwfReloadChoiceLabels(void);
 void ReloadChoiceLabelGfx(const u16 *ids);
 void VwfLoadLog(void);
+void VwfFixSavedScriptPos(void);
 
 #endif // GUARD_VWF_H

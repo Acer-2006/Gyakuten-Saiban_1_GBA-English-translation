@@ -172,6 +172,7 @@ void EpisodeClearedProcess(struct Main * main)
             if(gMain.saveContinueFlags & 0xF0)
             {
                 ReadSram(SRAM_START, (void*)&gSaveDataBuffer, sizeof(gSaveDataBuffer));
+                VwfLoadLog(); // English patch: keep the saved text box with the save point
                 gSaveDataBuffer.main.caseEnabledFlags |= 1 << main->process[GAME_PROCESS_VAR2];
                 SaveGameData();
             }
@@ -734,6 +735,7 @@ void ContinueSaveProcess(struct Main * main) {
             VwfRestore(); // English patch: text box contents loaded with the save
             RedrawTextboxCharacters();
             DmaCopy16(3, &gSaveDataBuffer.scriptCtx, &gScriptContext, sizeof(gScriptContext));
+            VwfFixSavedScriptPos(); // English patch: a save from another build keeps its place
             DmaCopy16(3, &gSaveDataBuffer.ioRegs, &gIORegisters, sizeof(gIORegisters));
             DmaCopy16(3, &gSaveDataBuffer.courtRecord, &gCourtRecord, sizeof(gCourtRecord));
             DmaCopy16(3, &gSaveDataBuffer.investigation, &gInvestigation, sizeof(gInvestigation));

@@ -28,6 +28,7 @@ struct VwfState
     u8 pad[3];
 };
 #define VWF_LOG_MAGIC 0x32465756 // "VWF2"
+#define VWF_LOG_MAGIC_V1 0x31465756 // "VWF1": no line starts / centring
 #define VWF_SRAM_OFFSET 0x2A00   // after the original 0x29D0-byte save
 
 #define gVwf ((struct VwfState *)(EWRAM_START + 0x11FC0 + 0x10))
@@ -320,6 +321,186 @@ void VwfSaveLog(void)
 
 void VwfLoadLog(void)
 {
+    u32 line;
     ReadSram((const u8 *)SRAM_START + VWF_SRAM_OFFSET, (u8 *)&gVwfBackup->logMagic,
              sizeof(struct VwfState) - offsetof(struct VwfState, logMagic));
+    if (gVwfBackup->logMagic == VWF_LOG_MAGIC_V1)
+    {
+        // saved by v0.2 - v0.4: the same log, without the line starts
+        for (line = 0; line < 4; line++)
+            gVwfBackup->lineStart[line] = 0;
+        gVwfBackup->centre = 0;
+        gVwfBackup->logMagic = VWF_LOG_MAGIC;
+    }
+}
+
+// A save keeps its place in the script as a ROM address. Each build of the
+// patch may lay the scripts out differently (an added sound, a moved fade),
+// so a save made with an earlier build can point at the wrong line, or into
+// the middle of a command, and the dialogue that follows is lost. Section
+// numbers stay the same between builds, and the text box contents are saved
+// with the game (the log above), so after loading, the save's section is
+// walked from its start and the place is checked: the command the script was
+// waiting at must be there, with the same text on the page. If it is not, the
+// page with that text is looked up in the section (the nearest one to where
+// the save was in the old section). Without either, the section starts over.
+extern const u32 gScriptSizes[];
+
+#define NO_POS 0xFFFFFFFF
+
+struct PageSim
+{
+    u32 x, y;                // as textX / textY
+    u8 len[VWF_LINES];       // characters on each line
+    u8 written[VWF_LINES];   // line started on this page
+    u8 bad[VWF_LINES];       // differs from the saved log
+};
+
+static void SimClearPage(struct PageSim * sim)
+{
+    u32 l;
+    sim->x = sim->y = 0;
+    for (l = 0; l < VWF_LINES; l++)
+        sim->written[l] = 0;
+}
+
+static void SimPutChar(struct PageSim * sim, u32 code, bool32 useLog)
+{
+    u32 l = sim->y < VWF_LINES ? sim->y : VWF_LINES - 1;
+    if (code >= VWF_GLYPH_COUNT)
+        code = 0xFF;
+    if (sim->x == 0)
+    {
+        // a line starts (VwfClearLine)
+        sim->len[l] = 0;
+        sim->bad[l] = 0;
+        sim->written[l] = 1;
+    }
+    if (useLog && sim->len[l] < VWF_LOG_LEN && (gVwf->log[l][sim->len[l]] & 0x7FF) != code)
+        sim->bad[l] = 1;
+    if (sim->len[l] < 0xFF)
+        sim->len[l]++;
+    sim->x++;
+}
+
+static bool32 SimMatches(const struct PageSim * sim, const struct ScriptContext * ctx, bool32 useLog)
+{
+    u32 l, n;
+    if (sim->y != ctx->textY || sim->x != ctx->textX)
+        return FALSE;
+    if (!useLog)
+        return TRUE;
+    for (l = 0; l < VWF_LINES; l++)
+    {
+        if (!sim->written[l])
+            continue;
+        n = sim->len[l] < VWF_LOG_LEN ? sim->len[l] : VWF_LOG_LEN;
+        if (sim->bad[l] || gVwf->logLen[l] != n)
+            return FALSE;
+    }
+    return TRUE;
+}
+
+void VwfFixSavedScriptPos(void)
+{
+    struct ScriptContext * ctx = &gScriptContext;
+    const u8 * base = gScriptBase;
+    const u32 * offs;
+    const u16 * s;
+    struct PageSim sim;
+    u32 size, n, k, i, sec, start, end, pos, len, oldPos, rel, best, bestDist, d, t;
+    bool32 useLog, oldValid = FALSE, oldText = FALSE;
+
+    if (ctx->currentSection < 0x80 || (ctx->flags & SCRIPT_FULLSCREEN) || gMain.scenarioIdx > 16)
+        return;
+    size = gScriptSizes[gMain.scenarioIdx];
+    n = *(const u32 *)base;
+    offs = (const u32 *)(base + 4);
+    // the section offsets come first, in order; jump records follow them
+    for (k = 0; k < n; k++)
+        if (offs[k] >= size || (k > 0 && offs[k] <= offs[k - 1]))
+            break;
+    sec = ctx->currentSection - 0x80;
+    if (sec >= k)
+        return;
+    start = offs[sec];
+    end = sec + 1 < k ? offs[sec + 1] : size;
+    s = (const u16 *)(base + start);
+    len = (end - start) / 2;
+    oldPos = (ctx->scriptPtr >= s && ctx->scriptPtr < s + len) ? (u32)(ctx->scriptPtr - s) : NO_POS;
+    rel = (u32)(ctx->scriptPtr - ctx->scriptSectionPtr);
+    useLog = gVwf->logMagic == VWF_LOG_MAGIC;
+
+    best = NO_POS;
+    bestDist = NO_POS;
+    for (i = 0; i < VWF_LINES; i++)
+        sim.len[i] = sim.bad[i] = 0;
+    SimClearPage(&sim);
+    for (pos = 0; pos < len; )
+    {
+        t = s[pos];
+        if (t == ctx->currentToken)
+        {
+            bool32 match = SimMatches(&sim, ctx, useLog);
+            if (pos == oldPos)
+            {
+                oldValid = TRUE;
+                oldText = match;
+            }
+            if (match)
+            {
+                d = pos > rel ? pos - rel : rel - pos;
+                if (d < bestDist)
+                {
+                    best = pos;
+                    bestDist = d;
+                }
+            }
+        }
+        if (t >= 0x80)
+        {
+            SimPutChar(&sim, t - 0x80, useLog);
+            pos++;
+            continue;
+        }
+        switch (t)
+        {
+        case 0x01: // new line
+            sim.x = 0;
+            sim.y++;
+            break;
+        case 0x00: // section start
+        case 0x02: // wait for A (page end)
+        case 0x07:
+        case 0x0A:
+        case 0x08: // choices
+        case 0x09:
+        case 0x2C:
+        case 0x2E:
+            SimClearPage(&sim);
+            break;
+        }
+        pos += 1 + (t < 0x60 ? sCmdArgs[t] : 0);
+    }
+
+    ctx->scriptSectionPtr = s;
+    if (oldValid && oldText)
+        return;                         // the same place (the same script)
+    if (best != NO_POS)
+    {
+        ctx->scriptPtr = s + best;      // the page with the saved text
+        return;
+    }
+    if (oldValid)
+        return;                         // nothing to compare: keep it
+    // start the section over, with an empty text box
+    ctx->scriptPtr = s;
+    ctx->textX = 0;
+    ctx->textY = 0;
+    ctx->flags &= ~(1 | 2 | 0x20);
+    for (i = 0; i < VWF_LINES; i++)
+        gVwf->logLen[i] = 0;
+    gVwf->choiceIds[3] = 0;
+    for (i = 0; i < ARRAY_COUNT(gTextBoxCharacters); i++)
+        gTextBoxCharacters[i].state &= ~0x8000;
 }
