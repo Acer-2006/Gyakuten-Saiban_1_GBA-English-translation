@@ -31,9 +31,11 @@ logo = src.crop((4, 14, 252, 165))
 scale = 111 / logo.height
 logo = logo.resize((round(logo.width * scale), 111), Image.LANCZOS)
 out.paste(logo, ((240 - logo.width) // 2, 0))
-# copyright line, unscaled, at the bottom. It is 245 px wide on the DS, so
-# narrow each of the five word gaps (3-4 px) by 1 px to fit the GBA's 240 px.
-drop = {55, 94, 145, 166, 201}
+# copyright line, unscaled, at the bottom, with only the original GBA game's
+# year: ",2005" (DS columns 117-144: the comma and the four digits) is cut,
+# leaving "2001" and the 4 px word gap before "ALL", as on the Japanese GBA
+# title ("(C)CAPCOM CO.,LTD.2001 ALL RIGHTS RESERVED."). 217 px, centred.
+drop = set(range(117, 145))
 keep = [x for x in range(7, 252) if x not in drop]
 s = np.array(src)[180:192]
 cr = Image.fromarray(s[:, keep])
