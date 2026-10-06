@@ -141,6 +141,91 @@ def fill_gaps(gb, G, db, D, pairs):
             pairs[gi] = best[1]
 
 
+# What the Japanese GBA scripts do with each person's animations (script
+# command 1E person, talking, idle): the text engine plays "talking" while a
+# page is typed and "idle" once it waits, whoever is speaking, so the GBA
+# gives a talking animation its own idle partner, and shows a person who is
+# not speaking with an idle pose in both places. A DS pose mapped value by
+# value can break that (a talking animation as the idle one: the mouth goes
+# on moving after the line ends, or while someone else talks).
+JP_PAIRS = None
+
+def jp_pairs():
+    global JP_PAIRS
+    if JP_PAIRS is None:
+        d = os.path.join(os.path.dirname(__file__), '..', '..', 'script')
+        pairs = collections.defaultdict(collections.Counter)
+        for f in sorted(os.listdir(d)):
+            if f.startswith('scenario_') and f.endswith('.phscr'):
+                b, n, offs = load(os.path.join(d, f))
+                for x in section_bounds(b, offs):
+                    if x:
+                        for pos, kind, op, a in parse(tokens(b, *x), GBA_ARGS)[0]:
+                            if kind == 'cmd' and op == 0x1E and a and a[0]:
+                                pairs[a[0]][(a[1], a[2])] += 1
+        partner, talker = {}, {}
+        for person, c in pairs.items():
+            pc, tc = collections.defaultdict(collections.Counter), collections.defaultdict(collections.Counter)
+            for (t, i), k in c.items():
+                if t != i:
+                    pc[t][i] += k
+                    tc[i][t] += k
+            partner[person] = {t: v.most_common(1)[0][0] for t, v in pc.items()}
+            talker[person] = {i: v.most_common(1)[0][0] for i, v in tc.items()}
+        JP_PAIRS = (pairs, partner, talker)
+    return JP_PAIRS
+
+def fix_pose_pair(person, t, i, ds_silent):
+    """(talking, idle) as the GBA would have it. ds_silent: the DS gives the
+    person the same pose twice (they are not the one speaking)."""
+    pairs, partner, talker = jp_pairs()
+    if (t, i) in pairs.get(person, ()):
+        return t, i
+    pt, tk = partner.get(person, {}), talker.get(person, {})
+    if ds_silent:
+        v = pt.get(t, t)            # a talking animation -> its idle pose
+        return v, v
+    if t not in pt and t in tk:     # an idle pose given as the talking one
+        t = tk[t]
+    if t in pt:
+        return t, pt[t]
+    return t, (t if i in pt else i)
+
+def align_poses(gcmds, dcmds):
+    """DS token pos -> GBA pose arguments, for the DS poses that line up"""
+    g1 = [x for x in gcmds if x[2] == 0x1E and x[3]]
+    d1 = [x for x in dcmds if x[2] == 0x1E and x[3]]
+    res = {}
+    if [x[3][0] for x in g1] == [x[3][0] for x in d1]:
+        for a, b in zip(g1, d1):
+            res[b[0]] = a[3]
+        return res
+    def ok(a, b):
+        person, dv, gv = b[3][0], b[3][1], a[3][1]
+        if a[3][0] != person:
+            return False
+        known = ANIM_VOTES.get((person, dv))
+        return person == 0 or not known or gv in known
+    # longest run of compatible pairs, in order (dynamic programming)
+    n, m = len(g1), len(d1)
+    L = [[0] * (m + 1) for _ in range(n + 1)]
+    for i in range(n - 1, -1, -1):
+        for j in range(m - 1, -1, -1):
+            L[i][j] = max(L[i + 1][j], L[i][j + 1], L[i + 1][j + 1] + 1 if ok(g1[i], d1[j]) else 0)
+    i = j = 0
+    while i < n and j < m:
+        if ok(g1[i], d1[j]) and L[i][j] == L[i + 1][j + 1] + 1:
+            res[d1[j][0]] = g1[i][3]
+            i += 1
+            j += 1
+        elif L[i + 1][j] >= L[i][j + 1]:
+            i += 1
+        else:
+            j += 1
+    return res
+
+ANIM_VOTES = {}
+
 def merge_section(gtoks, dtoks, choice_ids=None):
     """Return (out_tokens, gpos_to_out, patches, stats)."""
     g, _ = parse(gtoks, GBA_ARGS)
@@ -201,25 +286,53 @@ def merge_section(gtoks, dtoks, choice_ids=None):
     # in the dark office, behind the glass...), and those animations place the
     # sprite differently. Other DS poses use what that DS pose stood for in
     # this section, else the chapter-wide map (learn_anim_map.py).
+    #
+    # The poses are lined up on their own (the commands around them can throw
+    # the general alignment off by one, which gave a person the pose of the
+    # line before or after: Gumshoe's walk-in animation replayed while he
+    # talks). Where the GBA and DS sections show the same people in the same
+    # order, pose n goes with pose n; otherwise poses are matched by person,
+    # and a match is only taken when that GBA pose is one the DS pose stands
+    # for somewhere in the game.
+    pose_g = align_poses(gcmds, dcmds)
+    sec_poses = collections.defaultdict(set)
+    for x in gcmds:
+        if x[2] == 0x1E and x[3] and x[3][0]:
+            sec_poses[x[3][0]].update(x[3][1:3])
     local, last = {}, {}
     for pos, kind, op, args in d:
-        if kind == 'cmd' and op == 0x1E and pos in d2g:
-            ga = gcmds[d2g[pos]][3]
-            if ga and ga[0] == args[0]:
-                for dv, gv in zip(args[1:3], ga[1:3]):
-                    local.setdefault((args[0], dv), gv)
+        if kind == 'cmd' and op == 0x1E and pos in pose_g:
+            ga = pose_g[pos]
+            for dv, gv in zip(args[1:3], ga[1:3]):
+                local.setdefault((args[0], dv), gv)
 
     def conv_anim(args, pos=None):
+        res = conv_anim_raw(args, pos)
+        if res is not None and len(res) >= 4 and res[1]:
+            t, i = fix_pose_pair(res[1], res[2], res[3], args[1] == args[2])
+            if (t, i) != (res[2], res[3]):
+                stats['pose_pair_fixed'] = stats.get('pose_pair_fixed', 0) + 1
+            res = [0x1E, res[1], t, i]
+        return res
+
+    def conv_anim_raw(args, pos=None):
         person = args[0]
-        if pos in d2g:
-            ga = gcmds[d2g[pos]][3]
-            if ga and ga[0] == person:
-                return [0x1E] + list(ga)
+        if pos in pose_g:
+            return [0x1E] + list(pose_g[pos])
         if person == 0:
             return [0x1E] + list(args)
         res = [0x1E, person]
         for v in args[1:3]:
-            gv = local.get((person, v), ANIM_MAP.get('%s:%x:%x' % (ANIM_TAG, person, v), ANIM_ANY.get((person, v))))
+            # what the DS pose stands for in this section, else the version of
+            # it this scene uses (Maya behind the glass, in the dark...), else
+            # what it stands for in the chapter, else anywhere
+            scene = sorted(ANIM_VOTES.get((person, v), set()) & sec_poses.get(person, set()))
+            gv = local.get((person, v))
+            if gv is None and scene:
+                chap = ANIM_MAP.get('%s:%x:%x' % (ANIM_TAG, person, v))
+                gv = chap if chap in scene else scene[0]
+            if gv is None:
+                gv = ANIM_MAP.get('%s:%x:%x' % (ANIM_TAG, person, v), ANIM_ANY.get((person, v)))
             if gv is None or (CHAPTER_POSES.get(person) and gv not in CHAPTER_POSES[person]):
                 # never seen, or a pose of this person the chapter never uses (it
                 # belongs to another setting): their last pose here, else their
@@ -616,6 +729,8 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
         usual[int(person, 16)][gv] += 1
     ANIM_ANY = {k: c.most_common(1)[0][0] for k, c in votes.items()}
     ANIM_USUAL = {k: c.most_common(1)[0][0] for k, c in usual.items()}
+    global ANIM_VOTES
+    ANIM_VOTES = {k: set(c) for k, c in votes.items()}
     global CHAPTER_POSES, CHAPTER_USUAL
     gb0, gn0, goffs0 = load(gfile)
     cp = collections.defaultdict(collections.Counter)

@@ -1746,7 +1746,8 @@ u32 GetEvidenceCommentSection(struct Main * main, u32 evidenceId)
 // things that can take that slot while the plate is up (the Move / Talk lists
 // in an investigation, the Objection! / Hold it! / Take that! bubbles) hide
 // the plate for as long as they are there; it is reloaded afterwards, the way
-// the game already does around the Court Record.
+// the game already does around the Court Record. The Talk list is only in the
+// way while it is on screen: not during the conversation it starts.
 #define EN_ITEM_PLATE_TILE 0x280
 #define EN_ITEM_PLATE_VRAM (OBJ_VRAM0 + EN_ITEM_PLATE_TILE * TILE_SIZE_4BPP)
 
@@ -1755,10 +1756,16 @@ static bool32 ItemPlateSlotBorrowed(struct Main * main)
     static const u8 sBubbles[] = { ANIM_HOLDIT_LEFT, ANIM_OBJECTION_LEFT, ANIM_OBJECTION_RIGHT,
                                    ANIM_TAKETHAT_LEFT, ANIM_HOLDIT_CENTER, ANIM_OBJECTION_CENTER };
     u32 i;
-    if (main->process[GAME_PROCESS] == INVESTIGATION_PROCESS
-     && (main->process[GAME_PROCESS_STATE] == INVESTIGATION_MOVE
-      || main->process[GAME_PROCESS_STATE] == INVESTIGATION_TALK))
-        return TRUE;
+    if (main->process[GAME_PROCESS] == INVESTIGATION_PROCESS)
+    {
+        if (main->process[GAME_PROCESS_STATE] == INVESTIGATION_MOVE)
+            return TRUE;
+        // Talk: the list is up in every step but the conversation (6), and
+        // during its first 12 frames, while the list slides away
+        if (main->process[GAME_PROCESS_STATE] == INVESTIGATION_TALK
+         && (main->process[GAME_PROCESS_VAR1] != 6 || main->process[GAME_PROCESS_VAR2] <= 12))
+            return TRUE;
+    }
     for (i = 0; i < ARRAY_COUNT(sBubbles); i++)
         if (FindAnimationFromAnimId(sBubbles[i]) != NULL)
             return TRUE;
@@ -1776,6 +1783,10 @@ void UpdateItemPlate(struct Main * main)
         case 1:
             oam->attr0 = SPRITE_ATTR0_CLEAR;
             DmaCopy16(3, &gOamObjects[OAM_IDX_POINTER], OAM+OAM_IDX_POINTER*8, 0x8);
+            // English patch: closed while hidden (state 5): the frame (BG0) is
+            // shown again, as when the plate closes normally
+            if(main->process[GAME_PROCESS] < COURT_RECORD_PROCESS && !ItemPlateSlotBorrowed(main))
+                gIORegisters.lcd_dispcnt |= DISPCNT_BG0_ON;
             if(main->itemPlateSide == 0)
                 main->itemPlateAction = 4;
             else
@@ -1798,6 +1809,9 @@ void UpdateItemPlate(struct Main * main)
             break;
         case 3:
             LoadItemPlateGfx(main);
+            // English patch: the frame is drawn on BG0; make sure it is on
+            // (case 4 turns it off again if the plate has to stay hidden)
+            gIORegisters.lcd_dispcnt |= DISPCNT_BG0_ON;
             if(main->itemPlateSide == 0)
             {
                 oam->attr1 = SPRITE_ATTR1_NONAFFINE(16, FALSE, FALSE, 3);

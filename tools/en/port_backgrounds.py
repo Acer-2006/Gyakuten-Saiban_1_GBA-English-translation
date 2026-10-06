@@ -15,8 +15,9 @@ English copy of every background with writing on it. For each one:
      picture's own palette.
 
 Everything else stays the GBA original. The evidence documents (Maya's phone
-call, the DL-6 case file) are pages of text: the DS English page replaces the
-whole page, set on the GBA page (the GBA page-turn arrow is kept). The
+call, the DL-6 case file) are pages of text: the DS English lines replace the
+Japanese ones, re-set in the Japanese page's layout (line pitch, page number
+and page-turn arrow), so the B / L / Back prompts stay clear of the text. The
 Gourd Lake newspaper has a different English layout on the DS and is fitted
 to the GBA screen as a whole, and so is the Steel Samurai title card (its
 English logo is larger and runs to the edge of the DS picture).
@@ -79,12 +80,12 @@ SIGNS = [
     ('gGfx_BG105_TrialWon',                     '勝訴 -> Victory!'),
 ]
 DOCUMENTS = [
-    ('gGfx_BG045_EvidenceMayaPhoneCall1', 'phone call 1/3'),
-    ('gGfx_BG046_EvidenceMayaPhoneCall2', 'phone call 2/3'),
-    ('gGfx_BG048_EvidenceMayaPhoneCall3', 'phone call 3/3'),
-    ('gGfx_BG082_EvidenceDL6CaseFile1', 'DL-6 case summary'),
-    ('gGfx_BG083_EvidenceDL6CaseFile2', 'DL-6 victim data'),
-    ('gGfx_BG084_EvidenceDL6CaseFile3', 'DL-6 suspect data'),
+    ('gGfx_BG045_EvidenceMayaPhoneCall1', 'phone call 1/3', 'phone'),
+    ('gGfx_BG046_EvidenceMayaPhoneCall2', 'phone call 2/3', 'phone'),
+    ('gGfx_BG048_EvidenceMayaPhoneCall3', 'phone call 3/3', 'phone'),
+    ('gGfx_BG082_EvidenceDL6CaseFile1', 'DL-6 case summary', 'dl6'),
+    ('gGfx_BG083_EvidenceDL6CaseFile2', 'DL-6 victim data', 'dl6'),
+    ('gGfx_BG084_EvidenceDL6CaseFile3', 'DL-6 suspect data', 'dl6'),
 ]
 # redrawn for the DS English release as a whole: fitted to the GBA screen
 WHOLE = [
@@ -221,46 +222,105 @@ def port_signs(label, jp_base, en_base, report):
     save_gba(path, out, rawpal)
 
 # ------------------------------------------------------------------ documents
-def port_document(label, en_base, report):
-    """DS English text page (white on black) set on the GBA page"""
+# The page layout of the Japanese GBA pages: text from y 6 down to y 136,
+# 15 px from one line to the next; the page number (bottom left) and the
+# page-turn arrow (bottom centre) on the rows below; the B / L / Back
+# prompts are sprites over the bottom right corner (x 176-239, y 144-159),
+# which the Japanese pages leave empty.
+DOC_TOP, DOC_BOTTOM = 6, 136
+DOC_FOOT = 140          # rows from here down come from the Japanese page
+DOC_PITCH = 15          # line to line, as on the GBA (and within a DS block)
+DOC_RIGHT = 238         # last column the text may use
+
+def doc_lines(ink):
+    """the DS page's text lines (row bands), without its page number (the DS
+    puts it at the bottom right; the GBA one is used instead)"""
+    ink = ink.copy()
+    ink[155:, 210:] = False
+    rows = np.nonzero(ink.any(1))[0]
+    bands, s0, prev = [], rows[0], rows[0]
+    for r in rows[1:]:
+        if r != prev + 1:
+            bands.append((s0, prev + 1))
+            s0 = r
+        prev = r
+    bands.append((s0, prev + 1))
+    return ink, bands
+
+def port_document(label, en_base, report, layout=None):
+    """The DS English text page (white on black), re-set in the Japanese GBA
+    page's layout. Each DS line keeps its pixels and its place across the
+    page; the lines are stacked 15 px apart as on the GBA page (the DS pitch
+    within a paragraph), with the gaps between paragraphs (speakers) kept as
+    far as the page allows, so the text ends above the GBA page number and
+    arrow, which are the Japanese page's own, and the B / L / Back prompts
+    in the bottom right corner have nothing under them."""
     path, idx, pal, rawpal = load_gba(label)
     en = ds_rgb(en_base)
-    lum = en.astype(int).sum(2)
-    ink = lum > 300
-    ys, xs = np.nonzero(ink)
+    ink, bands = doc_lines(en.astype(int).sum(2) > 300)
     H, W = idx.shape
-    # GBA page: black background, white text, the page-turn arrow at the bottom
     black = int(np.bincount(idx.ravel()).argmax())
     white = int(max(set(np.unique(idx)), key=lambda i: int(pal[i].astype(int).sum())))
+    # paragraphs: lines further apart than a line pitch (plus a little) on the DS
+    gaps = [bands[i + 1][0] - bands[i][0] - DOC_PITCH for i in range(len(bands) - 1)]
+    para = [g > 4 for g in gaps]
+    def height(gap, pitch):
+        y = 0
+        for i, g in enumerate(gaps):
+            y += pitch + (min(g, gap) if para[i] else 0)
+        return y + bands[-1][1] - bands[-1][0]
+    xs = np.nonzero(ink.any(0))[0]
+    dx = min((W - 256) // 2, DOC_RIGHT - int(xs.max()))
+    assert xs.min() + dx >= 1, label
+    # the text may go on below DOC_BOTTOM, down to 2 px above the footer
+    # rows, where nothing of the footer (page number, arrow) is under it
+    foot = np.nonzero((idx[DOC_FOOT:] != black).any(0))[0]
+    foot_top = DOC_FOOT + int(np.nonzero((idx[DOC_FOOT:] != black).any(1))[0].min())
+    def fits(gap, pitch):
+        y = DOC_TOP
+        for i, (a, b) in enumerate(bands):
+            bottom = y + b - a
+            if bottom > foot_top - 2:
+                return False
+            if bottom > DOC_BOTTOM:
+                cols = np.nonzero(ink[a:b].any(0))[0] + dx
+                if np.any(np.abs(cols[:, None] - foot[None, :]) <= 3):
+                    return False
+            if i < len(gaps):
+                y += pitch + (min(gaps[i], gap) if para[i] else 0)
+        return True
+    # the GBA pitch with a visible gap between speakers if possible, else a
+    # pixel less from line to line, else whatever fits
+    best = None
+    for pitch in (DOC_PITCH, DOC_PITCH - 1, DOC_PITCH - 2):
+        gap = max(gaps) if gaps else 0
+        while gap > 0 and not fits(gap, pitch):
+            gap -= 1
+        if fits(gap, pitch) and (gap >= min(4, max(gaps) if gaps else 0) or not any(para)):
+            best = (pitch, gap)
+            break
+        if best is None and fits(gap, pitch):
+            best = (pitch, gap)
+    assert best, label
+    if layout:
+        # the same spacing on every page of the document (the tightest page's)
+        assert fits(*layout), label
+        best = layout
+    pitch, gap = best
     out = np.full_like(idx, black)
-    arrow = locate_arrow(idx, pal, black)
-    # DS page content box -> centred in the GBA page
-    cx0, cx1, cy0, cy1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1
-    dx = (W - (cx1 - cx0)) // 2 - cx0
-    dy = min((H - (cy1 - cy0)) // 2, 2) - cy0                # top, as on the DS
-    page = np.zeros((H, W), bool)
-    for y, x in zip(ys, xs):
-        if 0 <= y + dy < H and 0 <= x + dx < W:
-            page[y + dy, x + dx] = True
-    assert page.sum() == ink.sum(), 'document does not fit'
-    out[page] = white
-    if arrow is not None:
-        # the GBA page-turn arrow, at the bottom centre or as near it as the
-        # English text allows
-        ay0, ay1, ax0, ax1 = arrow
-        shape = idx[ay0:ay1, ax0:ax1]
-        for shift in sorted(range(-80, 81), key=abs):
-            x0, x1 = ax0 + shift, ax1 + shift
-            if x0 >= 1 and x1 < W - 1 and not page[ay0 - 2:min(H, ay1 + 2), x0 - 2:x1 + 2].any():
-                region = out[ay0:ay1, x0:x1]
-                region[shape != black] = shape[shape != black]
-                if shift:
-                    report.append('  page-turn arrow moved %d px' % shift)
-                break
-        else:
-            report.append('  page-turn arrow left out (no room)')
+    y = DOC_TOP
+    for i, (a, b) in enumerate(bands):
+        strip = ink[a:b, :]
+        ys_, xs_ = np.nonzero(strip)
+        out[y + ys_, xs_ + dx] = white
+        if i < len(gaps):
+            y += pitch + (min(gaps[i], gap) if para[i] else 0)
+    # page number and page-turn arrow: the Japanese page's
+    out[DOC_FOOT:] = idx[DOC_FOOT:]
     save_gba(path, out, rawpal)
-    report.append('  DS page content %dx%d placed at (%d,%d)' % (cx1 - cx0, cy1 - cy0, cx0 + dx, cy0 + dy))
+    report.append('  %d DS lines re-set: pitch %d, paragraph gap %d (DS %s), x shift %d, last line ends y %d'
+                  % (len(bands), pitch, gap, max(gaps) if gaps else 0, dx, y + bands[-1][1] - bands[-1][0]))
+    return best
 
 def locate_arrow(idx, pal, black):
     """the page-turn arrow (a small down-pointing triangle at the bottom centre)"""
@@ -297,9 +357,13 @@ def main():
         jp, en = table[label]
         report.append('%s (%s)' % (label, what))
         port_signs(label, int(jp, 16), int(en, 16), report)
-    for label, what in DOCUMENTS:
-        report.append('%s (%s)' % (label, what))
-        port_document(label, int(table[label][1], 16), report)
+    for doc in sorted(set(d for l, w, d in DOCUMENTS)):
+        pages = [(l, w) for l, w, d in DOCUMENTS if d == doc]
+        sizes = [port_document(l, int(table[l][1], 16), []) for l, w in pages]
+        layout = (min(p for p, g in sizes), min(g for p, g in sizes if p == min(p for p, g in sizes)))
+        for label, what in pages:
+            report.append('%s (%s)' % (label, what))
+            port_document(label, int(table[label][1], 16), report, layout)
     for label, what, anchor in WHOLE:
         report.append('%s (%s)' % (label, what))
         port_whole(label, int(table[label][1], 16), report, anchor)
