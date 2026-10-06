@@ -278,6 +278,93 @@ def apply_fixups(dtoks, fixes):
     return pseudo.from_pseudo(s)
 
 
+# The judge's gavel. The GBA shows it with three background pictures (raised,
+# swinging, down) and plays the slam sound and the shake itself:
+#   1B 2F, 0C 5, 1B 1B, 0C 1, 1B 1C, 06 3A01, 27 A 1, 0C 3C   (one bang)
+# and a longer run for three bangs. The DS plays its gavel with its own
+# animation command (69 62 111 / 113), which brings the sound and shake with
+# it and is not ported, so the merged script lost the slam, the shake and the
+# pauses between the pictures. Each gavel is put back exactly as the GBA has
+# it; DS commands that landed inside it (who speaks next) follow it.
+GAVEL_BGS = {0x2F, 0x1B, 0x1C}
+GAVEL_PARTS = {0x0C, 0x06, 0x27}
+
+
+def gavel_runs(toks):
+    """(start, end, background count) of each gavel in a GBA section"""
+    items, _ = parse(toks, GBA_ARGS)
+    runs, i = [], 0
+    while i < len(items):
+        pos, kind, op, a = items[i]
+        if kind == 'cmd' and op == 0x1B and a[0] == 0x2F:
+            j, n = i, 0
+            while j < len(items) and items[j][1] == 'cmd' and (
+                    (items[j][2] == 0x1B and items[j][3][0] in GAVEL_BGS) or items[j][2] in GAVEL_PARTS):
+                n += items[j][2] == 0x1B
+                j += 1
+            end = items[j][0] if j < len(items) else len(toks)
+            runs.append((pos, end, n))
+            i = j
+        else:
+            i += 1
+    return runs
+
+
+def fix_gavel(out, gtoks):
+    """put each GBA gavel back; returns (tokens, old->new position list, note)"""
+    gr = gavel_runs(gtoks)
+    if not gr:
+        return out, list(range(len(out) + 1)), None
+    items, _ = parse(out, GBA_ARGS)
+    size = {x[0]: 1 + len(x[3]) for x in items if x[1] == 'cmd'}
+    is_bg = lambda x, ids: x[1] == 'cmd' and x[2] == 0x1B and x[3][0] in ids
+    edits, k, note = [], 0, None
+    for gs, ge, n in gr:
+        while k < len(items) and not is_bg(items[k], {0x2F}):
+            k += 1
+        if k == len(items):
+            return out, list(range(len(out) + 1)), 'gavel not found'
+        start, seen, j, lastbg = items[k][0], 0, k, k
+        while j < len(items) and seen < n and items[j][1] == 'cmd':
+            if is_bg(items[j], GAVEL_BGS):
+                seen += 1
+                lastbg = j
+            j += 1
+        # between the pictures only other commands (who speaks next) stay;
+        # when text follows before the last pictures, what the DS does after
+        # its gavel (sound, shake, flash for the next line) stays too, its
+        # gavel wait goes
+        carry = [items[q][0] for q in range(k, j)
+                 if not is_bg(items[q], GAVEL_BGS)
+                 and (items[q][2] not in GAVEL_PARTS if q < lastbg else items[q][2] != 0x0C)]
+        end = items[j][0] if j < len(items) else len(out)
+        edits.append((start, end, list(gtoks[gs:ge]) + [t for p in carry for t in out[p:p + size[p]]]))
+        # pictures of this gavel the merge put further down (after text) go
+        while seen < n:
+            note = 'gavel pictures moved back from later lines'
+            while j < len(items) and not is_bg(items[j], GAVEL_BGS - {0x2F}):
+                j += 1
+            if j == len(items):
+                return out, list(range(len(out) + 1)), 'gavel incomplete'
+            edits.append((items[j][0], items[j][0] + 2, []))
+            seen += 1
+            j += 1
+        k = j
+    new, f, last = [], [0] * (len(out) + 1), 0
+    for start, end, rep in edits:
+        for p in range(last, start):
+            f[p] = len(new) + p - last
+        new += out[last:start]
+        for p in range(start, end):
+            f[p] = len(new)
+        new += rep
+        last = end
+    for p in range(last, len(out) + 1):
+        f[p] = len(new) + p - last
+    new += out[last:]
+    return new, f, note
+
+
 def map_pos(gpos_to_out, target):
     keys = sorted(gpos_to_out)
     for k in keys:
@@ -327,6 +414,11 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
         if gi in pairs and D[pairs[gi]]:
             dt = apply_fixups(tokens(db, *D[pairs[gi]]), fixups.get(str(pairs[gi]), []))
             out, m, patches, st = merge_section(gt, dt, choices.get(pairs[gi]))
+            out, f, note = fix_gavel(out, gt)
+            m = {g: f[o] for g, o in m.items()}
+            patches = [(f[idx], tgt) for idx, tgt in patches]
+            if note:
+                st = dict(st, gavel=note)
             for idx, tgt in patches:
                 out[idx] = map_pos(m, tgt) * 2
             lines.append('sec %3d <- ds %3d  %s' % (gi, pairs[gi], st))

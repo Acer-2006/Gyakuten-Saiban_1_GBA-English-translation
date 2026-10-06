@@ -5,6 +5,7 @@
   ported section against the DS section it came from (the DS decides these)
 - text printed while the text box is hidden (1C 1 ... 1C 0)
 - text characters outside the DS English character set
+- each gavel (three pictures, slam, shake) exactly as in the GBA script
 
 usage: audit_script.py [GBA_SCRIPT_DIR PORTED_DIR DS_MES_DIR]
 Some section table entries are not offsets (they point past the end of the
@@ -24,9 +25,18 @@ FX = {0x27: 'shake', 0x06: 'sound', 0x12: 'flash'}
 LATIN = set(range(0x80, 0x80 + 62)) | set(SPECIAL) | set(range(0x16c, 0x190))
 
 
-def effects(b, x, args):
+def effects(b, x, args, gavel_of=None):
+    """the gavel's own slam and shake (GBA gavel runs, kept from the GBA script)
+    are inside the DS gavel animation command, so they are not counted"""
     c = collections.Counter()
-    for pos, kind, op, a in parse(tokens(b, *x), args)[0]:
+    t = tokens(b, *x)
+    runs = []
+    if gavel_of is not None:     # the GBA section the port came from: skip as much as its gavels
+        gl = [e - s for s, e, n in port_script.gavel_runs(gavel_of)]
+        runs = [(s, s + l, n) for (s, e, n), l in zip(port_script.gavel_runs(t), gl)]
+    for pos, kind, op, a in parse(t, args)[0]:
+        if any(s <= pos < e for s, e, n in runs):
+            continue
         if kind == 'cmd' and op in FX and (op != 0x12 or a[0] >> 8 == 3):
             c[FX[op]] += 1
     return c
@@ -54,7 +64,7 @@ for idx, f in enumerate(files):
     O = [(o, real[real.index(o) + 1]) if G[i] is not None else None for i, o in enumerate(ooffs)]
     db, dn, doffs = load(os.path.join(ddir, '%02d.bin' % (2 * idx + 1))); D = section_bounds(db, doffs)
     for gi, dj in pairs.items():
-        cd = effects(db, D[dj], port_script.DS_ARGS); co = effects(ob, O[gi], GBA_ARGS)
+        cd = effects(db, D[dj], port_script.DS_ARGS); co = effects(ob, O[gi], GBA_ARGS, tokens(gb, *G[gi]))
         for k in FX.values():
             tot[(k, 'ds')] += cd[k]; tot[(k, 'port')] += co[k]
             if cd[k] != co[k]:
@@ -62,6 +72,12 @@ for idx, f in enumerate(files):
     for i, x in enumerate(O):
         if not x:
             continue
+        gt, ot = tokens(gb, *G[i]), tokens(ob, *x)
+        gg = [tuple(gt[s:e]) for s, e, c in port_script.gavel_runs(gt)]
+        og = [tuple(ot[s:s + len(g)]) for (s, e, c), g in zip(port_script.gavel_runs(ot), gg)]
+        tot['gavel'] += len(gg)
+        if gg != og:
+            problems.append('%s section %#x: gavel differs from the GBA' % (f, i + 0x80))
         n, ng = hidden_text(ob, x), hidden_text(gb, G[i])
         if n and (ng == 0 or n > 2 * ng + 20):
             problems.append('%s section %#x: %d characters printed in a hidden text box' % (f, i + 0x80, n))
@@ -70,4 +86,5 @@ for idx, f in enumerate(files):
             problems.append('%s section %#x: characters outside the English set %s' % (f, i + 0x80, ' '.join('%x' % v for v in odd)))
 for k in FX.values():
     print('%-6s DS %5d  port %5d' % (k, tot[(k, 'ds')], tot[(k, 'port')]))
+print('gavels %d, as in the GBA script' % tot['gavel'] if not any('gavel' in p for p in problems) else '')
 print('\n'.join(problems) or 'no problems')

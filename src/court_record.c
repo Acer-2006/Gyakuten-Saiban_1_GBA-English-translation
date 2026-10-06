@@ -1221,6 +1221,8 @@ void CourtRecordLoadGfxChangeState(struct Main * main, struct CourtRecord * cour
     main->process[GAME_PROCESS_STATE] = RECORD_CHANGE_STATE;
 }
 
+#define EN_TAKE_THAT_TILE 0x100
+
 void CourtRecordTakeThatSpecial(struct Main * main, struct CourtRecord * courtRecord) // status_effect ?
 {
     struct OamAttrs * oam = &gOamObjects[OAM_IDX_TAKE_THAT_EVIDENCE_THROW];
@@ -1243,10 +1245,12 @@ void CourtRecordTakeThatSpecial(struct Main * main, struct CourtRecord * courtRe
                 temp = (uintptr_t)gGfxEvidenceProfilePictures + offset; //! Evil, uses a u32 for this pointer keep in mind and also global define
                 DmaCopy16(3, temp, OBJ_PLTT+0x20, 0x20);
                 temp = (uintptr_t)gGfxEvidenceProfilePictures + offset + 0x20;
-                DmaCopy16(3, temp, OBJ_VRAM0+0x1000, TILE_SIZE_4BPP * 64);
+                // English patch: tiles 0x80-0xBF hold the third text line; in
+                // court the answer-choice slot is free while evidence is presented
+                DmaCopy16(3, temp, OBJ_VRAM0 + EN_TAKE_THAT_TILE * TILE_SIZE_4BPP, TILE_SIZE_4BPP * 64);
                 oam->attr0 = SPRITE_ATTR0(16, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
                 oam->attr1 = SPRITE_ATTR1_NONAFFINE(88, FALSE, FALSE, 3);
-                oam->attr2 = SPRITE_ATTR2(0x80, 0, 1);
+                oam->attr2 = SPRITE_ATTR2(EN_TAKE_THAT_TILE, 0, 1);
                 main->itemPlateRotation = 0;
                 main->affineScale = 0x100;
                 gIORegisters.lcd_dispcnt &= ~DISPCNT_BG1_ON;
@@ -1335,7 +1339,7 @@ void CourtRecordTakeThatSpecial(struct Main * main, struct CourtRecord * courtRe
         gOamObjects[3].attr3 = fix_mul(_Cos(main->itemPlateRotation), scale);
         oam->attr0 = SPRITE_ATTR0(16, ST_OAM_AFFINE_NORMAL, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
         oam->attr1 = SPRITE_ATTR1_AFFINE(88, 0, 3);
-        oam->attr2 = SPRITE_ATTR2(0x80, 0, 1);
+        oam->attr2 = SPRITE_ATTR2(EN_TAKE_THAT_TILE, 0, 1);
     }
     UpdateBG2Window(&gCourtRecord);
     UpdateRecordSprites(&gCourtRecord);
@@ -1732,6 +1736,32 @@ u32 GetEvidenceCommentSection(struct Main * main, u32 evidenceId)
     return retVal;
 }
 
+// English patch: the evidence picture shown beside the dialogue (the "item
+// plate") used OBJ tiles 0x80-0xBF, which the third line of the English text
+// box now needs. It lives in the Court Record's own picture slot instead
+// (tile 0x280), which is free whenever the item plate is on screen. The few
+// things that can take that slot while the plate is up (the Move / Talk lists
+// in an investigation, the Objection! / Hold it! / Take that! bubbles) hide
+// the plate for as long as they are there; it is reloaded afterwards, the way
+// the game already does around the Court Record.
+#define EN_ITEM_PLATE_TILE 0x280
+#define EN_ITEM_PLATE_VRAM (OBJ_VRAM0 + EN_ITEM_PLATE_TILE * TILE_SIZE_4BPP)
+
+static bool32 ItemPlateSlotBorrowed(struct Main * main)
+{
+    static const u8 sBubbles[] = { ANIM_HOLDIT_LEFT, ANIM_OBJECTION_LEFT, ANIM_OBJECTION_RIGHT,
+                                   ANIM_TAKETHAT_LEFT, ANIM_HOLDIT_CENTER, ANIM_OBJECTION_CENTER };
+    u32 i;
+    if (main->process[GAME_PROCESS] == INVESTIGATION_PROCESS
+     && (main->process[GAME_PROCESS_STATE] == INVESTIGATION_MOVE
+      || main->process[GAME_PROCESS_STATE] == INVESTIGATION_TALK))
+        return TRUE;
+    for (i = 0; i < ARRAY_COUNT(sBubbles); i++)
+        if (FindAnimationFromAnimId(sBubbles[i]) != NULL)
+            return TRUE;
+    return FALSE;
+}
+
 void UpdateItemPlate(struct Main * main)
 {
     struct OamAttrs * oam = &gOamObjects[OAM_IDX_POINTER];
@@ -1776,7 +1806,7 @@ void UpdateItemPlate(struct Main * main)
                 main->itemPlateAction = 5;
             }
             oam->attr0 = SPRITE_ATTR0_CLEAR;
-            oam->attr2 = SPRITE_ATTR2(0x80, 0, 1);
+            oam->attr2 = SPRITE_ATTR2(EN_ITEM_PLATE_TILE, 0, 1);
             main->itemPlateState++;
         case 4: // fallthrough
             if(main->process[GAME_PROCESS] == SAVE_GAME_PROCESS)
@@ -1785,10 +1815,11 @@ void UpdateItemPlate(struct Main * main)
                 return;
             }    
             DrawItemPlate(main);
+            oam->attr2 = SPRITE_ATTR2(EN_ITEM_PLATE_TILE, 0, 1); // also after loading a save from an older version
             if(main->itemPlateAction == 1)
                 oam->attr0 = SPRITE_ATTR0(16, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
             
-            if(main->process[GAME_PROCESS] >= COURT_RECORD_PROCESS)
+            if(main->process[GAME_PROCESS] >= COURT_RECORD_PROCESS || ItemPlateSlotBorrowed(main))
             {
                 oam->attr0 = SPRITE_ATTR0_CLEAR;
                 DmaCopy16(3, &gOamObjects[OAM_IDX_POINTER], OAM+OAM_IDX_POINTER*8, 0x8);
@@ -1797,7 +1828,7 @@ void UpdateItemPlate(struct Main * main)
             }
             break;
         case 5:
-            if(main->process[GAME_PROCESS] < COURT_RECORD_PROCESS)
+            if(main->process[GAME_PROCESS] < COURT_RECORD_PROCESS && !ItemPlateSlotBorrowed(main))
             {
                 LoadItemPlateGfx(main);
                 oam->attr0 = SPRITE_ATTR0(16, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
@@ -1805,7 +1836,7 @@ void UpdateItemPlate(struct Main * main)
                     oam->attr1 = SPRITE_ATTR1_NONAFFINE(16, FALSE, FALSE, 3);
                 else
                     oam->attr1 = SPRITE_ATTR1_NONAFFINE(160, FALSE, FALSE, 3);
-                oam->attr2 = SPRITE_ATTR2(0x80, 0, 1);
+                oam->attr2 = SPRITE_ATTR2(EN_ITEM_PLATE_TILE, 0, 1);
                 gIORegisters.lcd_dispcnt |= DISPCNT_BG0_ON;
                 main->itemPlateState = 4;
             }
@@ -1826,7 +1857,7 @@ void LoadItemPlateGfx(struct Main * main)
     src = gGfxEvidenceProfilePictures + offset;
     DmaCopy16(3, src, OBJ_PLTT+0x20, 0x20);
     src = gGfxEvidenceProfilePictures + offset + 0x20;
-    DmaCopy16(3, src, OBJ_VRAM0+0x1000, TILE_SIZE_4BPP * 64);
+    DmaCopy16(3, src, EN_ITEM_PLATE_VRAM, TILE_SIZE_4BPP * 64);
 }
 
 void DrawItemPlate(struct Main * main) // how did i match this
