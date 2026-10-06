@@ -309,6 +309,23 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         nothing between them only the last is kept (none if it ends where the
         camera already is), and it gets the GBA's wait back."""
         js = [j for j in js if j not in emitted and gba_only_ok(j)]
+        # a GBA background change whose person (the 1E right before it) is
+        # not shown, because the DS has no line for them, would leave the
+        # person from before standing on that background (the judge on the
+        # defense bench): it goes, with its name tag
+        orphan = set()
+        for k, j in enumerate(js):
+            if gcmds[j][2] == 0x1B and j > 0 and gcmds[j - 1][2] == 0x1E and gcmds[j - 1][3][:1] != (0,) \
+                    and (j - 1) not in emitted and (j - 1) not in js:
+                orphan.add(k)
+                if k + 1 < len(js) and js[k + 1] == j + 1 and gcmds[j + 1][2] == 0x0E:
+                    orphan.add(k + 1)
+        for k in sorted(orphan):
+            j = js[k]
+            gpos_to_out[gcmds[j][0]] = len(out)
+            emitted.add(j)
+            stats['orphan_bg'] = stats.get('orphan_bg', 0) + (gcmds[j][2] == 0x1B)
+        js = [j for k, j in enumerate(js) if k not in orphan]
         pans = [k for k, j in enumerate(js) if gcmds[j][2] == 0x1A]
         drop = set()
         for a, b in zip(pans, pans[1:]):

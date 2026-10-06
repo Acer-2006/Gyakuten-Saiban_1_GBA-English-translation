@@ -46,7 +46,7 @@ sec  44 <- ds  44  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 61, 'a
 sec  45 <- ds  45  {'dropped_ds': 17, 'inserted_gba': 30, 'unmatched_kept': 300, 'ds_fx': 108, 'anim_ds': 77, 'gavels': 4, 'anim_guess': 0, 'choice_labels': 1, 'pan_waits': 3}
 sec  46 <- ds  46  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 29, 'ds_fx': 18, 'anim_ds': 8, 'pan_waits': 3}
 sec  47 <- ds  47  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 17, 'anim_ds': 3, 'ds_fx': 3}
-sec  48 <- ds  48  {'dropped_ds': 27, 'inserted_gba': 52, 'unmatched_kept': 391, 'ds_fx': 106, 'anim_ds': 82, 'gavels': 5, 'anim_guess': 0, 'ds_bg': 2, 'poses': '5 poses from another place replaced', 'pan_waits': 5}
+sec  48 <- ds  48  {'dropped_ds': 27, 'inserted_gba': 50, 'unmatched_kept': 391, 'ds_fx': 106, 'anim_ds': 82, 'gavels': 5, 'anim_guess': 0, 'orphan_bg': 1, 'ds_bg': 2, 'poses': '5 poses from another place replaced', 'pan_waits': 5}
 sec  49 <- ds  49  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_guess': 0, 'anim_ds': 2, 'ds_fx': 1}
 sec  50 <- ds  50  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_guess': 0, 'anim_ds': 2, 'ds_fx': 1, 'moving': '1 poses that jumped replaced'}
 sec  51 <- ds  51  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_guess': 0, 'anim_ds': 2, 'ds_fx': 1}
@@ -96,7 +96,7 @@ sec  94 <- ds  94  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 9, 'an
 sec  95 <- ds  95  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 19, 'ds_fx': 15, 'anim_ds': 7, 'pan_waits': 3}
 sec  96 <- ds  96  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 1, 'ds_fx': 3}
 sec  97 <- ds  97  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 1, 'ds_fx': 1}
-sec  98 <- ds  98  {'dropped_ds': 13, 'inserted_gba': 22, 'unmatched_kept': 300, 'anim_ds': 76, 'ds_fx': 97, 'anim_guess': 0, 'gavels': 1, 'ds_bg': 2, 'choice_labels': 1, 'pan_waits': 2}
+sec  98 <- ds  98  {'dropped_ds': 13, 'inserted_gba': 18, 'unmatched_kept': 300, 'anim_ds': 76, 'ds_fx': 97, 'anim_guess': 0, 'gavels': 1, 'ds_bg': 2, 'choice_labels': 1, 'orphan_bg': 2, 'pan_waits': 2}
 sec  99 <- ds  99  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 60, 'anim_ds': 15, 'ds_fx': 18, 'pan_waits': 3}
 sec 100 <- ds 100  {'dropped_ds': 2, 'inserted_gba': 2, 'unmatched_kept': 159, 'anim_ds': 49, 'ds_fx': 70, 'anim_guess': 0, 'pan_waits': 9}
 sec 101 <- ds 101  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 5, 'anim_ds': 1, 'choice_labels': 1}

@@ -83,7 +83,7 @@ sec  81 <- ds  81  {'dropped_ds': 7, 'inserted_gba': 11, 'unmatched_kept': 144, 
 sec  82 <- ds  82  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 9, 'ds_fx': 4, 'anim_ds': 4, 'choice_labels': 1}
 sec  83 <- ds  83  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 53, 'anim_ds': 14, 'ds_fx': 31, 'pan_waits': 4}
 sec  84 <- ds  84  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 9, 'anim_ds': 3, 'ds_fx': 2, 'choice_labels': 1}
-sec  85 <- ds  85  {'dropped_ds': 5, 'inserted_gba': 17, 'unmatched_kept': 18, 'anim_ds': 8, 'ds_fx': 19, 'gavels': 1, 'ds_bg': 2}
+sec  85 <- ds  85  {'dropped_ds': 5, 'inserted_gba': 13, 'unmatched_kept': 18, 'anim_ds': 8, 'ds_fx': 19, 'gavels': 1, 'ds_bg': 2, 'orphan_bg': 2}
 sec  86 <- ds  86  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 20, 'anim_ds': 7, 'ds_fx': 11}
 sec  87 <- ds  87  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 21, 'anim_ds': 7, 'ds_fx': 15}
 sec  88 <- ds  88  {'dropped_ds': 6, 'inserted_gba': 10, 'unmatched_kept': 105, 'anim_ds': 26, 'ds_fx': 69, 'gavels': 1, 'ds_bg': 1, 'bg_order': '1 person changes moved before the background change', 'pan_waits': 7}
