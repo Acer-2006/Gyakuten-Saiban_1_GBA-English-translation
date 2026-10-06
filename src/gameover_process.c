@@ -30,11 +30,14 @@ void GameOverScreenProcess(struct Main *main)
     switch (main->process[GAME_PROCESS_STATE])
     {
     case 0:
-        oam->attr0 = SPRITE_ATTR0(48, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
+        // English: the DS game over shows the closing doors only (its
+        // program never loads the 敗訴 "case lost" lettering), so the two
+        // kanji sprites stay hidden
+        oam->attr0 = SPRITE_ATTR0_CLEAR;
         oam->attr1 = SPRITE_ATTR1_NONAFFINE((-64-24) & 0x1FF, FALSE, FALSE, 3);
         oam->attr2 = SPRITE_ATTR2(0x1A0, 0, 5);
         oam++;
-        oam->attr0 = SPRITE_ATTR0(48, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
+        oam->attr0 = SPRITE_ATTR0_CLEAR;
         oam->attr1 = SPRITE_ATTR1_NONAFFINE(DISPLAY_WIDTH+24, FALSE, FALSE, 3);
         oam->attr2 = SPRITE_ATTR2(0x1E0, 0, 5);
         DmaCopy16(3, gGfxTrialGameOverDoors, VRAM+0x1400, 0x2E0);
