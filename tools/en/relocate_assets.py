@@ -44,7 +44,7 @@ with open(os.path.join(ROOT, 'data/en_graphics.s'), 'w') as o:
 # 3. point the address macros at the English versions
 h_path = os.path.join(ROOT, 'include/graphics.h')
 h = open(h_path).read()
-h = re.sub(r'\n// English patch relocations.*?// end English patch relocations\n', '\n', h, flags=re.S)
+h = re.sub(r'\n*// English patch relocations.*?// end English patch relocations\n+', '\n\n', h, flags=re.S)
 block = ['// English patch relocations (tools/en/relocate_assets.py)']
 for label, real in changed:
     m = re.search(r'#define %s \(\((\w+)\s*\*\)' % label, h)
