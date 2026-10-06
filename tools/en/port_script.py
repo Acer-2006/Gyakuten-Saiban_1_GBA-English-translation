@@ -191,10 +191,20 @@ def fix_pose_pair(person, t, i, ds_silent):
         return t, pt[t]
     return t, (t if i in pt else i)
 
+def cmd_bgs(cmds, ds=False):
+    """token pos -> background in force, along a command list"""
+    res, bg = {}, None
+    for x in cmds:
+        if x[2] == 0x1B and x[3]:
+            bg = 0xFF if (ds and x[3][0] == 0xFFF) else x[3][0] & 0x7FFF
+        res[x[0]] = bg
+    return res
+
 def align_poses(gcmds, dcmds):
     """DS token pos -> GBA pose arguments, for the DS poses that line up"""
     g1 = [x for x in gcmds if x[2] == 0x1E and x[3]]
     d1 = [x for x in dcmds if x[2] == 0x1E and x[3]]
+    gbg, dbg = cmd_bgs(gcmds), cmd_bgs(dcmds, True)
     res = {}
     if [x[3][0] for x in g1] == [x[3][0] for x in d1]:
         for a, b in zip(g1, d1):
@@ -203,6 +213,9 @@ def align_poses(gcmds, dcmds):
     def ok(a, b):
         person, dv, gv = b[3][0], b[3][1], a[3][1]
         if a[3][0] != person:
+            return False
+        # the same place: a GBA pose for another background is drawn elsewhere
+        if gbg.get(a[0]) is not None and dbg.get(b[0]) is not None and gbg[a[0]] != dbg[b[0]]:
             return False
         known = ANIM_VOTES.get((person, dv))
         return person == 0 or not known or gv in known
@@ -225,6 +238,7 @@ def align_poses(gcmds, dcmds):
     return res
 
 ANIM_VOTES = {}
+POSES_BG = {}     # (background, person) -> poses the Japanese game shows there
 
 def merge_section(gtoks, dtoks, choice_ids=None):
     """Return (out_tokens, gpos_to_out, patches, stats)."""
@@ -280,6 +294,45 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         out.extend(args)
         emitted.add(j)
 
+    def current_bg():
+        bg = None
+        for pos, kind, op, a in parse(out, GBA_ARGS)[0]:
+            if kind == 'cmd' and op == 0x1B and a:
+                bg = a[0]
+        return bg
+
+    def emit_batch(js):
+        """GBA-only commands that come between two DS ones. The GBA waits
+        after each court pan (1A) are text-flow commands, which come from the
+        DS, so pans inserted from the GBA lost theirs: several then started
+        on the same frame and the person was left off-centre. Of pans with
+        nothing between them only the last is kept (none if it ends where the
+        camera already is), and it gets the GBA's wait back."""
+        js = [j for j in js if j not in emitted and gba_only_ok(j)]
+        pans = [k for k, j in enumerate(js) if gcmds[j][2] == 0x1A]
+        drop = set()
+        for a, b in zip(pans, pans[1:]):
+            drop.update(k for k in range(a, b) if gcmds[js[k]][2] in (0x1A, 0x1B, 0x0E))
+        if len(pans) > 1:
+            last = pans[-1]
+            after = [k for k in range(last + 1, len(js)) if gcmds[js[k]][2] == 0x1B]
+            here = current_bg()
+            if after and here is not None and gcmds[js[after[0]]][3][0] == here:
+                end = after[0] + 1
+                if end < len(js) and gcmds[js[end]][2] == 0x0E:   # its name tag
+                    end += 1
+                drop.update(k for k in range(last, end) if gcmds[js[k]][2] in (0x1A, 0x1B, 0x0E))
+        for k, j in enumerate(js):
+            if k in drop:
+                gpos_to_out[gcmds[j][0]] = len(out)
+                emitted.add(j)
+                stats['pans_dropped'] = stats.get('pans_dropped', 0) + (gcmds[j][2] == 0x1A)
+                continue
+            emit_g(j)
+            stats['inserted_gba'] += 1
+            if gcmds[j][2] == 0x1A:
+                out.extend([0x0C, PAN_WAIT])
+
     # Character poses (1E person, talking, idle). Where the DS command lines up
     # with a GBA one for the same person, the GBA's own pose is used: the same
     # DS pose can stand for different GBA animations in different scenes (Maya
@@ -299,12 +352,27 @@ def merge_section(gtoks, dtoks, choice_ids=None):
     for x in gcmds:
         if x[2] == 0x1E and x[3] and x[3][0]:
             sec_poses[x[3][0]].update(x[3][1:3])
+    # the background in force at each DS command (the DS uses the GBA's
+    # background numbers): the same DS pose stands for a different GBA pose
+    # at the witness stand and at the bench, behind the glass and in front
+    dbg, bgnow = {}, None
+    for pos, kind, op, args in d:
+        if kind == 'cmd' and op == 0x1B and args:
+            bgnow = 0xFF if args[0] == 0xFFF else args[0] & 0x7FFF
+        dbg[pos] = bgnow
     local, last = {}, {}
     for pos, kind, op, args in d:
         if kind == 'cmd' and op == 0x1E and pos in pose_g:
             ga = pose_g[pos]
             for dv, gv in zip(args[1:3], ga[1:3]):
+                local.setdefault((dbg[pos], args[0], dv), gv)
                 local.setdefault((args[0], dv), gv)
+
+    def fits_bg(person, gv, bg):
+        """the Japanese game shows this pose of the person on this background
+        (or never shows the person there at all)"""
+        k = (bg, person & 0xFF)
+        return gv is None or k not in POSES_BG or gv in POSES_BG[k]
 
     def conv_anim(args, pos=None):
         res = conv_anim_raw(args, pos)
@@ -322,15 +390,25 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         if person == 0:
             return [0x1E] + list(args)
         res = [0x1E, person]
+        bg = dbg.get(pos)
         for v in args[1:3]:
-            # what the DS pose stands for in this section, else the version of
-            # it this scene uses (Maya behind the glass, in the dark...), else
-            # what it stands for in the chapter, else anywhere
-            scene = sorted(ANIM_VOTES.get((person, v), set()) & sec_poses.get(person, set()))
-            gv = local.get((person, v))
+            # what the DS pose stands for on this background in this section,
+            # else the version of it the game shows on this background (Maya
+            # behind the glass, Edgeworth at the witness stand...), else what
+            # it stands for in this section / this scene / the chapter
+            chap = ANIM_MAP.get('%s:%x:%x' % (ANIM_TAG, person, v))
+            votes = ANIM_VOTES.get((person, v), set())
+            onbg = sorted(x for x in votes if bg is not None and (bg, person & 0xFF) in POSES_BG
+                          and x in POSES_BG[(bg, person & 0xFF)])
+            scene = sorted(votes & sec_poses.get(person, set()))
+            gv = local.get((bg, person, v))
+            if gv is None and onbg:
+                gv = chap if chap in onbg else (local.get((person, v)) if local.get((person, v)) in onbg else onbg[0])
+            if gv is None and local.get((person, v)) is not None and fits_bg(person, local[(person, v)], bg):
+                gv = local[(person, v)]
             if gv is None and scene:
-                chap = ANIM_MAP.get('%s:%x:%x' % (ANIM_TAG, person, v))
-                gv = chap if chap in scene else scene[0]
+                scene_bg = [x for x in scene if fits_bg(person, x, bg)] or scene
+                gv = chap if chap in scene_bg else scene_bg[0]
             if gv is None:
                 gv = ANIM_MAP.get('%s:%x:%x' % (ANIM_TAG, person, v), ANIM_ANY.get((person, v)))
             if gv is None or (CHAPTER_POSES.get(person) and gv not in CHAPTER_POSES[person]):
@@ -362,11 +440,8 @@ def merge_section(gtoks, dtoks, choice_ids=None):
             if conv is not None:
                 if pos in d2g:
                     j = d2g[pos]
-                    while nextg < j:
-                        if nextg not in emitted and gba_only_ok(nextg):
-                            emit_g(nextg)
-                            stats['inserted_gba'] += 1
-                        nextg += 1
+                    emit_batch(range(nextg, j))
+                    nextg = max(nextg, j)
                     emitted.add(j)
                     nextg = j + 1
                 out.extend(conv)
@@ -376,11 +451,8 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 continue
         if pos in d2g:
             j = d2g[pos]
-            while nextg < j:  # GBA-only commands that come before this one
-                if nextg not in emitted and gba_only_ok(nextg):
-                    emit_g(nextg)
-                    stats['inserted_gba'] += 1
-                nextg += 1
+            emit_batch(range(nextg, j))  # GBA-only commands that come before this one
+            nextg = max(nextg, j)
             gop, gargs = gcmds[j][2], gcmds[j][3]
             if op in DS_ARGS_WIN:
                 out.append(op)
@@ -434,9 +506,7 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         term = None
         if out and out[-1] == 0x0D:
             term = out.pop()
-        for j in tail:
-            emit_g(j)
-            stats['inserted_gba'] += 1
+        emit_batch(tail)
         if term is not None:
             out.append(term)
     return out, gpos_to_out, patches, stats
@@ -707,6 +777,92 @@ def fix_pairs(out, seen):
     return out, f, ('%d stray background commands removed' % removed) if removed else None
 
 
+# Each GBA pose is drawn for the place it is used in (behind the detention
+# center glass, at the witness stand, at the prosecution bench...): the same
+# person's poses for another place sit higher or lower or further across, so
+# showing one there makes the character jump. A pose the Japanese game never
+# shows on the background in force when the line is typed is replaced by the
+# person's last pose on that background in the section (the DS's extra
+# expression change is dropped), else by their usual pose there.
+SEEN_POSES = None
+
+
+def seen_poses(gdir):
+    global SEEN_POSES
+    if SEEN_POSES is None:
+        SEEN_POSES = collections.defaultdict(collections.Counter)
+        for f in glob.glob(os.path.join(gdir, 'scenario_*.phscr')):
+            b, n, offs = load(f)
+            for x in section_bounds(b, offs):
+                if not x:
+                    continue
+                bg = pose = None
+                intext = False
+                for pos, kind, op, a in parse(tokens(b, *x), GBA_ARGS)[0]:
+                    if kind == 'text':
+                        if not intext and bg is not None and pose and pose[0]:
+                            SEEN_POSES[(bg, pose[0])][pose[1:]] += 1
+                        intext = True
+                        continue
+                    if op not in (0x01, 0x03, 0x0B, 0x0C):
+                        intext = False
+                    if op == 0x1B and a:
+                        bg = a[0] & 0x7FFF
+                    elif op == 0x1E and a:
+                        pose = (a[0] & 0xFF, a[1], a[2])
+    return SEEN_POSES
+
+
+def fix_scene_poses(out, seen):
+    out = list(out)
+    vals = {k: set(v for pr in c for v in pr) for k, c in seen.items()}
+    bg = cur = None
+    good = {}
+    fixed = 0
+    intext = False
+    for pos, kind, op, a in parse(out, GBA_ARGS)[0]:
+        if kind == 'text':
+            if not intext and bg is not None and cur and cur[0]:
+                k = (bg, cur[0])
+                if k in vals and (cur[1] not in vals[k] or cur[2] not in vals[k]):
+                    t, i = good.get(k) or seen[k].most_common(1)[0][0]
+                    out[cur[3] + 2], out[cur[3] + 3] = t, i
+                    cur = (cur[0], t, i, cur[3])
+                    fixed += 1
+                if k in vals:
+                    good[k] = (cur[1], cur[2])
+            intext = True
+            continue
+        if op not in (0x01, 0x03, 0x0B, 0x0C):
+            intext = False
+        if op == 0x1B and a:
+            bg = a[0] & 0x7FFF
+        elif op == 0x1E and a:
+            cur = (a[0] & 0xFF, a[1], a[2], pos)
+    return out, ('%d poses from another place replaced' % fixed) if fixed else None
+
+
+PAN_WAIT = 0x23   # frames the GBA script waits after a court pan (1A)
+
+
+def fix_pan_waits(out):
+    """The DS waits 30 frames after a court pan before showing the person;
+    the GBA pan runs a little longer and the GBA script always waits 35. A
+    pose set while the pan is still running gets moved by its last steps,
+    which left the person off-centre (up to 22 pixels) until the next pose
+    change snapped them back."""
+    out = list(out)
+    items = parse(out, GBA_ARGS)[0]
+    n = 0
+    for k, (pos, kind, op, a) in enumerate(items):
+        if kind == 'cmd' and op == 0x1A and k + 1 < len(items):
+            p2, k2, op2, a2 = items[k + 1]
+            if k2 == 'cmd' and op2 == 0x0C and a2[0] < PAN_WAIT:
+                out[p2 + 1] = PAN_WAIT
+                n += 1
+    return out, n
+
+
 def map_pos(gpos_to_out, target):
     keys = sorted(gpos_to_out)
     for k in keys:
@@ -729,8 +885,9 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
         usual[int(person, 16)][gv] += 1
     ANIM_ANY = {k: c.most_common(1)[0][0] for k, c in votes.items()}
     ANIM_USUAL = {k: c.most_common(1)[0][0] for k, c in usual.items()}
-    global ANIM_VOTES
+    global ANIM_VOTES, POSES_BG
     ANIM_VOTES = {k: set(c) for k, c in votes.items()}
+    POSES_BG = {k: set(v for pr in c for v in pr) for k, c in seen_poses(os.path.dirname(gfile)).items()}
     global CHAPTER_POSES, CHAPTER_USUAL
     gb0, gn0, goffs0 = load(gfile)
     cp = collections.defaultdict(collections.Counter)
@@ -793,6 +950,12 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             patches = [(f[idx], tgt) for idx, tgt in patches]
             if note:
                 st = dict(st, pairs=note)
+            out, note = fix_scene_poses(out, seen_poses(os.path.dirname(gfile)))
+            if note:
+                st = dict(st, poses=note)
+            out, n = fix_pan_waits(out)
+            if n:
+                st = dict(st, pan_waits=n)
             for idx, tgt in patches:
                 out[idx] = map_pos(m, tgt) * 2
             lines.append('sec %3d <- ds %3d  %s' % (gi, pairs[gi], st))

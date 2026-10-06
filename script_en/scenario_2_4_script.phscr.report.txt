@@ -125,4 +125,4 @@ sec 123 <- ds 123  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'ds
 sec 124 <- ds 124  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'ds_fx': 1}
 sec 125 <- ds 125  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 6, 'ds_fx': 1}
 sec 126 <- ds 126  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 8, 'ds_fx': 1}
-sec 127 <- ds 127  {'dropped_ds': 7, 'inserted_gba': 18, 'unmatched_kept': 328, 'anim_guess': 10, 'anim_ds': 68, 'ds_fx': 119, 'pose_pair_fixed': 5}
+sec 127 <- ds 127  {'dropped_ds': 7, 'inserted_gba': 18, 'unmatched_kept': 328, 'anim_guess': 12, 'anim_ds': 68, 'ds_fx': 119, 'pose_pair_fixed': 5}
