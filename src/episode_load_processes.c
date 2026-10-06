@@ -10,6 +10,7 @@
 #include "constants/songs.h"
 #include "constants/process.h"
 #include "constants/oam_allocations.h"
+#include "en_menu.h"
 
 void EpisodeInit(struct Main * main)
 {
@@ -613,116 +614,58 @@ void ContinueSaveProcess(struct Main * main) {
                 main->saveContinueFlags = gSaveDataBuffer.main.saveContinueFlags;
                 main->scenarioIdx = gSaveDataBuffer.main.scenarioIdx;
                 DmaCopy16(3, gGfxSaveGameTiles, BG_CHAR_ADDR(0), 0x1000);
-                DmaCopy16(3, gGfxFromSaveOrBeginning, OBJ_VRAM0 + 0x3400, 0x1000);
-                DmaCopy16(3, gPalChoiceSelected, OBJ_PLTT + 0x120, 0x40);
-                DecompressBackgroundIntoBuffer(0x43);
-                CopyBGDataToVram(0x43);
-                main->animationFlags &= ~3;
+                                                main->animationFlags &= ~3;
                 oam = gOamObjects;
                 for (i = 0; i < MAX_OAM_OBJ_COUNT; ++i) {
                     oam->attr0 = 0x200;
                     ++oam;
                 }
-                for (i = 0; i < 0x400; ++i) {
-                    gBG2MapBuffer[i] = 0;
-                }
-                SlideInBG2Window(5, 8);
+                // English patch: the DS load screen (en_menu.c). Without a
+                // mid-chapter save "From save point." is greyed out.
+                EnMenuBegin(EN_MENU_LOAD);
+                EnMenuSetupButtons(EN_MENU_LOAD, (main->saveContinueFlags & 1) ? 0 : 1, !(main->saveContinueFlags & 1));
                 PlaySE(SE007_MENU_OPEN_SUBMENU);
-                gIORegisters.lcd_dispcnt = 0x1C40;
-                main->tilemapUpdateBits = 0xC;
-                gIORegisters.lcd_bg2cnt = 0x3E01;
-                main->selectedButton = 0;
+                main->selectedButton = (main->saveContinueFlags & 1) ? 0 : 1;
                 StartHardwareBlend(1, 0, 1, 0x1F);
                 ++main->process[GAME_PROCESS_STATE];
             }
             break;
         case 2: // 9BA8
-            UpdateBG2Window(&gCourtRecord);
-            if (gCourtRecord.windowScrollSpeed == 0) { // 9BBA
+            if (EnMenuSlideDone()) {
                 main->advanceScriptContext = TRUE;
                 main->showTextboxCharacters = TRUE;
                 gScriptContext.currentSection = 0xFFFF;
                 ChangeScriptSection(main->scenarioIdx + 7);
-                gScriptContext.textXOffset = 9;
-                gScriptContext.textYOffset = 52;
-                main->blendCounter = 0;
-                main->blendDelay = 1;
-                main->blendDeltaY = 16;
-                gIORegisters.lcd_bldcnt = 0x840;
-                gIORegisters.lcd_bldalpha = BLDALPHA_BLEND(0, main->blendDeltaY);
+                EnMenuSetTextPos();
+                EnMenuShowButtons(12); // the DS flips them in while the title is typed
                 ++main->process[GAME_PROCESS_STATE];
             }
             break;
         case 3: // 9C14
-            if (gScriptContext.flags & 8) {
+            if (gScriptContext.flags & 8 && EnMenuButtonsReady()) {
                 if (main->saveContinueFlags & 1 && gJoypad.pressedKeys & 0xC0) {
                     PlaySE(SE000_MENU_CHANGE);
                     main->selectedButton ^= 1;
-                } else /* 9C50 */ if (gJoypad.pressedKeys & 1) {
+                    EnMenuSelect(main->selectedButton);
+                } else if (gJoypad.pressedKeys & 1) {
                     PlaySE(SE001_MENU_CONFIRM);
                     main->advanceScriptContext = FALSE;
                     main->showTextboxCharacters = TRUE;
-                    if ((main->saveContinueFlags & 1) == 0) {
-                        StartHardwareBlend(2, 0, 1, 0x1F);
-                        main->process[GAME_PROCESS_STATE] = 5;
-                    } else {
-                        // 9C84
-                        main->blendCounter = 0;
-                        main->blendDelay = 1;
-                        main->blendDeltaY = 0;
-                        main->process[GAME_PROCESS_STATE] = 7;
-                        main->process[GAME_PROCESS_VAR1] = 0;
-                    }
-                } else /* 9C9C */ if (gJoypad.pressedKeys & 2) {
+                    EnMenuConfirm(EN_CONFIRM_LOAD);
+                    main->process[GAME_PROCESS_STATE] = 7;
+                    main->process[GAME_PROCESS_VAR1] = 0;
+                } else if (gJoypad.pressedKeys & 2) {
                     PlaySE(SE002_MENU_CANCEL);
-                    StartHardwareBlend(2, 0, 1, 0x1F);
-                    main->process[GAME_PROCESS_STATE] += 3;
+                    EnMenuConfirm(EN_CONFIRM_CANCEL);
+                    main->process[GAME_PROCESS_STATE] = 8;
                 }
-            }
-            // 9CBC
-            if (main->saveContinueFlags & 1) {
-                oam = gOamObjects + OAM_IDX_GENERIC_TEXT_ICON;
-                // sl = r3 = 0xA1A0
-                // sb = r4 = 0xC038
-                for (i = 0; i < 2; ++i) {
-                    // 9CD2
-                    for (j = 0; j < 2; ++j) {
-                        oam->attr0 = 0x4462 + i * 32;
-                        oam->attr1 = 0xC038 + j * 64;
-                        if (main->selectedButton == i) {
-                            oam->attr2 = j * 0x20 + 0x91A0 + i * 0x40;
-                        } else {
-                            oam->attr2 = j * 0x20 + 0xA1A0 + i * 0x40;
-                        }
-                        ++oam;
-                    }
-                }
-            } else /* 9D28 */ {
-                oam = gOamObjects + OAM_IDX_GENERIC_TEXT_ICON;
-                // 9D32
-                for (j = 0; j < 2; ++j) {
-                    oam->attr0 = 0x4462;
-                    oam->attr1 = 0xC038 + j * 64;
-                    oam->attr2 = 0x91E0 + j * 32;
-                    ++oam;
-                }
-            }
-            // 9D44
-            if (main->process[GAME_PROCESS_STATE] == 3 && main->blendDeltaY != 0) {
-                // 9D58
-                ++main->blendCounter;
-                if (main->blendCounter >= main->blendDelay) {
-                    // 9D72
-                    main->blendCounter = 0;
-                    --main->blendDeltaY;
-                }
-                // A312
-                gIORegisters.lcd_bldalpha = BLDALPHA_BLEND(0x10 - main->blendDeltaY, main->blendDeltaY);
             }
             break;
         case 4: // 9D98
             if(main->blendMode != 0)
                 return;
+            EnMenuEnd(TRUE); // English patch
+            DmaCopy16(3, gPalChoiceSelected, OBJ_PLTT + 0x120, 0x40);
             HideAllSprites();
             InitBGs();
             ResetAnimationSystem();
@@ -815,82 +758,29 @@ void ContinueSaveProcess(struct Main * main) {
         case 5: // A1C4
             if (main->blendMode == 0) {
                 // A1D0
+                EnMenuEnd(FALSE);
                 SET_PROCESS_PTR(gCaseStartProcess[main->scenarioIdx], 0, 0, 0, main);
             }
             break;
         case 6: // A1E4
             if (main->blendMode == 0) {
                 // A1F0
+                EnMenuEnd(FALSE);
                 SET_PROCESS_PTR(TITLE_SCREEN_PROCESS, 0, 0, 0, main);
             }
             break;
         case 7: // A1F6
-            ++main->process[GAME_PROCESS_VAR1];
-            if (main->process[GAME_PROCESS_VAR1] >= 0x30) {
-                if (main->selectedButton == 0) {
-                    main->process[GAME_PROCESS_STATE] = 4;
-                } else {
-                    // A210
-                    main->process[GAME_PROCESS_STATE] = 5;
-                }
-                main->process[GAME_PROCESS_VAR1] = 0;
-                oam = gOamObjects + OAM_IDX_GENERIC_TEXT_ICON;
-                if (main->selectedButton == 0) {
-                    // A222
-                    oam += 2;
-                }
-                for (i = 0; i < 2; ++i) {
-                    // A228
-                    oam->attr0 = 0x200;
-                    ++oam;
-                }
+            // the chosen button blinks; then the other flips away as the screen fades
+            if (EnMenuTime() >= EN_MENU_T_LOAD_FADE) {
+                main->process[GAME_PROCESS_STATE] = main->selectedButton == 0 ? 4 : 5;
                 StartHardwareBlend(2, 0, 1, 0x1F);
-                break;
-            } else /* A244 */ if (main->saveContinueFlags & 1) {
-                oam = gOamObjects + OAM_IDX_GENERIC_TEXT_ICON;
-                for (i = 0; i < 2; ++i) {
-                    // A252
-                    // r0 = i * 32
-                    // r1 = i * 64
-                    // sl = 0x4062 + i * 32
-                    // sb = 0x4462 + i * 32
-                    // sp4 = 0
-                    // r3 = 0x91A0 + i * 64
-                    // ip = 0xA1A0 + i * 64
-                    for (j = 0; j < 2; ++j) {
-                        // A278
-                        oam->attr1 = 0xC038 + j * 64;
-                        if (main->selectedButton == i) {
-                            oam->attr0 = 0x4062 + i * 32;
-                            oam->attr2 = j * 32 + 0x91A0 + i * 64;
-                        } else {
-                            // A2A0
-                            oam->attr0 = 0x4462 + i * 32;
-                            oam->attr2 = j * 32 + 0xA1A0 + i * 64;
-                        }
-                        // A2AA
-                        ++oam;
-                    }
-                }
-                // goto A2E0
-            } else {
-                oam = gOamObjects + OAM_IDX_GENERIC_TEXT_ICON;
-                for (j = 0; j < 2; ++j) {
-                    // A278
-                    oam->attr0 = 0x4062;
-                    oam->attr1 = 0xC038 + j * 64;
-                    oam->attr2 = 0x91E0 + j * 32;
-                    ++oam;
-                }
             }
-            if(main->process[GAME_PROCESS_STATE] == 7 && main->blendDeltaY < 0x10) {
-                    ++main->blendCounter;
-                    if (main->blendCounter >= main->blendDelay) {
-                        // 9D72
-                        main->blendCounter = 0;
-                        ++main->blendDeltaY;
-                    }
-                gIORegisters.lcd_bldalpha = BLDALPHA_BLEND(0x10 - main->blendDeltaY, main->blendDeltaY);
+            break;
+        case 8: // English patch: B, the buttons flip away
+            if (EnMenuTime() >= EN_MENU_T_CANCEL_FADE) {
+                main->process[GAME_PROCESS_STATE] = 6;
+                StartHardwareBlend(2, 0, 1, 0x1F);
             }
+            break;
     }
 }

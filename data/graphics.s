@@ -1434,7 +1434,7 @@ gGfx_BG066_Speedlines:
 
 	.global gGfx_BG067_CourtroomBackground
 gGfx_BG067_CourtroomBackground:
-	.incbin "graphics/striped_images/courtroom_background.4bpp.striped"
+	.incbin "graphics_orig/striped_images/courtroom_background.4bpp.striped"
 
 	.global gGfx_BG068_CapcomScreen
 gGfx_BG068_CapcomScreen:

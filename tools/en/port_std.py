@@ -20,8 +20,11 @@ PAIRS = {i: i for i in range(7)}
 PAIRS.update({i: i + 1 for i in range(7, 24)})     # chapter titles
 PAIRS.update({24: 43, 25: 44, 26: 45, 27: 46, 28: 47, 29: 48, 30: 49})
 
-# The save / chapter messages are drawn at x=9 in a box spanning x=27..216;
-# the Japanese text was centred with leading spaces, so centre each line.
+# The Japanese text was centred with leading spaces. The save, erase and
+# load messages are now drawn on the DS plate, which centres each line itself
+# (en_menu.c / vwf.c); "Select an episode." and the new-episode notice
+# (sections 2 and 5) are still drawn at x=9 in a box spanning x=27..216, so
+# those lines are centred here.
 WIDTHS = open(os.path.join(os.path.dirname(__file__), '..', '..', 'graphics/vwf/font_widths.bin'), 'rb').read()
 BOX_CENTRE, TEXT_X, SPACE = 121, 9, 4
 
@@ -71,7 +74,7 @@ def centre(ds, sections):
 if __name__ == '__main__':
     gfile, mes_all, out = sys.argv[1:4]
     tmp = out + '.ds'
-    open(tmp, 'wb').write(centre(ds_std(mes_all), set(range(0, 7)) | set(range(8, 25))))
+    open(tmp, 'wb').write(centre(ds_std(mes_all), {2, 5}))
     t, k = port_script.port(gfile, tmp, out, out + '.report.txt', None, PAIRS)
     os.remove(tmp)
     print('std: %d sections, %d left in Japanese' % (t, k))

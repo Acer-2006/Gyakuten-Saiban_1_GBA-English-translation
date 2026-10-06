@@ -4,6 +4,8 @@
 #include "ewram.h"
 #include "vwf.h"
 #include "agb_sram.h"
+#include "en_menu.h"
+#include "en_menu_gfx.h"
 #include <stddef.h>
 
 // English VWF text renderer.
@@ -46,8 +48,17 @@ static void VwfShowBlocks(u32 line, u32 lastBlock)
     {
         struct TextBoxCharacter * c = &gTextBoxCharacters[line * VWF_BLOCKS_PER_LINE + b];
         c->x = b * 32;
-        c->y = line * VWF_LINE_HEIGHT;
-        c->objAttr2 = (line * (VWF_LINE_VRAM_STRIDE / 32) + b * 8) + 0x400;
+        if (gEnMenu->textMode)
+        {
+            // menu plate: DS line pitch 16; one line on its own sits half-way
+            c->y = line * 16 - (gEnMenu->halfLine && line == 1 ? 8 : 0);
+            c->objAttr2 = (line * (VWF_LINE_VRAM_STRIDE / 32) + b * 8) | (EN_MENU_TEXT_PAL << 12);
+        }
+        else
+        {
+            c->y = line * VWF_LINE_HEIGHT;
+            c->objAttr2 = (line * (VWF_LINE_VRAM_STRIDE / 32) + b * 8) + 0x400;
+        }
         c->state = 0x8000 | line;
         c->color = 0;
     }
@@ -65,6 +76,63 @@ void VwfClearLine(u32 line)
     VwfCopyBlocks(line, 0, VWF_BLOCKS_PER_LINE - 1);
     for (b = 0; b < VWF_BLOCKS_PER_LINE; b++)
         gTextBoxCharacters[line * VWF_BLOCKS_PER_LINE + b].state &= ~0x8000;
+    if (gEnMenu->textMode)
+    {
+        // menu plate: each line is centred, as the DS does
+        gVwf->pen[line] = EnMenuLineStart();
+        if (line == 0)
+            gEnMenu->halfLine = FALSE;
+        else if (line == 1)
+        {
+            gEnMenu->halfLine = TRUE;
+            for (b = 0; b < VWF_BLOCKS_PER_LINE; b++)
+                if (gTextBoxCharacters[b].state & 0x8000)
+                    gEnMenu->halfLine = FALSE;
+        }
+    }
+}
+
+// a character in the DS menu font (plate text)
+static void VwfDrawMenuChar(u32 code, u32 line)
+{
+    const u8 * glyph;
+    u8 * buf = gVwf->tiles[line];
+    u32 pen = gVwf->pen[line], x, y, first, last;
+    s32 off;
+    if (code >= EN_PLATE_FONT_CODES || !gEnPlateFontAdv[code])
+    {
+        gVwf->pen[line] = pen + 8; // space, or nothing to draw
+        return;
+    }
+    if (pen + 16 > VWF_LINE_PIXELS)
+        return;
+    glyph = gEnPlateFont + code * EN_PLATE_FONT_ROWS * 8;
+    off = (s8)gEnPlateFontOff[code];
+    for (y = 0; y < EN_PLATE_FONT_ROWS; y++)
+    {
+        for (x = 0; x < 16; x++)
+        {
+            u32 v = glyph[y * 8 + (x >> 1)];
+            v = (x & 1) ? (v >> 4) : (v & 0xF);
+            if (v && (s32)(pen + x) + off >= 0)
+            {
+                u32 px = pen + x + off;
+                u32 tile = (px >> 5) * 8 + (y >> 3) * 4 + ((px >> 3) & 3);
+                u8 * p = buf + tile * 32 + (y & 7) * 4 + ((px & 7) >> 1);
+                if (px & 1)
+                    *p = (*p & 0x0F) | (v << 4);
+                else
+                    *p = (*p & 0xF0) | v;
+            }
+        }
+    }
+    gVwf->pen[line] = pen + gEnPlateFontAdv[code];
+    first = pen >> 5;
+    last = (pen + 15) >> 5;
+    if (last >= VWF_BLOCKS_PER_LINE)
+        last = VWF_BLOCKS_PER_LINE - 1;
+    VwfCopyBlocks(line, first, last);
+    VwfShowBlocks(line, last);
 }
 
 static void VwfDrawChar(u32 code, u32 line, u32 color, bool32 copy);
@@ -77,7 +145,10 @@ void VwfPutChar(u32 code, u32 line, u32 color)
         code = 0xFF;
     if (gVwf->logLen[line] < VWF_LOG_LEN)
         gVwf->log[line][gVwf->logLen[line]++] = code | (color << 11);
-    VwfDrawChar(code, line, color, TRUE);
+    if (gEnMenu->textMode)
+        VwfDrawMenuChar(code, line);
+    else
+        VwfDrawChar(code, line, color, TRUE);
 }
 
 static void VwfDrawChar(u32 code, u32 line, u32 color, bool32 copy)

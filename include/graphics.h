@@ -16,6 +16,8 @@
 
 
 
+
+
 // English patch relocations (tools/en/relocate_assets.py)
 extern u8 gPalTitleScreen_en[];
 extern u8 gGfx8lzTitleScreen_en[];
@@ -148,6 +150,7 @@ extern u8 gGfx_BG048_EvidenceMayaPhoneCall3_en[];
 extern u8 gGfx_BG059_Case3PinkPrincess_en[];
 extern u8 gGfx_BG061_EvidenceGlobalStudiosDiagram_en[];
 extern u8 gGfx_BG063_Case3SteelSamurai_en[];
+extern u8 gGfx_BG067_CourtroomBackground_en[];
 extern u8 gGfx_BG070_GourdLakeEntrance_en[];
 extern u8 gGfx_BG071_GourdLakePark_en[];
 extern u8 gGfx_BG072_GourdLakeParkNoBalloon_en[];
@@ -412,7 +415,7 @@ extern u8 gGfx_BG105_TrialWon_en[];
 #define gMap_BG065_BustupEdgeworth ((u16*)(ROM_START + 0x362544))
 #define gGfx_BG065_BustupEdgeworth ((u8*)(ROM_START + 0x3629F4))
 #define gGfx_BG066_Speedlines ((u8*)(ROM_START + 0x364794))
-#define gGfx_BG067_CourtroomBackground ((u8*)(ROM_START + 0x365640))
+#define gGfx_BG067_CourtroomBackground ((u8*)gGfx_BG067_CourtroomBackground_en)
 #define gGfx_BG068_CapcomScreen ((u8*)(ROM_START + 0x368BC4))
 #define gGfx_BG069_SteelSamuraiNight ((u8*)(GFX_BASE_ADDR + 0x1E9890))
 #define gGfx_BG070_GourdLakeEntrance ((u8*)gGfx_BG070_GourdLakeEntrance_en)

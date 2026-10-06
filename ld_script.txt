@@ -75,6 +75,7 @@ SECTIONS {
         src/agb_sram.o(.text);
         src/vwf.o(.text);
         src/en_verdict.o(.text);
+        src/en_menu.o(.text);
         *libgcc.a:*_call_via_rX*.o(.text*);
         *libgcc.a:*_divsi3*.o(.text*);
         *libgcc.a:*_dvmd_tls*.o(.text*);
@@ -119,6 +120,7 @@ SECTIONS {
         src/agb_sram.o(.rodata); 
         src/vwf.o(.rodata);
         src/en_verdict.o(.rodata);
+        src/en_menu.o(.rodata);
     } =0
     /* capcom :^)) */
     . += 0x100;
@@ -158,6 +160,7 @@ SECTIONS {
         data/en_graphics.o(en_data);
         data/en_choice.o(en_data);
         data/en_effects.o(en_data);
+        data/en_menu.o(en_data);
     } =0
 
     /* DWARF debug sections.

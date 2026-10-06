@@ -12,6 +12,7 @@
 #include "save.h"
 #include "court.h"
 #include "constants/process.h"
+#include "en_menu.h"
 
 static void DoGameProcess();
 static void VBlankIntr();
@@ -102,6 +103,7 @@ void AgbMain()
             MoveAnimationTilesToRam(0);
             MoveSpritesToOAM();
             SetLCDIORegs();
+            EnMenuVBlank(); // English patch: palette fades on the menu screens
         }
         if (gMain.currentBgStripe > 10)
         {
@@ -405,6 +407,8 @@ static void UpdateHardwareBlend()
 {
     struct Main *main = &gMain;
     struct IORegisters *ioRegsp = &gIORegisters;
+    if (EnMenuFrame()) // English patch: save / load screens
+        return;
     switch (main->blendMode)
     {
     case 0:
