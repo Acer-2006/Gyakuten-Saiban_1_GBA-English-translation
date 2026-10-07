@@ -7,7 +7,7 @@ for k,sc in sm.items():
     if not sc: continue
     timed=[x for x in sc if (x[3]>=0.8 or x[3]==-1.0) and x[2]<300]
     if timed:
-        b=min(timed,key=lambda x:x[2]); h='timing'
+        b=min(timed,key=lambda x:(-round(x[3],2),x[2])); h='timing'   # best timing first, then looks
     elif sc[0][2]<20:
         b=sc[0]; h='looks'
     else:

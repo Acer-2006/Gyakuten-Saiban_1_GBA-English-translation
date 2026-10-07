@@ -27,7 +27,7 @@ def changes(t):
 res={}
 for f in sorted(glob.glob(SRC+'/*.npz')):
     p,i=[int(x,16) for x in os.path.basename(f)[:-4].split('_')]
-    z=np.load(f); D=z['imgs'][:,::2,::2]; D=ds4(D); dd=z['durs']
+    z=np.load(f); Dh=z['imgs'][:,::2,::2]; D=ds4(Dh); dd=z['durs']
     Dt=expand(dd,int(dd.sum()),0xFE)
     nonempty=[j for j in range(len(D)) if (D[j].sum(2)>24).sum()>30]
     if not nonempty or p not in byp: res['%x:%x'%(p,i)]=None; continue
@@ -38,7 +38,10 @@ for f in sorted(glob.glob(SRC+'/*.npz')):
     allG=np.concatenate([c[1] for c in cand]); idx=np.cumsum([0]+[len(c[1]) for c in cand])
     Mall=np.array([diffs(D[a],allG) for a in range(len(D))])
     Dd=np.array([[float(np.abs(D[a]-D[b]).sum(2).mean()) for b in range(len(D))] for a in range(len(D))])
-    dch=set(int(c) for c in changes(Dt))   # every change of the full-size DS picture
+    # changes of the DS picture at the size the GBA frames are compared at (the
+    # full-size recording also changes on tiny DS-only differences)
+    same_d=np.array([[np.array_equal(Dh[a],Dh[b]) for b in range(len(D))] for a in range(len(D))])
+    dch=set(int(c) for c in changes(Dt) if not same_d[Dt[c],Dt[c-1]])
     sc=[]
     for n,(o,gi,gd,term,same) in enumerate(cand):
         M=Mall[:,idx[n]:idx[n+1]]

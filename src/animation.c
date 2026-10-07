@@ -2150,7 +2150,9 @@ void UpdateAnimations(u32 arg0)
             }
             if(animation->flags < 0) // what the fuck
             {
-                if(main->blendMode == 0)
+                // English patch: as on the DS, characters keep moving (and
+                // talking) through a white flash; fades still hold them
+                if(main->blendMode == 0 || main->blendMode == 3)
                 {
                     if(AdvanceAnimationFrame(animation) == 0)
                         continue;

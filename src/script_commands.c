@@ -134,7 +134,9 @@ bool32 Command02(struct ScriptContext * scriptCtx)
             }
             return 0;
         }
-        scriptCtx->personAnimPauseCounter = 10;
+        // English patch: the DS goes on with the next line (and the talking
+        // animation) on the frame after A; the GBA held both for 10 frames
+        scriptCtx->personAnimPauseCounter = 0;
         scriptCtx->flags |= 0x20;
         if(scriptCtx->currentToken == 0xA) // if script cmd is 0xA ?
         {
@@ -420,7 +422,7 @@ bool32 Command0C(struct ScriptContext * scriptCtx)
     if(!gMain.blendMode != 0 && scriptCtx->textSkip > 1)
     {
         scriptCtx->scriptPtr++;
-        scriptCtx->waitTimer = *scriptCtx->scriptPtr;
+        scriptCtx->waitTimer = *scriptCtx->scriptPtr & 0x7FFF;
         scriptCtx->scriptPtr++;
         return 0;      
     }
@@ -433,7 +435,11 @@ bool32 Command0C(struct ScriptContext * scriptCtx)
         return 0;        
     }
     scriptCtx->scriptPtr++;
-    scriptCtx->waitTimer = *scriptCtx->scriptPtr;
+    scriptCtx->waitTimer = *scriptCtx->scriptPtr & 0x7FFF;
+    // English patch: 0C 8000|n is the DS's pause with the mouth closed (DS
+    // command 4E): the idle animation shows while it waits
+    if(*scriptCtx->scriptPtr & 0x8000)
+        SetAnimationFrameOffset(&gAnimation[1], gMain.idleAnimationOffset);
     scriptCtx->scriptPtr--;
     return 1;
 }
@@ -517,6 +523,10 @@ bool32 Command12(struct ScriptContext * scriptCtx)
     scriptCtx->scriptPtr++;
     StartHardwareBlend(var0 >> 8, var0 & 0xFF, var1, *scriptCtx->scriptPtr);
     scriptCtx->scriptPtr++;
+    // English patch: the DS goes on (types the next letter) only once a white
+    // flash is over; the GBA typed one letter on the flash's first frame
+    if((var0 >> 8) == 3)
+        return 1;
     return 0;
 }
 

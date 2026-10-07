@@ -38,6 +38,7 @@ DS_AUTH = {0x06, 0x1C, 0x27, 0x13, 0x14}
 def ds_auth(op, args):
     return op in DS_AUTH or (op == 0x12 and args and args[0] >> 8 == 3)
 DS_PLATE_HIDE = (0x62, 0x243)
+PLATE_OPEN_WAIT, PLATE_CLOSE_WAIT = 15, 24   # frames the DS waits on 13 / 14 (measured)
 SCEN_IDX = None
 def evidence_id(v):
     """DS evidence number -> GBA (from the third episode on the DS numbers one item differently)"""
@@ -49,6 +50,10 @@ def evidence_id(v):
 SE_MAP = {121: 111, 122: 112}
 CENTRE = 0x5D      # DS: centre the following lines (1) / stop (0); en_text in vwf.c
 DS_WAIT = 0x4E     # DS: hold for n frames -> GBA wait (0C)
+def ds_text_speed(v):
+    """0B: at DS text speed n a letter comes every ceil(n/2) frames (default and
+    0xFF: every 2), at GBA speed n every n frames (measured in both games)"""
+    return v if v in (0, 0xFF) else (v + 1) // 2
 ANIM_MAP = {}   # 'scenario_x:person:dsval' -> gba value (learn_anim_map.py)
 CHAPTER_POSES, CHAPTER_USUAL = {}, {}
 # What each DS animation shows (anim_looks.json): every DS person animation was
@@ -324,10 +329,12 @@ def merge_section(gtoks, dtoks, choice_ids=None):
 
     def emit_ds(op, args):
         if op == 0x13:
-            out.extend([0x13, evidence_id(args[0])])
+            # the DS holds the script while the evidence picture opens (15
+            # frames) and closes (24 frames); the GBA went straight on
+            out.extend([0x13, evidence_id(args[0]), 0x0C, PLATE_OPEN_WAIT])
             plate[0] = True
         elif op == 0x14:
-            out.append(0x14)
+            out.extend([0x14, 0x0C, PLATE_CLOSE_WAIT])
             plate[0] = False
         elif op == 0x06:  # sound effect: DS uses (id, flag), GBA packs id<<8 | flag
             sid = SE_MAP.get(args[0], args[0])
@@ -536,7 +543,8 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         prev_ds_cmd, this_cmd = this_cmd, (op, tuple(args))
         if op == 0x69 and tuple(args) == DS_PLATE_HIDE:
             if plate[0] is not False:      # (not when this section already hid it)
-                emit_ds(0x14, [])
+                out.append(0x14)           # this hide doesn't hold the DS script
+                plate[0] = False
                 stats['plate_hide'] = stats.get('plate_hide', 0) + 1
             continue
         if op == 0x69 and len(args) == 2 and args[0] == 0x62 and args[1] in DS_GAVELS:
@@ -588,12 +596,16 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         if ds_auth(op, args):
             emit_ds(op, args)
             stats['ds_fx'] = stats.get('ds_fx', 0) + 1
+        elif op == 0x0B and args:
+            out.extend([0x0B, ds_text_speed(args[0])])
+            stats['unmatched_kept'] += 1
         elif op in TEXT_CMDS or op in DS_KEEP or op == CENTRE:
             out.append(op)
             out.extend(args)
             stats['unmatched_kept'] += 1
         elif op == DS_WAIT:
-            out.extend([0x0C, args[0]])
+            # the DS pauses with the speaker's mouth closed: 0C with bit 15 (script_commands.c)
+            out.extend([0x0C, 0x8000 | (args[0] & 0x7FFF)])
             stats['unmatched_kept'] += 1
         elif op == 0x1B and args and args[0] == 0xFFF and prev_ds_cmd and prev_ds_cmd[0] == 0x1E \
                 and prev_ds_cmd[1][:1] == (0,):
