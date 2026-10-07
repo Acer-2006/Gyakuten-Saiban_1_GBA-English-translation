@@ -119,4 +119,5 @@ sec 117 <- ds 117  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 7, 'an
 sec 118 <- ds 118  {'dropped_ds': 2, 'inserted_gba': 1, 'unmatched_kept': 15, 'anim_ds': 3, 'ds_fx': 11, 'pan_waits': 1}
 sec 119 <- ds 119  {'dropped_ds': 15, 'inserted_gba': 29, 'unmatched_kept': 124, 'ds_fx': 52, 'anim_ds': 34, 'gavels': 4, 'pan_waits': 7}
 sec 120 <- ds 120  {'dropped_ds': 3, 'inserted_gba': 4, 'unmatched_kept': 96, 'anim_ds': 19, 'ds_fx': 28}
-sec 121 <- ds 121  {'dropped_ds': 6, 'inserted_gba': 10, 'unmatched_kept': 25, 'ds_fx': 11, 'anim_ds': 9, 'gavels': 2}
+sec 121 <- ds 121  {'dropped_ds': 6, 'inserted_gba': 10, 'unmatched_kept': 25, 'ds_fx': 11, 'anim_ds': 9, 'gavels': 2, 'jumps': '1 as the DS, 0 as the GBA'}
+jump records: 10 as the DS, 0 as the GBA

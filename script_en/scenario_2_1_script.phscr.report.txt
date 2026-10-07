@@ -91,3 +91,4 @@ sec  89 <- ds  90  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 7, 'an
 sec  90 <- ds  91  {'dropped_ds': 9, 'inserted_gba': 12, 'unmatched_kept': 46, 'ds_fx': 16, 'anim_ds': 13, 'gavels': 2}
 sec  91 <- ds  92  {'dropped_ds': 3, 'inserted_gba': 4, 'unmatched_kept': 106, 'ds_fx': 48, 'anim_ds': 23, 'ds_expression': 1}
 sec  92 <- ds  93  {'dropped_ds': 6, 'inserted_gba': 10, 'unmatched_kept': 34, 'ds_fx': 9, 'anim_ds': 9, 'gavels': 2}
+jump records: 3 as the DS, 1 as the GBA

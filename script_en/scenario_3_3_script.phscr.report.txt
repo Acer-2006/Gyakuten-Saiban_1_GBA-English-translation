@@ -99,3 +99,4 @@ sec  97 <- ds  97  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 8, 'ds
 sec  98 <- ds  98  {'dropped_ds': 21, 'inserted_gba': 40, 'unmatched_kept': 223, 'anim_ds': 57, 'ds_fx': 78, 'gavels': 4, 'plate_hide': 1}
 sec  99 <- ds  99  {'dropped_ds': 3, 'inserted_gba': 6, 'unmatched_kept': 126, 'anim_ds': 32, 'ds_fx': 38}
 sec 100 <- ds 100  {'dropped_ds': 6, 'inserted_gba': 10, 'unmatched_kept': 25, 'ds_fx': 9, 'anim_ds': 8, 'gavels': 2}
+jump records: 2 as the DS, 0 as the GBA

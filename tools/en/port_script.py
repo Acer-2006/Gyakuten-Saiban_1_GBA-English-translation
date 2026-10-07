@@ -304,7 +304,13 @@ ANIM_VOTES = {}
 POSES_BG = {}     # (background, person) -> poses the Japanese game shows there
 
 def merge_section(gtoks, dtoks, choice_ids=None):
-    """Return (out_tokens, gpos_to_out, patches, stats)."""
+    """Return (out_tokens, gpos_to_out, patches, stats, dpos_to_out, rec_pairs).
+
+    Jumps: the text is the DS's, so a jump lands where the DS script's own
+    jump lands. dpos_to_out maps each DS token position to where it ends up
+    in out; patches carry the DS's in-section target where the DS has the
+    same jump, and rec_pairs pairs the GBA's jump records (header entries
+    used by 35 / 36) with the DS's."""
     g, _ = parse(gtoks, GBA_ARGS)
     d, _ = parse(dtoks, DS_ARGS)
     gcmds = [x for x in g if x[1] == 'cmd' and x[2] not in TEXT_CMDS]
@@ -326,7 +332,9 @@ def merge_section(gtoks, dtoks, choice_ids=None):
     gmatched = set(d2g.values())
     out = []
     gpos_to_out = {}
-    patches = []  # (out_index_of_arg, gba_target_token_pos)
+    patches = []  # (out_index_of_arg, gba_target_token_pos, ds_target_token_pos or None)
+    dpos_to_out = {}
+    rec_pairs = {}
     emitted = set()
     stats = {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 0}
     plate = [None]    # evidence plate shown (None: as the section before left it)
@@ -360,7 +368,7 @@ def merge_section(gtoks, dtoks, choice_ids=None):
             out.append(op)
             out.extend(args)
 
-    def emit_g(j):
+    def emit_g(j, ds_args=None):
         pos, kind, op, args = gcmds[j]
         gpos_to_out[pos] = len(out)
         if ds_auth(op, args):
@@ -368,7 +376,8 @@ def merge_section(gtoks, dtoks, choice_ids=None):
             return
         out.append(op)
         if op == JUMP_IN_SECTION and not (args[0] & 0x80):
-            patches.append((len(out) + 1, args[1] // 2))
+            dt = ds_args[1] // 2 if ds_args and len(ds_args) >= 2 and not (ds_args[0] & 0x80) else None
+            patches.append((len(out) + 1, args[1] // 2, dt))
         out.extend(args)
         emitted.add(j)
 
@@ -588,6 +597,7 @@ def merge_section(gtoks, dtoks, choice_ids=None):
     nextg = 0
     prev_ds_cmd, this_cmd = None, None
     for pos, kind, op, args in d:
+        dpos_to_out[pos] = len(out)
         if kind == 'text':
             out.append(op)
             prev_ds_cmd = this_cmd = None
@@ -610,6 +620,7 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                     j = d2g[pos]
                     emit_batch(range(nextg, j))
                     nextg = max(nextg, j)
+                    dpos_to_out[pos] = gpos_to_out[gcmds[j][0]] = len(out)
                     emitted.add(j)
                     nextg = j + 1
                 out.extend(conv)
@@ -623,8 +634,13 @@ def merge_section(gtoks, dtoks, choice_ids=None):
             j = d2g[pos]
             emit_batch(range(nextg, j))  # GBA-only commands that come before this one
             nextg = max(nextg, j)
+            dpos_to_out[pos] = len(out)   # (a jump here skips them, as the GBA's did)
             gop, gargs = gcmds[j][2], gcmds[j][3]
+            if op == gop and (op == 0x36 or (op == JUMP_IN_SECTION and args and gargs
+                                              and args[0] & 0x80 and gargs[0] & 0x80)):
+                rec_pairs[gargs[0] if op == 0x36 else gargs[1]] = args[0] if op == 0x36 else args[1]
             if op in DS_ARGS_WIN:
+                gpos_to_out[gcmds[j][0]] = len(out)
                 out.append(op)
                 out.extend(args)
                 emitted.add(j)
@@ -651,7 +667,7 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 emitted.add(j)
                 stats['ds_fade_speed'] = stats.get('ds_fade_speed', 0) + 1
             else:
-                emit_g(j)
+                emit_g(j, args if op == gop else None)
             emit_locks_after(j)
             nextg = j + 1
             continue
@@ -725,9 +741,10 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         if k is not None:
             out = [0x00] + out[:k] + out[k + 1:]
             gpos_to_out = {g: (o + 1 if o < k else 0 if o == k else o) for g, o in gpos_to_out.items()}
-            patches = [(i + 1 if i < k else i, t) for i, t in patches]
+            patches = [(i + 1 if i < k else i, t, dt) for i, t, dt in patches]
+            dpos_to_out = {p: (o + 1 if o < k else 0 if o == k else o) for p, o in dpos_to_out.items()}
             stats['start_00'] = 1
-    return out, gpos_to_out, patches, stats
+    return out, gpos_to_out, patches, stats, dpos_to_out, rec_pairs
 
 
 def apply_fixups(dtoks, fixes):
@@ -1477,6 +1494,8 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
                 desc_idx.add(args[0])
     sec_out = {}
     maps = {}
+    dmaps = {}       # GBA section -> (DS token position -> output position)
+    rec_pairs = {}   # GBA jump record -> the DS's
     lines = []
     carry = None    # who is shown at the end of the section before
     for gi, x in enumerate(G):
@@ -1486,30 +1505,37 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
         gt = tokens(gb, *x)
         if gi in pairs and D[pairs[gi]]:
             dt = apply_fixups(tokens(db, *D[pairs[gi]]), fixups.get(str(pairs[gi]), []))
-            out, m, patches, st = merge_section(gt, dt, choices.get(pairs[gi]))
+            out, m, patches, st, dm, rp = merge_section(gt, dt, choices.get(pairs[gi]))
+            for r, dr in rp.items():
+                rec_pairs.setdefault(r, set()).add(dr)
             out, f, note = fix_gavel(out, gt)
             m = {g: f[o] for g, o in m.items()}
-            patches = [(f[idx], tgt) for idx, tgt in patches]
+            dm = {p: f[o] for p, o in dm.items()}
+            patches = [(f[idx], tgt, dtg) for idx, tgt, dtg in patches]
             if note:
                 st = dict(st, gavel=note)
             out, f, note = fix_dark(out, gt)
             m = {g: f[o] for g, o in m.items()}
-            patches = [(f[idx], tgt) for idx, tgt in patches]
+            dm = {p: f[o] for p, o in dm.items()}
+            patches = [(f[idx], tgt, dtg) for idx, tgt, dtg in patches]
             if note:
                 st = dict(st, fade=note)
             out, f, note = fix_pairs(out, seen_pairs(os.path.dirname(gfile)))
             m = {g: f[o] for g, o in m.items()}
-            patches = [(f[idx], tgt) for idx, tgt in patches]
+            dm = {p: f[o] for p, o in dm.items()}
+            patches = [(f[idx], tgt, dtg) for idx, tgt, dtg in patches]
             if note:
                 st = dict(st, pairs=note)
             out, f, note = fix_bg_order(out, gt)
             m = {g: f[o] for g, o in m.items()}
-            patches = [(f[idx], tgt) for idx, tgt in patches]
+            dm = {p: f[o] for p, o in dm.items()}
+            patches = [(f[idx], tgt, dtg) for idx, tgt, dtg in patches]
             if note:
                 st = dict(st, bg_order=note)
             out, f, note = fix_card_locks(out, gt)
             m = {g: f[o] for g, o in m.items()}
-            patches = [(f[idx], tgt) for idx, tgt in patches]
+            dm = {p: f[o] for p, o in dm.items()}
+            patches = [(f[idx], tgt, dtg) for idx, tgt, dtg in patches]
             if note:
                 st = dict(st, card_lock=note)
             out, note = fix_scene_poses(out, seen_poses(os.path.dirname(gfile)))
@@ -1524,8 +1550,17 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             out, n = fix_testimony_waits(out)
             if n:
                 st = dict(st, testimony_waits=n)
-            for idx, tgt in patches:
-                out[idx] = map_pos(m, tgt) * 2
+            nj = [0, 0]
+            for idx, tgt, dtg in patches:
+                if dtg is not None and dtg in dm:
+                    out[idx] = dm[dtg] * 2      # where the DS's own jump lands
+                    nj[0] += 1
+                else:
+                    out[idx] = map_pos(m, tgt) * 2
+                    nj[1] += 1
+            if patches:
+                st = dict(st, jumps='%d as the DS, %d as the GBA' % tuple(nj))
+            dmaps[gi] = dm
             lines.append('sec %3d <- ds %3d  %s' % (gi, pairs[gi], st))
         else:
             out = gt
@@ -1554,15 +1589,33 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             if len(body) % 4:
                 body += b'\0\0'
         newoffs[gi] = placed[key]
+    # Jump records (where 35 / 36 go in another section). A record goes where
+    # the DS's own record for the same jump lands, in the DS text: the GBA's
+    # place, mapped through the commands the two scripts share, could fall
+    # past the start of a conversation (which skipped its question and left
+    # the answer pointer on an empty text box at Mia's files, and skipped
+    # hiding Redd White on the detention center card after Bluecorp).
+    njr = [0, 0]
     for idx in desc_idx:
         v = goffs[idx]
         off, sec = v & 0xFFFF, v >> 16
-        newoff = map_pos(maps.get(sec, {0: 0}), off // 2) * 2 if sec in maps else off
+        newoff = None
+        drs = rec_pairs.get(idx, set())
+        if sec in dmaps and len(drs) == 1:
+            dv = doffs[next(iter(drs))]
+            dsec, doff = dv >> 16, (dv & 0xFFFF) // 2
+            if pairs.get(sec) == dsec and doff in dmaps[sec]:
+                newoff = dmaps[sec][doff] * 2
+                njr[0] += 1
+        if newoff is None:
+            newoff = map_pos(maps.get(sec, {0: 0}), off // 2) * 2 if sec in maps else off
+            njr[1] += 1
         newoffs[idx] = (sec << 16) | newoff
+    jump_note = 'jump records: %d as the DS, %d as the GBA' % tuple(njr)
     struct.pack_into('<%dI' % n, header, 4, *newoffs)
     open(outfile, 'wb').write(bytes(header + body))
     if report:
-        open(report, 'w').write('\n'.join(lines) + '\n')
+        open(report, 'w').write('\n'.join(lines + [jump_note]) + '\n')
     kept = sum(1 for l in lines if 'KEPT' in l)
     return len(lines), kept
 

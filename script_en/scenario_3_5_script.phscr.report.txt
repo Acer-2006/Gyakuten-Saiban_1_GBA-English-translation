@@ -118,3 +118,4 @@ sec 116 <- ds 116  {'dropped_ds': 0, 'inserted_gba': 2, 'unmatched_kept': 44, 'a
 sec 117 <- ds 117  {'dropped_ds': 4, 'inserted_gba': 0, 'unmatched_kept': 56, 'anim_ds': 14, 'ds_fx': 22, 'ds_expression': 1}
 sec 118 <- ds 118  {'dropped_ds': 8, 'inserted_gba': 3, 'unmatched_kept': 240, 'anim_ds': 105, 'ds_fx': 55, 'look_elsewhere': 8, 'ds_expression': 3}
 sec 119 <- ds 120  {'dropped_ds': 6, 'inserted_gba': 10, 'unmatched_kept': 25, 'ds_fx': 9, 'anim_ds': 8, 'gavels': 2}
+jump records: 1 as the DS, 0 as the GBA

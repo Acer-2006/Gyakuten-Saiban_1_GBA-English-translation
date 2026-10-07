@@ -156,3 +156,4 @@ sec 154 <- ds 154  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 29, 'a
 sec 155 <- ds 155  {'dropped_ds': 9, 'inserted_gba': 13, 'unmatched_kept': 70, 'anim_ds': 21, 'ds_fx': 67, 'gavels': 2, 'pan_waits': 3}
 sec 156 <- ds 156  {'dropped_ds': 3, 'inserted_gba': 9, 'unmatched_kept': 129, 'ds_fx': 46, 'anim_ds': 29, 'fade': 'fade-in added,dropped before lines in the dark'}
 sec 157 <- ds 157  {'dropped_ds': 6, 'inserted_gba': 10, 'unmatched_kept': 22, 'ds_fx': 9, 'anim_ds': 7, 'gavels': 2}
+jump records: 0 as the DS, 0 as the GBA
