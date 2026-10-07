@@ -24,8 +24,9 @@ void VwfRestore(void);
 void VwfSaveLog(void);
 void VwfSetChoiceLabels(const u16 *ids);
 void VwfReloadChoiceLabels(void);
+bool32 VwfChoiceLabelsPending(void);
 void ReloadChoiceLabelGfx(const u16 *ids);
 void VwfLoadLog(void);
-void VwfFixSavedScriptPos(void);
+bool32 VwfFixSavedScriptPos(void);
 
 #endif // GUARD_VWF_H

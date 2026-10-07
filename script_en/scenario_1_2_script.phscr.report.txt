@@ -1,4 +1,4 @@
-sec   0 <- ds   1  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 24, 'anim_ds': 1, 'ds_fx': 2}
+sec   0 <- ds   1  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 24, 'anim_ds': 1, 'lock_placed': 1, 'ds_fx': 2}
 sec   1 <- ds   2  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 1, 'ds_fx': 1}
 sec   2 <- ds   3  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 11, 'anim_ds': 1, 'ds_fx': 1}
 sec   3 <- ds   4  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 5, 'anim_ds': 1, 'ds_fx': 1}
@@ -24,7 +24,7 @@ sec  22 <- ds  23  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 6, 'an
 sec  23 <- ds  24  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 6, 'anim_ds': 1, 'ds_fx': 1}
 sec  24 <- ds  25  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 7, 'anim_ds': 1, 'ds_fx': 1}
 sec  25 <- ds  26  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 2, 'anim_ds': 1, 'ds_fx': 1}
-sec  26 <- ds  27  {'dropped_ds': 1, 'inserted_gba': 2, 'unmatched_kept': 71, 'anim_ds': 10, 'ds_fx': 22}
+sec  26 <- ds  27  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 71, 'anim_ds': 10, 'lock_placed': 1, 'ds_fx': 22}
 sec  27 <- ds  28  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 9, 'ds_fx': 1}
 sec  28 <- ds  29  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 1, 'ds_fx': 1}
 sec  29 <- ds  30  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 2, 'ds_fx': 1}
@@ -50,12 +50,12 @@ sec  48 <- ds  49  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 5, 'an
 sec  49 <- ds  50  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 6, 'ds_fx': 1}
 sec  50 <- ds  51  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 1, 'ds_fx': 1}
 sec  51 <- ds  52  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 2, 'ds_fx': 1}
-sec  52 <- ds  53  {'dropped_ds': 4, 'inserted_gba': 2, 'unmatched_kept': 84, 'anim_ds': 10, 'ds_fx': 28, 'choice_labels': 1, 'fade': 'fade-in moved before lines in the dark'}
+sec  52 <- ds  53  {'dropped_ds': 4, 'inserted_gba': 1, 'unmatched_kept': 84, 'anim_ds': 10, 'lock_placed': 1, 'ds_fx': 28, 'choice_labels': 1, 'fade': 'fade-in moved before lines in the dark'}
 sec  53 <- ds  54  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 20, 'anim_ds': 6, 'ds_fx': 6}
 sec  54 <- ds  55  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 20, 'anim_ds': 6, 'ds_fx': 5}
 sec  55 <- ds  56  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 24, 'anim_ds': 6, 'ds_fx': 8}
 sec  56 <- ds  57  {'dropped_ds': 3, 'inserted_gba': 3, 'unmatched_kept': 88, 'ds_fx': 28, 'anim_ds': 14, 'fade': 'fade-in added,dropped before lines in the dark'}
-sec  57 <- ds  58  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 19, 'anim_ds': 2, 'ds_fx': 3}
+sec  57 <- ds  58  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 19, 'anim_ds': 2, 'lock_placed': 1, 'ds_fx': 3}
 sec  58 <- ds  59  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 10, 'ds_fx': 2, 'choice_labels': 1}
 sec  59 <- ds  60  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 5, 'ds_fx': 1}
 sec  60 <- ds  61  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'ds_fx': 1}
@@ -126,7 +126,7 @@ sec 124 <- ds 125  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 53, 'a
 sec 125 <- ds 126  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 27, 'anim_ds': 6, 'ds_fx': 4, 'plate_hide': 1}
 sec 126 <- ds 127  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 14, 'ds_fx': 3, 'anim_ds': 3}
 sec 127 <- ds 128  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'anim_ds': 1, 'ds_fx': 1}
-sec 128 <- ds 129  {'dropped_ds': 0, 'inserted_gba': 7, 'unmatched_kept': 67, 'anim_ds': 12, 'ds_fx': 20}
+sec 128 <- ds 129  {'dropped_ds': 0, 'inserted_gba': 6, 'unmatched_kept': 67, 'anim_ds': 12, 'lock_placed': 1, 'ds_fx': 20}
 sec 129 <- ds 130  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 6, 'ds_fx': 1}
 sec 130 <- ds 131  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 23, 'ds_fx': 6, 'anim_ds': 3}
 sec 131 <- ds 132  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 31, 'ds_fx': 10, 'anim_ds': 5}
@@ -152,7 +152,7 @@ sec 150 <- ds 151  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'ds
 sec 151 <- ds 152  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 9, 'ds_fx': 1}
 sec 152 <- ds 153  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 6, 'ds_fx': 1}
 sec 153 <- ds 154  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 2, 'ds_fx': 1}
-sec 154 <- ds 155  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 96, 'anim_ds': 13, 'ds_fx': 16}
+sec 154 <- ds 155  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 96, 'anim_ds': 13, 'lock_placed': 1, 'ds_fx': 16}
 sec 155 <- ds 156  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 113, 'anim_ds': 24, 'ds_fx': 28}
 sec 156 <- ds 157  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 21, 'ds_fx': 9, 'anim_ds': 2}
 sec 157 <- ds 158  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 14, 'ds_fx': 4, 'anim_ds': 2}

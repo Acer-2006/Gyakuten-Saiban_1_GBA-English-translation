@@ -329,16 +329,23 @@ static const u16 sChoiceLabelVram[3] = { 0x2000, 0x2680, 0x1800 };
 
 bool32 Command5E(struct ScriptContext *scriptCtx)
 {
-    u32 k, b, id;
     scriptCtx->scriptPtr++;
+    SetChoiceLabels(scriptCtx->scriptPtr);
+    ReloadChoiceLabelGfx(scriptCtx->scriptPtr);
+    scriptCtx->scriptPtr += 3;
+    return 0;
+}
+
+// the label sprites (the graphics are loaded by ReloadChoiceLabelGfx)
+void SetChoiceLabels(const u16 *ids)
+{
+    u32 k, b;
     for (k = 32; k < ARRAY_COUNT(gTextBoxCharacters); k++)
         gTextBoxCharacters[k].state &= ~0x8000;
     for (k = 0; k < 3; k++)
     {
-        id = scriptCtx->scriptPtr[k];
-        if (id == 0xFFFF)
+        if (ids[k] == 0xFFFF)
             continue;
-        DmaCopy16(3, gChoiceLabels + id * 0x680, OBJ_VRAM0 + sChoiceLabelVram[k], 0x680);
         for (b = 0; b < 7; b++)
         {
             struct TextBoxCharacter *c = &gTextBoxCharacters[32 + k * 7 + b];
@@ -349,9 +356,7 @@ bool32 Command5E(struct ScriptContext *scriptCtx)
             c->color = 0;
         }
     }
-    VwfSetChoiceLabels(scriptCtx->scriptPtr); // so they can be reloaded after a save
-    scriptCtx->scriptPtr += 3;
-    return 0;
+    VwfSetChoiceLabels(ids); // so they can be reloaded after a save
 }
 
 // English patch: the label graphics live in VRAM only; put them back after
@@ -375,6 +380,71 @@ void ChoiceLabelsDone(void)
     if (gMain.process[GAME_PROCESS] == INVESTIGATION_PROCESS)
         DmaCopy16(3, gGfx4bppInvestigationActions, OBJ_VRAM0 + 0x2000, 0x1000);
     MakeMapMarkerSprites();
+}
+
+#define CHOICE_POINTER_ATTR2 SPRITE_ATTR2(0xFC, 1, 0) // (Command08 / Command09)
+
+// the text box back to its normal size and the answers off the screen, as when
+// an answer is taken (Command08)
+static void PutAwayChoiceScreen(struct ScriptContext *scriptCtx)
+{
+    u32 i;
+    if (scriptCtx->textboxState == 1 || scriptCtx->textboxState >= 3)
+    {
+        // the text box is put away (or on its way): only its picture goes back
+        for (i = 0; i < 0x2C0; i++)
+            gBG1MapBuffer[i] = gTextboxTiles[i];
+    }
+    else
+        SetTextboxSize(0);
+    for (i = 57; i < 88; i++)
+        gOamObjects[i].attr0 = SPRITE_ATTR0_CLEAR;
+}
+
+// English patch: a section never starts in the middle of a choice. When the
+// script left a choice without an answer, as it did after loading a save made
+// at a choice with an earlier build of the patch, the choice's pointer, its
+// answer labels and the tall text box stayed behind (the pointer showed over
+// the next scenes). Whatever a choice left goes when a section starts.
+void DropStaleChoice(struct ScriptContext *scriptCtx)
+{
+    if (gOamObjects[OAM_IDX_POINTER].attr2 == CHOICE_POINTER_ATTR2)
+        gOamObjects[OAM_IDX_POINTER].attr0 = SPRITE_ATTR0_CLEAR;
+    if (!(scriptCtx->flags & SCRIPT_FULLSCREEN) && !VwfChoiceLabelsPending())
+        return;
+    scriptCtx->flags &= ~SCRIPT_FULLSCREEN;
+    scriptCtx->textYOffset = 0x74;
+    scriptCtx->textboxNameId = 0;
+    PutAwayChoiceScreen(scriptCtx);
+    ChoiceLabelsDone();
+}
+
+// English patch: after loading a save. Outside a choice nothing of one is on
+// screen: a save made after a choice was left behind (see above) holds its
+// pointer and its answers in the sprites it restores, and VwfFixSavedScriptPos
+// finds the answer labels with no choice to come (staleChoice): those go, with
+// the tall text box. The answer labels of a choice that is waiting are put back.
+void ChoiceAfterLoad(bool32 staleChoice)
+{
+    struct ScriptContext *scriptCtx = &gScriptContext;
+    u32 i;
+    bool32 atChoice = (scriptCtx->flags & SCRIPT_FULLSCREEN)
+                   && (scriptCtx->currentToken == 0x08 || scriptCtx->currentToken == 0x09);
+    if (!atChoice && gOamObjects[OAM_IDX_POINTER].attr2 == CHOICE_POINTER_ATTR2)
+        gOamObjects[OAM_IDX_POINTER].attr0 = SPRITE_ATTR0_CLEAR;
+    if (!(scriptCtx->flags & SCRIPT_FULLSCREEN))
+    {
+        // (these sprites are only drawn while the answers are up; the map
+        // markers among them are drawn again every frame)
+        for (i = 57; i < 88; i++)
+            gOamObjects[i].attr0 = SPRITE_ATTR0_CLEAR;
+        if (staleChoice)
+        {
+            PutAwayChoiceScreen(scriptCtx);
+            ChoiceLabelsDone();
+        }
+    }
+    VwfReloadChoiceLabels();
 }
 
 bool32 Command5F(struct ScriptContext *scriptCtx)

@@ -168,6 +168,7 @@ void ChangeScriptSection(u32 newSection)
 void InitScriptSection(struct ScriptContext *scriptCtx)
 {
     u32 i;
+    DropStaleChoice(scriptCtx); // English patch (script_commands3.c)
     for (i = 0; i < ARRAY_COUNT(gTextBoxCharacters); i++)
     {
         gTextBoxCharacters[i].state &= ~0x8000;

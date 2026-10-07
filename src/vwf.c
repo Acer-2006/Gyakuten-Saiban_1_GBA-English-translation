@@ -301,6 +301,17 @@ void VwfSetChoiceLabels(const u16 *ids)
     gVwf->choiceIds[3] = ids ? 1 : 0;
 }
 
+bool32 VwfChoiceLabelsPending(void)
+{
+    return gVwf->logMagic == VWF_LOG_MAGIC && gVwf->choiceIds[3] == 1;
+}
+
+static bool32 VwfSameChoiceLabels(const u16 *ids)
+{
+    return VwfChoiceLabelsPending() && gVwf->choiceIds[0] == ids[0]
+        && gVwf->choiceIds[1] == ids[1] && gVwf->choiceIds[2] == ids[2];
+}
+
 void VwfBackup(void)
 {
     DmaCopy16(3, gVwf, gVwfBackup, sizeof(struct VwfState));
@@ -401,18 +412,70 @@ static bool32 SimMatches(const struct PageSim * sim, const struct ScriptContext 
     return TRUE;
 }
 
-void VwfFixSavedScriptPos(void)
+// The answer labels of a choice are up from its 5E until it is answered. After
+// the place is fixed, the labels of this build are taken for a choice still
+// to come (the label numbers can differ between builds), and labels left
+// behind by a choice that was never answered go (TRUE: the rest of that
+// choice is put away by ChoiceAfterLoad).
+static bool32 VwfFixSavedChoiceLabels(const u16 * s, u32 upTo)
+{
+    u32 pos, t, k, labels = NO_POS;
+    for (pos = 0; pos < upTo; )
+    {
+        t = s[pos];
+        if (t == 0x5E)
+            labels = pos;
+        else if (t == 0x08 || t == 0x09)
+            labels = NO_POS;
+        pos += t >= 0x80 ? 1 : 1 + (t < 0x60 ? sCmdArgs[t] : 0);
+    }
+    if (labels != NO_POS)
+        SetChoiceLabels(s + labels + 1);
+    else if (VwfChoiceLabelsPending())
+    {
+        VwfSetChoiceLabels(NULL);
+        for (k = 32; k < ARRAY_COUNT(gTextBoxCharacters); k++)
+            gTextBoxCharacters[k].state &= ~0x8000;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+// start the section over, with an empty text box
+static void VwfRestartSavedSection(const u16 * s)
+{
+    struct ScriptContext * ctx = &gScriptContext;
+    u32 i;
+    ctx->scriptPtr = s;
+    ctx->textX = 0;
+    ctx->textY = 0;
+    ctx->flags &= ~(1 | 2 | 0x20);
+    for (i = 0; i < VWF_LINES; i++)
+        gVwf->logLen[i] = 0;
+    gVwf->choiceIds[3] = 0;
+    for (i = 0; i < ARRAY_COUNT(gTextBoxCharacters); i++)
+        gTextBoxCharacters[i].state &= ~0x8000;
+}
+
+bool32 VwfFixSavedScriptPos(void)
 {
     struct ScriptContext * ctx = &gScriptContext;
     const u8 * base = gScriptBase;
     const u32 * offs;
     const u16 * s;
     struct PageSim sim;
-    u32 size, n, k, i, sec, start, end, pos, len, oldPos, rel, best, bestDist, d, t;
-    bool32 useLog, oldValid = FALSE, oldText = FALSE;
+    u32 size, n, k, i, sec, start, end, pos, len, oldPos, rel, best, bestDist, d, t, labels;
+    bool32 useLog, oldValid = FALSE, oldText = FALSE, choice, same, bestSame = FALSE;
 
-    if (ctx->currentSection < 0x80 || (ctx->flags & SCRIPT_FULLSCREEN) || gMain.scenarioIdx > 16)
-        return;
+    if (ctx->currentSection < 0x80 || gMain.scenarioIdx > 16)
+        return FALSE;
+    // A save made at a choice, with the answers up (the tall text box): the
+    // place was kept as it was, and with a save from an earlier build the
+    // script went on from the wrong place, the choice was lost and its
+    // pointer stayed on screen. That place is looked up too.
+    choice = (ctx->flags & SCRIPT_FULLSCREEN) != 0;
+    if (choice && ctx->currentToken != 0x08 && ctx->currentToken != 0x09)
+        return FALSE;
     size = gScriptSizes[gMain.scenarioIdx];
     n = *(const u32 *)base;
     offs = (const u32 *)(base + 4);
@@ -422,7 +485,7 @@ void VwfFixSavedScriptPos(void)
             break;
     sec = ctx->currentSection - 0x80;
     if (sec >= k)
-        return;
+        return FALSE;
     start = offs[sec];
     end = sec + 1 < k ? offs[sec + 1] : size;
     s = (const u16 *)(base + start);
@@ -433,13 +496,27 @@ void VwfFixSavedScriptPos(void)
 
     best = NO_POS;
     bestDist = NO_POS;
+    labels = NO_POS;
     for (i = 0; i < VWF_LINES; i++)
         sim.len[i] = sim.bad[i] = 0;
     SimClearPage(&sim);
     for (pos = 0; pos < len; )
     {
         t = s[pos];
-        if (t == ctx->currentToken)
+        if (t == ctx->currentToken && choice)
+        {
+            // no page to compare (the answers are up): the choice with the
+            // answers the save had, else the nearest to where the save was
+            same = labels != NO_POS && VwfSameChoiceLabels(s + labels + 1);
+            d = pos > rel ? pos - rel : rel - pos;
+            if ((same && !bestSame) || (same == bestSame && d < bestDist))
+            {
+                best = pos;
+                bestDist = d;
+                bestSame = same;
+            }
+        }
+        else if (t == ctx->currentToken)
         {
             bool32 match = SimMatches(&sim, ctx, useLog);
             if (pos == oldPos)
@@ -480,27 +557,27 @@ void VwfFixSavedScriptPos(void)
             SimClearPage(&sim);
             break;
         }
+        if (t == 0x5E)
+            labels = pos;
+        else if (t == 0x08 || t == 0x09)
+            labels = NO_POS;
         pos += 1 + (t < 0x60 ? sCmdArgs[t] : 0);
     }
 
     ctx->scriptSectionPtr = s;
-    if (oldValid && oldText)
-        return;                         // the same place (the same script)
-    if (best != NO_POS)
+    if (choice)
     {
-        ctx->scriptPtr = s + best;      // the page with the saved text
-        return;
+        if (best != NO_POS)
+            ctx->scriptPtr = s + best;      // that choice
+        else
+            VwfRestartSavedSection(s);      // (the 00 there puts the choice away)
     }
-    if (oldValid)
-        return;                         // nothing to compare: keep it
-    // start the section over, with an empty text box
-    ctx->scriptPtr = s;
-    ctx->textX = 0;
-    ctx->textY = 0;
-    ctx->flags &= ~(1 | 2 | 0x20);
-    for (i = 0; i < VWF_LINES; i++)
-        gVwf->logLen[i] = 0;
-    gVwf->choiceIds[3] = 0;
-    for (i = 0; i < ARRAY_COUNT(gTextBoxCharacters); i++)
-        gTextBoxCharacters[i].state &= ~0x8000;
+    else if (oldValid && oldText)
+        ;                                   // the same place (the same script)
+    else if (best != NO_POS)
+        ctx->scriptPtr = s + best;          // the page with the saved text
+    else if (!oldValid)
+        VwfRestartSavedSection(s);
+    // else nothing to compare: keep it
+    return VwfFixSavedChoiceLabels(s, (u32)(ctx->scriptPtr - s));
 }

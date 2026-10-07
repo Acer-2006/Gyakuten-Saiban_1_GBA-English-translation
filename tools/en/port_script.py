@@ -22,7 +22,8 @@ DS_ONLY = {0x69, 0x6b, 0x74, 0x5d, 0x75, 0x4d, 0x4e, 0x65, 0x6f, 0x78, 0x7a}
 DS_KEEP = {0x01, 0x02, 0x03, 0x07, 0x0B, 0x0C, 0x0D, 0x0E, 0x11, 0x14, 0x16, 0x1F,
            0x21, 0x24, 0x27, 0x2B, 0x2D, 0x2E, 0x30, 0x40, 0x41, 0x49, 0x4C}
 TEXT_CMDS = {0x01, 0x02, 0x03, 0x07, 0x0B, 0x0C, 0x2D, 0x30}  # never matched from GBA: DS owns text flow
-KEYED_OPS = {0x05, 0x0E, 0x1B, 0x1E}  # align on (op, first arg): music, speaker, background, person
+KEYED_OPS = {0x05, 0x0E, 0x1B, 0x1E, 0x26}  # align on (op, first arg): music, speaker, background, person,
+                                            # input lock on / off
 DS_ARGS_WIN = {0x0E}
 # Commands taken from the DS as they are, at the DS's places, with the GBA's own
 # ones left out: the text box being shown / hidden (1C), screen shakes (27),
@@ -322,6 +323,7 @@ def merge_section(gtoks, dtoks, choice_ids=None):
     for bl in sm.get_matching_blocks():
         for k in range(bl.size):
             d2g[dcmds[bl.b + k][0]] = bl.a + k  # ds token pos -> gcmd index
+    gmatched = set(d2g.values())
     out = []
     gpos_to_out = {}
     patches = []  # (out_index_of_arg, gba_target_token_pos)
@@ -383,6 +385,22 @@ def merge_section(gtoks, dtoks, choice_ids=None):
             gb = min((d2g[y[0]] for y in d[k2:] if y[0] in d2g), default=len(gcmds))
             if not any(x[2] == 0x12 and x[3] and x[3][0] >> 8 in (1, 2) for x in gcmds[ga + 1:gb]):
                 ds_fade_pairs.update((x1[0], x2[0]))
+
+    def emit_locks_after(j):
+        """The Japanese game locks Start and R (26 1) at the start of a
+        location card and unlocks them (26 0) after it. The DS has the unlock
+        but not the lock, and left to emit_batch the lock came right before the
+        unlock, after the card: the court record and the save screen could be
+        opened while the card typed. A GBA lock with no DS one beside it goes
+        right after the GBA command before it, as in the Japanese script."""
+        k = j + 1
+        while k < len(gcmds) and k not in gmatched:
+            if gcmds[k][2] == 0x26 and gcmds[k][3][:1] == (0,):
+                break     # (an unlock of its own comes first: the order stays)
+            if gcmds[k][2] == 0x26 and k not in emitted:
+                emit_g(k)
+                stats['lock_placed'] = stats.get('lock_placed', 0) + 1
+            k += 1
 
     def current_bg():
         bg = None
@@ -598,6 +616,8 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 if len(conv) >= 3:
                     last[conv[1]] = conv[2]
                 stats['anim_ds'] = stats.get('anim_ds', 0) + 1
+                if pos in d2g:
+                    emit_locks_after(d2g[pos])
                 continue
         if pos in d2g:
             j = d2g[pos]
@@ -632,6 +652,7 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 stats['ds_fade_speed'] = stats.get('ds_fade_speed', 0) + 1
             else:
                 emit_g(j)
+            emit_locks_after(j)
             nextg = j + 1
             continue
         if op == 0x07 and choice_ids:          # English answer labels for this choice
@@ -1296,6 +1317,59 @@ def fix_bg_order(out, gtoks):
     return out, f, ('%d person changes moved before the background change' % n) if n else None
 
 
+WAIT_A = {0x02, 0x07, 0x08, 0x09, 0x0A, 0x2D}   # the script waits for the player (Start and R work there)
+
+
+def lock_spans(toks):
+    """(lock, unlock, waits for the player between them) of each input lock
+    (26 1 ... 26 0), with the waits before the lock"""
+    spans, on, waits, before = [], None, 0, 0
+    for pos, kind, op, a in parse(toks, GBA_ARGS)[0]:
+        if kind != 'cmd':
+            continue
+        if op == 0x26 and a[:1] == (1,):
+            if on is None:
+                on, waits, at = pos, 0, before
+        elif op == 0x26:
+            if on is not None:
+                spans.append((on, pos, waits, at))
+            on = None
+        elif op in WAIT_A:
+            before += 1
+            if on is not None:
+                waits += 1
+    return spans
+
+
+def fix_card_locks(out, gtoks):
+    """Start and R only work while the script waits for the player, so what
+    an input lock does is which of those waits it covers. The Japanese game
+    locks them over the location card at the start of a section. Where the
+    DS's commands come in another order than the GBA's (the person shown after
+    the card, not before it), the lock still came after the card, next to the
+    unlock. Such a lock goes to the start of the section, where it covers the
+    card again (only where the unlock comes after as many waits as in the
+    Japanese script)."""
+    out = list(out)
+    f = list(range(len(out) + 1))
+    js, ps = lock_spans(gtoks), lock_spans(out)
+    if len(js) != len(ps) or not js:
+        return out, f, None
+    jon, joff, jw, jbefore = js[0]
+    pon, poff, pw, pbefore = ps[0]
+    items = parse(out, GBA_ARGS)[0]
+    waits = [pos for pos, kind, op, a in items if kind == 'cmd' and op in WAIT_A and pos < poff]
+    if jbefore or not jw or pw >= jw or len(waits) != jw:
+        return out, f, None
+    # the start of the section's first page: its first letter, or its wait
+    ins = next(pos for pos, kind, op, a in items if kind == 'text' or pos == waits[0])
+    if ins >= pon:
+        return out, f, None
+    out = out[:ins] + out[pon:pon + 2] + out[ins:pon] + out[pon + 2:]
+    f = [x + 2 if ins <= x < pon else ins + (x - pon) if pon <= x < pon + 2 else x for x in f]
+    return out, f, 'the lock over the location card moved back before it'
+
+
 PAN_WAIT = 0x23   # frames the GBA script waits after a court pan (1A)
 
 
@@ -1433,6 +1507,11 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             patches = [(f[idx], tgt) for idx, tgt in patches]
             if note:
                 st = dict(st, bg_order=note)
+            out, f, note = fix_card_locks(out, gt)
+            m = {g: f[o] for g, o in m.items()}
+            patches = [(f[idx], tgt) for idx, tgt in patches]
+            if note:
+                st = dict(st, card_lock=note)
             out, note = fix_scene_poses(out, seen_poses(os.path.dirname(gfile)))
             if note:
                 st = dict(st, poses=note)

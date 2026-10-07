@@ -616,6 +616,7 @@ void SelectEpisodeProcess(struct Main * main)
 void ContinueSaveProcess(struct Main * main) {
     struct OamAttrs * oam;
     uintptr_t i, j;
+    bool32 staleChoice;
     
     switch (main->process[GAME_PROCESS_STATE]) {
         case 0: // 9AAC
@@ -735,7 +736,7 @@ void ContinueSaveProcess(struct Main * main) {
             VwfRestore(); // English patch: text box contents loaded with the save
             RedrawTextboxCharacters();
             DmaCopy16(3, &gSaveDataBuffer.scriptCtx, &gScriptContext, sizeof(gScriptContext));
-            VwfFixSavedScriptPos(); // English patch: a save from another build keeps its place
+            staleChoice = VwfFixSavedScriptPos(); // English patch: a save from another build keeps its place
             DmaCopy16(3, &gSaveDataBuffer.ioRegs, &gIORegisters, sizeof(gIORegisters));
             DmaCopy16(3, &gSaveDataBuffer.courtRecord, &gCourtRecord, sizeof(gCourtRecord));
             DmaCopy16(3, &gSaveDataBuffer.investigation, &gInvestigation, sizeof(gInvestigation));
@@ -763,7 +764,7 @@ void ContinueSaveProcess(struct Main * main) {
             if (main->itemPlateState > 3) {
                 LoadItemPlateGfx(main);
             }
-            VwfReloadChoiceLabels(); // English patch: after the nametag etc. are loaded
+            ChoiceAfterLoad(staleChoice); // English patch: after the nametag etc. are loaded
             // A112
             FadeInBGM(20, main->currentPlayingBgm);
             StartHardwareBlend(1, 1, 1, 0x1F);
