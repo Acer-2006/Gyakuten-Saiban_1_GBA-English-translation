@@ -87,6 +87,7 @@ void AgbMain()
     CheckAButtonAndGoToClearSaveScreen();
     for(;;)
     {
+        u32 held;
         if (ReadKeysAndTestResetCombo())
             goto reset; // tfw no SoftReset
 
@@ -95,7 +96,11 @@ void AgbMain()
         waitForVblank:
         if(gMain.vblankWaitCounter != gMain.vblankWaitAmount) goto waitForVblank;
 
-        if (gMain.currentBgStripe == 0)
+        // English patch: the frames after a change to the same background
+        // (Command1B) are held: everything waits, as on background change
+        // frames (the frame of the change itself runs on, like a wait's)
+        held = gMain.enBgHold != 0;
+        if (gMain.currentBgStripe == 0 && !held)
         {
             gMain.frameCounter++;
             UpdateBackgroundScroll();
@@ -111,10 +116,10 @@ void AgbMain()
             CopyBGDataToVram(gMain.currentBG);
         }
 
-        if (gMain.currentBgStripe == 0)
+        if (gMain.currentBgStripe == 0 && !held)
             RunScriptContext();
 
-        if(gMain.currentBgStripe == 0)
+        if(gMain.currentBgStripe == 0 && !held)
         {
             UpdateTextbox();
             UpdateItemPlate(&gMain);
@@ -122,9 +127,24 @@ void AgbMain()
             UpdateAnimations(gMain.previousBG);
             UpdateHardwareBlend();
         }
+        else if(gMain.currentBgStripe == 0)
+        {
+            gMain.enBgHold--;
+        }
         else
         {
+            u32 start = EnLinesSinceVBlank();
             DecompressCurrentBGStripe(gMain.currentBG);
+            // English patch: the DS changes the background in 6 to 7 frames; the
+            // GBA took 10, decompressing one of its ten stripes a frame. Stripes
+            // 3, 5 and 7 now come along with 2, 4 and 6 when the frame has room
+            // for them (backgrounds with light stripes: 7 frames)
+            if(gMain.currentBgStripe == 3 || gMain.currentBgStripe == 5 || gMain.currentBgStripe == 7)
+            {
+                u32 now = EnLinesSinceVBlank();
+                if(now + EnBgNextStripeLines(now - start) <= EN_BG_TWO_STRIPES_END)
+                    DecompressCurrentBGStripe(gMain.currentBG);
+            }
         }
         UpdateBGMFade();
         m4aSoundMain();
@@ -342,6 +362,14 @@ void ReadKeys()
     }
 }
 
+// English patch: scanlines since the frame's work began (the VBlank
+// interrupt that starts it comes at line 160)
+u32 EnLinesSinceVBlank(void)
+{
+    u32 v = *(vu16 *)REG_ADDR_VCOUNT;
+    return v >= 160 ? v - 160 : v + 68;
+}
+
 void SetTimedKeysAndDelay(u32 keyBits, u32 delay)
 {
     gJoypad.timedKeys = keyBits;
@@ -351,7 +379,7 @@ void SetTimedKeysAndDelay(u32 keyBits, u32 delay)
 u32 ReadKeysAndTestResetCombo()
 {
     struct Joypad *joypadCtrl = &gJoypad;
-    if (gMain.currentBgStripe == 0)
+    if (gMain.currentBgStripe == 0 && gMain.enBgHold == 0)
     {
         ReadKeys();
     }

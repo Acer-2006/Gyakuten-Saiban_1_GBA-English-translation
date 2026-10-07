@@ -436,6 +436,13 @@ bool32 Command0C(struct ScriptContext * scriptCtx)
     }
     scriptCtx->scriptPtr++;
     scriptCtx->waitTimer = *scriptCtx->scriptPtr & 0x7FFF;
+    // English patch: a wait of no frames goes straight on (the DS has one;
+    // here it set the same wait again every frame and the game hung)
+    if(scriptCtx->waitTimer == 0)
+    {
+        scriptCtx->scriptPtr++;
+        return 0;
+    }
     // English patch: 0C 8000|n is the DS's pause with the mouth closed (DS
     // command 4E): the idle animation shows while it waits
     if(*scriptCtx->scriptPtr & 0x8000)
@@ -521,6 +528,13 @@ bool32 Command12(struct ScriptContext * scriptCtx)
     scriptCtx->scriptPtr++;
     var1 = *scriptCtx->scriptPtr;
     scriptCtx->scriptPtr++;
+    // English patch: a blend that never steps (the DS uses a flash of step 0
+    // to keep the screen as it is) would hold the script for good
+    if(var1 == 0)
+    {
+        scriptCtx->scriptPtr++;
+        return 0;
+    }
     StartHardwareBlend(var0 >> 8, var0 & 0xFF, var1, *scriptCtx->scriptPtr);
     scriptCtx->scriptPtr++;
     // English patch: the DS goes on (types the next letter) only once a white
@@ -712,6 +726,14 @@ u32 Command1B(struct ScriptContext * scriptCtx) // ! probably fakematch
     if(gMain.currentBG != 0x42)
     {
         scriptCtx->scriptPtr++;
+        // English patch: the DS holds its script and the picture 6 frames on
+        // a background change even when the background stays the same (the
+        // rest of this frame runs on; main.c holds the next frames)
+        if((gMain.currentBG & 0x7FFF) != 0xFF && scriptCtx->textSkip <= 1)
+        {
+            gMain.enBgHold = EN_SAME_BG_HOLD;
+            return 1;
+        }
         return 0;
     }
     else

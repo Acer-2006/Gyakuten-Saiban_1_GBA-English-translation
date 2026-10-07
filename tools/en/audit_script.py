@@ -52,7 +52,8 @@ def effects(b, x, args, port=False):
     for pos, kind, op, a in parse(t, args)[0]:
         if any(s <= pos < e for s, e, n in runs):
             continue
-        if kind == 'cmd' and op in FX and (op != 0x12 or a[0] >> 8 == 3):
+        # (a DS flash of step 0 does nothing and is not ported)
+        if kind == 'cmd' and op in FX and (op != 0x12 or (a[0] >> 8 == 3 and a[1] != 0)):
             c[FX[op]] += 1
     return c
 

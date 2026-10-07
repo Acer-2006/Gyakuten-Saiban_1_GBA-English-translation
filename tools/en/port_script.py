@@ -34,7 +34,10 @@ DS_ARGS_WIN = {0x0E}
 # evidence the GBA doesn't (the pistol while Gumshoe talks about it) and keeps
 # a plate up longer or shorter to fit its own lines. The DS also hides the
 # plate with 69 62 243.
-DS_AUTH = {0x06, 0x1C, 0x27, 0x13, 0x14}
+# Name tags (0E) are the DS's as well: the lines are, and a name tag left in
+# from a Japanese line the DS doesn't have put the wrong name on the next line
+# (66 lines, e.g. Maya's "Nick, what does that mean for our case?" under Phoenix).
+DS_AUTH = {0x06, 0x1C, 0x27, 0x13, 0x14, 0x0E}
 def ds_auth(op, args):
     return op in DS_AUTH or (op == 0x12 and args and args[0] >> 8 == 3)
 DS_PLATE_HIDE = (0x62, 0x243)
@@ -336,6 +339,11 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         elif op == 0x14:
             out.extend([0x14, 0x0C, PLATE_CLOSE_WAIT])
             plate[0] = False
+        elif op == 0x12 and len(args) >= 2 and args[1] == 0:
+            # a DS flash of step 0 keeps the screen as it is; the GBA would
+            # wait for it to end for good (hung after "She pushed Mr. Hammer
+            # off the stairs onto the fence!")
+            stats['flash_step0_dropped'] = stats.get('flash_step0_dropped', 0) + 1
         elif op == 0x06:  # sound effect: DS uses (id, flag), GBA packs id<<8 | flag
             sid = SE_MAP.get(args[0], args[0])
             out.extend([0x06, ((sid & 0xFF) << 8) | (args[1] & 0xFF)])
@@ -406,10 +414,15 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 emitted.add(j)
                 stats['pans_dropped'] = stats.get('pans_dropped', 0) + (gcmds[j][2] == 0x1A)
                 continue
+            if gcmds[j][2] == 0x1A:
+                # a court pan the DS doesn't make (it cuts there): the DS's
+                # pans are the ones made (see the unmatched DS commands below)
+                gpos_to_out[gcmds[j][0]] = len(out)
+                emitted.add(j)
+                stats['gba_pan_dropped'] = stats.get('gba_pan_dropped', 0) + 1
+                continue
             emit_g(j)
             stats['inserted_gba'] += 1
-            if gcmds[j][2] == 0x1A:
-                out.extend([0x0C, PAN_WAIT])
 
     # Character poses (1E person, talking, idle). Where the DS command lines up
     # with a GBA one for the same person, the GBA's own pose is used: the same
@@ -586,6 +599,16 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 gpos_to_out[gcmds[j][0]] = len(out)
                 emitted.add(j)
                 emit_ds(op, args)      # the DS command in place of a GBA flash
+            elif op == 0x12 and gop == 0x12 and args and gargs and args[0] >> 8 in (1, 2) \
+                    and args[0] >> 8 == gargs[0] >> 8 and tuple(args) != tuple(gargs):
+                # a fade at the DS's speed: the same numbers make a fade of the
+                # same length in both games (measured), and the DS set its own
+                # in places (Gumshoe's "Eeek!" fade-out takes twice as long)
+                gpos_to_out[gcmds[j][0]] = len(out)
+                out.append(0x12)
+                out.extend(args)
+                emitted.add(j)
+                stats['ds_fade_speed'] = stats.get('ds_fade_speed', 0) + 1
             else:
                 emit_g(j)
             nextg = j + 1
@@ -599,10 +622,25 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         elif op == 0x0B and args:
             out.extend([0x0B, ds_text_speed(args[0])])
             stats['unmatched_kept'] += 1
+        elif op in (0x0C, DS_WAIT) and args and not args[0] & 0x7FFF:
+            # a wait of no frames (the GBA hung on it: Sal Manella's "Yeah,
+            # FWIW, we took a break..." before "ROFL!")
+            stats['wait0_dropped'] = stats.get('wait0_dropped', 0) + 1
         elif op in TEXT_CMDS or op in DS_KEEP or op == CENTRE:
             out.append(op)
             out.extend(args)
             stats['unmatched_kept'] += 1
+        elif op == 0x1A and len(args) >= 4:
+            # a court pan where the Japanese game cut: the DS's. Its last
+            # number is the pose the person panned to is shown in (a DS
+            # animation -> the GBA one drawn for the background panned to)
+            dest = next((a[0] for p2, k2, o2, a in d if p2 > pos and k2 == 'cmd' and o2 == 0x1B and a), None)
+            dest = None if dest is None else (0xFF if dest == 0xFFF else dest & 0x7FFF)
+            anim = 0
+            if args[2] and ds_look(args[2], args[3]):
+                anim = look_pick(args[2], args[3], dest, 1, None)
+            out.extend([0x1A, args[0], args[1], args[2], anim])
+            stats['ds_pan'] = stats.get('ds_pan', 0) + 1
         elif op == DS_WAIT:
             # the DS pauses with the speaker's mouth closed: 0C with bit 15 (script_commands.c)
             out.extend([0x0C, 0x8000 | (args[0] & 0x7FFF)])
@@ -669,10 +707,19 @@ GAVEL_BGS = {0x2F, 0x1B, 0x1C}
 GAVEL_PARTS = {0x0C, 0x06, 0x27}
 GAVEL_MARK = 0x7F                        # placeholder command between merge and fix_gavel
 DS_GAVELS = {0x111: 1, 0x113: 3}
+# The pictures and sounds are the GBA's, timed as the DS bangs its gavel
+# (recorded frame by frame, from the DS's change to the gavel picture): the
+# gavel comes down 32 frames in, three bangs come 22 frames apart, and the
+# scene goes on 69 frames (one bang) or 114 frames (three bangs) in. The
+# GBA brought the gavel down 3 frames sooner, held the last bang 60 frames
+# (the DS 40: its gavel was 20 and 34 frames longer) and spaced three bangs
+# 30 frames apart to fit its three-bang sound (33 frames between bangs), so
+# three bangs now play the one-bang sound at each bang.
 GAVEL_GBA = {
-    1: [0x1B, 0x2F, 0x0C, 5, 0x1B, 0x1B, 0x0C, 1, 0x1B, 0x1C, 0x06, 0x3A01, 0x27, 0xA, 1, 0x0C, 0x3C],
-    3: [0x1B, 0x2F, 0x0C, 5, 0x1B, 0x1B, 0x0C, 1, 0x1B, 0x1C, 0x06, 0x3B01, 0x27, 0xE, 1, 0x0C, 0xF,
-        0x1B, 0x1B, 0x1B, 0x1C, 0x27, 0xE, 1, 0x0C, 0xF, 0x1B, 0x1B, 0x1B, 0x1C, 0x27, 0xA, 1, 0x0C, 0x3C],
+    1: [0x1B, 0x2F, 0x0C, 8, 0x1B, 0x1B, 0x0C, 1, 0x1B, 0x1C, 0x06, 0x3A01, 0x27, 0xA, 1, 0x0C, 0x26],
+    3: [0x1B, 0x2F, 0x0C, 8, 0x1B, 0x1B, 0x0C, 1, 0x1B, 0x1C, 0x06, 0x3A01, 0x27, 0xE, 1, 0x0C, 7,
+        0x1B, 0x1B, 0x1B, 0x1C, 0x06, 0x3A01, 0x27, 0xE, 1, 0x0C, 7,
+        0x1B, 0x1B, 0x1B, 0x1C, 0x06, 0x3A01, 0x27, 0xA, 1, 0x0C, 0x27],
 }
 GAVEL_ARGS = {**GBA_ARGS, GAVEL_MARK: 1}
 
@@ -1241,6 +1288,25 @@ def fix_pan_waits(out):
     return out, n
 
 
+TESTIMONY_EXTRA_WAIT = 6   # the DS's testimony start (28 1) holds its script 6 frames longer
+
+
+def fix_testimony_waits(out):
+    """The wait after the start of a testimony (28 1) is 6 frames longer, as
+    the DS takes 6 frames more there before the first line (measured at
+    every testimony)."""
+    out = list(out)
+    items = parse(out, GBA_ARGS)[0]
+    n = 0
+    for k, (pos, kind, op, a) in enumerate(items):
+        if kind == 'cmd' and op == 0x28 and a and a[0] == 1 and k + 1 < len(items):
+            p2, k2, op2, a2 = items[k + 1]
+            if k2 == 'cmd' and op2 == 0x0C and not a2[0] & 0x8000:
+                out[p2 + 1] = a2[0] + TESTIMONY_EXTRA_WAIT
+                n += 1
+    return out, n
+
+
 def map_pos(gpos_to_out, target):
     keys = sorted(gpos_to_out)
     for k in keys:
@@ -1347,6 +1413,9 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             out, n = fix_pan_waits(out)
             if n:
                 st = dict(st, pan_waits=n)
+            out, n = fix_testimony_waits(out)
+            if n:
+                st = dict(st, testimony_waits=n)
             for idx, tgt in patches:
                 out[idx] = map_pos(m, tgt) * 2
             lines.append('sec %3d <- ds %3d  %s' % (gi, pairs[gi], st))

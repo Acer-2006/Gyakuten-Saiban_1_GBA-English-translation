@@ -47,7 +47,7 @@ struct Main
     /* +0x028 */ u16 currentBG; // BG related code not in GlobalWork struct, this might be another struct on its own but i'm not sure
     /* +0x02A */ s16 previousBG; // probably wrong
     /* +0x02C */ s8 currentBgStripe; // maybe Bg256_rno_0?
-    /* +0x02D */ u8 unk2D; // unused field maybe Bg256_SP_Flag?
+    /* +0x02D */ u8 enBgHold; // English patch (unused field): frames left of a hold on a background change to the same background
     /* +0x02E */ bool8 isBGScrolling; // unity AA4: Bg256_scroll_flag
     /* +0x02F */ u8 Bg256_stop_line; // unity AA4: Bg256_stop_line
     /* +0x030 */ s16 Bg256_scroll_x; // unity AA4: Bg256_scroll_x
@@ -167,6 +167,14 @@ void HideAllSprites();
 void SetLCDIORegs();
 void SetTimedKeysAndDelay(u32 keyBits, u32 delay);
 u32 ReadKeysAndTestResetCombo();
+u32 EnLinesSinceVBlank(void);
+// English patch: a second background stripe is decompressed in a frame only
+// when it should be done by this scanline of the frame's 228 (the sound
+// mixing and the rest of the frame take about 35 more)
+#define EN_BG_TWO_STRIPES_END 150
+// English patch: frames held after the frame of a background change that
+// keeps the same background (the DS goes on 6 frames after the change)
+#define EN_SAME_BG_HOLD 5
 void StartHardwareBlend(u32 mode, u32 delay, u32 deltaY, u32 target);
 void InitCourtScroll(u8 *, u32, u32, u32);
 void ResetGameState();

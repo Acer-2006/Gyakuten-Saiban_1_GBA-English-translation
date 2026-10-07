@@ -7,6 +7,9 @@ How anim_looks.json is made (what each DS person animation shows, in GBA animati
 5. pick.py         choose per DS animation (timing first, then looks) -> dsmap.json
 6. classes.py      group GBA animations with the same timing and picture (versions of one pose
                    drawn for different places: cut lower, shifted) -> ../anim_looks.json
+                   Lined up, no frame of two animations of one look may differ by more than 6
+                   pixels: a talking animation and its idle pose, or two expressions (Mia normal
+                   and sad, Lotta normal and angry...), differ by 17 or more and are two looks.
 evalposes.py / offplace.py: check a ported script (every DS pose shows the DS's expression; no pose
 is drawn away from where the Japanese game puts that person on that background).
 Paths inside are the ones of the build machine.

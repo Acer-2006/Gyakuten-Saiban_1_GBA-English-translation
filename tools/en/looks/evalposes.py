@@ -7,7 +7,9 @@ import port_script
 DS_ARGS=port_script.DS_ARGS
 fam=json.load(open('families.json'))
 dm=json.load(open('dsmap.json'))
-from equiv import equiv
+LK=json.load(open("../gs1en/tools/en/anim_looks.json"))
+CLS={tuple(int(x,16) for x in k.split(":")):v for k,v in LK["cls"].items()}
+def equiv(p,a,b): return a==b or (CLS.get((p&0xFF,a)) is not None and CLS.get((p&0xFF,a))==CLS.get((p&0xFF,b)))
 SDIR=sys.argv[1] if len(sys.argv)>1 else '../gs1en/script_en'
 VERB=len(sys.argv)>2
 def vis(p,dv):
@@ -45,4 +47,4 @@ for gf in sorted(glob.glob(SDIR+'/scenario_*_script.phscr')):
 print(tot)
 c=collections.Counter((b[3],b[5],b[6]) for b in bad)
 for k,n in c.most_common(60): print(n,k)
-json.dump(bad,open('evalbad.json','w'))
+json.dump(bad,open('evalbad_strict.json','w'))

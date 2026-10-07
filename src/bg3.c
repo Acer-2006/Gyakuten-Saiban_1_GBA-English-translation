@@ -557,6 +557,28 @@ void DecompressCurrentBGStripe(u32 bgId)
     gMain.currentBgStripe++;
 }
 
+// English patch: how long the next background stripe should take to
+// decompress, in scanlines, given that the one before it took lastLines.
+// Decompressing takes about 0.3 lines per 100 bytes of picture plus 2 per
+// 100 bytes of packed data (the same for every stripe of a background), so
+// the next one takes lastLines scaled by the two stripes' weights.
+u32 EnBgNextStripeLines(u32 lastLines)
+{
+    u32 flags = gBackgroundTable[gMain.currentBG & ~0x8000].controlBits;
+    u32 size, k = gMain.currentBgStripe - 1; // the stripe just decompressed
+    u32 last, next;
+    if(flags & (BG_MODE_SIZE_480x160 | BG_MODE_SIZE_240x320))
+        size = 0x1E00;
+    else
+        size = 0xF00;
+    if(flags & BG_MODE_4BPP)
+        size /= 2;
+    size = size * 3 / 10;
+    last = size + gMain.bgStripeOffsets[k + 1] - gMain.bgStripeOffsets[k];
+    next = size + gMain.bgStripeOffsets[k + 2] - gMain.bgStripeOffsets[k + 1];
+    return (lastLines + 1) * next / last + 1;
+}
+
 void DecompressBackgroundIntoBuffer(u32 bgId)
 {
     u32 i;

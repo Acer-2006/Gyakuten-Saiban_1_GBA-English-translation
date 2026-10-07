@@ -62,6 +62,7 @@ void InitBGs();
 void InitBG3();
 void UpdateBackgroundScroll();
 void DecompressCurrentBGStripe(u32);
+u32 EnBgNextStripeLines(u32 lastLines);
 void DecompressBackgroundIntoBuffer(u32);
 void CopyBGDataToVram(u32);
 u32 GetBGControlBits(u32);
