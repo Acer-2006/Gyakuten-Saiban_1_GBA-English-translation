@@ -29,9 +29,21 @@ DS_ARGS_WIN = {0x0E}
 # sound effects (06) and white flashes (12 with blend mode 3). The text is the
 # DS's, so these follow its flow; taking them from the GBA put text in a hidden
 # text box and doubled shakes and sounds where the two scripts differ.
-DS_AUTH = {0x06, 0x1C, 0x27}
+#
+# The evidence plate (13 show, 14 hide) is the DS's too: the DS shows some
+# evidence the GBA doesn't (the pistol while Gumshoe talks about it) and keeps
+# a plate up longer or shorter to fit its own lines. The DS also hides the
+# plate with 69 62 243.
+DS_AUTH = {0x06, 0x1C, 0x27, 0x13, 0x14}
 def ds_auth(op, args):
     return op in DS_AUTH or (op == 0x12 and args and args[0] >> 8 == 3)
+DS_PLATE_HIDE = (0x62, 0x243)
+SCEN_IDX = None
+def evidence_id(v):
+    """DS evidence number -> GBA (from the third episode on the DS numbers one item differently)"""
+    if SCEN_IDX is not None and SCEN_IDX >= 5 and v & 0xFF == 0x25:
+        return (v & ~0xFF) | 0x34
+    return v
 # sound effects the DS added (SE04F, SE050: sounds from the GBA sequels) are
 # added to the GBA song table after its last entry (data/en_sound.s)
 SE_MAP = {121: 111, 122: 112}
@@ -39,6 +51,41 @@ CENTRE = 0x5D      # DS: centre the following lines (1) / stop (0); en_text in v
 DS_WAIT = 0x4E     # DS: hold for n frames -> GBA wait (0C)
 ANIM_MAP = {}   # 'scenario_x:person:dsval' -> gba value (learn_anim_map.py)
 CHAPTER_POSES, CHAPTER_USUAL = {}, {}
+# What each DS animation shows (anim_looks.json): every DS person animation was
+# recorded frame by frame and matched to the GBA animation it was made from
+# (the same pictures changing on the same frames). GBA animations with the
+# same timing and the same picture are one "look" drawn for different places
+# (cut off lower down for the witness stand, behind the glass...).
+LOOK_DS, LOOK_CLS, LOOK_MEMBERS = {}, {}, {}
+
+def load_looks():
+    global LOOK_DS, LOOK_CLS, LOOK_MEMBERS
+    if LOOK_DS:
+        return
+    lp = os.path.join(os.path.dirname(__file__), 'anim_looks.json')
+    if not os.path.exists(lp):
+        return
+    d = json.load(open(lp))
+    LOOK_DS = {tuple(int(x, 16) for x in k.split(':')): v for k, v in d['ds'].items()}
+    LOOK_CLS = {tuple(int(x, 16) for x in k.split(':')): v for k, v in d['cls'].items()}
+    m = collections.defaultdict(list)
+    for (p, g), c in LOOK_CLS.items():
+        m[(p, c)].append(g)
+    LOOK_MEMBERS = {k: sorted(v) for k, v in m.items()}
+
+def ds_look(person, v):
+    """the GBA animations showing what DS animation v shows (None: unknown)"""
+    g = LOOK_DS.get((person & 0xFF, v))
+    if g is None:
+        return None
+    c = LOOK_CLS.get((person & 0xFF, g))
+    return LOOK_MEMBERS.get((person & 0xFF, c), [g]) if c is not None else [g]
+
+def same_look(person, a, b):
+    if a == b:
+        return True
+    ca, cb = LOOK_CLS.get((person & 0xFF, a)), LOOK_CLS.get((person & 0xFF, b))
+    return ca is not None and ca == cb
 ANIM_TAG = ''  # matched for alignment, but the DS arguments are used (speaker nametag)
 JUMP_IN_SECTION = 0x35
 GBA_BG_COUNT = 0x70  # entries in gBackgroundTable
@@ -265,6 +312,7 @@ def merge_section(gtoks, dtoks, choice_ids=None):
     patches = []  # (out_index_of_arg, gba_target_token_pos)
     emitted = set()
     stats = {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 0}
+    plate = [None]    # evidence plate shown (None: as the section before left it)
 
     def gba_only_ok(j):
         """GBA-only commands are kept, except poses (the DS decides who is
@@ -275,7 +323,13 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         return tuple(gcmds[j][3][:1]) == (0,) and j + 1 < len(gcmds) and gcmds[j + 1][2] == 0x1B
 
     def emit_ds(op, args):
-        if op == 0x06:  # sound effect: DS uses (id, flag), GBA packs id<<8 | flag
+        if op == 0x13:
+            out.extend([0x13, evidence_id(args[0])])
+            plate[0] = True
+        elif op == 0x14:
+            out.append(0x14)
+            plate[0] = False
+        elif op == 0x06:  # sound effect: DS uses (id, flag), GBA packs id<<8 | flag
             sid = SE_MAP.get(args[0], args[0])
             out.extend([0x06, ((sid & 0xFF) << 8) | (args[1] & 0xFF)])
         else:
@@ -393,15 +447,47 @@ def merge_section(gtoks, dtoks, choice_ids=None):
 
     def conv_anim(args, pos=None):
         res = conv_anim_raw(args, pos)
-        if res is not None and len(res) >= 4 and res[1]:
+        if res is not None and len(res) >= 4 and res[1] and not all(ds_look(args[0], v) for v in args[1:3]):
             t, i = fix_pose_pair(res[1], res[2], res[3], args[1] == args[2])
             if (t, i) != (res[2], res[3]):
                 stats['pose_pair_fixed'] = stats.get('pose_pair_fixed', 0) + 1
             res = [0x1E, res[1], t, i]
         return res
 
+    def look_pick(person, v, bg, slot, pos):
+        """The DS's expression (talking or idle animation alike, so the mouth
+        moves when the DS's does), in the version of it drawn for this place:
+        the GBA's own pose here if it looks the same, else the version the
+        Japanese game shows on this background"""
+        members = ds_look(person, v)
+        ga = pose_g.get(pos)
+        if ga is not None and (ga[0] & 0xFF) == (person & 0xFF) and ga[1 + slot] in members:
+            return ga[1 + slot]
+        for key in ((bg, person, v), (person, v)):
+            g = local.get(key)
+            if g in members and (len(key) == 3 or fits_bg(person, g, bg)):
+                return g
+        k = (bg, person & 0xFF)
+        if bg is not None and k in POSES_BG:
+            onbg = [g for g in members if g in POSES_BG[k]]
+            if onbg:
+                chap = ANIM_MAP.get('%s:%x:%x' % (ANIM_TAG, person, v))
+                return chap if chap in onbg else onbg[0]
+            stats['look_elsewhere'] = stats.get('look_elsewhere', 0) + 1
+        used = [g for g in members if g in CHAPTER_POSES.get(person, ())]
+        if used:
+            return used[0]
+        return LOOK_DS[(person & 0xFF, v)]
+
     def conv_anim_raw(args, pos=None):
         person = args[0]
+        if person and all(ds_look(person, v) for v in args[1:3]):
+            ga = pose_g.get(pos)
+            who = ga[0] if ga is not None and (ga[0] & 0xFF) == (person & 0xFF) else person
+            res = [0x1E, who] + [look_pick(person, v, dbg.get(pos), s, pos) for s, v in enumerate(args[1:3])]
+            if ga is not None and list(ga[1:3]) != res[2:4]:
+                stats['ds_expression'] = stats.get('ds_expression', 0) + 1
+            return res
         if pos in pose_g:
             return [0x1E] + list(pose_g[pos])
         if person == 0:
@@ -448,6 +534,11 @@ def merge_section(gtoks, dtoks, choice_ids=None):
             prev_ds_cmd = this_cmd = None
             continue
         prev_ds_cmd, this_cmd = this_cmd, (op, tuple(args))
+        if op == 0x69 and tuple(args) == DS_PLATE_HIDE:
+            if plate[0] is not False:      # (not when this section already hid it)
+                emit_ds(0x14, [])
+                stats['plate_hide'] = stats.get('plate_hide', 0) + 1
+            continue
         if op == 0x69 and len(args) == 2 and args[0] == 0x62 and args[1] in DS_GAVELS:
             out.extend([GAVEL_MARK, DS_GAVELS[args[1]]])   # fix_gavel puts the GBA gavel here
             stats['gavels'] = stats.get('gavels', 0) + 1
@@ -852,7 +943,15 @@ def fix_scene_poses(out, seen):
             if not intext and bg is not None and cur and cur[0]:
                 k = (bg, cur[0])
                 if k in vals and (cur[1] not in vals[k] or cur[2] not in vals[k]):
-                    t, i = good.get(k) or seen[k].most_common(1)[0][0]
+                    if all((cur[0], g) in LOOK_CLS for g in cur[1:3]):
+                        # a known expression (the DS's): only its own version
+                        # for this place, if the Japanese game has one here;
+                        # else it stays (drawn in the same place: offplace check)
+                        t, i = [g if g in vals[k] else next((m for m in sorted(vals[k]) if same_look(cur[0], g, m)), g)
+                                for g in cur[1:3]]
+                    else:
+                        t, i = good.get(k) or seen[k].most_common(1)[0][0]
+                if k in vals and (cur[1] not in vals[k] or cur[2] not in vals[k]) and (t, i) != (cur[1], cur[2]):
                     out[cur[3] + 2], out[cur[3] + 3] = t, i
                     cur = (cur[0], t, i, cur[3])
                     fixed += 1
@@ -1041,9 +1140,12 @@ def fix_moving_poses(out, gdir, carry=None):
         if not now or all(v >= 1 for v in now):
             continue
         best = None
+        known = (p, t) in LOOK_CLS and (p, i) in LOOK_CLS
         for (t2, i2), cnt in pairs.get(p, {}).items():
             if (t2 == i2) != (t == i):
                 continue
+            if known and not (same_look(p, t, t2) and same_look(p, i, i2)):
+                continue      # a known expression (the DS's) is only swapped for its own version
             if here is not None and not (t2 in here and i2 in here):
                 continue      # drawn for another place
             sc = score(t2, i2)
@@ -1137,6 +1239,9 @@ def map_pos(gpos_to_out, target):
 
 def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
     global ANIM_MAP, ANIM_TAG, ANIM_ANY, ANIM_USUAL
+    load_looks()
+    global SCEN_IDX
+    SCEN_IDX = scenario_idx
     mp = os.path.join(os.path.dirname(__file__), 'anim_map.json')
     ANIM_MAP = json.load(open(mp)) if os.path.exists(mp) else {}
     ANIM_TAG = os.path.basename(gfile).split('_script')[0]
