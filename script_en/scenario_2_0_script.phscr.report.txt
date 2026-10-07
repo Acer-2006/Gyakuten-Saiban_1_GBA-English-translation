@@ -18,7 +18,7 @@ sec  16 <- ds  18  {'dropped_ds': 26, 'inserted_gba': 23, 'unmatched_kept': 135,
 sec  17 <- ds  19  {'dropped_ds': 2, 'inserted_gba': 2, 'unmatched_kept': 21, 'ds_fx': 6, 'anim_ds': 4}
 sec  18 <- ds  20  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 1, 'ds_fx': 2}
 sec  19 <- ds  21  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'ds_fx': 1}
-sec  20 <- ds  22  {'dropped_ds': 3, 'inserted_gba': 1, 'unmatched_kept': 46, 'anim_ds': 5, 'ds_fx': 7}
+sec  20 <- ds  22  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 46, 'anim_ds': 5, 'ds_fx': 7, 'ds_fade': 2}
 sec  21 <- ds  23  {'dropped_ds': 3, 'inserted_gba': 1, 'unmatched_kept': 58, 'anim_ds': 8, 'ds_fx': 9}
 sec  22 <- ds  24  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 46, 'anim_ds': 5, 'ds_fx': 10, 'ds_fade_speed': 1}
 sec  23 <- ds  25  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 13, 'ds_fx': 5, 'anim_ds': 2}

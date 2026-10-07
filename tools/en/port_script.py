@@ -363,6 +363,20 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         out.extend(args)
         emitted.add(j)
 
+    # DS fades to black and back with no GBA fade beside either of them
+    ds_fade_pairs = set()
+    fades = [(k, x) for k, x in enumerate(d) if x[1] == 'cmd' and x[2] == 0x12 and x[3]
+             and x[3][0] >> 8 in (1, 2) and len(x[3]) >= 2 and x[3][1]]
+    for (k1, x1), (k2, x2) in zip(fades, fades[1:]):
+        if x1[3][0] >> 8 == 2 and x2[3][0] >> 8 == 1 and x1[0] not in d2g and x2[0] not in d2g \
+                and not any(y[1] == 'text' for y in d[k1:k2]):
+            # (not where the GBA has fades of its own between the commands the
+            # two scripts share around the pair: those are kept)
+            ga = max((d2g[y[0]] for y in d[:k1] if y[0] in d2g), default=-1)
+            gb = min((d2g[y[0]] for y in d[k2:] if y[0] in d2g), default=len(gcmds))
+            if not any(x[2] == 0x12 and x[3] and x[3][0] >> 8 in (1, 2) for x in gcmds[ga + 1:gb]):
+                ds_fade_pairs.update((x1[0], x2[0]))
+
     def current_bg():
         bg = None
         for pos, kind, op, a in parse(out, GBA_ARGS)[0]:
@@ -622,6 +636,14 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         elif op == 0x0B and args:
             out.extend([0x0B, ds_text_speed(args[0])])
             stats['unmatched_kept'] += 1
+        elif op == 0x12 and pos in ds_fade_pairs:
+            # a fade to black and back that the Japanese script doesn't have
+            # (the DS fades where the GBA cut, e.g. before Mia's "Not so fast,
+            # Mr. Sahwit!"); only whole pairs with no line between them, so
+            # the screen is as before once the pair is over
+            out.append(0x12)
+            out.extend(args)
+            stats['ds_fade'] = stats.get('ds_fade', 0) + 1
         elif op in (0x0C, DS_WAIT) and args and not args[0] & 0x7FFF:
             # a wait of no frames (the GBA hung on it: Sal Manella's "Yeah,
             # FWIW, we took a break..." before "ROFL!")
