@@ -37,7 +37,14 @@ DS_ARGS_WIN = {0x0E}
 # Name tags (0E) are the DS's as well: the lines are, and a name tag left in
 # from a Japanese line the DS doesn't have put the wrong name on the next line
 # (66 lines, e.g. Maya's "Nick, what does that mean for our case?" under Phoenix).
-DS_AUTH = {0x06, 0x1C, 0x27, 0x13, 0x14, 0x0E}
+# Music cues are the DS's as well (05 play / fade in, 22 fade out / stop, 23
+# pause / resume, 47 volume): the DS starts and fades its music on other lines
+# than the Japanese script in about 96 places, fades out more slowly in many
+# (120 frames where the GBA took 60), lowers the music under a few lines and
+# plays another song in a few scenes. The two games number their songs alike
+# and the commands work alike.
+DS_MUSIC = {0x05, 0x22, 0x23, 0x47}
+DS_AUTH = {0x06, 0x1C, 0x27, 0x13, 0x14, 0x0E} | DS_MUSIC
 def ds_auth(op, args):
     return op in DS_AUTH or (op == 0x12 and args and args[0] >> 8 == 3)
 DS_PLATE_HIDE = (0x62, 0x243)

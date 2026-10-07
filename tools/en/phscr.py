@@ -15,10 +15,17 @@ def load(path_or_bytes):
     offs = list(struct.unpack_from('<%dI'%n,b,4))
     return b,n,offs
 def section_bounds(b,offs):
-    srt = sorted(set(o for o in offs if o < len(b))) + [len(b)]
+    inr = [o for o in offs if o < len(b)]
+    # A ported script puts every section on a 4-byte boundary. An entry that
+    # isn't there is a jump descriptor (section << 16 | offset) that falls
+    # inside the file once the file is over 64 KB (Turnabout Goodbyes' last
+    # day), not the start of a section
+    odd = set(o for o in inr if o % 4)
+    skip = odd if len(inr) > 4 and len(odd) <= 2 else set()
+    srt = sorted(set(o for o in inr if o not in skip)) + [len(b)]
     res=[]
     for o in offs:
-        if o>=len(b): res.append(None); continue
+        if o>=len(b) or o in skip: res.append(None); continue
         res.append((o, srt[srt.index(o)+1]))
     return res
 def tokens(b,o,e):
