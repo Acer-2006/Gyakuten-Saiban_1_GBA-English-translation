@@ -1427,6 +1427,30 @@ def fix_testimony_waits(out):
     return out, n
 
 
+# Animations the DS takes a frame to start: the DS holds its script one frame
+# on the command that starts them (Redd White's sparkly hands, DS 15:a7 = GBA
+# 0x1C58: measured at all 9 places it is shown, the text box comes back 129
+# frames after the command on the DS and 127 here). The wait that follows the
+# pose gets that frame.
+START_HOLD = {(0x15, 0x1C58): 1}
+
+
+def fix_start_holds(out):
+    out = list(out)
+    items = parse(out, GBA_ARGS)[0]
+    n = 0
+    for k, (pos, kind, op, a) in enumerate(items):
+        if kind == 'cmd' and op == 0x1E and len(a) >= 2 and (a[0] & 0xFF, a[1]) in START_HOLD:
+            for p2, k2, op2, a2 in items[k + 1:k + 4]:
+                if k2 != 'cmd':
+                    break
+                if op2 == 0x0C and not a2[0] & 0x8000:
+                    out[p2 + 1] = a2[0] + START_HOLD[(a[0] & 0xFF, a[1])]
+                    n += 1
+                    break
+    return out, n
+
+
 def map_pos(gpos_to_out, target):
     keys = sorted(gpos_to_out)
     for k in keys:
@@ -1550,6 +1574,9 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             out, n = fix_testimony_waits(out)
             if n:
                 st = dict(st, testimony_waits=n)
+            out, n = fix_start_holds(out)
+            if n:
+                st = dict(st, start_holds=n)
             nj = [0, 0]
             for idx, tgt, dtg in patches:
                 if dtg is not None and dtg in dm:
