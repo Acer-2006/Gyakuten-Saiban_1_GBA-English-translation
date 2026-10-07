@@ -1035,6 +1035,15 @@ static struct AnimationListEntry *AllocateAnimationWithId(u32 animId)
     if (animation != NULL)
     {
         flags = (animation->flags & 0x02000000) ? 0x02000000 : flags;
+        // English patch: a fade-out still running carries on as a fade-out
+        // (4, and 0x04000000: leave the person inactive at its end). Kept
+        // without them it went on as a fade-in from where the fade-out began,
+        // its counter ran below 0, and the person shone white for seconds
+        // (Oldbag after "No! You were a star!?" when skipping read text: the
+        // DS loads the next person before the fade-in, and skipping drops the
+        // wait that lets the fade-out end first).
+        if ((animation->flags & 0x02000000) && (animation->flags & 4))
+            flags |= animation->flags & (4 | 0x04000000);
         flags = (animation->flags & ANIM_INACTIVE) ? ANIM_INACTIVE : flags;
         DestroyAnimation(animation);
         DmaFill16(3, 0, animation, 0x40)
