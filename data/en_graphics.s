@@ -612,6 +612,36 @@ gGfxEvidenceMissileAngry_description_en:
 	.incbin "graphics/evidence_profile_descriptions/evidence/missile_angry.4bpp.lz"
 
 	.align 2
+	.global gGfxMapMarkersKiller_en
+gGfxMapMarkersKiller_en:
+	.incbin "graphics/map_markers/killer.4bpp"
+
+	.align 2
+	.global gGfxMapMarkersVictim_en
+gGfxMapMarkersVictim_en:
+	.incbin "graphics/map_markers/victim.4bpp"
+
+	.align 2
+	.global gGfxMapMarkersCase3Studio1_en
+gGfxMapMarkersCase3Studio1_en:
+	.incbin "graphics/map_markers/case3_studio_1.4bpp"
+
+	.align 2
+	.global gGfxMapMarkersCase3Studio2_en
+gGfxMapMarkersCase3Studio2_en:
+	.incbin "graphics/map_markers/case3_studio_2.4bpp"
+
+	.align 2
+	.global gGfxMapMarkersCase3EmployeeArea_en
+gGfxMapMarkersCase3EmployeeArea_en:
+	.incbin "graphics/map_markers/case3_employee_area.4bpp"
+
+	.align 2
+	.global gGfxMapMarkersCase3MainGate_en
+gGfxMapMarkersCase3MainGate_en:
+	.incbin "graphics/map_markers/case3_main_gate.4bpp"
+
+	.align 2
 	.global gGfx_BG011_GlobalStudiosStudioPath_en
 gGfx_BG011_GlobalStudiosStudioPath_en:
 	.incbin "graphics/striped_images/backgrounds/global_studios/studio_path.8bpp.striped"
@@ -700,3 +730,8 @@ gGfx_BG089_Case4Newspaper_en:
 	.global gGfx_BG105_TrialWon_en
 gGfx_BG105_TrialWon_en:
 	.incbin "graphics/striped_images/trial_won.8bpp.striped"
+
+	.align 2
+	.global gGfxSeqAnimationChar08_en
+gGfxSeqAnimationChar08_en:
+	.incbin "graphics/animations/characters/animation08.seq"

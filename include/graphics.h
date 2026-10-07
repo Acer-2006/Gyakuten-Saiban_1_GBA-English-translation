@@ -130,6 +130,12 @@ extern u8 gGfxEvidenceGenericPhoto9_description_en[];
 extern u8 gGfxEvidenceGenericLetter3_description_en[];
 extern u8 gGfxEvidenceDl6Bullet_description_en[];
 extern u8 gGfxEvidenceMissileAngry_description_en[];
+extern u8 gGfxMapMarkersKiller_en[];
+extern u8 gGfxMapMarkersVictim_en[];
+extern u8 gGfxMapMarkersCase3Studio1_en[];
+extern u8 gGfxMapMarkersCase3Studio2_en[];
+extern u8 gGfxMapMarkersCase3EmployeeArea_en[];
+extern u8 gGfxMapMarkersCase3MainGate_en[];
 extern u8 gGfx_BG011_GlobalStudiosStudioPath_en[];
 extern u8 gGfx_BG012_GlobalStudiosStaffArea_en[];
 extern u8 gGfx_BG031_BlueCorpCeoOffice_en[];
@@ -148,6 +154,7 @@ extern u8 gGfx_BG083_EvidenceDL6CaseFile2_en[];
 extern u8 gGfx_BG084_EvidenceDL6CaseFile3_en[];
 extern u8 gGfx_BG089_Case4Newspaper_en[];
 extern u8 gGfx_BG105_TrialWon_en[];
+extern u8 gGfxSeqAnimationChar08_en[];
 // end English patch relocations
 
 #define GFX_BASE_ADDR (ROM_START + 0x180000)
@@ -317,15 +324,15 @@ extern u8 gGfx_BG105_TrialWon_en[];
 #define gGfxLocationChoices ((u8*)(ROM_START + 0x1FD96C))
 #define gGfxTalkChoices ((u8*)(ROM_START + 0x20816C))
 #define gPalMapMarkersPalette ((u8*)(ROM_START + 0x24696C))
-#define gGfxMapMarkersKiller ((u8*)(ROM_START + 0x24698C))
-#define gGfxMapMarkersVictim ((u8*)(ROM_START + 0x246A0C))
+#define gGfxMapMarkersKiller ((u8*)gGfxMapMarkersKiller_en)
+#define gGfxMapMarkersVictim ((u8*)gGfxMapMarkersVictim_en)
 #define gGfxMapMarkersCase2MiaBody ((u8*)(ROM_START + 0x246A8C))
 #define gGfxMapMarkersCase2Thinker ((u8*)(ROM_START + 0x246E8C))
-#define gGfxMapMarkersCase3Studio1 ((u8*)(ROM_START + 0x246ECC))
-#define gGfxMapMarkersCase3Studio2 ((u8*)(ROM_START + 0x2476CC))
-#define gGfxMapMarkersCase3EmployeeArea ((u8*)(ROM_START + 0x247ECC))
+#define gGfxMapMarkersCase3Studio1 ((u8*)gGfxMapMarkersCase3Studio1_en)
+#define gGfxMapMarkersCase3Studio2 ((u8*)gGfxMapMarkersCase3Studio2_en)
+#define gGfxMapMarkersCase3EmployeeArea ((u8*)gGfxMapMarkersCase3EmployeeArea_en)
 #define gGfxMapMarkersCase3Gate ((u8*)(ROM_START + 0x2486CC))
-#define gGfxMapMarkersCase3MainGate ((u8*)(ROM_START + 0x24874C))
+#define gGfxMapMarkersCase3MainGate ((u8*)gGfxMapMarkersCase3MainGate_en)
 #define gGfxMapMarkersGreen ((u8*)(ROM_START + 0x24884C))
 #define gGfxMapMarkersCase4BoatHorizontal ((u8*)(ROM_START + 0x2488CC))
 #define gGfxMapMarkersCase4BoatRentalShop ((u8*)(ROM_START + 0x24890C))
@@ -469,7 +476,7 @@ extern u8 gGfx_BG105_TrialWon_en[];
 #define gGfxPixAnimationChar07 ((u8*)(ROM_START + 0x5C2C94))
 #define gGfxSeqAnimationChar07 ((u8*)(ROM_START + 0x5E3388))
 #define gGfxPixAnimationChar08 ((u8*)(ROM_START + 0x5E8A48))
-#define gGfxSeqAnimationChar08 ((u8*)(ROM_START + 0x60EF60))
+#define gGfxSeqAnimationChar08 ((u8*)gGfxSeqAnimationChar08_en)
 #define gGfxPixAnimationChar09 ((u8*)(ROM_START + 0x612014))
 #define gGfxSeqAnimationChar09 ((u8*)(ROM_START + 0x62057C))
 #define gGfxPixAnimationChar10 ((u8*)(ROM_START + 0x622F20))

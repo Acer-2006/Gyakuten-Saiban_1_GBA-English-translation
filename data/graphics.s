@@ -1089,11 +1089,11 @@ gPalMapMarkersPalette:
 
 		.global gGfxMapMarkersKiller
 gGfxMapMarkersKiller:
-	.incbin "graphics/map_markers/killer.4bpp"
+	.incbin "graphics_orig/map_markers/killer.4bpp"
 
 	.global gGfxMapMarkersVictim
 gGfxMapMarkersVictim:
-	.incbin "graphics/map_markers/victim.4bpp"
+	.incbin "graphics_orig/map_markers/victim.4bpp"
 
 	.global gGfxMapMarkersCase2MiaBody
 gGfxMapMarkersCase2MiaBody:
@@ -1105,15 +1105,15 @@ gGfxMapMarkersCase2Thinker:
 
 	.global gGfxMapMarkersCase3Studio1
 gGfxMapMarkersCase3Studio1:
-	.incbin "graphics/map_markers/case3_studio_1.4bpp"
+	.incbin "graphics_orig/map_markers/case3_studio_1.4bpp"
 
 	.global gGfxMapMarkersCase3Studio2
 gGfxMapMarkersCase3Studio2:
-	.incbin "graphics/map_markers/case3_studio_2.4bpp"
+	.incbin "graphics_orig/map_markers/case3_studio_2.4bpp"
 
 	.global gGfxMapMarkersCase3EmployeeArea
 gGfxMapMarkersCase3EmployeeArea:
-	.incbin "graphics/map_markers/case3_employee_area.4bpp"
+	.incbin "graphics_orig/map_markers/case3_employee_area.4bpp"
 
 	.global gGfxMapMarkersCase3Gate
 gGfxMapMarkersCase3Gate:
@@ -1121,7 +1121,7 @@ gGfxMapMarkersCase3Gate:
 
 	.global gGfxMapMarkersCase3MainGate
 gGfxMapMarkersCase3MainGate:
-	.incbin "graphics/map_markers/case3_main_gate.4bpp"
+	.incbin "graphics_orig/map_markers/case3_main_gate.4bpp"
 
 	.global gGfxMapMarkersGreen
 gGfxMapMarkersGreen:
@@ -1836,7 +1836,7 @@ gGfxPixAnimationChar08:
 
 	.global gGfxSeqAnimationChar08
 gGfxSeqAnimationChar08:
-	.incbin "graphics/animations/characters/animation08.seq"
+	.incbin "graphics_orig/animations/characters/animation08.seq"
 
 	.global gGfxPixAnimationChar09
 gGfxPixAnimationChar09:
