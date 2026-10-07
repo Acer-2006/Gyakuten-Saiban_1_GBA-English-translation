@@ -42,9 +42,9 @@ for f in sorted(glob.glob(SRC+'/*.npz')):
     sc=[]
     for n,(o,gi,gd,term,same) in enumerate(cand):
         M=Mall[:,idx[n]:idx[n+1]]
-        Gt=expand(gd,T+60,term)
+        Gt=expand(gd,T+4,term)
         best=None
-        for s in range(0,60):
+        for s in range(0,4):
             g=Gt[s:s+T]
             sd=float(M[Dt,g].mean())
             gch=set(int(c) for c in changes(g) if not same[g[c],g[c-1]])

@@ -5,7 +5,7 @@ fam=json.load(open('families.json'))
 out={}; how=collections.Counter()
 for k,sc in sm.items():
     if not sc: continue
-    timed=[x for x in sc if x[3]>=0.8 and x[4]<=3 and x[2]<300]
+    timed=[x for x in sc if (x[3]>=0.8 or x[3]==-1.0) and x[2]<300]
     if timed:
         b=min(timed,key=lambda x:x[2]); h='timing'
     elif sc[0][2]<20:

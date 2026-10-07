@@ -36,13 +36,13 @@ sec  34 <- ds  34  {'dropped_ds': 6, 'inserted_gba': 7, 'unmatched_kept': 84, 'a
 sec  35 <- ds  35  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 10, 'anim_ds': 3, 'ds_fx': 9, 'pan_waits': 2}
 sec  36 <- ds  36  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 1, 'anim_ds': 1}
 sec  37 <- ds  37  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 19, 'anim_ds': 5, 'ds_fx': 8, 'pan_waits': 1}
-sec  38 <- ds  38  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 59, 'anim_ds': 13, 'ds_fx': 27, 'ds_expression': 1, 'choice_labels': 1, 'pan_waits': 3}
+sec  38 <- ds  38  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 59, 'anim_ds': 13, 'ds_fx': 27, 'choice_labels': 1, 'pan_waits': 3}
 sec  39 <- ds  39  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 20, 'anim_ds': 7, 'ds_fx': 9}
 sec  40 <- ds  40  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 9, 'anim_ds': 5, 'ds_fx': 9, 'pan_waits': 1}
 sec  41 <- ds  41  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 9, 'anim_ds': 2, 'ds_fx': 4, 'pan_waits': 1}
 sec  42 <- ds  42  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 27, 'anim_ds': 7, 'ds_fx': 17, 'pan_waits': 4}
-sec  43 <- ds  43  {'dropped_ds': 12, 'inserted_gba': 19, 'unmatched_kept': 207, 'anim_ds': 50, 'ds_fx': 64, 'ds_expression': 1, 'gavels': 2, 'choice_labels': 1, 'fade': 'fade-in moved before lines in the dark', 'pan_waits': 6}
-sec  44 <- ds  44  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 39, 'anim_ds': 9, 'ds_fx': 24, 'ds_expression': 1, 'pan_waits': 1}
+sec  43 <- ds  43  {'dropped_ds': 12, 'inserted_gba': 19, 'unmatched_kept': 207, 'anim_ds': 50, 'ds_fx': 64, 'gavels': 2, 'choice_labels': 1, 'fade': 'fade-in moved before lines in the dark', 'pan_waits': 6}
+sec  44 <- ds  44  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 39, 'anim_ds': 9, 'ds_fx': 24, 'pan_waits': 1}
 sec  45 <- ds  45  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 8, 'anim_ds': 4}
 sec  46 <- ds  46  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 1}
 sec  47 <- ds  47  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 13, 'ds_fx': 2, 'anim_ds': 1}
@@ -113,12 +113,12 @@ sec 111 <- ds 111  {'dropped_ds': 0, 'inserted_gba': 4, 'unmatched_kept': 84, 'a
 sec 112 <- ds 112  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 5, 'anim_ds': 1, 'choice_labels': 1}
 sec 113 <- ds 113  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 5, 'anim_ds': 1, 'choice_labels': 1}
 sec 114 <- ds 114  {'dropped_ds': 3, 'inserted_gba': 11, 'unmatched_kept': 53, 'anim_ds': 19, 'ds_fx': 44, 'gavels': 1, 'pan_waits': 5}
-sec 115 <- ds 115  {'dropped_ds': 3, 'inserted_gba': 6, 'unmatched_kept': 91, 'anim_ds': 20, 'ds_fx': 38, 'look_elsewhere': 1, 'ds_expression': 1, 'gavels': 1, 'pan_waits': 5}
+sec 115 <- ds 115  {'dropped_ds': 3, 'inserted_gba': 6, 'unmatched_kept': 91, 'anim_ds': 20, 'ds_fx': 38, 'gavels': 1, 'pan_waits': 5}
 sec 116 <- ds 116  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 13, 'anim_ds': 3, 'ds_fx': 2, 'choice_labels': 1}
 sec 117 <- ds 117  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 67, 'anim_ds': 12, 'ds_fx': 31, 'choice_labels': 1, 'pan_waits': 6}
 sec 118 <- ds 118  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 30, 'anim_ds': 7, 'ds_fx': 10, 'pan_waits': 1}
 sec 119 <- ds 119  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 12, 'anim_ds': 3, 'ds_fx': 3}
-sec 120 <- ds 120  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 92, 'anim_ds': 23, 'ds_fx': 48, 'ds_expression': 1, 'pan_waits': 6}
+sec 120 <- ds 120  {'dropped_ds': 1, 'inserted_gba': 1, 'unmatched_kept': 92, 'anim_ds': 23, 'ds_fx': 48, 'pan_waits': 6}
 sec 121 <- ds 121  {'dropped_ds': 3, 'inserted_gba': 5, 'unmatched_kept': 3, 'ds_fx': 2, 'anim_ds': 2, 'gavels': 1}
 sec 122 <- ds 122  {'dropped_ds': 3, 'inserted_gba': 5, 'unmatched_kept': 72, 'anim_ds': 17, 'ds_fx': 38, 'gavels': 1, 'pan_waits': 5}
 sec 123 <- ds 123  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 12, 'anim_ds': 2, 'ds_fx': 5, 'pan_waits': 1}
