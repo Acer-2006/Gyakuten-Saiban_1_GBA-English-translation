@@ -452,6 +452,13 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 bg = a[0]
         return bg
 
+    def current_person():
+        who = None
+        for pos, kind, op, a in parse(out, GBA_ARGS)[0]:
+            if kind == 'cmd' and op == 0x1E and a:
+                who = a[0]
+        return who
+
     def emit_batch(js):
         """GBA-only commands that come between two DS ones. The GBA waits
         after each court pan (1A) are text-flow commands, which come from the
@@ -477,6 +484,34 @@ def merge_section(gtoks, dtoks, choice_ids=None):
             emitted.add(j)
             stats['orphan_bg'] = stats.get('orphan_bg', 0) + (gcmds[j][2] == 0x1B)
         js = [j for k, j in enumerate(js) if k not in orphan]
+        # a close-up for a person the DS has no line for. 46 draws Phoenix's
+        # (0) or Edgeworth's (1) bust-up behind the speed lines (1B 42) and
+        # the 1E right before it is the face that talks over it. The Japanese
+        # game had two close-ups in a row where the DS has one ("That is where
+        # the killer was standing!": Edgeworth's, then Phoenix's): the second
+        # one's face went with its line, but its bust-up was drawn behind
+        # Edgeworth's face. It goes, with the switch-over from the close-up
+        # before it (1F bust-up cleared, 26 0 / 26 1).
+        closeup = set()
+        for k, j in enumerate(js):
+            if gcmds[j][2] != 0x46 or not gcmds[j][3]:
+                continue
+            who = 0x1E if gcmds[j][3][0] else 0x1D
+            if j > 0 and gcmds[j - 1][2] == 0x1E and gcmds[j - 1][3][:1] == (who,) \
+                    and (j - 1) not in emitted and (j - 1) not in js and current_person() != who:
+                closeup.add(k)
+                if k + 1 < len(js) and js[k + 1] == j + 1 and gcmds[j + 1][2] == 0x1B:
+                    closeup.add(k + 1)
+                b = k - 1
+                while b >= 0 and gcmds[js[b]][2] in (0x1F, 0x26) and b not in orphan:
+                    closeup.add(b)
+                    b -= 1
+        for k in sorted(closeup):
+            j = js[k]
+            gpos_to_out[gcmds[j][0]] = len(out)
+            emitted.add(j)
+            stats['closeup_dropped'] = stats.get('closeup_dropped', 0) + (gcmds[j][2] == 0x46)
+        js = [j for k, j in enumerate(js) if k not in closeup]
         redraw = plan_redraw(js)
         for k in sorted(redraw):
             j = js[k]

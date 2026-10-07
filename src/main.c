@@ -205,6 +205,23 @@ void DoGameProcess()
         gIORegisters.lcd_bg3hofs = main->shakeAmountX + 8;
         gIORegisters.lcd_bg1vofs = main->shakeAmountX;
         gIORegisters.lcd_bg1hofs = main->shakeAmountY;
+        // English: a close-up's bust-up (BG2, Command46) shakes with the
+        // speed lines and the face over it. The Japanese game never shakes
+        // during a close-up; the DS does (its whole screen shakes), and with
+        // the bust-up left still, the hole for the face showed round it.
+        if (gScriptContext.flags & 0x40)
+        {
+            gIORegisters.lcd_bg2hofs = main->shakeAmountX + 8;
+            gIORegisters.lcd_bg2vofs = main->shakeAmountY;
+            gBustupShaken = TRUE;
+        }
+        else if (gBustupShaken)
+        {
+            // the close-up ended during the shake
+            gIORegisters.lcd_bg2hofs = 8;
+            gIORegisters.lcd_bg2vofs = 0;
+            gBustupShaken = FALSE;
+        }
 
         if (main->shakeTimer != 0)
         {
@@ -216,6 +233,16 @@ void DoGameProcess()
                 gIORegisters.lcd_bg3hofs = 8;
                 gIORegisters.lcd_bg1vofs = 0;
                 gIORegisters.lcd_bg1hofs = 0;
+                if (gBustupShaken)
+                {
+                    // the face goes back on this frame too (it went a frame
+                    // after the backgrounds: the hole showed above it)
+                    gIORegisters.lcd_bg2hofs = 8;
+                    gIORegisters.lcd_bg2vofs = 0;
+                    main->shakeAmountX = 0;
+                    main->shakeAmountY = 0;
+                    gBustupShaken = FALSE;
+                }
             }
         }
     }

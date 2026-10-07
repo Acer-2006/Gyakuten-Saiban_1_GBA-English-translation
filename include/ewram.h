@@ -6,6 +6,8 @@
 // straight from ROM; the first word of the old 108KB heap holds the pointer
 // to the current script and the rest is used by the VWF renderer (vwf.c).
 #define gScriptBase (*(const u8 **)(EWRAM_START + 0x11FC0))
+// set while a shake has moved a close-up's bust-up (BG2), main.c
+#define gBustupShaken (*(u8 *)(EWRAM_START + 0x11FC0 + 0x4))
 #define eScriptHeap ((void*) gScriptBase)
 #define eBGDecompBuffer ((void*) (EWRAM_START + 0x2CFC0))
 #define eUnknown_02031FC0 ((void*) (EWRAM_START + 0x31FC0))
