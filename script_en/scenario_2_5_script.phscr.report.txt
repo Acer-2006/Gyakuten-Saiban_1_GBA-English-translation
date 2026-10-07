@@ -93,6 +93,6 @@ sec  91 <- ds  91  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 4, 'an
 sec  92 <- ds  92  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 23, 'anim_ds': 7, 'ds_fx': 4}
 sec  93 <- ds  93  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 36, 'anim_ds': 7}
 sec  94 <- ds  94  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 11, 'anim_ds': 3}
-sec  95 <- ds  95  {'dropped_ds': 10, 'inserted_gba': 22, 'unmatched_kept': 216, 'ds_fx': 116, 'anim_ds': 39, 'ds_expression': 2}
+sec  95 <- ds  95  {'dropped_ds': 2, 'inserted_gba': 22, 'unmatched_kept': 216, 'ds_fx': 136, 'anim_ds': 39, 'ds_expression': 2}
 sec  96 <- ds  96  {'dropped_ds': 6, 'inserted_gba': 10, 'unmatched_kept': 22, 'ds_fx': 11, 'anim_ds': 10, 'gavels': 2}
 jump records: 1 as the DS, 0 as the GBA

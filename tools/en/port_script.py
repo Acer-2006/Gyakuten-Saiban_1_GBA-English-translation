@@ -46,9 +46,19 @@ DS_ARGS_WIN = {0x0E}
 # plays another song in a few scenes. The two games number their songs alike
 # and the commands work alike.
 DS_MUSIC = {0x05, 0x22, 0x23, 0x47}
+# The person fading out (31 4) and in (31 3) when the person shown changes
+# (Will Powers and Maya at the detention center) is the DS's too: both games
+# fade out, wait, fade in, and the waits are the DS's (text flow). Taken from
+# the GBA, its fades were put among the DS's waits: the fade-in started on the
+# same frame as the fade-out (Maya half see-through and low), or was left out
+# (Will gone for ten lines). Both orders the DS uses (fade-in before or after
+# the 1E) work alike on the GBA: a new person keeps the slot's fade.
+# (Fades of a numbered animation, 31 xx04, stay the GBA's: the two games
+# number that animation differently.)
 DS_AUTH = {0x06, 0x1C, 0x27, 0x13, 0x14, 0x0E} | DS_MUSIC
 def ds_auth(op, args):
-    return op in DS_AUTH or (op == 0x12 and args and args[0] >> 8 == 3)
+    return op in DS_AUTH or (op == 0x12 and args and args[0] >> 8 == 3) \
+        or (op == 0x31 and args and not args[0] >> 8)
 DS_PLATE_HIDE = (0x62, 0x243)
 PLATE_OPEN_WAIT, PLATE_CLOSE_WAIT = 15, 24   # frames the DS waits on 13 / 14 (measured)
 SCEN_IDX = None
@@ -303,6 +313,37 @@ def align_poses(gcmds, dcmds):
 
 ANIM_VOTES = {}
 POSES_BG = {}     # (background, person) -> poses the Japanese game shows there
+# Poses drawn behind the visitor's room glass (Maya held in Turnabout Sisters),
+# learnt from the DS's own "in front of the glass" marks (learn_glass.py)
+VISITORS_ROOM = 0x1E
+GLASS = {}
+
+
+def glass_front(gtoks, dtoks):
+    """People in front of the visitor's room glass in this section: the DS puts
+    them there (4D 1E 0 after their 1E), or the Japanese section shows them
+    there only in poses drawn in front of it. A pose for them is never one
+    drawn behind the glass: Maya's "But he definitely did it." had her
+    Turnabout Sisters pose, sitting at the counter on Will Powers' side."""
+    front, who = set(), None
+    for pos, kind, op, a in parse(dtoks, DS_ARGS)[0]:
+        if kind == 'cmd' and op == 0x1E and a:
+            who = a[0] & 0xFF
+        elif kind == 'cmd' and op == 0x4D and len(a) >= 2 and a[0] == VISITORS_ROOM and a[1] == 0 and who:
+            front.add(who)
+    shown, bg = collections.defaultdict(set), None
+    for pos, kind, op, a in parse(gtoks, GBA_ARGS)[0]:
+        if kind == 'cmd' and op == 0x1B and a:
+            bg = a[0] & 0x7FFF
+        elif kind == 'cmd' and op == 0x1E and a and a[0] and bg == VISITORS_ROOM:
+            shown[a[0] & 0xFF].update(a[1:3])
+    for person, poses in shown.items():
+        if person in GLASS:
+            if poses & GLASS[person]:
+                front.discard(person)
+            else:
+                front.add(person)
+    return front
 
 def merge_section(gtoks, dtoks, choice_ids=None):
     """Return (out_tokens, gpos_to_out, patches, stats, dpos_to_out, rec_pairs).
@@ -583,6 +624,13 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 local.setdefault((dbg[pos], args[0], dv), gv)
                 local.setdefault((args[0], dv), gv)
 
+    front_people = glass_front(gtoks, dtoks)
+
+    def glass_ok(person, gv, bg):
+        """not a pose drawn behind the glass for someone in front of it"""
+        return not (bg == VISITORS_ROOM and (person & 0xFF) in front_people
+                    and gv in GLASS.get(person & 0xFF, ()))
+
     def fits_bg(person, gv, bg):
         """the Japanese game shows this pose of the person on this background
         (or never shows the person there at all)"""
@@ -604,6 +652,7 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         the GBA's own pose here if it looks the same, else the version the
         Japanese game shows on this background"""
         members = ds_look(person, v)
+        members = [g for g in members if glass_ok(person, g, bg)] or members
         ga = pose_g.get(pos)
         if ga is not None and (ga[0] & 0xFF) == (person & 0xFF) and ga[1 + slot] in members:
             return ga[1 + slot]
@@ -621,7 +670,8 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         used = [g for g in members if g in CHAPTER_POSES.get(person, ())]
         if used:
             return used[0]
-        return LOOK_DS[(person & 0xFF, v)]
+        g = LOOK_DS[(person & 0xFF, v)]
+        return g if glass_ok(person, g, bg) else members[0]
 
     def conv_anim_raw(args, pos=None):
         person = args[0]
@@ -658,6 +708,8 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 gv = chap if chap in scene_bg else scene_bg[0]
             if gv is None:
                 gv = ANIM_MAP.get('%s:%x:%x' % (ANIM_TAG, person, v), ANIM_ANY.get((person, v)))
+            if gv is not None and not glass_ok(person, gv, bg):
+                gv = None
             if gv is None or (CHAPTER_POSES.get(person) and gv not in CHAPTER_POSES[person]):
                 # never seen, or a pose of this person the chapter never uses (it
                 # belongs to another setting): their last pose here, else their
@@ -1141,9 +1193,22 @@ def seen_poses(gdir):
     return SEEN_POSES
 
 
-def fix_scene_poses(out, seen):
+def fix_scene_poses(out, seen, front=()):
+    """A pose the Japanese game never shows on this background goes to its
+    version for this background (the same expression drawn at the witness
+    stand, behind the glass...). For someone in front of the visitor's room
+    glass (glass_front) the versions drawn behind it don't count."""
     out = list(out)
     vals = {k: set(v for pr in c for v in pr) for k, c in seen.items()}
+    for person in front:
+        k = (VISITORS_ROOM, person)
+        if k in vals:
+            vals[k] = vals[k] - GLASS.get(person, set())
+            seen = dict(seen)
+            seen[k] = collections.Counter({pr: n for pr, n in seen[k].items()
+                                           if not set(pr) & GLASS.get(person, set())})
+            if not seen[k]:
+                del seen[k], vals[k]
     bg = cur = None
     good = {}
     fixed = 0
@@ -1560,7 +1625,10 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
         usual[int(person, 16)][gv] += 1
     ANIM_ANY = {k: c.most_common(1)[0][0] for k, c in votes.items()}
     ANIM_USUAL = {k: c.most_common(1)[0][0] for k, c in usual.items()}
-    global ANIM_VOTES, POSES_BG
+    global ANIM_VOTES, POSES_BG, GLASS
+    gp = os.path.join(os.path.dirname(__file__), 'glass_poses.json')
+    GLASS = {int(k, 16): set(int(v, 16) for v in vs)
+             for k, vs in json.load(open(gp))['glass'].items()} if os.path.exists(gp) else {}
     ANIM_VOTES = {k: set(c) for k, c in votes.items()}
     POSES_BG = {k: set(v for pr in c for v in pr) for k, c in seen_poses(os.path.dirname(gfile)).items()}
     global CHAPTER_POSES, CHAPTER_USUAL
@@ -1646,7 +1714,7 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             patches = [(f[idx], tgt, dtg) for idx, tgt, dtg in patches]
             if note:
                 st = dict(st, card_lock=note)
-            out, note = fix_scene_poses(out, seen_poses(os.path.dirname(gfile)))
+            out, note = fix_scene_poses(out, seen_poses(os.path.dirname(gfile)), glass_front(gt, dt))
             if note:
                 st = dict(st, poses=note)
             out, note = fix_moving_poses(out, os.path.dirname(gfile), carry)
