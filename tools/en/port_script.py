@@ -22,8 +22,9 @@ DS_ONLY = {0x69, 0x6b, 0x74, 0x5d, 0x75, 0x4d, 0x4e, 0x65, 0x6f, 0x78, 0x7a}
 DS_KEEP = {0x01, 0x02, 0x03, 0x07, 0x0B, 0x0C, 0x0D, 0x0E, 0x11, 0x14, 0x16, 0x1F,
            0x21, 0x24, 0x27, 0x2B, 0x2D, 0x2E, 0x30, 0x40, 0x41, 0x49, 0x4C}
 TEXT_CMDS = {0x01, 0x02, 0x03, 0x07, 0x0B, 0x0C, 0x2D, 0x30}  # never matched from GBA: DS owns text flow
-KEYED_OPS = {0x05, 0x0E, 0x1B, 0x1E, 0x26}  # align on (op, first arg): music, speaker, background, person,
-                                            # input lock on / off
+KEYED_OPS = {0x05, 0x0E, 0x1B, 0x1E, 0x26, 0x39, 0x43}  # align on (op, first arg): music, speaker, background, person,
+                                            # input lock on / off, map marker (which one, shown or put away),
+                                            # penalty bar shown / hidden
 DS_ARGS_WIN = {0x0E}
 # Commands taken from the DS as they are, at the DS's places, with the GBA's own
 # ones left out: the text box being shown / hidden (1C), screen shakes (27),
@@ -339,10 +340,43 @@ def merge_section(gtoks, dtoks, choice_ids=None):
     stats = {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 0}
     plate = [None]    # evidence plate shown (None: as the section before left it)
 
+    # Point-at results. The DS points on its touch screen and starts each
+    # result with 39 1F00 (its point-at screen put away) and the speaker at
+    # the bench. Here the pointer is on the top screen, so it goes there (40,
+    # else it stayed over Phoenix and the judge until the DS's own 40 lines
+    # later), and the Japanese script's redrawing of the plan with its
+    # markers for the first line (the DS shows no plan there) goes: it left
+    # the killer and victim markers over the judge.
+    ds_point_clear = any(k == 'cmd' and op == 0x39 and a and a[0] == 0x1F00 for p_, k, op, a in d)
+    ds_markers = set(a[0] >> 8 for p_, k, op, a in d if k == 'cmd' and op == 0x39 and a and a[0] & 1)
+    ds_bgs = set(a[0] & 0x7FFF for p_, k, op, a in d if k == 'cmd' and op == 0x1B and a)
+
+    def plan_redraw(js):
+        """GBA-only commands of a point-at result that redraw what the DS shows on its touch screen"""
+        if not ds_point_clear:
+            return set()
+        res = set()
+        for k, j in enumerate(js):
+            op, a = gcmds[j][2], gcmds[j][3]
+            if op in (0x39, 0x3A, 0x3B, 0x3C, 0x3D) and a and (a[0] >> 8) not in ds_markers and \
+                    (op != 0x39 or a[0] & 1):
+                res.add(k)
+            elif op == 0x1B and a and (a[0] & 0x7FFF) not in ds_bgs:
+                res.add(k)
+                if k > 0 and gcmds[js[k - 1]][2] == 0x1E and tuple(gcmds[js[k - 1]][3][:1]) == (0,):
+                    res.add(k - 1)
+        return res
+
+    ds_health_bar = any(k == 'cmd' and op == 0x43 for p_, k, op, a in d)
+
     def gba_only_ok(j):
         """GBA-only commands are kept, except poses (the DS decides who is
         shown); a GBA "nobody" right before a GBA background change stays, so
-        a picture the DS moved to its touch screen (a map) is not drawn over"""
+        a picture the DS moved to its touch screen (a map) is not drawn over.
+        Where the DS shows and hides the penalty bar itself, the GBA's own
+        commands for it go (the bar came back a line before the DS's)."""
+        if gcmds[j][2] == 0x43 and ds_health_bar:
+            return False
         if gcmds[j][2] != 0x1E:
             return True
         return tuple(gcmds[j][3][:1]) == (0,) and j + 1 < len(gcmds) and gcmds[j + 1][2] == 0x1B
@@ -443,6 +477,13 @@ def merge_section(gtoks, dtoks, choice_ids=None):
             emitted.add(j)
             stats['orphan_bg'] = stats.get('orphan_bg', 0) + (gcmds[j][2] == 0x1B)
         js = [j for k, j in enumerate(js) if k not in orphan]
+        redraw = plan_redraw(js)
+        for k in sorted(redraw):
+            j = js[k]
+            gpos_to_out[gcmds[j][0]] = len(out)
+            emitted.add(j)
+            stats['plan_redraw_dropped'] = stats.get('plan_redraw_dropped', 0) + 1
+        js = [j for k, j in enumerate(js) if k not in redraw]
         pans = [k for k, j in enumerate(js) if gcmds[j][2] == 0x1A]
         drop = set()
         for a, b in zip(pans, pans[1:]):
@@ -696,6 +737,14 @@ def merge_section(gtoks, dtoks, choice_ids=None):
             out.append(op)
             out.extend(args)
             stats['unmatched_kept'] += 1
+        elif op == 0x39 and args and args[0] == 0x1F00:
+            out.append(0x40)        # the point-at screen put away: the pointer goes
+            stats['point_off'] = stats.get('point_off', 0) + 1
+        elif op == 0x43 and args and args[0] in (0, 1):
+            # the penalty bar hidden / shown (the DS hides it for a point-at
+            # result's first lines)
+            out.extend([0x43, args[0]])
+            stats['ds_health_bar'] = stats.get('ds_health_bar', 0) + 1
         elif op == 0x1A and len(args) >= 4:
             # a court pan where the Japanese game cut: the DS's. Its last
             # number is the pose the person panned to is shown in (a DS

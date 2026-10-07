@@ -101,12 +101,12 @@ sec  99 <- ds 101  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 9, 'ds
 sec 100 <- ds 102  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 40, 'ds_expression': 1, 'anim_ds': 10, 'ds_fx': 26, 'pan_waits': 2}
 sec 101 <- ds 103  {'dropped_ds': 3, 'inserted_gba': 23, 'unmatched_kept': 190, 'anim_ds': 49, 'ds_fx': 98, 'gavels': 1, 'ds_bg': 3, 'ds_pan': 2, 'orphan_bg': 2, 'pans_dropped': 1, 'gba_pan_dropped': 1, 'plate_hide': 2, 'pairs': '1 stray background commands removed', 'pan_waits': 8}
 sec 102 <- ds 104  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 5, 'anim_ds': 1, 'ds_fx': 1}
-sec 103 <- ds 105  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 11, 'ds_bg': 2, 'ds_fx': 7, 'anim_ds': 6, 'bg_order': '1 person changes moved before the background change'}
-sec 104 <- ds 106  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 25, 'ds_bg': 2, 'ds_fx': 18, 'anim_ds': 6, 'pan_waits': 1}
+sec 103 <- ds 105  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 11, 'point_off': 1, 'ds_bg': 2, 'ds_fx': 7, 'anim_ds': 6, 'bg_order': '1 person changes moved before the background change'}
+sec 104 <- ds 106  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 25, 'point_off': 1, 'ds_bg': 2, 'ds_fx': 18, 'anim_ds': 6, 'pan_waits': 1}
 sec 105 <- ds 107  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 65, 'ds_fx': 34, 'anim_ds': 7, 'pan_waits': 2}
 sec 106 <- ds 108  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 5, 'anim_ds': 1}
-sec 107 <- ds 109  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 22, 'ds_bg': 2, 'ds_fx': 9, 'anim_ds': 6, 'bg_order': '1 person changes moved before the background change'}
-sec 108 <- ds 110  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 12, 'ds_bg': 2, 'ds_fx': 7, 'anim_ds': 3, 'bg_order': '1 person changes moved before the background change'}
+sec 107 <- ds 109  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 22, 'point_off': 1, 'ds_bg': 2, 'ds_fx': 9, 'anim_ds': 6, 'bg_order': '1 person changes moved before the background change'}
+sec 108 <- ds 110  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 12, 'point_off': 1, 'ds_bg': 2, 'ds_fx': 7, 'anim_ds': 3, 'bg_order': '1 person changes moved before the background change'}
 sec 109 <- ds 111  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 6, 'anim_ds': 1, 'choice_labels': 1}
 sec 110 <- ds 112  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 19, 'anim_ds': 5, 'ds_fx': 2}
 sec 111 <- ds 113  {'dropped_ds': 3, 'inserted_gba': 5, 'unmatched_kept': 40, 'anim_ds': 12, 'ds_fx': 24, 'gavels': 1}

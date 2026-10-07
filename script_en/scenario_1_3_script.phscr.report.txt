@@ -31,9 +31,9 @@ sec  29 <- ds  29  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 18, 'a
 sec  30 <- ds  30  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 17, 'anim_ds': 5, 'ds_bg': 2, 'ds_fx': 11, 'orphan_bg': 2}
 sec  31 <- ds  31  {'dropped_ds': 6, 'inserted_gba': 16, 'unmatched_kept': 31, 'anim_ds': 11, 'ds_fx': 27, 'gavels': 2, 'pan_waits': 1}
 sec  32 <- ds  32  {'dropped_ds': 1, 'inserted_gba': 4, 'unmatched_kept': 6, 'ds_fx': 2, 'anim_ds': 1}
-sec  33 <- ds  33  {'dropped_ds': 0, 'inserted_gba': 8, 'unmatched_kept': 25, 'ds_bg': 2, 'ds_fx': 30, 'anim_ds': 9, 'orphan_bg': 1, 'pan_waits': 1}
-sec  34 <- ds  34  {'dropped_ds': 0, 'inserted_gba': 7, 'unmatched_kept': 24, 'ds_bg': 1, 'ds_fx': 24, 'anim_ds': 8, 'pan_waits': 1}
-sec  35 <- ds  35  {'dropped_ds': 5, 'inserted_gba': 20, 'unmatched_kept': 150, 'ds_bg': 1, 'ds_fx': 81, 'anim_ds': 33, 'gavels': 1, 'ds_expression': 2, 'pan_waits': 3, 'testimony_waits': 1}
+sec  33 <- ds  33  {'dropped_ds': 0, 'inserted_gba': 3, 'unmatched_kept': 25, 'point_off': 1, 'ds_bg': 2, 'ds_fx': 30, 'anim_ds': 9, 'plan_redraw_dropped': 6, 'orphan_bg': 1, 'bg_order': '1 person changes moved before the background change', 'pan_waits': 1}
+sec  34 <- ds  34  {'dropped_ds': 0, 'inserted_gba': 2, 'unmatched_kept': 24, 'point_off': 1, 'ds_bg': 1, 'ds_fx': 24, 'anim_ds': 8, 'plan_redraw_dropped': 6, 'pan_waits': 1}
+sec  35 <- ds  35  {'dropped_ds': 4, 'inserted_gba': 16, 'unmatched_kept': 150, 'point_off': 1, 'ds_bg': 1, 'ds_fx': 81, 'anim_ds': 33, 'plan_redraw_dropped': 4, 'gavels': 1, 'ds_expression': 2, 'pan_waits': 3, 'testimony_waits': 1}
 sec  36 <- ds  36  {'dropped_ds': 1, 'inserted_gba': 0, 'unmatched_kept': 13, 'ds_fx': 3, 'anim_ds': 1}
 sec  37 <- ds  37  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2, 'ds_fx': 1}
 sec  38 <- ds  38  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 2, 'ds_fx': 1}
