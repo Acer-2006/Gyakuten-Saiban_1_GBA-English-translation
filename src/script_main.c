@@ -267,10 +267,13 @@ static void AdvanceScriptContext(struct ScriptContext * scriptCtx)
         {
             if ( scriptCtx->textSpeed > 0)
             {
-                if ( scriptCtx->soundCueSkip == 0 || scriptCtx->textSpeed > 4 )
+                // English patch: text sounds as the English DS times them (function at
+                // 0x02024a40): a blip on every other letter, typewriter included, and on
+                // every third when the text comes a letter a frame. The Japanese rule
+                // sounded every letter of slow text and of the typewriter
+                if ( scriptCtx->soundCueSkip == 0 || (scriptCtx->textSpeed >= 2 && scriptCtx->soundCueSkip <= 1) )
                 {
-                    if ( scriptCtx->currentSoundCue != 2 )
-                        scriptCtx->soundCueSkip = 1;
+                    scriptCtx->soundCueSkip = 2;
 
                     if (!(gMain.soundFlags & SOUND_FLAG_DISABLE_CUE))
                     {

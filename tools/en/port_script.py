@@ -56,7 +56,7 @@ def evidence_id(v):
         return (v & ~0xFF) | 0x34
     return v
 # sound effects the DS added (SE04F, SE050: sounds from the GBA sequels) are
-# added to the GBA song table after its last entry (data/en_sound.s)
+# added to the GBA song table after its last entry (tools/en/port_sfx.py)
 SE_MAP = {121: 111, 122: 112}
 CENTRE = 0x5D      # DS: centre the following lines (1) / stop (0); en_text in vwf.c
 DS_WAIT = 0x4E     # DS: hold for n frames -> GBA wait (0C)

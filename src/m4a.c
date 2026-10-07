@@ -60,10 +60,13 @@ void m4aSoundInit(void)
 
     SoundInit(&gSoundInfo);
     MPlayExtender(gCgbChans);
+    // English patch: 8 sample channels, not 6. The DS's sound effects (sampled text
+    // blips and menu sounds, stereo pairs) and the music no longer take notes from
+    // each other: the music and the effects of the busiest scenes want at most 8
     m4aSoundMode(SOUND_MODE_DA_BIT_8
                | SOUND_MODE_FREQ_15768
                | (14 << SOUND_MODE_MASVOL_SHIFT)
-               | (6 << SOUND_MODE_MAXCHN_SHIFT));
+               | (8 << SOUND_MODE_MAXCHN_SHIFT));
 
     for (i = 0; i < NUM_MUSIC_PLAYERS; i++)
     {
