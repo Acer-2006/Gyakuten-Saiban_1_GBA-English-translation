@@ -13,7 +13,10 @@ ROWS = 13
 Y_SHIFT = {0x100: 5,   # '-' hyphen: move from cap height to mid x-height
            0x101: 4,   # '"' double quote
            0x102: 3, 0x103: 3, 0x104: 3, 0x105: 3,   # [ ] $ #
-           0x106: 2, 0x107: 2, 0x108: 2, 0x109: 2, 0x10A: 2}  # > < = etc
+           0x106: 2, 0x107: 2, 0x108: 2, 0x109: 2, 0x10A: 2,  # > < = etc
+           0x10C: 4}  # ';' semicolon: the DS draws it 4 px lower than its cell
+                      # (dot at x-height, tail on the baseline, as measured on
+                      # screen: "injury; he was there.")
 def cell(raw):
     a = [[0]*16 for _ in range(16)]
     for t in range(4):
