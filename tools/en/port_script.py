@@ -1005,6 +1005,32 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 dpos_to_out = {p: fix(o) for p, o in dpos_to_out.items()}
                 patches = [(fix(i), t, dt) for i, t, dt in patches]
                 stats['ds_ending_before_jump'] = len(span)
+    # A jump that waits for A (0A) ends many Japanese sections right after
+    # their last line: one press closes the line and goes on. The DS ends
+    # the same scenes with a page wait (02), then what comes after the line
+    # (the text box hidden, a penalty, a sound) and a jump that doesn't wait
+    # (2C). With the DS's wait in, the 0A waited a second time, on an empty
+    # screen: after Edgeworth asks Cody to change his testimony (Turnabout
+    # Samurai) the text box went and the game sat there, no arrow, until A
+    # brought in "I took a few shots...". Such a 0A becomes a 2C (same
+    # target, no wait).
+    def text_since_wait(items, upto):
+        t = False
+        for x in items:
+            if x[0] >= upto:
+                break
+            if x[1] == 'text':
+                t = True
+            elif x[2] in (0x02, 0x07, 0x0A, 0x2D):
+                t = False
+        return t
+    oitems = parse(out, GBA_ARGS)[0]
+    for x in g:
+        if x[1] == 'cmd' and x[2] == 0x0A and x[0] in gpos_to_out and text_since_wait(g, x[0]):
+            o = gpos_to_out[x[0]]
+            if out[o:o + 1] == [0x0A] and not text_since_wait(oitems, o):
+                out[o] = 0x2C
+                stats['wait_jump_after_wait'] = stats.get('wait_jump_after_wait', 0) + 1
     # every GBA section starts with 00 (reset the text box and script state
     # for the new section); when the DS has a second 00 further on, the GBA's
     # could be paired with that one and the section started without it
