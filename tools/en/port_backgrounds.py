@@ -338,8 +338,12 @@ def port_document(label, en_base, report, layout=None):
         out[y + ys_, xs_ + dx] = white
         if i < len(gaps):
             y += pitch + (min(gaps[i], gap) if para[i] else 0)
-    # page number and page-turn arrow: the Japanese page's
-    out[DOC_FOOT:] = idx[DOC_FOOT:]
+    # page number and page-turn arrow: the Japanese page's (only their own
+    # pixels: copying the whole footer band blanked the bottom of a last line
+    # that runs into it, and "tonight" on Maya's phone call lost the tail of
+    # its g; fits() keeps such a line clear of the number and the arrow)
+    foot_ink = idx[DOC_FOOT:] != black
+    out[DOC_FOOT:][foot_ink] = idx[DOC_FOOT:][foot_ink]
     save_gba(path, out, rawpal)
     report.append('  %d DS lines re-set: pitch %d, paragraph gap %d (DS %s), x shift %d, last line ends y %d'
                   % (len(bands), pitch, gap, max(gaps) if gaps else 0, dx, y + bands[-1][1] - bands[-1][0]))
@@ -355,7 +359,7 @@ def locate_arrow(idx, pal, black):
     return (H - 16 + ys.min(), H - 16 + ys.max() + 1, W // 2 - 24 + xs.min(), W // 2 - 24 + xs.max() + 1)
 
 # ------------------------------------------------------------------ newspaper
-def port_whole(label, en_base, report, anchor='centre'):
+def port_whole(label, en_base, report, anchor='centre', own_palette=False):
     """the DS English picture fitted to the GBA screen (uniform scale; the
     overhang is cut evenly, from the top for anchor='bottom', or from the
     bottom for anchor='top'). The newspaper is cut from the bottom: cut evenly,
@@ -375,9 +379,38 @@ def port_whole(label, en_base, report, anchor='centre'):
         y0 = 0
     r = r[y0:y0 + H, x0:x0 + W]
     usable = sorted(set(np.unique(idx)))
-    out = nearest(r.reshape(-1, 3), pal, usable).reshape(H, W)
+    if own_palette:
+        # the picture's own colours (the DS's), in the palette entries the
+        # Japanese picture had to itself: the nearest of the Japanese
+        # newspaper's colours turned the DS's red headline bar pink
+        # (median cut for most of them; the last 32 go to the pixels it served
+        # worst, one at a time, so a small patch of its own colour, like the
+        # blue initial letter, keeps it)
+        img = np.clip(r, 0, 255).astype(np.uint8)
+        px = img.reshape(-1, 3).astype(int)
+        n = len(usable)
+        q = Image.fromarray(img, 'RGB').quantize(colors=n - 32, method=Image.Quantize.MEDIANCUT,
+                                                 dither=Image.Dither.NONE)
+        qpal = [tuple(c) for c in np.array(q.getpalette()[:3 * (n - 32)], int).reshape(-1, 3)]
+        def assign(cols):
+            P = np.array(cols)
+            k = ((px[:, None, :] - P[None, :, :]) ** 2).sum(2).argmin(1)
+            return k, np.abs(px - P[k]).sum(1)
+        while len(qpal) < n:
+            k, e = assign(qpal)
+            qpal.append(tuple(px[int(e.argmax())]))
+        k, e = assign(qpal)
+        qpal = np.array(qpal)
+        lut = np.array(usable)
+        out = lut[k].reshape(H, W)
+        rawpal = list(rawpal)
+        for k, i in enumerate(int(u) for u in usable):
+            rawpal[3 * i:3 * i + 3] = [int(v) for v in qpal[k]]
+    else:
+        out = nearest(r.reshape(-1, 3), pal, usable).reshape(H, W)
     save_gba(path, out, rawpal)
-    report.append('  scaled %.3f, cropped %d px left/right, %d px top/bottom' % (s, x0, y0))
+    report.append('  scaled %.3f, cropped %d px left/right, %d px top/bottom%s'
+                  % (s, x0, y0, ', its own %d colours' % len(usable) if own_palette else ''))
 
 def main():
     table = ds_table()
@@ -395,7 +428,7 @@ def main():
             port_document(label, int(table[label][1], 16), report, layout)
     for label, what, anchor in WHOLE:
         report.append('%s (%s)' % (label, what))
-        port_whole(label, int(table[label][1], 16), report, anchor)
+        port_whole(label, int(table[label][1], 16), report, anchor, own_palette=label == 'gGfx_BG089_Case4Newspaper')
     print('\n'.join(report))
 
 if __name__ == '__main__':
