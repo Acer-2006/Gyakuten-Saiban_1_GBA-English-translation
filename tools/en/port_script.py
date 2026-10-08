@@ -182,7 +182,40 @@ def pair_sections(gb, G, db, D):
     """Return dict gba_section_index -> ds_section_index."""
     pairs = {gi: dj for gi, (dj, sc) in align(gb, G, db, D).items()}
     fill_gaps(gb, G, db, D, pairs)
+    pair_statements(gb, G, db, D, pairs)
     return pairs
+
+
+def pair_statements(gb, G, db, D, pairs):
+    """A cross-examination statement goes with the DS statement whose Hold it!
+    conversation (0F) is the one its own Hold it! conversation is paired with.
+    The statements of a testimony are short sections that all look alike, and
+    the alignment can pair them one place off: in Cody Hackins's testimony
+    (Turnabout Samurai, day 2) the DS's first section is one place further on
+    than the Japanese one, the first statement was paired right and the other
+    eight with the DS statement before their own, so the cross-examination
+    showed "I wanted to see a Steel Samurai rehearsal, just once." twice, and
+    each statement after it one place late (the last one never came)."""
+    def holdit(b, x, args):
+        for pos, kind, op, a in parse(tokens(b, *x), args)[0]:
+            if kind == 'cmd' and op == 0x0F and a:
+                return a[0]
+        return None
+    ds_by_holdit = {}
+    for dj, x in enumerate(D):
+        if x:
+            h = holdit(db, x, DS_ARGS)
+            if h is not None:
+                ds_by_holdit.setdefault(h, []).append(dj)
+    for gi, x in enumerate(G):
+        if not x:
+            continue
+        h = holdit(gb, x, GBA_ARGS)
+        if h is None or h < 0x80 or (h - 0x80) not in pairs or pairs[h - 0x80] is None:
+            continue
+        cands = ds_by_holdit.get(pairs[h - 0x80] + 0x80, [])
+        if len(cands) == 1 and pairs.get(gi) != cands[0]:
+            pairs[gi] = cands[0]
 
 
 def _ops_ratio(gb, g, db, d):
