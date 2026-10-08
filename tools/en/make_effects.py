@@ -68,6 +68,51 @@ BANNER_JP_CENTRE_Y = 76            # ... and its vertical centre on screen
 BANNER_MAX_BOTTOM = 99             # keep clear of the name tag
 BANNER_CANVAS, BANNER_ORIGIN = (512, 384), (256, 192)
 
+def outline_strays(m, maxlen=2):
+    """Pixels the downscale left sticking out of the outline: the end of a
+    one-pixel spur, or a bump one pixel wide and at most maxlen long on a
+    straight edge (the rows on both sides of it end one pixel further in).
+    The steps of a slanted edge are not bumps (the edge moves on after them)."""
+    m = m.astype(bool)
+    p = np.pad(m, 1).astype(int)
+    n4 = p[:-2, 1:-1] + p[2:, 1:-1] + p[1:-1, :-2] + p[1:-1, 2:]
+    out = set(map(tuple, np.argwhere(m & (n4 <= 1))))
+    for rot in range(4):
+        r = np.rot90(m, rot)
+        h, w = r.shape
+        for x in range(1, w - 1):
+            edge = r[:, x] & ~r[:, x + 1]          # right-hand edge (in this rotation)
+            y = 0
+            while y < h:
+                if not edge[y]:
+                    y += 1
+                    continue
+                y2 = y
+                while y2 + 1 < h and edge[y2 + 1]:
+                    y2 += 1
+                a, b = y - 1, y2 + 1
+                if y2 - y + 1 <= maxlen and a >= 0 and b < h and not r[a, x] and r[a, x - 1] \
+                        and not r[b, x] and r[b, x - 1]:
+                    for yy in range(y, y2 + 1):
+                        q = np.zeros_like(r)
+                        q[yy, x] = True
+                        out.add(tuple(np.argwhere(np.rot90(q, -rot))[0]))
+                y = y2 + 1
+    return sorted(out)
+
+def clean_outline(img):
+    """-> (img without the stray outline pixels, how many went)"""
+    img = img.copy()
+    gone = 0
+    for _ in range(3):
+        strays = outline_strays(img > 0)
+        if not strays:
+            break
+        for y, x in strays:
+            img[y, x] = 0
+        gone += len(strays)
+    return img, gone
+
 def frame_palette(q, f):
     pals = set((d >> 9) & 7 for _, _, d in animfmt.sprites(q, f[0]))
     assert len(pals) == 1, pals
@@ -85,6 +130,7 @@ def banners(report):
     xs = np.nonzero(idx.any(0))[0]
     scale = BANNER_JP_WIDTH / (xs[-1] - xs[0] + 1)
     streams, stream_ids, seqs, counts, extent = [], {}, {}, {}, [0, 0]
+    strays = {}
     for name, _ in BANNER_SUBS:
         q, fr = subs[name]
         lists = []
@@ -93,6 +139,10 @@ def banners(report):
             idx, _ = render_indexed(gfx, q, k, BANNER_CANVAS, BANNER_ORIGIN)
             used = sorted(set(np.unique(idx)) - {0})
             img = scale_indexed(idx, pals[p], scale, used)
+            # stray pixels the scaling left on the outline (one off the corner
+            # of "Testimony"'s T and of "Examination"'s E, a bump on the E)
+            img, gone = clean_outline(img)
+            strays[name] = strays.get(name, 0) + gone
             ox, oy = BANNER_ORIGIN[0] * scale, BANNER_ORIGIN[1] * scale
             # tiles aligned on the origin
             ax, ay = int(round(ox)) % 8, int(round(oy)) % 8
@@ -125,7 +175,8 @@ def banners(report):
             out += struct.pack('<HBBBBH', o, dur, fl, song, act, 0)
         seqs[name] = bytes(out + body)
         need = max(sum(animfmt.SIZES[struct.unpack_from('<H', sp, 2)[0] >> 12][0] * animfmt.SIZES[struct.unpack_from('<H', sp, 2)[0] >> 12][1] // 2 for sp in l) for l in lists)
-        report.append('banner %-16s %2d frames, %5d bytes VRAM, %2d sprites' % (name, len(fr), need, counts[name]))
+        report.append('banner %-16s %2d frames, %5d bytes VRAM, %2d sprites, %d stray outline pixels removed'
+                      % (name, len(fr), need, counts[name], strays.get(name, 0)))
     assert len(streams) < 512
     # compressed-tile block: offset table, then each sprite's tiles as one literal run
     g = bytearray(struct.pack('<I', 0x80000000 | len(pals)))

@@ -6,7 +6,7 @@ extern u8 gEnBannerGfx[];
 extern u8 gEnBannerSeq_testimony[];
 #define EN_BANNER_SPRITES_TESTIMONY 4
 extern u8 gEnBannerSeq_cross[];
-#define EN_BANNER_SPRITES_CROSS 6
+#define EN_BANNER_SPRITES_CROSS 5
 extern u8 gEnBannerSeq_testimony_left[];
 #define EN_BANNER_SPRITES_TESTIMONY_LEFT 2
 extern u8 gEnBannerSeq_testimony_right[];
