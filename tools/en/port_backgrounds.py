@@ -145,7 +145,15 @@ def text_regions(jp, en):
         if m.sum() < MIN_PATCH:
             continue
         ys, xs = np.nonzero(lab == k)
-        regions.append((ys.min(), ys.max() + 1, xs.min(), xs.max() + 1, ndimage.binary_dilation(m, iterations=2)))
+        core = ndimage.binary_dilation(m, iterations=2)
+        # the specks in the region are writing too: a lone pixel of the
+        # Japanese lettering that the English one covers with its outline
+        # (between the d and the i of "Studio" on the map of Global Studios),
+        # or the steps of a thin diagonal line (the leader line of "Main
+        # Gate"). Kept apart from the core so that they don't join pieces of
+        # writing together (see port_signs)
+        specks = (lab == k) & diff & ~core
+        regions.append((ys.min(), ys.max() + 1, xs.min(), xs.max() + 1, core, specks))
     return regions
 
 PAD = 40             # patches may hang over the edge of the GBA picture
@@ -194,7 +202,7 @@ def port_signs(label, jp_base, en_base, report):
     jp, en = ds_rgb(jp_base), ds_rgb(en_base)
     usable = sorted(set(np.unique(idx)))
     out = idx.copy()
-    for y0, y1, x0, x1, mask in text_regions(jp, en):
+    for y0, y1, x0, x1, mask, specks in text_regions(jp, en):
         M = 10
         y0, x0 = max(0, y0 - M), max(0, x0 - M)
         y1, x1 = min(jp.shape[0], y1 + M), min(jp.shape[1], x1 + M)
@@ -219,12 +227,31 @@ def port_signs(label, jp_base, en_base, report):
         # Japanese writing stays where it is (it has to cover it).
         H, W = out.shape
         lab, n = ndimage.label(m, structure=np.ones((3, 3)))
+        # a group of specks goes with the piece of writing it touches (and
+        # moves with it); one that touches none, or two, stays where it is.
+        # Only where the patch goes on pixel for pixel: scaled, a lone DS
+        # pixel doesn't land on a pixel of its own
+        sp = specks[y0:y1, x0:x1] & ~m if (h, w) == (y1 - y0, x1 - x0) else np.zeros_like(m)
+        slab, sn = ndimage.label(sp, structure=np.ones((3, 3)))
+        fixed = set()
+        for g in range(1, sn + 1):
+            gm = slab == g
+            touch = set(np.unique(lab[ndimage.binary_dilation(gm, structure=np.ones((3, 3))) & m]).tolist()) - {0}
+            if len(touch) == 1:
+                lab[gm] = touch.pop()
+            else:
+                n += 1
+                lab[gm] = n
+                fixed.add(n)
         painted, moved = 0, []
         for k in range(1, n + 1):
             c = lab == k
             ys, xs = np.nonzero(c)
             dy = max(0, -(gy + ys.min())) - max(0, gy + ys.max() + 1 - H)
             dx = max(0, -(gx + xs.min())) - max(0, gx + xs.max() + 1 - W)
+            if k in fixed:
+                dy = dx = 0
+            ground = None
             if dy or dx:
                 jc = j[c].reshape(-1, 3).astype(int)
                 vals, counts = np.unique(jc, axis=0, return_counts=True)
@@ -233,10 +260,16 @@ def port_signs(label, jp_base, en_base, report):
                     dy += 1 if dy > 0 else -1 if dy < 0 else 0      # a pixel clear of the edge
                     dx += 1 if dx > 0 else -1 if dx < 0 else 0
                     moved.append('%+d,%+d' % (dx, dy))
+                    ground = nearest(vals[np.argmax(counts)][None], pal, usable)[0]
                 else:
                     dy = dx = 0
             Y, X = gy + ys + dy, gx + xs + dx
             ok = (Y >= 0) & (Y < H) & (X >= 0) & (X < W)
+            if ground is not None:
+                # moved writing goes on the plain ground it was on, not over
+                # what it is moved next to (the end of the leader line of
+                # "Main Gate" on the corner of the gate's wall)
+                ok[ok] = idx[Y[ok], X[ok]] == ground
             out[Y[ok], X[ok]] = nearest(e[ys[ok], xs[ok]], pal, usable)
             painted += int(ok.sum())
         report.append('  patch DS (%d,%d)-(%d,%d) -> GBA (%d,%d) scale %.3f match %.0f, %d px%s'
