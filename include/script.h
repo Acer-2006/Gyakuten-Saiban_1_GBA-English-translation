@@ -214,6 +214,8 @@ bool32 Command5C(struct ScriptContext *);
 bool32 Command5D(struct ScriptContext *);
 bool32 Command5E(struct ScriptContext *);
 void ChoiceLabelsDone(void);
+void ChoiceLabelsTaken(void);
+void ChoiceLabelsRestore(void);
 void SetChoiceLabels(const u16 *ids);
 void DropStaleChoice(struct ScriptContext *scriptCtx);
 void ChoiceAfterLoad(bool32 staleChoice);

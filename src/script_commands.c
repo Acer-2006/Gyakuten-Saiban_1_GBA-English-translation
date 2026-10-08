@@ -247,6 +247,10 @@ bool32 Command08(struct ScriptContext * scriptCtx)
     u8 process;
     if(scriptCtx->flags & 0x20)
     {
+        // English patch: the graphics the answer labels borrowed, back a frame
+        // after the answer (the pause's first pass is on the answer's frame)
+        if(scriptCtx->personAnimPauseCounter < 10)
+            ChoiceLabelsRestore();
         if(scriptCtx->personAnimPauseCounter > 0)
         {
             scriptCtx->personAnimPauseCounter--;
@@ -310,7 +314,7 @@ bool32 Command08(struct ScriptContext * scriptCtx)
             for(i = 57; i < 88; i++)
                 gOamObjects[i].attr0 = SPRITE_ATTR0_CLEAR;
             gOamObjects[OAM_IDX_POINTER].attr0 = SPRITE_ATTR0_CLEAR;
-            ChoiceLabelsDone(); // English patch
+            ChoiceLabelsTaken(); // English patch (ChoiceLabelsRestore: a frame later)
             return FALSE;
         }
     }
@@ -326,6 +330,10 @@ bool32 Command09(struct ScriptContext * scriptCtx)
     u8 process;
     if(scriptCtx->flags & 0x20)
     {
+        // English patch: the graphics the answer labels borrowed, back a frame
+        // after the answer (the pause's first pass is on the answer's frame)
+        if(scriptCtx->personAnimPauseCounter < 10)
+            ChoiceLabelsRestore();
         if(scriptCtx->personAnimPauseCounter > 0)
         {
             scriptCtx->personAnimPauseCounter--;
@@ -391,7 +399,7 @@ bool32 Command09(struct ScriptContext * scriptCtx)
             for(i = 57; i < 88; i++)
                 gOamObjects[i].attr0 = SPRITE_ATTR0_CLEAR;
             gOamObjects[OAM_IDX_POINTER].attr0 = SPRITE_ATTR0_CLEAR;
-            ChoiceLabelsDone(); // English patch
+            ChoiceLabelsTaken(); // English patch (ChoiceLabelsRestore: a frame later)
             return FALSE;
         }
     }

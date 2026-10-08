@@ -369,17 +369,37 @@ void ReloadChoiceLabelGfx(const u16 *ids)
             DmaCopy16(3, gChoiceLabels + ids[k] * 0x680, OBJ_VRAM0 + sChoiceLabelVram[k], 0x680);
 }
 
-// English patch: called when a choice is confirmed; puts back the graphics the
-// labels borrowed.
-void ChoiceLabelsDone(void)
+// English patch: an answer is taken (Command08 / Command09): the labels go.
+// The graphics they borrowed come back a frame later (ChoiceLabelsRestore):
+// the labels are taken off the screen at the next VBlank, and put back at
+// once the investigation buttons were drawn into the labels still on screen
+// for the rest of that frame (orange bits of "Examine", "Move", "Talk" over
+// the answers for one frame).
+void ChoiceLabelsTaken(void)
 {
     u32 k;
     VwfSetChoiceLabels(NULL);
     for (k = 32; k < ARRAY_COUNT(gTextBoxCharacters); k++)
         gTextBoxCharacters[k].state &= ~0x8000;
+    gChoiceRestorePending = TRUE;
+}
+
+// the graphics the labels borrowed, back (once the labels are off the screen)
+void ChoiceLabelsRestore(void)
+{
+    if (!gChoiceRestorePending)
+        return;
+    gChoiceRestorePending = FALSE;
     if (gMain.process[GAME_PROCESS] == INVESTIGATION_PROCESS)
         DmaCopy16(3, gGfx4bppInvestigationActions, OBJ_VRAM0 + 0x2000, 0x1000);
     MakeMapMarkerSprites();
+}
+
+// both at once (a section starting, a save loaded: no labels on the screen)
+void ChoiceLabelsDone(void)
+{
+    ChoiceLabelsTaken();
+    ChoiceLabelsRestore();
 }
 
 #define CHOICE_POINTER_ATTR2 SPRITE_ATTR2(0xFC, 1, 0) // (Command08 / Command09)
@@ -408,6 +428,7 @@ static void PutAwayChoiceScreen(struct ScriptContext *scriptCtx)
 // the next scenes). Whatever a choice left goes when a section starts.
 void DropStaleChoice(struct ScriptContext *scriptCtx)
 {
+    ChoiceLabelsRestore();  // (an answer taken on the frame the section began)
     if (gOamObjects[OAM_IDX_POINTER].attr2 == CHOICE_POINTER_ATTR2)
         gOamObjects[OAM_IDX_POINTER].attr0 = SPRITE_ATTR0_CLEAR;
     if (!(scriptCtx->flags & SCRIPT_FULLSCREEN) && !VwfChoiceLabelsPending())
