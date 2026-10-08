@@ -902,6 +902,42 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         emit_batch(tail)
         if term is not None:
             out.append(term)
+    # A Japanese path the DS has no part of. After an unconditional jump (36)
+    # the GBA section can go on with commands that only a jump record reaches:
+    # Dee Vasquez's three talk topics in Studio Two's trailer jump to a check
+    # of which topics are left (section 135) and, with some left, come back
+    # to the end of the topic to fade back to her, slide the text box away
+    # (1C 3) and hand back the investigation menu. The DS ends those topics
+    # where the jump is and makes the check its own way, so nothing of the DS
+    # pairs with the path or can stand for it; filtered like any GBA-only
+    # commands (the fades, the pose, the text box and the waits are the DS's
+    # elsewhere) only the 15 was left, and the game sat at the end of the
+    # topic with Maya on screen and no menu: frozen. The path is ported as the
+    # Japanese game has it, with the text box hidden before the fade-out (1C 1)
+    # as before 1251 of the English script's 1336 fade-outs.
+    g36 = [x for x in g if x[1] == 'cmd' and x[2] == 0x36]
+    if g36 and g36[-1][0] in gpos_to_out:
+        p36 = g36[-1][0]
+        after = [x for x in g if x[0] > p36]
+        i36 = gpos_to_out[p36]
+        rest = parse(out[i36 + 2:], GBA_ARGS)[0] if out[i36:i36 + 1] == [0x36] else None
+        if after and rest is not None and all(k == 'cmd' and op in (0x15, 0x0D) for p, k, op, a in rest) \
+                and not any(x[1] != 'cmd' or x[2] in (0x08, 0x09, 0x0A, 0x35, 0x36) for x in after) \
+                and any(x[2] == 0x1C and x[3][:1] == (3,) for x in after) \
+                and not any(i > i36 + 1 for i, t, dt in patches):
+            old = {op: i36 + 2 + p for p, k, op, a in rest}
+            del out[i36 + 2:]
+            new = {}
+            for pos, kind, op, args in after:
+                gpos_to_out[pos] = len(out)
+                if op == 0x31 and args[:1] == (4,) and out[-2:] != [0x1C, 1]:
+                    out.extend([0x1C, 1])
+                new.setdefault(op, len(out))
+                out.append(op)
+                out.extend(args)
+            remap = {i: new.get(op, len(out) - 1) for op, i in old.items()}
+            dpos_to_out = {p: remap.get(o, o) if o > i36 + 1 else o for p, o in dpos_to_out.items()}
+            stats['jp_return_path'] = stats.get('jp_return_path', 0) + 1
     # every GBA section starts with 00 (reset the text box and script state
     # for the new section); when the DS has a second 00 further on, the GBA's
     # could be paired with that one and the section started without it
@@ -1689,6 +1725,31 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
                 choices[c['ds_section']] = c['ids']
     fp = os.path.join(os.path.dirname(__file__), 'gba_fixups.json')
     fixups = json.load(open(fp)).get(str(scenario_idx), {}) if scenario_idx is not None and os.path.exists(fp) else {}
+    # A GBA section the DS split in two. Showing von Karma's letter to
+    # Grossberg a second time (Turnabout Goodbyes' last day) jumps into
+    # section B4, whose first half is his answer and ends with a jump back
+    # (36); a second jump lands after it, on "Now, there's only one question
+    # left." The DS made the first half a section of its own, so B4 paired
+    # with the DS's second half only, the first half lost its English and
+    # the jump back landed first: Grossberg said nothing the second time.
+    # B4 is ported against the two DS sections joined (the first one's end,
+    # 0D, and the second one's start, 00, are not in the GBA section).
+    split = {}
+    used_ds = set(v for v in pairs.values() if v is not None)
+    for gi, di in pairs.items():
+        if di is None or di < 1 or not G[gi] or not D[di] or not D[di - 1] or di - 1 in used_ds:
+            continue
+        git = parse(tokens(gb, *G[gi]), GBA_ARGS)[0]
+        mid = [k for k, x in enumerate(git) if x[1] == 'cmd' and x[2] == 0x36
+               and any(y[1] == 'text' for y in git[:k]) and any(y[1] == 'text' for y in git[k + 1:])]
+        d1 = parse(tokens(db, *D[di - 1]), DS_ARGS)[0]
+        d2 = parse(tokens(db, *D[di]), DS_ARGS)[0]
+        c1 = [x[2] for x in d1 if x[1] == 'cmd']
+        while c1 and c1[-1] == 0x00:
+            c1.pop()
+        if len(mid) == 1 and c1[-2:] == [0x36, 0x0D] and 0x35 not in c1 and any(x[1] == 'text' for x in d1) \
+                and not any(x[1] == 'cmd' and x[2] in (0x35, 0x36) for x in d2):
+            split[gi] = di - 1
     # find header entries used as jump descriptors
     desc_idx = set()
     for x in G:
@@ -1714,7 +1775,17 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
         gt = tokens(gb, *x)
         if gi in pairs and D[pairs[gi]]:
             dt = apply_fixups(tokens(db, *D[pairs[gi]]), fixups.get(str(pairs[gi]), []))
+            if gi in split:
+                t1 = apply_fixups(tokens(db, *D[split[gi]]), fixups.get(str(split[gi]), []))
+                t1 = t1[:max(p for p, k, op, a in parse(t1, DS_ARGS)[0] if k == 'cmd' and op == 0x0D)]
+                d0 = 1 if dt and dt[0] == 0x00 else 0
+                cut = len(t1) - d0
+                dt = t1 + dt[d0:]
             out, m, patches, st, dm, rp = merge_section(gt, dt, choices.get(pairs[gi]))
+            if gi in split:
+                # (the jump records go by the positions in the DS section paired)
+                dm = {p - cut: o for p, o in dm.items() if p >= len(t1)}
+                st = dict(st, ds_joined='%x+%x' % (split[gi] + 0x80, pairs[gi] + 0x80))
             for r, dr in rp.items():
                 rec_pairs.setdefault(r, set()).add(dr)
             out, f, note = fix_gavel(out, gt)
