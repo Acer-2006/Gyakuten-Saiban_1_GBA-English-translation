@@ -493,6 +493,18 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 bg = a[0]
         return bg
 
+    def scrolled_across(bg):
+        """the background in force is bg and was scrolled (1D) since it was set"""
+        last, scrolled = None, False
+        for pos, kind, op, a in parse(out, GBA_ARGS)[0]:
+            if kind != 'cmd':
+                continue
+            if op == 0x1B and a:
+                last, scrolled = a[0] & 0x7FFF, False
+            elif op == 0x1D:
+                scrolled = True
+        return last == bg and scrolled
+
     def current_person():
         who = None
         for pos, kind, op, a in parse(out, GBA_ARGS)[0]:
@@ -865,6 +877,14 @@ def merge_section(gtoks, dtoks, choice_ids=None):
             # the DS hides the person and blanks the picture for this line
             out.extend([0x1B, 0xFF])
             stats['ds_bg'] = stats.get('ds_bg', 0) + 1
+        elif op == 0x1B and args and args[0] & 0x8000 and args[0] != 0xFFF and scrolled_across(args[0] & 0x7FFF):
+            # the end of a scroll across a wide background: the DS then sets
+            # the background "seen from its other end" (bit 15). On the GBA
+            # that is another background, decompressed again over the picture
+            # the scroll ended on (Studio Two's trailer warbled for two frames
+            # after "No, that it does not."); the GBA's scroll ends there by
+            # itself, as in the Japanese script
+            stats['scroll_end_bg_dropped'] = stats.get('scroll_end_bg_dropped', 0) + 1
         elif op == 0x1B and args and args[0] != 0xFFF and (args[0] & 0x7FFF) < GBA_BG_COUNT:
             # a DS background change with no GBA one beside it: the DS
             # backgrounds have the GBA numbers, and the person the DS shows
