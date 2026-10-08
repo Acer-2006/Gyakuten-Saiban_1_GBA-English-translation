@@ -26,7 +26,7 @@ sec  24 <- ds  24  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 26, 'd
 sec  25 <- ds  25  {'dropped_ds': 3, 'inserted_gba': 6, 'unmatched_kept': 22, 'anim_ds': 9, 'ds_fx': 15, 'gavels': 1, 'pan_waits': 2}
 sec  26 <- ds  26  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 3, 'anim_ds': 1}
 sec  27 <- ds  27  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 19, 'ds_fx': 4, 'anim_ds': 7}
-sec  28 <- ds  28  {'dropped_ds': 3, 'inserted_gba': 11, 'unmatched_kept': 60, 'anim_ds': 20, 'ds_fx': 39, 'plate_hide': 1, 'look_elsewhere': 2, 'ds_bg': 1, 'ds_fade_speed': 1, 'gavels': 1, 'bg_order': '1 person changes moved before the background change', 'pan_waits': 4}
+sec  28 <- ds  28  {'dropped_ds': 3, 'inserted_gba': 11, 'unmatched_kept': 60, 'anim_ds': 20, 'ds_fx': 39, 'plate_hide': 1, 'ds_bg': 1, 'ds_fade_speed': 1, 'gavels': 1, 'bg_order': '1 person changes moved before the background change', 'pan_waits': 4}
 sec  29 <- ds  29  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 6, 'anim_ds': 1, 'choice_labels': 1}
 sec  30 <- ds  30  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 16, 'anim_ds': 8, 'ds_fx': 16}
 sec  31 <- ds  31  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 6, 'anim_ds': 2}

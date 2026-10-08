@@ -19,10 +19,10 @@ sec  17 <- ds  18  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'ds
 sec  18 <- ds  19  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 1, 'ds_fx': 1}
 sec  19 <- ds  20  {'dropped_ds': 9, 'inserted_gba': 22, 'unmatched_kept': 93, 'ds_fx': 55, 'anim_ds': 24, 'lock_placed': 1}
 sec  20 <- ds  21  {'dropped_ds': 2, 'inserted_gba': 1, 'unmatched_kept': 28, 'anim_ds': 8, 'ds_fx': 16}
-sec  21 <- ds  22  {'dropped_ds': 3, 'inserted_gba': 3, 'unmatched_kept': 87, 'anim_ds': 17, 'ds_fx': 28, 'plate_hide': 1, 'look_elsewhere': 2}
+sec  21 <- ds  22  {'dropped_ds': 3, 'inserted_gba': 3, 'unmatched_kept': 87, 'anim_ds': 17, 'ds_fx': 28, 'plate_hide': 1}
 sec  22 <- ds  23  {'dropped_ds': 8, 'inserted_gba': 6, 'unmatched_kept': 81, 'anim_ds': 20, 'ds_fx': 41}
 sec  23 <- ds  24  {'dropped_ds': 2, 'inserted_gba': 0, 'unmatched_kept': 124, 'ds_fx': 52, 'anim_ds': 20, 'poses': '2 poses from another place replaced'}
-sec  24 <- ds  25  {'dropped_ds': 6, 'inserted_gba': 10, 'unmatched_kept': 175, 'anim_ds': 22, 'ds_fx': 105, 'look_elsewhere': 2}
+sec  24 <- ds  25  {'dropped_ds': 6, 'inserted_gba': 10, 'unmatched_kept': 175, 'anim_ds': 22, 'ds_fx': 105}
 sec  25 <- ds  26  {'dropped_ds': 10, 'inserted_gba': 9, 'unmatched_kept': 102, 'ds_fx': 65, 'anim_ds': 28, 'plate_hide': 1, 'jumps': '1 as the DS, 0 as the GBA'}
 sec  26 <- ds  27  {'dropped_ds': 2, 'inserted_gba': 1, 'unmatched_kept': 18, 'anim_ds': 5, 'ds_fx': 13}
 sec  27 <- ds  28  {'dropped_ds': 2, 'inserted_gba': 1, 'unmatched_kept': 29, 'ds_fx': 10, 'anim_ds': 6}

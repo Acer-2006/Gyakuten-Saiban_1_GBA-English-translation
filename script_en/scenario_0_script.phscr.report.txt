@@ -14,10 +14,10 @@ sec  12 <- ds  12  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 27, 'a
 sec  13 <- ds  13  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 15, 'anim_ds': 4, 'ds_fx': 4}
 sec  14 <- ds  14  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 73, 'anim_ds': 16, 'ds_fx': 3, 'plate_hide': 1}
 sec  15 <- ds  15  {'dropped_ds': 3, 'inserted_gba': 4, 'unmatched_kept': 34, 'ds_fx': 4, 'anim_ds': 6, 'gavels': 1}
-sec  16 <- ds  16  {'dropped_ds': 3, 'inserted_gba': 1, 'unmatched_kept': 135, 'ds_fx': 40, 'anim_ds': 20, 'ds_expression': 3, 'look_elsewhere': 1, 'choice_labels': 1, 'pan_waits': 6}
-sec  17 <- ds  17  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 20, 'anim_ds': 7, 'ds_fx': 11, 'ds_expression': 1, 'pan_waits': 1}
-sec  18 <- ds  18  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 12, 'anim_ds': 3, 'ds_fx': 7, 'ds_expression': 1, 'pan_waits': 1}
-sec  19 <- ds  19  {'dropped_ds': 3, 'inserted_gba': 5, 'unmatched_kept': 32, 'ds_expression': 1, 'anim_ds': 7, 'ds_fx': 16, 'gavels': 1}
+sec  16 <- ds  16  {'dropped_ds': 3, 'inserted_gba': 1, 'unmatched_kept': 135, 'ds_fx': 40, 'anim_ds': 20, 'look_elsewhere': 3, 'ds_expression': 3, 'choice_labels': 1, 'pan_waits': 6}
+sec  17 <- ds  17  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 20, 'anim_ds': 7, 'ds_fx': 11, 'look_elsewhere': 1, 'ds_expression': 1, 'pan_waits': 1}
+sec  18 <- ds  18  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 12, 'anim_ds': 3, 'ds_fx': 7, 'look_elsewhere': 1, 'ds_expression': 1, 'pan_waits': 1}
+sec  19 <- ds  19  {'dropped_ds': 3, 'inserted_gba': 5, 'unmatched_kept': 32, 'look_elsewhere': 1, 'ds_expression': 1, 'anim_ds': 7, 'ds_fx': 16, 'gavels': 1}
 sec  20 <- ds  20  {'dropped_ds': 3, 'inserted_gba': 0, 'unmatched_kept': 27, 'anim_ds': 5, 'ds_fx': 10, 'choice_labels': 1, 'pan_waits': 2}
 sec  21 <- ds  21  {'dropped_ds': 3, 'inserted_gba': 5, 'unmatched_kept': 48, 'anim_ds': 12, 'ds_fx': 19, 'gavels': 1, 'pan_waits': 2}
 sec  22 <- ds  22  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 38, 'anim_ds': 8, 'ds_fx': 7, 'pan_waits': 2}

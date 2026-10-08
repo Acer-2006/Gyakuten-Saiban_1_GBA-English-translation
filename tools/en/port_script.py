@@ -616,6 +616,19 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         if kind == 'cmd' and op == 0x1B and args:
             bgnow = 0xFF if args[0] == 0xFFF else args[0] & 0x7FFF
         dbg[pos] = bgnow
+    # a person the DS shows before setting the background they are on (behind
+    # a fade: the pose, then the background) is posed for that background:
+    # Oldbag went back to the witness stand in her studio gate poses, drawn
+    # full height over the stand (after "Dragging his foot... okay." and
+    # "And I locked the main gate...")
+    for k, (pos, kind, op, args) in enumerate(d):
+        if kind == 'cmd' and op == 0x1E and args and args[0]:
+            for pos2, kind2, op2, args2 in d[k + 1:]:
+                if kind2 == 'text' or (kind2 == 'cmd' and op2 in (0x1E, 0x1A)):
+                    break
+                if kind2 == 'cmd' and op2 == 0x1B and args2:
+                    dbg[pos] = 0xFF if args2[0] == 0xFFF else args2[0] & 0x7FFF
+                    break
     local, last = {}, {}
     for pos, kind, op, args in d:
         if kind == 'cmd' and op == 0x1E and pos in pose_g:

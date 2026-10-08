@@ -125,5 +125,5 @@ sec 123 <- ds 123  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'ds
 sec 124 <- ds 124  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 4, 'ds_fx': 1}
 sec 125 <- ds 125  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 6, 'ds_fx': 1}
 sec 126 <- ds 126  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 8, 'ds_fx': 1}
-sec 127 <- ds 127  {'dropped_ds': 3, 'inserted_gba': 18, 'unmatched_kept': 326, 'ds_fx': 157, 'anim_ds': 68, 'ds_fade_speed': 3, 'look_elsewhere': 2}
+sec 127 <- ds 127  {'dropped_ds': 3, 'inserted_gba': 18, 'unmatched_kept': 326, 'ds_fx': 157, 'anim_ds': 68, 'ds_fade_speed': 3}
 jump records: 18 as the DS, 0 as the GBA

@@ -1,4 +1,4 @@
-sec   0 <- ds   0  {'dropped_ds': 13, 'inserted_gba': 4, 'unmatched_kept': 285, 'anim_ds': 22, 'ds_fx': 105, 'lock_placed': 2, 'ds_bg': 1, 'look_elsewhere': 2, 'fade': 'fade-in moved before lines in the dark'}
+sec   0 <- ds   0  {'dropped_ds': 13, 'inserted_gba': 4, 'unmatched_kept': 285, 'anim_ds': 22, 'ds_fx': 105, 'lock_placed': 2, 'ds_bg': 1, 'fade': 'fade-in moved before lines in the dark'}
 sec   1 <- ds   1  {'dropped_ds': 0, 'inserted_gba': 1, 'unmatched_kept': 127, 'anim_ds': 13, 'lock_placed': 1, 'ds_fx': 32, 'plate_hide': 1}
 sec   2 <- ds   2  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 9, 'ds_fx': 1}
 sec   3 <- ds   3  {'dropped_ds': 0, 'inserted_gba': 0, 'unmatched_kept': 5, 'ds_fx': 1}
