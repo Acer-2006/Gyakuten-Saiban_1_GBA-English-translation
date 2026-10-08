@@ -339,6 +339,11 @@ void SaveGameExitSaveScreen(struct Main *main)
     DecompressBackgroundIntoBuffer(main->currentBG);
     CopyBGDataToVramAndScrollBG(main->currentBG);
     DmaCopy16(3, gSaveDataBuffer.bg2Map, gBG2MapBuffer, sizeof(gBG2MapBuffer));
+    // English patch: the text box too (kept by SaveGameInit1, put back when a
+    // save is loaded): at a choice it is the tall dark box behind the question
+    // and the answers, and "No" brought back the bottom box instead, the
+    // screen undimmed
+    DmaCopy16(3, gSaveDataBuffer.bg1Map, gBG1MapBuffer, sizeof(gBG1MapBuffer));
     DmaCopy16(3, gSaveDataBuffer.textBoxCharacters, gTextBoxCharacters, sizeof(gTextBoxCharacters));
     VwfRestore();
     RedrawTextboxCharacters();

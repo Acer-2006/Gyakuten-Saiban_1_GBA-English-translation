@@ -519,6 +519,14 @@ void RedrawTextboxCharacters()
     for(i = OAM_COUNT_TEXT; i < ARRAY_COUNT(gTextBoxCharacters); i++)
     {
         struct TextBoxCharacter *theCharacter = &gTextBoxCharacters[i];
+        // English patch: only a font character shows the tile copied here
+        // (i * 4). The answer labels of a choice use these entries too, with
+        // their own graphics (VwfReloadChoiceLabels): a font tile copied for
+        // each of them went over the third line of the text box, so after
+        // the save screen or loading a save at a choice, the third line of
+        // the question was garbage
+        if((theCharacter->objAttr2 & 0x3FF) != i * 4)
+            continue;
         if(theCharacter->state & 0x8000)
         {
             u32 temp = theCharacter->state & 0x7FFF;
