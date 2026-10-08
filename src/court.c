@@ -156,6 +156,22 @@ void CourtExit(struct Main * main)
     }
 }
 
+// English patch: the banner's two halves and the whole banner share one OBJ
+// palette (slot 6). Destroying one put back, at once and in the middle of the
+// frame, the palette that was in the slot before the banner, while its sprites
+// were still on screen; the next one only loads its own at the next VBlank. So
+// for a frame the banner showed in that other palette (Cross Examination black,
+// Witness Testimony brown and teal) when the halves met and again when they
+// parted (the Japanese game does the same; the DS doesn't). A part handed over
+// to the next leaves the palette in place: DestroyAnimation leaves slots above 9
+// alone, and the palette from before the banner is put back when the halves
+// that fly off are destroyed.
+static void DestroyBannerPart(struct AnimationListEntry * animation)
+{
+    animation->animationInfo.paletteSlot += 0x10;
+    DestroyAnimation(animation);
+}
+
 void TestimonyAnim(struct Main * main)
 {
     struct AnimationListEntry * animation;
@@ -180,8 +196,8 @@ void TestimonyAnim(struct Main * main)
             if(animation->animationInfo.xOrigin >= 120)
             {
                 StartHardwareBlend(3, 1, 8, 0x1F);
-                DestroyAnimation(animation);
-                DestroyAnimation(animation2);
+                DestroyBannerPart(animation);
+                DestroyBannerPart(animation2);
                 PlayAnimation(ANIM_TESTIMONY_START);
                 main->process[GAME_PROCESS_VAR1]++;
             }
@@ -194,7 +210,7 @@ void TestimonyAnim(struct Main * main)
             animation3 = FindAnimationFromAnimId(ANIM_TESTIMONY_START);
             if(!(animation3->flags & ANIM_PLAYING))
             {
-                DestroyAnimation(animation3);
+                DestroyBannerPart(animation3);
                 PlayAnimationAtCustomOrigin(ANIM_TESTIMONY_START_LEFT, 120, EN_BANNER_Y); // English banner (en_effects.h)
                 PlayAnimationAtCustomOrigin(ANIM_TESTIMONY_START_RIGHT, 120, EN_BANNER_Y);
                 main->process[GAME_PROCESS_VAR1]++;
@@ -310,8 +326,8 @@ void QuestioningAnim(struct Main * main)
             if(animation->animationInfo.xOrigin >= 120)
             {
                 StartHardwareBlend(3, 1, 8, 0x1F);
-                DestroyAnimation(animation);
-                DestroyAnimation(animation2);
+                DestroyBannerPart(animation);
+                DestroyBannerPart(animation2);
                 PlayAnimation(ANIM_CROSS_EXAMINATION_START);
                 main->process[GAME_PROCESS_VAR1]++;
             }
@@ -324,7 +340,7 @@ void QuestioningAnim(struct Main * main)
             animation3 = FindAnimationFromAnimId(ANIM_CROSS_EXAMINATION_START);
             if(!(animation3->flags & ANIM_PLAYING))
             {
-                DestroyAnimation(animation3);
+                DestroyBannerPart(animation3);
                 PlayAnimationAtCustomOrigin(ANIM_CROSS_EXAMINATION_START_LEFT, 120, EN_BANNER_Y); // English banner (en_effects.h)
                 PlayAnimationAtCustomOrigin(ANIM_CROSS_EXAMINATION_START_RIGHT, 120, EN_BANNER_Y);
                 main->process[GAME_PROCESS_VAR1]++;
