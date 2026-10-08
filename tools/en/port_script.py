@@ -938,6 +938,40 @@ def merge_section(gtoks, dtoks, choice_ids=None):
             remap = {i: new.get(op, len(out) - 1) for op, i in old.items()}
             dpos_to_out = {p: remap.get(o, o) if o > i36 + 1 else o for p, o in dpos_to_out.items()}
             stats['jp_return_path'] = stats.get('jp_return_path', 0) + 1
+    # A DS ending in front of a Japanese jump to the shared one. Looking round
+    # Gourd Lake's entrance (Turnabout Goodbyes, section F7), the Japanese
+    # game jumps (36) to the ending it shares with section F6, which fades Maya
+    # out and, by flag 98, puts Gumshoe back or nobody before handing back
+    # the menu. The DS writes that ending into F7 itself, flag tests (35)
+    # included; the tests have no Japanese counterpart there and went, so F7
+    # faded Maya out, showed Gumshoe and then nobody, handed back the menu
+    # and then jumped to the shared ending anyway, whose fade-out of a person
+    # no longer there never ended: the game hung. With a jump of its own to
+    # the shared ending, a section keeps only the DS's text box hide (1C 1)
+    # from such an ending; the shared ending does the rest.
+    if g36 and g36[-1][0] in gpos_to_out:
+        p36 = g36[-1][0]
+        i36 = gpos_to_out[p36]
+        gtext = [x[0] for x in g if x[1] == 'text']
+        dlast = max([x[0] for x in d if x[1] == 'text'] or [-1])
+        if out[i36:i36 + 1] == [0x36] and gtext and p36 > gtext[-1] \
+                and not any(x[1] == 'cmd' and x[2] == 0x36 and x[0] > dlast for x in d):
+            items = parse(out[:i36], GBA_ARGS)[0]
+            k = max([n for n, x in enumerate(items) if x[1] == 'text'] + [-1]) + 1
+            while k < len(items) and items[k][1] == 'cmd' and items[k][2] in (0x01, 0x02, 0x03, 0x0B, 0x2D):
+                k += 1
+            span = items[k:]
+            if span and all(x[1] == 'cmd' for x in span) and \
+                    any(x[2] == 0x15 or (x[2] == 0x1C and x[3][:1] == (3,)) for x in span):
+                s0 = span[0][0]
+                keep = [0x1C, 1] if any(x[2] == 0x1C and x[3][:1] == (1,) for x in span) else []
+                delta = len(keep) - (i36 - s0)
+                out[s0:i36] = keep
+                fix = lambda o: o if o < s0 else (s0 if o < i36 else o + delta)
+                gpos_to_out = {p: fix(o) for p, o in gpos_to_out.items()}
+                dpos_to_out = {p: fix(o) for p, o in dpos_to_out.items()}
+                patches = [(fix(i), t, dt) for i, t, dt in patches]
+                stats['ds_ending_before_jump'] = len(span)
     # every GBA section starts with 00 (reset the text box and script state
     # for the new section); when the DS has a second 00 further on, the GBA's
     # could be paired with that one and the section started without it
