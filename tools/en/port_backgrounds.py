@@ -89,7 +89,7 @@ DOCUMENTS = [
 ]
 # redrawn for the DS English release as a whole: fitted to the GBA screen
 WHOLE = [
-    ('gGfx_BG089_Case4Newspaper', 'newspaper page, English layout', 'centre'),
+    ('gGfx_BG089_Case4Newspaper', 'newspaper page, English layout', 'top'),
     ('gGfx_BG063_Case3SteelSamurai', 'title card -> STEEL SAMURAI (logo at the bottom edge)', 'bottom'),
 ]
 
@@ -209,16 +209,39 @@ def port_signs(label, jp_base, en_base, report):
             e = en[y0:y1, x0:x1]
         else:
             e = cv2.resize(en[y0:y1, x0:x1], (w, h), interpolation=cv2.INTER_AREA if s < 1 else cv2.INTER_LINEAR)
-        # clip to the picture
+        j = jp[y0:y1, x0:x1] if s == 1 else \
+            cv2.resize(jp[y0:y1, x0:x1], (w, h), interpolation=cv2.INTER_AREA if s < 1 else cv2.INTER_LINEAR)
+        # Writing the English picture adds where the Japanese one has none (a
+        # label with its leader line beside a building, not over the Japanese
+        # one) is moved into the picture when the GBA frame cuts it: the GBA
+        # pictures show less above and below than the DS ones, and the map of
+        # Global Studios cut the top off "Main Gate". Writing that replaces
+        # Japanese writing stays where it is (it has to cover it).
         H, W = out.shape
-        yy0, xx0 = max(0, gy), max(0, gx)
-        yy1, xx1 = min(H, gy + h), min(W, gx + w)
-        m = m[yy0 - gy:yy1 - gy, xx0 - gx:xx1 - gx]
-        e = e[yy0 - gy:yy1 - gy, xx0 - gx:xx1 - gx]
-        region = out[yy0:yy1, xx0:xx1]
-        region[m] = nearest(e[m], pal, usable)
-        report.append('  patch DS (%d,%d)-(%d,%d) -> GBA (%d,%d) scale %.3f match %.0f, %d px'
-                      % (x0, y0, x1, y1, gx, gy, s, score, m.sum()))
+        lab, n = ndimage.label(m, structure=np.ones((3, 3)))
+        painted, moved = 0, []
+        for k in range(1, n + 1):
+            c = lab == k
+            ys, xs = np.nonzero(c)
+            dy = max(0, -(gy + ys.min())) - max(0, gy + ys.max() + 1 - H)
+            dx = max(0, -(gx + xs.min())) - max(0, gx + xs.max() + 1 - W)
+            if dy or dx:
+                jc = j[c].reshape(-1, 3).astype(int)
+                vals, counts = np.unique(jc, axis=0, return_counts=True)
+                plain = (np.abs(jc - vals[np.argmax(counts)]).sum(1) > DIFF).mean() < 0.02
+                if plain:
+                    dy += 1 if dy > 0 else -1 if dy < 0 else 0      # a pixel clear of the edge
+                    dx += 1 if dx > 0 else -1 if dx < 0 else 0
+                    moved.append('%+d,%+d' % (dx, dy))
+                else:
+                    dy = dx = 0
+            Y, X = gy + ys + dy, gx + xs + dx
+            ok = (Y >= 0) & (Y < H) & (X >= 0) & (X < W)
+            out[Y[ok], X[ok]] = nearest(e[ys[ok], xs[ok]], pal, usable)
+            painted += int(ok.sum())
+        report.append('  patch DS (%d,%d)-(%d,%d) -> GBA (%d,%d) scale %.3f match %.0f, %d px%s'
+                      % (x0, y0, x1, y1, gx, gy, s, score, painted,
+                         (', moved into the picture ' + ' '.join(moved)) if moved else ''))
     save_gba(path, out, rawpal)
 
 # ------------------------------------------------------------------ documents
@@ -334,7 +357,11 @@ def locate_arrow(idx, pal, black):
 # ------------------------------------------------------------------ newspaper
 def port_whole(label, en_base, report, anchor='centre'):
     """the DS English picture fitted to the GBA screen (uniform scale; the
-    overhang is cut evenly, or from the top for anchor='bottom')"""
+    overhang is cut evenly, from the top for anchor='bottom', or from the
+    bottom for anchor='top'). The newspaper is cut from the bottom: cut evenly,
+    the top of "HOT NEWS!" and of the headline bar went (the bottom has the
+    photo caption and the ends of the columns, in type too small to read on
+    the GBA screen either way)"""
     path, idx, pal, rawpal = load_gba(label)
     en = ds_rgb(en_base)
     H, W = idx.shape
@@ -344,6 +371,8 @@ def port_whole(label, en_base, report, anchor='centre'):
     x0, y0 = (w - W) // 2, (h - H) // 2
     if anchor == 'bottom':
         y0 = h - H
+    elif anchor == 'top':
+        y0 = 0
     r = r[y0:y0 + H, x0:x0 + W]
     usable = sorted(set(np.unique(idx)))
     out = nearest(r.reshape(-1, 3), pal, usable).reshape(H, W)
