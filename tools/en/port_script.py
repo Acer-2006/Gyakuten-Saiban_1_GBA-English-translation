@@ -1443,11 +1443,24 @@ def fix_scene_poses(out, seen, front=(), gt=None, gmap=None):
                 return votes.most_common(1)[0][0]
         return None
 
+    def desk_version(k, g):
+        """the same expression drawn for this desk: a version of g's look
+        that ends at the top of the desk, even one the Japanese game never
+        uses (Lotta Hart's bowed head at the witness stand)"""
+        d = desk(k)
+        c = LOOK_CLS.get((k[1], g))
+        if d is None or c is None:
+            return None
+        fit = [(abs(BOTTOMS[(k[1], m)] - d), m) for m in LOOK_MEMBERS.get((k[1], c), ())
+               if m != g and BOTTOMS.get((k[1], m)) is not None and BOTTOMS[(k[1], m)] <= d + FRONT_SLACK]
+        return min(fit)[1] if fit else None
+
     def desk_pose(k, t, i, pos):
-        """(t, i) with each part drawn over the desk replaced (see above); a
-        silent pose (t == i) stays silent"""
-        nt = place_version(k, t, t == i) if over_desk(k, t) else t
-        ni = place_version(k, i, True) if over_desk(k, i) else i
+        """(t, i) with each part drawn over the desk replaced (see above): by
+        the same expression drawn for the desk, else by the Japanese game's
+        pairing; a silent pose (t == i) stays silent"""
+        nt = (desk_version(k, t) or place_version(k, t, t == i)) if over_desk(k, t) else t
+        ni = (desk_version(k, i) or place_version(k, i, True)) if over_desk(k, i) else i
         if t == i and ni is not None:
             nt = ni
         if nt is None or ni is None:
