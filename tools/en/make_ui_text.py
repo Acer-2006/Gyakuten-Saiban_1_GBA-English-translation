@@ -9,7 +9,7 @@ DS English data where the DS has the very same graphic.
   Cross-exam buttons       Press / Present
   Save prompt              Yes / No                      DS English answer buttons
   Continue options         Resume from save / Restart chapter
-  Episode select           the four DS English episode titles
+  Episode select           the four DS English episode titles (DS plates, scaled down)
   Testimony label          DS English graphic (same GBA format in data.bin)
   Move / Talk menu plates  location and topic labels (tools/en/topics.py)
 
@@ -144,39 +144,60 @@ EN_LOC_PLATES, EN_TALK_PLATES, DS_PLATE_STRIDE = 0x26b1778, 0x2726f58, 0x8b4
 PLATE_INSIDE = (2, 125)          # columns inside the GBA plate's border
 PLATE_ROWS = (6, 25)             # rows inside it
 
-def ds_plate_label(off):
-    """the lettering of the DS plate at off -> (palette indices, -1 transparent; top row)"""
+def ds_lettering(off, inside):
+    """the lettering of the uncompressed DS plate image at off, as darkness
+    0 (white) .. 1 (darkest), cropped to its ink; inside = (top, bottom,
+    left, right) of the DS plate's inner area -> (array, its top row)"""
     d = data()
     h = d[off:off + 0x14]
-    assert h[:8] == bytes.fromhex('0304020014000000'), hex(off)
+    assert h[0] == 3 and h[3] == 0 and h[4:8] == bytes.fromhex('14000000'), hex(off)
+    w, ht = 8 << h[1], 8 << h[2]
     size, poff, psize = struct.unpack_from('<III', h, 8)
     body = np.frombuffer(d[off + 0x14:off + 0x14 + size], np.uint8)
-    b = np.stack([body & 15, body >> 4], 1).reshape(32, 128).astype(int)
+    b = np.stack([body & 15, body >> 4], 1).reshape(ht, w).astype(int)
     pal = struct.unpack_from('<16H', d, off + poff)
     lum = lambda c: ((c & 31) * 3 + ((c >> 5) & 31) * 6 + ((c >> 10) & 31)) / 10
     white, dark = lum(pal[2]), lum(pal[15])
     t = np.zeros(b.shape)
     for v in range(4, 16):
         t[b == v] = max(0.0, (white - lum(pal[v])) / (white - dark))   # 0 white .. 1 darkest
-    t[:PLATE_ROWS[0]] = 0; t[PLATE_ROWS[1] + 1:] = 0                   # the DS plate's own edges
+    top, bottom, left, right = inside                                  # the DS plate's own edges
+    m = np.zeros(t.shape, bool); m[top:bottom + 1, left:right + 1] = True
+    t[~m] = 0
     rows = np.where((t > 0).any(1))[0]; cols = np.where((t > 0).any(0))[0]
-    t = t[rows[0]:rows[-1] + 1, cols[0]:cols[-1] + 1]
-    room = PLATE_INSIDE[1] - PLATE_INSIDE[0] + 1 - 2
-    if t.shape[1] > room:                                               # narrowed to fit, by area
-        src = t.shape[1]
-        edges = np.linspace(0, src, room + 1)
-        out = np.zeros((t.shape[0], room))
-        for k in range(room):
-            a0, a1 = edges[k], edges[k + 1]
-            for x in range(int(a0), int(np.ceil(a1))):
-                w = min(a1, x + 1) - max(a0, x)
-                if w > 0:
-                    out[:, k] += t[:, x] * w
-            out[:, k] /= (a1 - a0)
-        t = out
+    return t[rows[0]:rows[-1] + 1, cols[0]:cols[-1] + 1], rows[0]
+
+def area_resample(t, n, axis=1):
+    """t resized to n along axis, each new pixel the average of what it covers"""
+    if axis == 0:
+        return area_resample(t.T, n).T
+    src = t.shape[1]
+    if src == n:
+        return t
+    edges = np.linspace(0, src, n + 1)
+    out = np.zeros((t.shape[0], n))
+    for k in range(n):
+        a0, a1 = edges[k], edges[k + 1]
+        for x in range(int(a0), int(np.ceil(a1))):
+            w = min(a1, x + 1) - max(a0, x)
+            if w > 0:
+                out[:, k] += t[:, x] * w
+        out[:, k] /= (a1 - a0)
+    return out
+
+def plate_ink(t):
+    """darkness -> plate palette indices, -1 where the plate stays white"""
     lab = np.array(PLATE_RAMP)[np.clip(np.round(t * (len(PLATE_RAMP) - 1)).astype(int), 0, len(PLATE_RAMP) - 1)]
     lab[lab == 12] = -1
-    return lab, rows[0]
+    return lab
+
+def ds_plate_label(off):
+    """the lettering of the 128x32 DS plate at off -> (palette indices, -1 transparent; top row)"""
+    t, top = ds_lettering(off, (PLATE_ROWS[0], PLATE_ROWS[1], 0, 127))
+    room = PLATE_INSIDE[1] - PLATE_INSIDE[0] + 1 - 2
+    if t.shape[1] > room:                                               # narrowed to fit, by area
+        t = area_resample(t, room)
+    return plate_ink(t), top
 
 def menu_plates():
     import glob
@@ -192,6 +213,35 @@ def menu_plates():
             region = a[top:top + h, x0:x0 + w]
             region[lab >= 0] = lab[lab >= 0]
             save(path, a, pal)
+
+# The DS English episode select plates (data.bin: 256x64 images, plate
+# 176x58 at (8, 3)): their titles on the GBA episode plates (128x32, the
+# first one is the locked "? ? ?"), in the plate palette as above. The DS
+# titles are up to 166 px wide and the GBA plate's inside is 124, so all
+# four are scaled down evenly by the same factor (the widest just fits, one
+# free column each side), averaging what each new pixel covers; the capital
+# letters sit centred on the plate, as on the DS.
+DS_EPISODE_PLATES = (0x2534d90, 0x2538eb8, 0x253cfe0, 0x2541108)
+DS_EPISODE_INSIDE = (6, 57, 11, 181)   # inside the DS plate's border
+DS_EPISODE_CAP = 14                    # rows of a capital letter on the DS
+
+def episode_titles():
+    path, a, pal = load('graphics/episode_select_options.png')
+    titles = [ds_lettering(off, DS_EPISODE_INSIDE)[0] for off in DS_EPISODE_PLATES]
+    room = PLATE_INSIDE[1] - PLATE_INSIDE[0] + 1 - 2
+    f = room / max(t.shape[1] for t in titles)
+    cap = int(round(DS_EPISODE_CAP * f))
+    for k, t in enumerate(titles):
+        y = 32 * (k + 1)
+        a[y + PLATE_ROWS[0]:y + PLATE_ROWS[1] + 1, PLATE_INSIDE[0]:PLATE_INSIDE[1] + 1] = 12
+        t = area_resample(area_resample(t, int(round(t.shape[1] * f))), int(round(t.shape[0] * f)), axis=0)
+        lab = plate_ink(t)
+        h, w = lab.shape
+        top = y + PLATE_ROWS[0] + (PLATE_ROWS[1] - PLATE_ROWS[0] + 1 - cap) // 2
+        x0 = PLATE_INSIDE[0] + (PLATE_INSIDE[1] - PLATE_INSIDE[0] + 1 - w) // 2
+        region = a[top:top + h, x0:x0 + w]
+        region[lab >= 0] = lab[lab >= 0]
+    save(path, a, pal)
 
 # ---------------------------------------------------------------- save header
 def save_header():
@@ -306,8 +356,7 @@ if __name__ == '__main__':
     save_yes_no()
     # the DS English wording of these two options (DS images too wide for the GBA plates)
     plate_texts('graphics/from_save_or_beginning_options.png', ('From save point.', 'From chapter start.'))
-    plate_texts('graphics/episode_select_options.png',
-                ('The First Turnabout', 'Turnabout Sisters', 'Turnabout Samurai', 'Turnabout Goodbyes'), first=1)
+    episode_titles()
     testimony()
     save_header()
     menu_plates()
