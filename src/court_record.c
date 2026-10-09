@@ -1222,6 +1222,19 @@ void CourtRecordLoadGfxChangeState(struct Main * main, struct CourtRecord * cour
 }
 
 #define EN_TAKE_THAT_TILE 0x100
+// In an investigation that slot holds the Examine and Move buttons, and a
+// talk can ask for evidence the same way (Penny Nichols and Wendy Oldbag,
+// Turnabout Samurai day 3): the evidence thrown went over the buttons and
+// stayed there. There the Japanese game's own slot is used, the third text
+// line's: the text box is off while the evidence flies, the next section
+// hides its characters, and a line is redrawn whole before it is shown
+// again (VwfClearLine). (Not the Court Record's picture slot: the Take that!
+// bubble's own graphics go there.)
+#define EN_TAKE_THAT_TILE_INVESTIGATION 0x80
+static u32 TakeThatTile(struct Main * main)
+{
+    return main->processCopy[GAME_PROCESS] == INVESTIGATION_PROCESS ? EN_TAKE_THAT_TILE_INVESTIGATION : EN_TAKE_THAT_TILE;
+}
 
 void CourtRecordTakeThatSpecial(struct Main * main, struct CourtRecord * courtRecord) // status_effect ?
 {
@@ -1247,10 +1260,10 @@ void CourtRecordTakeThatSpecial(struct Main * main, struct CourtRecord * courtRe
                 temp = (uintptr_t)gGfxEvidenceProfilePictures + offset + 0x20;
                 // English patch: tiles 0x80-0xBF hold the third text line; in
                 // court the answer-choice slot is free while evidence is presented
-                DmaCopy16(3, temp, OBJ_VRAM0 + EN_TAKE_THAT_TILE * TILE_SIZE_4BPP, TILE_SIZE_4BPP * 64);
+                DmaCopy16(3, temp, OBJ_VRAM0 + TakeThatTile(main) * TILE_SIZE_4BPP, TILE_SIZE_4BPP * 64);
                 oam->attr0 = SPRITE_ATTR0(16, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
                 oam->attr1 = SPRITE_ATTR1_NONAFFINE(88, FALSE, FALSE, 3);
-                oam->attr2 = SPRITE_ATTR2(EN_TAKE_THAT_TILE, 0, 1);
+                oam->attr2 = SPRITE_ATTR2(TakeThatTile(main), 0, 1);
                 main->itemPlateRotation = 0;
                 main->affineScale = 0x100;
                 gIORegisters.lcd_dispcnt &= ~DISPCNT_BG1_ON;
@@ -1339,7 +1352,7 @@ void CourtRecordTakeThatSpecial(struct Main * main, struct CourtRecord * courtRe
         gOamObjects[3].attr3 = fix_mul(_Cos(main->itemPlateRotation), scale);
         oam->attr0 = SPRITE_ATTR0(16, ST_OAM_AFFINE_NORMAL, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
         oam->attr1 = SPRITE_ATTR1_AFFINE(88, 0, 3);
-        oam->attr2 = SPRITE_ATTR2(EN_TAKE_THAT_TILE, 0, 1);
+        oam->attr2 = SPRITE_ATTR2(TakeThatTile(main), 0, 1);
     }
     UpdateBG2Window(&gCourtRecord);
     UpdateRecordSprites(&gCourtRecord);
