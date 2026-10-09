@@ -358,7 +358,6 @@ void SaveGameExitSaveScreen(struct Main *main)
     main->tilemapUpdateBits = gSaveDataBuffer.main.tilemapUpdateBits;
     RestoreAnimationsFromBuffer(gSaveDataBuffer.backupAnimations);
     gMain.animationFlags |= 3;
-    DmaCopy16(3, gSaveDataBuffer.oam, gOamObjects, sizeof(gOamObjects));
     DmaCopy16(3, &gPalInvestigationExamineCursors[0], OBJ_PLTT+0x100, 0x20);
     RESTORE_PROCESS_PTR(main);
     if(main->process[GAME_PROCESS] == INVESTIGATION_PROCESS && main->process[GAME_PROCESS_VAR1] == 3)
@@ -370,6 +369,10 @@ void SaveGameExitSaveScreen(struct Main *main)
     }
     VwfReloadChoiceLabels(); // English patch
     EnMenuEnd(TRUE); // English patch: the game's palettes and BG0 map back
+    // the game's sprites back after the menu has put its own away: the menu's
+    // buttons and corners use entries 36-48, the same as the Talk and Move
+    // lists (38-45), which came back hidden after "No"
+    DmaCopy16(3, gSaveDataBuffer.oam, gOamObjects, sizeof(gOamObjects));
     FadeInBGM(0x1E, 0xFF); // unpause BGM
     StartHardwareBlend(1, 0, 1, 0x1F);
 }
