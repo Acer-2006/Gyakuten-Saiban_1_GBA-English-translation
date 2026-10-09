@@ -132,14 +132,66 @@ def plate_texts(rel, texts, first=0):
         plain(a, s, y + 9, 13, (2, 125))
     save(path, a, pal)
 
+# The DS English Move / Talk plates (data.bin: 128x32 images, the same size as
+# the GBA plates and in the same order as the GBA's: 21 locations, then the
+# 125 talk topics of the first four episodes). Their lettering is moved onto
+# the Japanese GBA plate in the plate palette (12 white ... 13 darkest), so
+# the selected / greyed-out palettes the game swaps in still apply; the
+# letters keep the DS's rows (the DS plate is centred on the same row as the
+# GBA one) and are centred across. A word wider than the plate's inside
+# (124 px, one free column each side) is narrowed to fit.
+EN_LOC_PLATES, EN_TALK_PLATES, DS_PLATE_STRIDE = 0x26b1778, 0x2726f58, 0x8b4
+PLATE_INSIDE = (2, 125)          # columns inside the GBA plate's border
+PLATE_ROWS = (6, 25)             # rows inside it
+
+def ds_plate_label(off):
+    """the lettering of the DS plate at off -> (palette indices, -1 transparent; top row)"""
+    d = data()
+    h = d[off:off + 0x14]
+    assert h[:8] == bytes.fromhex('0304020014000000'), hex(off)
+    size, poff, psize = struct.unpack_from('<III', h, 8)
+    body = np.frombuffer(d[off + 0x14:off + 0x14 + size], np.uint8)
+    b = np.stack([body & 15, body >> 4], 1).reshape(32, 128).astype(int)
+    pal = struct.unpack_from('<16H', d, off + poff)
+    lum = lambda c: ((c & 31) * 3 + ((c >> 5) & 31) * 6 + ((c >> 10) & 31)) / 10
+    white, dark = lum(pal[2]), lum(pal[15])
+    t = np.zeros(b.shape)
+    for v in range(4, 16):
+        t[b == v] = max(0.0, (white - lum(pal[v])) / (white - dark))   # 0 white .. 1 darkest
+    t[:PLATE_ROWS[0]] = 0; t[PLATE_ROWS[1] + 1:] = 0                   # the DS plate's own edges
+    rows = np.where((t > 0).any(1))[0]; cols = np.where((t > 0).any(0))[0]
+    t = t[rows[0]:rows[-1] + 1, cols[0]:cols[-1] + 1]
+    room = PLATE_INSIDE[1] - PLATE_INSIDE[0] + 1 - 2
+    if t.shape[1] > room:                                               # narrowed to fit, by area
+        src = t.shape[1]
+        edges = np.linspace(0, src, room + 1)
+        out = np.zeros((t.shape[0], room))
+        for k in range(room):
+            a0, a1 = edges[k], edges[k + 1]
+            for x in range(int(a0), int(np.ceil(a1))):
+                w = min(a1, x + 1) - max(a0, x)
+                if w > 0:
+                    out[:, k] += t[:, x] * w
+            out[:, k] /= (a1 - a0)
+        t = out
+    lab = np.array(PLATE_RAMP)[np.clip(np.round(t * (len(PLATE_RAMP) - 1)).astype(int), 0, len(PLATE_RAMP) - 1)]
+    lab[lab == 12] = -1
+    return lab, rows[0]
+
 def menu_plates():
     import glob
-    from topics import LOCATIONS, TALK
-    for d, labels in (('location_choices', LOCATIONS), ('talk_choices', TALK)):
+    for d, first, n in (('location_choices', EN_LOC_PLATES, 21), ('talk_choices', EN_TALK_PLATES, 125)):
         files = sorted(glob.glob(os.path.join(ROOT, 'graphics', d, '*.png')))
-        assert len(files) == len(labels), d
-        for f, label in zip(files, labels):
-            plate_texts(os.path.relpath(f, ROOT), (label,))
+        assert len(files) == n, d
+        for k, f in enumerate(files):
+            path, a, pal = load(os.path.relpath(f, ROOT))
+            a[PLATE_ROWS[0]:PLATE_ROWS[1] + 1, PLATE_INSIDE[0]:PLATE_INSIDE[1] + 1] = 12
+            lab, top = ds_plate_label(first + k * DS_PLATE_STRIDE)
+            h, w = lab.shape
+            x0 = PLATE_INSIDE[0] + (PLATE_INSIDE[1] - PLATE_INSIDE[0] + 1 - w) // 2
+            region = a[top:top + h, x0:x0 + w]
+            region[lab >= 0] = lab[lab >= 0]
+            save(path, a, pal)
 
 # ---------------------------------------------------------------- save header
 def save_header():
