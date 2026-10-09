@@ -202,6 +202,14 @@ BUBBLES = [('objection', 316), ('holdit', 322), ('takethat', 328)]
 BUBBLE_SCALE = 0.6
 BUBBLE_TILES = 256                 # OBJ_VRAM0+0x3800 .. +0x57FF
 BUBBLE_MAX_SPRITES = 28
+# The bubble's 60 frames start on the frame its 60-frame wait starts (the
+# English script holds on the white flash before it, as the DS does), and an
+# animation steps on the frame it is started: it was gone one frame before
+# the wait ended, and the background change that follows froze the picture
+# without it (the judge alone for 7 frames before the cut to Edgeworth). In
+# the Japanese game the bubble is still up when the picture freezes. One frame
+# more keeps it there; the next background change puts it away.
+BUBBLE_EXTRA_FRAMES = 1
 
 def bubble(name, entry, report):
     g, q = ds_entry(entry), ds_entry(entry + 1)
@@ -250,6 +258,8 @@ def bubble(name, entry, report):
     seq = bytearray(q[:8])                                  # header: frame count, graphics offset 0
     assert struct.unpack_from('<I', q, 4)[0] == 0
     for sd, dur, fl, song, act in fr:
+        if dur < 0xFD:
+            dur += BUBBLE_EXTRA_FRAMES
         seq += struct.pack('<HBBBBH', 8 + 8 * len(fr), dur, 0, song, act, 0)
     seq += tmpl
     write('bubble_%s.gfx' % name, bytes(gfx))

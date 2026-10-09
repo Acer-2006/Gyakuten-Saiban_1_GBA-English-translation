@@ -116,6 +116,19 @@ void AgbMain()
             CopyBGDataToVram(gMain.currentBG);
         }
 
+        // English patch: the last frame of a hold runs the frame's work as the
+        // last frame of a background change does (its picture still held), so
+        // what the script does right after the background command is in
+        // place when the picture comes back. A section starting on the same
+        // background (1B, then the name tag) showed its text box for one
+        // frame with the name tag cleared by the section start (00): the name
+        // tag blinked off at lines like Phoenix's "I think I know how!"
+        if (held && gMain.currentBgStripe == 0 && gMain.enBgHold == 1)
+        {
+            gMain.enBgHold = 0;
+            held = FALSE;
+            gJoypad.pressedKeys = 0; // the keys aren't read while held
+        }
         if (gMain.currentBgStripe == 0 && !held)
             RunScriptContext();
 

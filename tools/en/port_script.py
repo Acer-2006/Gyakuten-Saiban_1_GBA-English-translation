@@ -72,6 +72,8 @@ def evidence_id(v):
 SE_MAP = {121: 111, 122: 112}
 CENTRE = 0x5D      # DS: centre the following lines (1) / stop (0); en_text in vwf.c
 DS_WAIT = 0x4E     # DS: hold for n frames -> GBA wait (0C)
+# Hold it! (1), Objection! (2 left, 3 right, 11 centre), Take that! (4), Hold it! centre (10)
+SPEECH_BUBBLES = {1, 2, 3, 4, 10, 11}
 def ds_text_speed(v):
     """0B: at DS text speed n a letter comes every ceil(n/2) frames (default and
     0xFF: every 2), at GBA speed n every n frames (measured in both games)"""
@@ -866,6 +868,15 @@ def merge_section(gtoks, dtoks, choice_ids=None):
         elif op == 0x0B and args:
             out.extend([0x0B, ds_text_speed(args[0])])
             stats['unmatched_kept'] += 1
+        elif op == 0x2F and len(args) >= 2 and args[0] in SPEECH_BUBBLES and args[1] == 1:
+            # a speech bubble only the DS has: Edgeworth objects twice when
+            # Dee Vasquez's first cross-examination runs dry (after the
+            # judge's "I see... Very well."), the Japanese game once. The
+            # DS's voice and flash were kept and its bubble dropped, so the
+            # voice came over the judge still moving his mouth. The two
+            # games number the bubbles alike (all 148 bubbles they share)
+            out.extend([0x2F, args[0], 1])
+            stats['ds_bubble'] = stats.get('ds_bubble', 0) + 1
         elif op == 0x12 and pos in ds_fade_pairs:
             # a fade to black and back that the Japanese script doesn't have
             # (the DS fades where the GBA cut, e.g. before Mia's "Not so fast,
@@ -1762,6 +1773,38 @@ def fix_start_holds(out):
     return out, n
 
 
+BOX_HOLDS = {0x02, 0x07, 0x08, 0x09, 0x0A, 0x0C, 0x0D, 0x15, 0x2D, 0x2E, 0x35, 0x36}
+
+
+def fix_box_flash(out):
+    """A text box shown (1C 0) and hidden again (1C 1) before any line, with
+    a background change between them: the box came up for the one frame the
+    new background is first shown with (the frame that ends a background
+    change shows the registers as they were before its commands run).
+    After Edgeworth's second Objection! when Dee Vasquez's first
+    cross-examination runs dry the DS shows the box before cutting to
+    Edgeworth; it stays hidden here, as in the Japanese game. Kept the same
+    length: the 1C 0 becomes 1C 1."""
+    out = list(out)
+    items = parse(out, GBA_ARGS)[0]
+    n = 0
+    for k, (pos, kind, op, a) in enumerate(items):
+        if not (kind == 'cmd' and op == 0x1C and a and a[0] == 0):
+            continue
+        bg = False
+        for p2, k2, op2, a2 in items[k + 1:]:
+            if k2 != 'cmd' or op2 in BOX_HOLDS:
+                break
+            if op2 == 0x1B:
+                bg = True
+            if op2 == 0x1C:
+                if a2 and a2[0] == 1 and bg:
+                    out[pos + 1] = 1
+                    n += 1
+                break
+    return out, n
+
+
 def map_pos(gpos_to_out, target):
     keys = sorted(gpos_to_out)
     for k in keys:
@@ -1926,6 +1969,9 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             out, n = fix_start_holds(out)
             if n:
                 st = dict(st, start_holds=n)
+            out, n = fix_box_flash(out)
+            if n:
+                st = dict(st, box_flash=n)
             nj = [0, 0]
             for idx, tgt, dtg in patches:
                 if dtg is not None and dtg in dm:
