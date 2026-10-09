@@ -42,6 +42,11 @@ void EpisodeLoadGfx(struct Main * main)
     DecompressBackgroundIntoBuffer(0x43);
     CopyBGDataToVram(0x43);
     DmaCopy16(3, sEpisodeSelectTextboxPal, PLTT, sizeof(sEpisodeSelectTextboxPal));
+    // English patch: and the text's palette. The English save screen fades out
+    // by darkening the palettes themselves (the Japanese one used the hardware
+    // fade), so after saving at the end of an episode "Select an episode." was
+    // drawn with all-black colours
+    DmaCopy16(3, gTextPal, OBJ_PLTT, 0x20);
     gMain.animationFlags &= ~3;
     oam = gOamObjects;
     for(i = 0; i < MAX_OAM_OBJ_COUNT; i++)

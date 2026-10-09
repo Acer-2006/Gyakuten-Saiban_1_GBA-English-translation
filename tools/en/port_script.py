@@ -352,6 +352,13 @@ POSES_BG = {}     # (background, person) -> poses the Japanese game shows there
 # learnt from the DS's own "in front of the glass" marks (learn_glass.py)
 VISITORS_ROOM = 0x1E
 GLASS = {}
+# How far down the screen each GBA animation is drawn (pose_bottoms.json,
+# learn_pose_bottoms.py): (person, animation) -> bottom row. The Japanese game
+# draws people at the witness stand, the benches and the judge's desk with
+# animations that end at the top of the desk; the same expression drawn for
+# another place goes down to the bottom of the screen and covers the desk.
+BOTTOMS = {}
+FRONT_SLACK = 4         # rows an animation may end lower than the place's own
 
 
 def glass_front(gtoks, dtoks):
@@ -1366,13 +1373,23 @@ def seen_poses(gdir):
     return SEEN_POSES
 
 
-def fix_scene_poses(out, seen, front=()):
+def fix_scene_poses(out, seen, front=(), gt=None, gmap=None):
     """A pose the Japanese game never shows on this background goes to its
     version for this background (the same expression drawn at the witness
     stand, behind the glass...). For someone in front of the visitor's room
-    glass (glass_front) the versions drawn behind it don't count."""
+    glass (glass_front) the versions drawn behind it don't count.
+
+    A pose drawn further down the screen than any the Japanese game shows for
+    this person here, where all of those end above the bottom (a desk in
+    front: the witness stand, the benches), never stays: the person would be
+    drawn over the desk (Lotta Hart's crossed arms at the witness stand were
+    her Gourd Lake ones, in front of the stand). It goes to the version of
+    that expression the Japanese game pairs with the same talking or idle
+    animation here; with none, to the pose the Japanese game shows at this
+    point of the section (gt: its tokens, gmap: their places in out)."""
     out = list(out)
     vals = {k: set(v for pr in c for v in pr) for k, c in seen.items()}
+    allseen = seen
     for person in front:
         k = (VISITORS_ROOM, person)
         if k in vals:
@@ -1382,37 +1399,130 @@ def fix_scene_poses(out, seen, front=()):
                                            if not set(pr) & GLASS.get(person, set())})
             if not seen[k]:
                 del seen[k], vals[k]
+
+    def desk(k):
+        """the lowest row the Japanese game's poses of this person reach here,
+        if they all end above the bottom of the screen"""
+        own = [BOTTOMS.get((k[1], v)) for v in vals[k] if v]
+        own = [b for b in own if b is not None]
+        return max(own) if own and max(own) < 150 else None
+
+    jp_same = set()
+    if gt is not None:
+        for p, kind, op, a in parse(gt, GBA_ARGS)[0]:
+            if kind == 'cmd' and op == 0x1E and a and a[0] & 0xFF:
+                jp_same.add((a[0] & 0xFF, a[1]))
+                jp_same.add((a[0] & 0xFF, a[2]))
+
+    def over_desk(k, g):
+        if (k[1], g) in jp_same:
+            return False        # the Japanese game shows it here itself (Yanni Yogi asleep)
+        d = desk(k)
+        b = BOTTOMS.get((k[1], g))
+        return d is not None and b is not None and g not in vals[k] and b > d + FRONT_SLACK
+
+    def place_version(k, g, idle):
+        """g's version here: the Japanese game shows g as the idle (talking)
+        animation with talking (idle) animation x elsewhere and pairs x's
+        look with y here -> y (the other role if that finds nothing)"""
+        person = k[1]
+        for role in ((True, False) if idle else (False, True)):
+            votes = collections.Counter()
+            for (bg2, p2), c in allseen.items():
+                if p2 != person or (bg2, p2) == k:
+                    continue
+                for (t1, i1), n in c.items():
+                    if t1 == i1:
+                        continue
+                    for (t2, i2), n2 in seen[k].items():
+                        if role and i1 == g and same_look(person, t1, t2):
+                            votes[i2] += n * n2
+                        if not role and t1 == g and same_look(person, i1, i2):
+                            votes[t2] += n * n2
+            if votes:
+                return votes.most_common(1)[0][0]
+        return None
+
+    def desk_pose(k, t, i, pos):
+        """(t, i) with each part drawn over the desk replaced (see above); a
+        silent pose (t == i) stays silent"""
+        nt = place_version(k, t, t == i) if over_desk(k, t) else t
+        ni = place_version(k, i, True) if over_desk(k, i) else i
+        if t == i and ni is not None:
+            nt = ni
+        if nt is None or ni is None:
+            jp = jp_pose_at(pos, k[1])
+            if jp and jp[1] in vals[k] and jp[2] in vals[k]:
+                return jp[1], jp[2]
+            return good.get(k) or seen[k].most_common(1)[0][0]
+        return nt, ni
+
+    jp_poses = []
+    if gt is not None and gmap:
+        for p, kind, op, a in parse(gt, GBA_ARGS)[0]:
+            if kind == 'cmd' and op == 0x1E and a and a[0] & 0xFF and p in gmap:
+                jp_poses.append((gmap[p], (a[0] & 0xFF, a[1], a[2])))
+        jp_poses.sort()
+
+    def jp_pose_at(pos, person):
+        mine = [pr for o, pr in jp_poses if pr[0] == person]
+        before = [pr for o, pr in jp_poses if pr[0] == person and o <= pos]
+        return before[-1] if before else (mine[0] if mine else None)
+
     bg = cur = None
     good = {}
     fixed = 0
     intext = False
+    fresh = False
     for pos, kind, op, a in parse(out, GBA_ARGS)[0]:
         if kind == 'text':
-            if not intext and bg is not None and cur and cur[0]:
-                k = (bg, cur[0])
-                if k in vals and (cur[1] not in vals[k] or cur[2] not in vals[k]):
-                    if all((cur[0], g) in LOOK_CLS for g in cur[1:3]):
-                        # a known expression (the DS's): only its own version
-                        # for this place, if the Japanese game has one here;
-                        # else it stays (drawn in the same place: offplace check)
-                        t, i = [g if g in vals[k] else next((m for m in sorted(vals[k]) if same_look(cur[0], g, m)), g)
-                                for g in cur[1:3]]
-                    else:
-                        t, i = good.get(k) or seen[k].most_common(1)[0][0]
-                if k in vals and (cur[1] not in vals[k] or cur[2] not in vals[k]) and (t, i) != (cur[1], cur[2]):
-                    out[cur[3] + 2], out[cur[3] + 3] = t, i
-                    cur = (cur[0], t, i, cur[3])
-                    fixed += 1
-                if k in vals:
-                    good[k] = (cur[1], cur[2])
+            fresh = False
+        shown = (kind == 'text' and not intext) or (kind == 'cmd' and op in (0x02, 0x2D, 0x2E, 0x15))
+        if shown and bg is not None and cur and cur[0]:
+            k = (bg, cur[0])
+            t, i = cur[1], cur[2]
+            # at a wait with no line, only a pose drawn over the desk
+            # (otherwise as before: checked where its line starts)
+            check = kind == 'text' or (k in vals and (over_desk(k, t) or over_desk(k, i)))
+            if check and k in vals and (cur[1] not in vals[k] or cur[2] not in vals[k]):
+                if all((cur[0], g) in LOOK_CLS for g in cur[1:3]):
+                    # a known expression (the DS's): only its own version
+                    # for this place, if the Japanese game has one here;
+                    # else it stays (drawn in the same place: offplace check)
+                    t, i = [g if g in vals[k] else next((m for m in sorted(vals[k]) if same_look(cur[0], g, m)), g)
+                            for g in cur[1:3]]
+                else:
+                    t, i = good.get(k) or seen[k].most_common(1)[0][0]
+                if over_desk(k, t) or over_desk(k, i):
+                    t, i = desk_pose(k, t, i, cur[3])
+            if k in vals and (t, i) != (cur[1], cur[2]):
+                out[cur[3] + 2], out[cur[3] + 3] = t, i
+                cur = (cur[0], t, i, cur[3])
+                fixed += 1
+            if k in vals and kind == 'text':
+                good[k] = (cur[1], cur[2])
+        if kind == 'text':
             intext = True
             continue
         if op not in (0x01, 0x03, 0x0B, 0x0C):
             intext = False
         if op == 0x1B and a:
             bg = a[0] & 0x7FFF
+            # a pose set just before the background change shows on the new
+            # background while it comes in (a statement after a Hold it!
+            # conversation fades in on it: Lotta over the witness stand)
+            if fresh and cur and cur[0]:
+                k = (bg, cur[0])
+                if k in vals and (over_desk(k, cur[1]) or over_desk(k, cur[2])):
+                    t, i = desk_pose(k, cur[1], cur[2], cur[3])
+                    out[cur[3] + 2], out[cur[3] + 3] = t, i
+                    cur = (cur[0], t, i, cur[3])
+                    fixed += 1
         elif op == 0x1E and a:
             cur = (a[0] & 0xFF, a[1], a[2], pos)
+            fresh = True
+        if op in (0x02, 0x2D, 0x2E, 0x15):
+            fresh = False
     return out, ('%d poses from another place replaced' % fixed) if fixed else None
 
 
@@ -1834,6 +1944,10 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
     gp = os.path.join(os.path.dirname(__file__), 'glass_poses.json')
     GLASS = {int(k, 16): set(int(v, 16) for v in vs)
              for k, vs in json.load(open(gp))['glass'].items()} if os.path.exists(gp) else {}
+    global BOTTOMS
+    bp = os.path.join(os.path.dirname(__file__), 'pose_bottoms.json')
+    BOTTOMS = {(int(p, 16), int(a, 16)): v[1] for p, d in json.load(open(bp))['bottoms'].items()
+               for a, v in d.items()} if os.path.exists(bp) else {}
     ANIM_VOTES = {k: set(c) for k, c in votes.items()}
     POSES_BG = {k: set(v for pr in c for v in pr) for k, c in seen_poses(os.path.dirname(gfile)).items()}
     global CHAPTER_POSES, CHAPTER_USUAL
@@ -1954,7 +2068,7 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             patches = [(f[idx], tgt, dtg) for idx, tgt, dtg in patches]
             if note:
                 st = dict(st, card_lock=note)
-            out, note = fix_scene_poses(out, seen_poses(os.path.dirname(gfile)), glass_front(gt, dt))
+            out, note = fix_scene_poses(out, seen_poses(os.path.dirname(gfile)), glass_front(gt, dt), gt, m)
             if note:
                 st = dict(st, poses=note)
             out, note = fix_moving_poses(out, os.path.dirname(gfile), carry)
