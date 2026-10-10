@@ -12,7 +12,8 @@ English copy of every background with writing on it. For each one:
      Japanese patch against it (position and scale: a few DS backgrounds are
      reframed, e.g. the Steel Samurai title card);
   3. only those pixels are replaced, with the DS English pixels, in the GBA
-     picture's own palette.
+     picture's own palette. The boat rental sign is done letter by letter
+     instead (port_boat_sign): shrunk, its lettering came out soft.
 
 Everything else stays the GBA original. The evidence documents (Maya's phone
 call, the DL-6 case file) are pages of text: the DS English lines replace the
@@ -277,6 +278,118 @@ def port_signs(label, jp_base, en_base, report):
                          (', moved into the picture ' + ' '.join(moved)) if moved else ''))
     save_gba(path, out, rawpal)
 
+# The boat rental sign, letter by letter. The GBA's sign board is drawn 94.5%
+# as large as the DS's, and "BOAT RENTALS" shrunk to fit it (port_signs) came
+# out soft, with grey and pale blue specks, and a pixel of the first Japanese
+# character left above the B. Here the GBA board is cleared of the Japanese
+# writing and each DS letter goes on with the DS's own pixels, unscaled. The
+# word has to be 3 columns narrower than on the DS: a column comes out of the
+# middle of the B and of the O (the one most like its neighbour), and the
+# space between the words is 2 columns instead of 3; the other gaps are the
+# DS's. Each letter's height on the board is the DS's, scaled. Colours: the
+# picture's greys only (its nearest colour to a light grey edge pixel was
+# sometimes a pale blue of the sky or the lake).
+BOAT_SIGN = 'gGfx_BG077_GourdLakeBoatRental'
+BOAT_BOARD = (112, 174)              # inside the GBA board's side frames (x 109-111, 175-176)
+BOAT_ROOF = ((111, 62), (175, 72))   # the roof's top edge under the board (its grey edge a row above)
+BOAT_NARROWER = (0, 1)               # the letters a column comes out of: B, O
+BOAT_TOP_SCAN = 30                   # the board's top edge is looked for from row 30 down (above: the sky's blue)
+BOAT_DS_FRAME = 125                  # the DS board's left frame (x 124-125): the letters start right of it
+
+def port_boat_sign(label, jp_base, en_base, report):
+    path, idx, pal, rawpal = load_gba(label)
+    gba_rgb = pal[idx]
+    lum = gba_rgb.astype(int) @ [0.3, 0.59, 0.11]
+    jp, en = ds_rgb(jp_base), ds_rgb(en_base)
+    el = en.astype(int) @ [0.3, 0.59, 0.11]
+    usable = sorted(set(np.unique(idx)))
+    (y0, y1, x0, x1, mask, specks), = text_regions(jp, en)
+    M = 10
+    y0, x0 = max(0, y0 - M), max(0, x0 - M)
+    y1, x1 = min(jp.shape[0], y1 + M), min(jp.shape[1], x1 + M)
+    mx = (jp.shape[1] - gba_rgb.shape[1]) // 2
+    coarse = locate(gba_rgb, jp[y0:y1, x0:x1], np.arange(0.85, 1.155, 0.01), (x0 - mx, y0 - 16))
+    fine = locate(gba_rgb, jp[y0:y1, x0:x1], np.arange(coarse[1] - 0.01, coarse[1] + 0.0101, 0.0025))
+    score, s, gx, gy = min(coarse, fine) if fine else coarse
+    h, w = int(round((y1 - y0) * s)), int(round((x1 - x0) * s))
+    m = cv2.resize(mask[y0:y1, x0:x1].astype(np.uint8), (w, h), interpolation=cv2.INTER_NEAREST) > 0
+    patch = np.zeros(idx.shape, bool)
+    ys, xs = np.nonzero(m)
+    patch[gy + ys, gx + xs] = True
+    # 1. clear the Japanese writing: the patch and a pixel around it (the faint
+    # top of the first character lay just outside it), inside the board only:
+    # below its top edge line (the first run of grey from the top of each
+    # column), between the side frames, above the roof's grey edge
+    patch = ndimage.binary_dilation(patch, structure=np.ones((3, 3)))
+    paper = max(usable, key=lambda i: int(pal[i].astype(int).sum()))
+    out = idx.copy()
+    board = np.zeros(idx.shape, bool)
+    (rx0, ry0), (rx1, ry1) = BOAT_ROOF
+    for x in range(BOAT_BOARD[0], BOAT_BOARD[1] + 1):
+        roof = int(round(ry0 + (x - rx0) * (ry1 - ry0) / (rx1 - rx0)))
+        y = BOAT_TOP_SCAN
+        while lum[y, x] >= 250:
+            y += 1
+        while lum[y, x] < 250:
+            y += 1
+        board[y:roof - 1, x] = True
+    out[patch & board] = paper
+    # 2. the DS letters: their dark cores (4-connected, so letters stay apart;
+    # pieces of the DS board's frame and bottom edge left out: they are left of
+    # the letters or not as tall as one), each with the light edge pixels around it
+    area = np.zeros(el.shape, bool)
+    area[y0:y1, x0:x1] = ndimage.binary_dilation(mask, iterations=2)[y0:y1, x0:x1]
+    ink = area & (el < 244)
+    core = ink & (el < 200)
+    lab, n = ndimage.label(core)
+    def letter(k):
+        ys, xs = np.nonzero(lab == k)
+        return len(xs) >= 6 and ys.max() - ys.min() >= 8 and xs.min() > BOAT_DS_FRAME
+    keep = sorted([k for k in range(1, n + 1) if letter(k)], key=lambda k: np.nonzero(lab == k)[1].min())
+    dist, (iy, ix) = ndimage.distance_transform_edt(~np.isin(lab, keep), return_indices=True)
+    owner = np.where(ink & (dist <= 1.5), lab[iy, ix], 0)
+    pieces = []
+    for k in keep:
+        ys, xs = np.nonzero(owner == k)
+        a = np.full((ys.max() - ys.min() + 1, xs.max() - xs.min() + 1, 3), -1)
+        a[ys - ys.min(), xs - xs.min()] = en[ys, xs]
+        pieces.append([int(xs.min()), int(ys.min()), a, a.shape[1]])
+    for i in BOAT_NARROWER:
+        a = pieces[i][2]
+        def change(c):
+            A, B = a[:, c].astype(float), a[:, c + 1].astype(float)
+            A[A < 0] = 255
+            B[B < 0] = 255
+            return np.abs(A - B).sum()
+        c = min(range(2, a.shape[1] - 3), key=change)
+        pieces[i][2] = np.concatenate([a[:, :c], a[:, c + 1:]], 1)
+    lab_pal = cv2.cvtColor(pal[usable].astype(np.uint8).reshape(-1, 1, 3), cv2.COLOR_RGB2LAB).reshape(-1, 3).astype(int)
+    greys = [u for u, l in zip(usable, lab_pal)
+             if abs(l[1] - 128) <= 4 and abs(l[2] - 128) <= 6 and int(pal[u][2]) - int(pal[u][0]) <= 4]
+    def nearest_grey(rgb):
+        c = cv2.cvtColor(pal[greys].astype(np.uint8).reshape(-1, 1, 3), cv2.COLOR_RGB2LAB).reshape(-1, 3).astype(np.float32)
+        p = cv2.cvtColor(rgb.astype(np.uint8).reshape(-1, 1, 3), cv2.COLOR_RGB2LAB).reshape(-1, 3).astype(np.float32)
+        return np.array(greys)[((p[:, None, :] - c[None, :, :]) ** 2).sum(2).argmin(1)]
+    X = None
+    right_ds = None
+    placed = []
+    for dx0, dy0, a, w_ds in pieces:
+        ph, pw = a.shape[:2]
+        if X is None:
+            X0 = int(round(gx + s * (dx0 - x0)))
+        else:
+            gap = dx0 - right_ds - 1
+            X0 = X + (gap - 1 if gap >= 3 else gap)      # the word space: 2 columns
+        Y0 = int(round(gy + s * (dy0 + (ph - 1) / 2 - y0) - (ph - 1) / 2))
+        ys, xs = np.nonzero(a[:, :, 0] >= 0)
+        assert board[Y0 + ys, X0 + xs].all(), 'a letter off the board'
+        out[Y0 + ys, X0 + xs] = nearest_grey(a[ys, xs])
+        placed.append('%d-%d' % (X0, X0 + pw - 1))
+        X, right_ds = X0 + pw, dx0 + w_ds - 1
+    report.append('  board cleared (%d px), %d letter pieces at x %s, letters from DS (%d,%d), scale %.3f'
+                  % (int((patch & board).sum()), len(pieces), ' '.join(placed), x0, y0, s))
+    save_gba(path, out, rawpal)
+
 # ------------------------------------------------------------------ documents
 # The page layout of the Japanese GBA pages: text from y 6 down to y 136,
 # 15 px from one line to the next; the page number (bottom left) and the
@@ -451,7 +564,7 @@ def main():
     for label, what in SIGNS:
         jp, en = table[label]
         report.append('%s (%s)' % (label, what))
-        port_signs(label, int(jp, 16), int(en, 16), report)
+        (port_boat_sign if label == BOAT_SIGN else port_signs)(label, int(jp, 16), int(en, 16), report)
     for doc in sorted(set(d for l, w, d in DOCUMENTS)):
         pages = [(l, w) for l, w, d in DOCUMENTS if d == doc]
         sizes = [port_document(l, int(table[l][1], 16), []) for l, w in pages]
