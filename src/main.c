@@ -349,7 +349,21 @@ void SetLCDIORegs()
     struct IORegisters *ioRegsp = &gIORegisters;
     REG_IE = ioRegsp->iwp_ie;
     REG_DISPSTAT = ioRegsp->lcd_dispstat;
-    REG_DISPCNT = ioRegsp->lcd_dispcnt;
+    // English patch: the text box is see-through only while the blend effect is
+    // on (BLDCNT_EFFECT_BLEND). A white flash (blend modes 3 and 4) switches
+    // the screen to the lighten effect, so for its part-white frame the box
+    // showed as a solid grey block (the Japanese game does the same, on far
+    // fewer flashes; the English script has 5749 of them, many with the box
+    // up). The DS lightens the finished picture, see-through box and all. The
+    // text box layer stays off while a white flash is under way: the
+    // part-white frame shows the scene lightened, and the box is back with the
+    // first normal frame. (At full white the box isn't seen either way.)
+    if ((gMain.blendMode == 3 || gMain.blendMode == 4)
+     && (ioRegsp->lcd_bldcnt & (3 << 6)) == BLDCNT_EFFECT_LIGHTEN
+     && (ioRegsp->lcd_bldcnt & BLDCNT_TGT1_BG1))
+        REG_DISPCNT = ioRegsp->lcd_dispcnt & ~DISPCNT_BG1_ON;
+    else
+        REG_DISPCNT = ioRegsp->lcd_dispcnt;
     DataCopy32(&REG_BG0CNT, &ioRegsp->lcd_bg0cnt);
     DataCopy32(&REG_BG0HOFS, &ioRegsp->lcd_bg0hofs);
     DataCopy32(&REG_BG1HOFS, &ioRegsp->lcd_bg1hofs);
