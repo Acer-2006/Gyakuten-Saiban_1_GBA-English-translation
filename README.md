@@ -24,7 +24,9 @@ game, running on the GBA's own engine with its own timing.
   bubbles, the verdict, map markers, and the signs and writing in the
   backgrounds.
 - **A variable-width English font** made from the DS's.
-- **The DS sound effects.**
+- **The English voices** of the DS release (*Objection!*, *Hold it!*,
+  *Take that!* and the others) and the two sounds its English script added.
+  Every other sound effect is the GBA game's own, as in the original.
 - **The courtroom of Gyakuten Saiban 3**: the benches, the witness stand, the
   judge's bench and the pans between them, in place of the first game's
   very bright courtroom.
