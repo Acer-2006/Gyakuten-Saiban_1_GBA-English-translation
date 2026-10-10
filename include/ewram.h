@@ -11,6 +11,10 @@
 // set from an answer taken until the graphics its labels borrowed are back
 // (script_commands3.c)
 #define gChoiceRestorePending (*(u8 *)(EWRAM_START + 0x11FC0 + 0x5))
+// a courtroom pan (animation.c): the person coming in is in; where the person
+// going out stood at the start, from the middle of the screen
+#define gEnPanSwapped (*(u8 *)(EWRAM_START + 0x11FC0 + 0x6))
+#define gEnPanBias (*(s16 *)(EWRAM_START + 0x11FC0 + 0x8))
 #define eScriptHeap ((void*) gScriptBase)
 #define eBGDecompBuffer ((void*) (EWRAM_START + 0x2CFC0))
 #define eUnknown_02031FC0 ((void*) (EWRAM_START + 0x31FC0))

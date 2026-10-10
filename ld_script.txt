@@ -163,6 +163,7 @@ SECTIONS {
         data/en_effects.o(en_data);
         data/en_menu.o(en_data);
         data/en_sound.o(en_data);
+        data/en_court.o(en_data);
     } =0
 
     /* DWARF debug sections.

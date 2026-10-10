@@ -1,4 +1,5 @@
 #include "global.h"
+#include "en_court.h"
 #include "en_effects.h"
 #include "court.h"
 #include "utils.h"
@@ -514,7 +515,7 @@ void QuestioningHoldIt(struct Main * main)
             if(gTestimony.timer == 0)
             {
                 SetCourtScrollPersonAnim(0, 1, PERSON_ANIM_PHOENIX, 0);
-                InitCourtScroll(gGfxCourtscroll01, 0x1E, 0x1F, 1);
+                InitCourtScroll(EN_COURT_PAN(0), 0x1E, 0x1F, 1); // English patch: GS3 pan
                 SlideTextbox(0);
                 main->process[GAME_PROCESS_VAR1]++;
                 break;
@@ -567,7 +568,7 @@ void QuestioningObjection(struct Main * main)
             if(gTestimony.timer == 0)
             {
                 SetCourtScrollPersonAnim(0, 1, PERSON_ANIM_PHOENIX, 0x18D0);
-                InitCourtScroll(gGfxCourtscroll01, 0x1E, 0x1F, 1);
+                InitCourtScroll(EN_COURT_PAN(0), 0x1E, 0x1F, 1); // English patch: GS3 pan
                 SlideTextbox(0);
                 main->process[GAME_PROCESS_VAR1]++;
                 break;

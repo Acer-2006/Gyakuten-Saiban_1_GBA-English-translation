@@ -1,4 +1,5 @@
 #include "graphics.h"
+#include "en_court.h"
 
 const struct Background gBackgroundTable[] =
 {
@@ -15,27 +16,27 @@ const struct Background gBackgroundTable[] =
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
 	},
 	{
-		.bgData = gGfx_BG003_CourtDefenseBench,
-		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP,
-	},
-	{
-		.bgData = gGfx_BG004_CourtProsecutionBench,
-		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP,
-	},
-	{
-		.bgData = gGfx_BG005_CourtWitnessStand,
-		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP,
-	},
-	{
-		.bgData = gGfx_BG006_CourtRoom,
+		.bgData = gEnCourtDefenseBench, // English patch: Gyakuten Saiban 3
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
 	},
 	{
-		.bgData = gGfx_BG007_CourtCoCounsel,
+		.bgData = gEnCourtProsecutionBench, // English patch: Gyakuten Saiban 3
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
 	},
 	{
-		.bgData = gGfx_BG008_CourtJudgeSeat,
+		.bgData = gEnCourtWitnessStand, // English patch: Gyakuten Saiban 3
+		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
+	},
+	{
+		.bgData = gEnCourtCourtRoom, // English patch: Gyakuten Saiban 3
+		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
+	},
+	{
+		.bgData = gEnCourtCoCounsel, // English patch: Gyakuten Saiban 3
+		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
+	},
+	{
+		.bgData = gEnCourtJudgeSeat, // English patch: Gyakuten Saiban 3
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
 	},
 	{

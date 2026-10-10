@@ -10,6 +10,7 @@
 #include "constants/persons.h"
 #include "constants/process.h"
 #include "constants/animation_offsets.h"
+#include "en_court_pan.h"
 #include "en_effects.h"
 
 #define DUMMYPERSON { .gfxData = 0, .frameData = 0, .spriteCount = 0, .unkA = 0 }
@@ -2226,10 +2227,48 @@ void ScrollMode1AnimationUpdate(struct AnimationListEntry * animation, struct Co
         PlayPersonAnimationAtCustomOrigin(courtScroll->scrollingPersonAnimId, courtScroll->animOffset, 20, 80, 0);
 }
 
+// English patch: the pans of Gyakuten Saiban 3's courtroom. The camera
+// moves along one long picture (include/en_court_pan.h: where it is on each
+// of a pan's 16 frames). The person on screen moves with the picture and the
+// one at the other end comes in with it, put in on the frame where both are
+// off screen. Someone off screen is hidden: the long pan (prosecution <->
+// defense) takes people further away than sprite positions reach, and they
+// would come round on the other side. A going pan shows frame counter / 2,
+// a returning one counter / 2 rounded up (a frame changes on even counts).
 static void UpdatePersonAnimationForCourtScroll(struct AnimationListEntry * animation)
 {
     struct CourtScroll * courtScroll = &gCourtScroll;
-    gCourtScrollPersonAnimationUpdateFuncs[courtScroll->scrollMode](&gAnimation[1], courtScroll);
+    struct AnimationListEntry * person = &gAnimation[1];
+    u32 pan = courtScroll->scrollMode >> 1;
+    bool32 back = courtScroll->scrollMode & 1;
+    s32 frame, x;
+
+    frame = back ? (courtScroll->frameCounter + 1) / 2 : courtScroll->frameCounter / 2;
+    if(frame < 0)
+        frame = 0;
+    if(frame > 15)
+        frame = 15;
+    if(!gEnPanSwapped && (back ? frame <= EN_PAN_SWAP_FRAME : frame >= EN_PAN_SWAP_FRAME))
+    {
+        gEnPanSwapped = TRUE;
+        PlayPersonAnimationAtCustomOrigin(courtScroll->scrollingPersonAnimId, courtScroll->animOffset, 376, 80, 0);
+    }
+    if(gEnPanSwapped)
+        x = 120 + sEnPanView[pan][back ? 0 : 1] - sEnPanCamera[pan][frame];
+    else
+        x = 120 + gEnPanBias + sEnPanView[pan][back ? 1 : 0] - sEnPanCamera[pan][frame];
+    if(x > -120 && x < 360)
+    {
+        person->animationInfo.xOrigin = x;
+        if(!(person->flags & ANIM_ACTIVE))
+            ChangeAnimationActivity(person, TRUE);
+    }
+    else
+    {
+        person->animationInfo.xOrigin = 376;
+        if(person->flags & ANIM_ACTIVE)
+            ChangeAnimationActivity(person, FALSE);
+    }
 }
 
 void SetCourtScrollPersonAnim(u32 arg0, u32 arg1, u32 arg2, u32 arg3)
@@ -2239,6 +2278,9 @@ void SetCourtScrollPersonAnim(u32 arg0, u32 arg1, u32 arg2, u32 arg3)
         gCourtScroll.scrollMode++;
     gCourtScroll.scrollingPersonAnimId = arg2;
     gCourtScroll.animOffset = arg3;
+    // English patch: the courtroom pans (UpdatePersonAnimationForCourtScroll)
+    gEnPanBias = gAnimation[1].animationInfo.xOrigin - 120;
+    gEnPanSwapped = FALSE;
 }
 
 void SpeechBubbleAnimationEffect(struct AnimationListEntry * animation)

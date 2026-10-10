@@ -6,6 +6,7 @@
 #include "constants/bg.h"
 
 #include "data/background.h"
+#include "en_court.h"
 
 // BG_all_init
 void InitBGs()
@@ -391,12 +392,16 @@ void UpdateBackgroundScroll() // BG256_main
 
     if(gCourtScroll.state != 0 && (gCourtScroll.frameCounter & 1) == 0) // frameCounter divisible by 2?
     {
+        // English patch: the pans of Gyakuten Saiban 3's courtroom are
+        // 256-colour frames (a palette, then the tiles; include/en_court.h).
+        // Colours 0-31 are the text box's and stay; the tiles go first thing
+        // in the vertical blank, row by row ahead of the picture being drawn
         u8 * ptr = gCourtScroll.frameDataPtr;
-        ioRegs->lcd_bg3cnt &= ~BGCNT_256COLOR;
-        ptr += gCourtScroll.frameCounter / 2 * (0x4B00 + 0x20);
-        DmaCopy16(3, ptr, PLTT+0x40, 0x20);
-        ptr += 0x20;
-        DmaCopy16(3, ptr, BG_CHAR_ADDR(1), 0x4B00);
+        ioRegs->lcd_bg3cnt |= BGCNT_256COLOR;
+        ptr += gCourtScroll.frameCounter / 2 * EN_PAN_FRAME_BYTES;
+        DmaCopy32(3, ptr + 0x40, PLTT+0x40, 0x1C0);
+        ptr += 0x200;
+        DmaCopy32(3, ptr, BG_CHAR_ADDR(1), 0x9600);
     }
     if(main->isBGScrolling == FALSE)
         return;

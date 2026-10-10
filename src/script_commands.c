@@ -1,4 +1,5 @@
 #include "global.h"
+#include "en_court.h"
 #include "main.h"
 #include "animation.h"
 #include "script.h"
@@ -25,10 +26,11 @@ const u8 gSoundCueTable[] = {
 	1, 1, 0, 0, 0, 0, 0, 0,
 };
 
+// English patch: the pans of Gyakuten Saiban 3's courtroom (include/en_court.h)
 u8 * const gCourtScrollGfxPointers[] = {
-    gGfxCourtscroll01,
-    gGfxCourtscroll02,
-    gGfxCourtscroll03,
+    EN_COURT_PAN(0),
+    EN_COURT_PAN(1),
+    EN_COURT_PAN(2),
 };
 
 // English patch: the "next" arrow moved from the bottom centre (tiles 622/623)
