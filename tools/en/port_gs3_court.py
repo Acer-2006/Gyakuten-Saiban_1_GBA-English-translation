@@ -27,9 +27,9 @@ How GS3 draws its courtroom, and what changes for the first game's engine:
   rendered in the game), the GS3 benches start one row below where the
   GS1 poses end, exactly as the GS1 benches do; the GS3 witness stand is
   two rows higher than the GS1 one, so it is put two rows lower. Its rim
-  is also rounder than the GS1 stand's: towards the ends it drops below
-  where the poses end, so there its top edge is drawn up to the GS1 line
-  (STAND_LINE).
+  is also rounder than the GS1 stand's and stays below the GS1 stand's top
+  edge (a row in the middle, up to three at the ends), so its top edge is
+  drawn up to the GS1 stand's (STAND_LINE).
   With the desk the bench pictures have 30 colours, so the three become
   256-colour backgrounds like GS1's judge (palette 0-31 is the game's own
   user interface colours, as in every GS1 256-colour background).
@@ -67,15 +67,23 @@ DESKS = {
                                     (120, 128, 32, 32, 32, 1), (152, 128, 0, 64, 32, 1)]),
 }
 DESK_DY = {'defense_bench': 0, 'prosecution_bench': 0, 'witness_stand': 2}
-# The top of the GS1 witness stand: the row just below where the GS1 poses at
-# the stand end, column by column (x from, x to, row), measured over the 180
-# poses the Japanese scripts show there (each rendered in the game). GS3's
-# stand is rounder: lowered by two rows it meets this line in the middle, but
-# towards the ends its rim drops one to three rows below it, and the wall
-# showed between the rim and the people (Larry's jacket, Redd White's sleeve,
-# ...). Where the rim is lower, its top edge is drawn up to this line.
-STAND_LINE = [(36, 44, 140), (45, 51, 139), (52, 65, 138), (66, 85, 137), (86, 159, 136),
-              (160, 172, 137), (173, 186, 138), (187, 195, 139), (196, 204, 140)]
+# The top edge of the GS1 witness stand, column by column (x from, x to, row),
+# as its picture draws it (graphics/striped_images/backgrounds/court/
+# witness_stand.png, which is symmetric): the stand's box at 135, its wings
+# stepping down to 140 at the ends. The GS1 poses were cut to it: they end on
+# it or a row or two into it, as the artists drew them (over the 180 poses the
+# Japanese scripts show at the stand, each rendered in the game). GS3's stand
+# is rounder: lowered by two rows its rim is a row below this edge in the
+# middle and up to three rows below it towards the ends, and the wall showed
+# between the rim and the people (Larry's jacket, Redd White's sleeve, a
+# one-pixel line under most witnesses somewhere). Where the rim is lower, its
+# top edge is drawn up to this one, so every pose meets the stand as it meets
+# the GS1 stand. Two changes from the GS1 edge: where the box steps up from
+# the wings (x 64-67 and 172-175) the step is taken in two, and the first and
+# last columns (36, 203) are at 140, not 141, so Larry's jacket meets them.
+STAND_LINE = [(36, 38, 140), (39, 41, 139), (42, 51, 138), (52, 63, 137), (64, 67, 136),
+              (68, 171, 135),
+              (172, 175, 136), (176, 187, 137), (188, 197, 138), (198, 200, 139), (201, 203, 140)]
 STAND_CORNER = 1                   # beyond the line the rim falls a row a column, as GS3's does
 PAN = 0x484490                     # palette, then 80x20 tiles (640x160, 4bpp)
 PAN_STEPS_SHORT, PAN_STEPS_LONG = 0x161618, 0x161638   # 16 x u16, in tiles
