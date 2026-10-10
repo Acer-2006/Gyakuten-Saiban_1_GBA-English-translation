@@ -1,0 +1,75 @@
+make[1]: Entering directory '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1'
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/agb_sram.c -o build/pwaa1_rev1/src/agb_sram.i
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/animation.c -o build/pwaa1_rev1/src/animation.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/agb_sram.o build/pwaa1_rev1/src/agb_sram.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/bg.c -o build/pwaa1_rev1/src/bg.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/bg.o build/pwaa1_rev1/src/bg.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/bg3.c -o build/pwaa1_rev1/src/bg3.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/animation.o build/pwaa1_rev1/src/animation.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/case_data.c -o build/pwaa1_rev1/src/case_data.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/case_data.o build/pwaa1_rev1/src/case_data.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/court.c -o build/pwaa1_rev1/src/court.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/bg3.o build/pwaa1_rev1/src/bg3.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/court_record.c -o build/pwaa1_rev1/src/court_record.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/court.o build/pwaa1_rev1/src/court.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/episode_load_processes.c -o build/pwaa1_rev1/src/episode_load_processes.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/court_record.o build/pwaa1_rev1/src/court_record.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/gameover_process.c -o build/pwaa1_rev1/src/gameover_process.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/gameover_process.o build/pwaa1_rev1/src/gameover_process.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/investigation.c -o build/pwaa1_rev1/src/investigation.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/episode_load_processes.o build/pwaa1_rev1/src/episode_load_processes.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/investigation_segment_1_0.c -o build/pwaa1_rev1/src/investigation_segment_1_0.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/investigation_segment_1_0.o build/pwaa1_rev1/src/investigation_segment_1_0.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/investigation_segment_1_2.c -o build/pwaa1_rev1/src/investigation_segment_1_2.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/investigation_segment_1_2.o build/pwaa1_rev1/src/investigation_segment_1_2.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/investigation_segment_2_0.c -o build/pwaa1_rev1/src/investigation_segment_2_0.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/investigation.o build/pwaa1_rev1/src/investigation.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/investigation_segment_2_2.c -o build/pwaa1_rev1/src/investigation_segment_2_2.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/investigation_segment_2_0.o build/pwaa1_rev1/src/investigation_segment_2_0.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/investigation_segment_2_4.c -o build/pwaa1_rev1/src/investigation_segment_2_4.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/investigation_segment_2_2.o build/pwaa1_rev1/src/investigation_segment_2_2.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/investigation_segment_3_0.c -o build/pwaa1_rev1/src/investigation_segment_3_0.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/investigation_segment_2_4.o build/pwaa1_rev1/src/investigation_segment_2_4.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/investigation_segment_3_2.c -o build/pwaa1_rev1/src/investigation_segment_3_2.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/investigation_segment_3_0.o build/pwaa1_rev1/src/investigation_segment_3_0.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/investigation_segment_3_4.c -o build/pwaa1_rev1/src/investigation_segment_3_4.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/investigation_segment_3_2.o build/pwaa1_rev1/src/investigation_segment_3_2.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/m4a.c -o build/pwaa1_rev1/src/m4a.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/investigation_segment_3_4.o build/pwaa1_rev1/src/investigation_segment_3_4.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/m4a_tables.c -o build/pwaa1_rev1/src/m4a_tables.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/m4a_tables.o build/pwaa1_rev1/src/m4a_tables.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/main.c -o build/pwaa1_rev1/src/main.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/main.o build/pwaa1_rev1/src/main.s
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/m4a.o build/pwaa1_rev1/src/m4a.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/save_processes.c -o build/pwaa1_rev1/src/save_processes.i
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/script_commands.c -o build/pwaa1_rev1/src/script_commands.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/save_processes.o build/pwaa1_rev1/src/save_processes.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/script_commands2.c -o build/pwaa1_rev1/src/script_commands2.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/script_commands.o build/pwaa1_rev1/src/script_commands.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/script_commands3.c -o build/pwaa1_rev1/src/script_commands3.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/script_commands3.o build/pwaa1_rev1/src/script_commands3.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/script_main.c -o build/pwaa1_rev1/src/script_main.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/script_commands2.o build/pwaa1_rev1/src/script_commands2.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/scripts.c -o build/pwaa1_rev1/src/scripts.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/script_main.o build/pwaa1_rev1/src/script_main.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/sound.c -o build/pwaa1_rev1/src/sound.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/sound.o build/pwaa1_rev1/src/sound.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/title_processes.c -o build/pwaa1_rev1/src/title_processes.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/title_processes.o build/pwaa1_rev1/src/title_processes.s
+cc -E -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=1 -nostdinc src/utils.c -o build/pwaa1_rev1/src/utils.i
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/utils.o build/pwaa1_rev1/src/utils.s
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/crt0.o src/crt0.s
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/libagbsyscall.o src/libagbsyscall.s
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/m4a_1.o src/m4a_1.s
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/data/graphics.o data/graphics.s 
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/data/sound_data.o data/sound_data.s 
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/data/sound_data2.o data/sound_data2.s 
+cp sym_iwram.txt build/pwaa1_rev1
+cp sym_ewram.txt build/pwaa1_rev1
+cd build/pwaa1_rev1 && sed "s#tools/#../../tools/#g" ../../ld_script.txt > ld_script.ld
+tools/binutils/bin/arm-none-eabi-as -mcpu=arm7tdmi -mthumb-interwork -o build/pwaa1_rev1/src/scripts.o build/pwaa1_rev1/src/scripts.s
+cd build/pwaa1_rev1 && ../../tools/binutils/bin/arm-none-eabi-ld -T ld_script.ld -Map ../../pwaa1_rev1.map -o ../../pwaa1_rev1.elf src/agb_sram.o src/animation.o src/bg.o src/bg3.o src/case_data.o src/court.o src/court_record.o src/episode_load_processes.o src/gameover_process.o src/investigation.o src/investigation_segment_1_0.o src/investigation_segment_1_2.o src/investigation_segment_2_0.o src/investigation_segment_2_2.o src/investigation_segment_2_4.o src/investigation_segment_3_0.o src/investigation_segment_3_2.o src/investigation_segment_3_4.o src/m4a.o src/m4a_tables.o src/main.o src/save_processes.o src/script_commands.o src/script_commands2.o src/script_commands3.o src/script_main.o src/scripts.o src/sound.o src/title_processes.o src/utils.o src/crt0.o src/libagbsyscall.o src/m4a_1.o data/graphics.o data/sound_data.o data/sound_data2.o -L ../../tools/agbcc/lib -lgcc -lc
+tools/gbafix/gbafix -t"GYAKUTEN_SAI" -cASBJ -m08 -r1 --silent pwaa1_rev1.elf
+tools/binutils/bin/arm-none-eabi-objcopy -O binary --gap-fill 0xff pwaa1_rev1.elf pwaa1_rev1.gba
+tools/gbafix/gbafix --silent -p pwaa1_rev1.gba
+make[1]: Leaving directory '/tmp/claude-0/-home-claude/4a34da0e-f987-5fdb-8edb-9cabaaa698fc/scratchpad/pwaa1'

@@ -1,0 +1,474 @@
+#include "global.h"
+#include "vwf.h"
+#include "script.h"
+#include "sound.h"
+#include "ewram.h"
+#include "court.h"
+#include "background.h"
+#include "investigation.h"
+#include "graphics.h"
+#include "constants/script.h"
+#include "constants/process.h"
+#include "constants/oam_allocations.h"
+
+bool32 Command40(struct ScriptContext * scriptCtx)
+{
+    scriptCtx->scriptPtr++;
+    scriptCtx->flags &= ~SCRIPT_SPOTSELECT_SELECTION_MADE;
+    gOamObjects[OAM_IDX_POINTER].attr0 = SPRITE_ATTR0_CLEAR;
+    return 0;
+}
+
+bool32 Command41(struct ScriptContext * scriptCtx)
+{
+    u32 i;
+    struct OamAttrs *oam;
+    scriptCtx->scriptPtr++;
+    // this has to be outside of the loop, else the load order breaks...
+    oam = &gOamObjects[OAM_IDX_INVESTIGATION_ACTIONS];
+    for(i = 0; i < OAM_COUNT_INVESTIGATION_ACTIONS; i++)
+    {
+        oam->attr0 = SPRITE_ATTR0((-32 & 255), ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_H_RECTANGLE);
+	// 64x32 sprite size
+        oam->attr1 = SPRITE_ATTR1_NONAFFINE(60*i, 0, 0, 3);
+        oam->attr2 = SPRITE_ATTR2(0x100+0x20*i, 0, 5);
+        oam++;
+    }
+    SetInactiveActionButtons(&gInvestigation, 0xF);
+    gInvestigation.inactiveActionButtonY = 0xE0;
+    gInvestigation.selectedActionYOffset = 0;
+    gInvestigation.lastActionYOffset = 8;
+    gInvestigation.selectedAction = 0;
+    gInvestigation.lastAction = 0;
+    
+    SET_PROCESS(INVESTIGATION_PROCESS,INVESTIGATION_MAIN,0,0);
+    return 0;
+}
+
+bool32 Command42(struct ScriptContext * scriptCtx)
+{
+    scriptCtx->scriptPtr++;
+    if(*scriptCtx->scriptPtr)
+    {
+        gMain.soundFlags &= ~SOUND_FLAG_DISABLE_CUE;
+    }
+    else
+    {
+        gMain.soundFlags |= SOUND_FLAG_DISABLE_CUE;
+    }
+    scriptCtx->scriptPtr++;
+    return 0;
+}
+
+bool32 Command43(struct ScriptContext * scriptCtx)
+{
+    u32 i;
+    struct OamAttrs *oam;
+    scriptCtx->scriptPtr++;
+    if(*scriptCtx->scriptPtr)
+    {
+        gTestimony.healthPointX = 0xF0;
+        gMain.gameStateFlags |= 0x400;
+    }
+    else
+    {
+        gTestimony.healthPointX = 0xF0;
+        gMain.gameStateFlags &= ~0x400;
+        oam = &gOamObjects[OAM_IDX_HEALTH];
+        for(i = 0; i < MAX_HEALTH; i++)
+	    {
+            oam->attr0 = SPRITE_ATTR0_CLEAR;
+            oam++;
+        }
+    }
+    scriptCtx->scriptPtr++;
+    return 0;
+}
+
+bool32 Command44(struct ScriptContext * scriptCtx)
+{
+    bool32 notGuilty;
+    scriptCtx->scriptPtr++;
+    gMain.affineScale = 0x100;
+    BACKUP_PROCESS();
+    notGuilty = *scriptCtx->scriptPtr == 0;
+    // English: the DS English letters instead of the two kanji (en_verdict.c)
+    EnVerdictLoad(notGuilty);
+    SET_PROCESS(VERDICT_PROCESS, 0, 0, notGuilty);
+    scriptCtx->scriptPtr++;
+    return 0;
+}
+
+bool32 Command46(struct ScriptContext * scriptCtx)
+{
+    u32 i, j;
+    u8 *r6;
+    u16 *r3;
+    scriptCtx->scriptPtr++;
+    if(*scriptCtx->scriptPtr) 
+    {
+        gMain.horizontolBGScrollSpeed = -0xE;
+        r6 = gPal_BG065_BustupEdgeworth;
+        r3 = (u16 *)gMap_BG065_BustupEdgeworth;
+    }
+    else 
+    {
+        gMain.horizontolBGScrollSpeed = 0xE;
+        r6 = gPal_BG064_BustupPhoenix;
+        r3 = (u16 *)gMap_BG064_BustupPhoenix;
+    }
+    for(i = 0; i < 20; i++) 
+    {
+        for(j = 0; j < 30; j++, r3++) 
+        {
+            gBG2MapBuffer[GET_MAP_TILE_INDEX(i, j, 0, 1)] = *r3 + 0x80;
+        }
+    }
+    r6 += 32 + 20*30*2;
+    DmaCopy16(3, r6, eUnknown_02031FC0, 30*20*TILE_SIZE_4BPP);
+    gIORegisters.lcd_dispcnt |= DISPCNT_BG2_ON;
+    gIORegisters.lcd_bg2cnt = BGCNT_PRIORITY(2) | BGCNT_CHARBASE(2) | BGCNT_SCREENBASE(30) | BGCNT_16COLOR | BGCNT_WRAP;
+    scriptCtx->flags |= 0x40;
+    scriptCtx->scriptPtr++;
+    return 0;
+}
+
+bool32 Command47(struct ScriptContext *scriptCtx)
+{
+    u16 volume, fadeTime;
+    scriptCtx->scriptPtr++;
+    volume = *scriptCtx->scriptPtr;
+    scriptCtx->scriptPtr++;
+    fadeTime = *scriptCtx->scriptPtr;
+    SetBGMVolume(volume, fadeTime);
+
+    scriptCtx->scriptPtr++;
+
+    return 0;
+}
+
+bool32 Command48(struct ScriptContext *scriptCtx)
+{
+    scriptCtx->scriptPtr++;
+    if(*scriptCtx->scriptPtr == 0xFFFF) 
+    {
+        gIORegisters.lcd_dispcnt |= DISPCNT_BG1_ON;
+        scriptCtx->textXOffset = 9;
+        scriptCtx->textYOffset = DISPLAY_HEIGHT-44;
+        scriptCtx->scriptPtr+=2;
+    }
+    else 
+    {
+        gIORegisters.lcd_dispcnt &= ~DISPCNT_BG1_ON;
+        scriptCtx->textXOffset = *scriptCtx->scriptPtr;
+        scriptCtx->scriptPtr++;
+        scriptCtx->textYOffset = *scriptCtx->scriptPtr;
+        scriptCtx->scriptPtr++;
+    }
+
+    return 0;
+}
+
+bool32 Command49(struct ScriptContext *scriptCtx)
+{
+    scriptCtx->scriptPtr++;
+    gMain.advanceScriptContext = FALSE;
+    gMain.showTextboxCharacters = FALSE;
+    SET_PROCESS(TITLE_SCREEN_PROCESS, 0, 0, 0);
+
+    return 0;
+}
+
+bool32 Command4A(struct ScriptContext *scriptCtx)
+{
+    scriptCtx->scriptPtr++;
+    if(*scriptCtx->scriptPtr) 
+    {
+        if(gMain.process[GAME_PROCESS_STATE] == VERDICT_NOTGUILTY_EXIT) 
+        {
+            scriptCtx->scriptPtr++;
+            return 0;
+        }
+    }
+    else 
+    {
+        if(gMain.process[GAME_PROCESS_STATE] == VERDICT_DRAW_CONFETTI) 
+        {
+            scriptCtx->scriptPtr++;
+            return 0;
+        }
+    }
+    scriptCtx->scriptPtr--;
+    return 1;
+}
+
+bool32 Command4B(struct ScriptContext *scriptCtx)
+{
+    u32 res;
+    u32 r2;
+    scriptCtx->scriptPtr++;
+    res = GetMapMarkerIndexFromId(*scriptCtx->scriptPtr >> 8);
+    if(res != 0xFF) 
+    {
+        r2 = (*scriptCtx->scriptPtr & 3) << 12;
+        // this clears existing hflip/vflip and sets r2 as new flips
+        // the current macros dont allow easily setting this
+        gMapMarker[res].attr1 = (gMapMarker[res].attr1 & 0xCFFF) + r2;
+    }
+    gMapMarker[res].blinkTimer = 0;
+    scriptCtx->scriptPtr++;
+
+    return 0;
+}
+
+bool32 Command4C(struct ScriptContext *scriptCtx)
+{
+    if(gMain.isBGScrolling) 
+    {
+        return 1;
+    }
+    scriptCtx->scriptPtr++;
+    return 0;
+}
+
+bool32 Command4D(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command4E(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command4F(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command50(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command51(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command52(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command53(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command54(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command55(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command56(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command57(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command58(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command59(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command5A(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command5B(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+bool32 Command5C(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
+
+// English patch: the DS's centring command. 1: centre the lines that follow,
+// 0: back to normal (vwf.c)
+bool32 Command5D(struct ScriptContext *scriptCtx)
+{
+    scriptCtx->scriptPtr++;
+    VwfSetCentre(*scriptCtx->scriptPtr);
+    scriptCtx->scriptPtr++;
+    return 0;
+}
+
+// English patch: show the DS English answer labels for the next choice.
+// args: three label ids (0xFFFF = unused). Labels are 208x16 strips
+// (six 32x16 sprites + one 16x16) drawn through the fullscreen text sprites.
+extern const u8 gChoiceLabels[];
+static const u16 sChoiceLabelVram[3] = { 0x2000, 0x2680, 0x1800 };
+
+bool32 Command5E(struct ScriptContext *scriptCtx)
+{
+    scriptCtx->scriptPtr++;
+    SetChoiceLabels(scriptCtx->scriptPtr);
+    ReloadChoiceLabelGfx(scriptCtx->scriptPtr);
+    scriptCtx->scriptPtr += 3;
+    return 0;
+}
+
+// the label sprites (the graphics are loaded by ReloadChoiceLabelGfx)
+void SetChoiceLabels(const u16 *ids)
+{
+    u32 k, b;
+    for (k = 32; k < ARRAY_COUNT(gTextBoxCharacters); k++)
+        gTextBoxCharacters[k].state &= ~0x8000;
+    for (k = 0; k < 3; k++)
+    {
+        if (ids[k] == 0xFFFF)
+            continue;
+        for (b = 0; b < 7; b++)
+        {
+            struct TextBoxCharacter *c = &gTextBoxCharacters[32 + k * 7 + b];
+            c->x = 2 + b * 32; // text starts just right of the pointer, as in Japanese
+            c->y = k * 20;
+            c->objAttr2 = (sChoiceLabelVram[k] / 32 + b * 8) + 0x400;
+            c->state = 0x8000 | (b == 6 ? 0x4000 : 0);
+            c->color = 0;
+        }
+    }
+    VwfSetChoiceLabels(ids); // so they can be reloaded after a save
+}
+
+// English patch: the label graphics live in VRAM only; put them back after
+// the save screen or after loading a save that was made with a choice pending.
+void ReloadChoiceLabelGfx(const u16 *ids)
+{
+    u32 k;
+    for (k = 0; k < 3; k++)
+        if (ids[k] != 0xFFFF)
+            DmaCopy16(3, gChoiceLabels + ids[k] * 0x680, OBJ_VRAM0 + sChoiceLabelVram[k], 0x680);
+}
+
+// English patch: an answer is taken (Command08 / Command09): the labels go.
+// The graphics they borrowed come back a frame later (ChoiceLabelsRestore):
+// the labels are taken off the screen at the next VBlank, and put back at
+// once the investigation buttons were drawn into the labels still on screen
+// for the rest of that frame (orange bits of "Examine", "Move", "Talk" over
+// the answers for one frame).
+void ChoiceLabelsTaken(void)
+{
+    u32 k;
+    VwfSetChoiceLabels(NULL);
+    for (k = 32; k < ARRAY_COUNT(gTextBoxCharacters); k++)
+        gTextBoxCharacters[k].state &= ~0x8000;
+    gChoiceRestorePending = TRUE;
+}
+
+// the graphics the labels borrowed, back (once the labels are off the screen)
+void ChoiceLabelsRestore(void)
+{
+    if (!gChoiceRestorePending)
+        return;
+    gChoiceRestorePending = FALSE;
+    if (gMain.process[GAME_PROCESS] == INVESTIGATION_PROCESS)
+        DmaCopy16(3, gGfx4bppInvestigationActions, OBJ_VRAM0 + 0x2000, 0x1000);
+    MakeMapMarkerSprites();
+}
+
+// both at once (a section starting, a save loaded: no labels on the screen)
+void ChoiceLabelsDone(void)
+{
+    ChoiceLabelsTaken();
+    ChoiceLabelsRestore();
+}
+
+#define CHOICE_POINTER_ATTR2 SPRITE_ATTR2(0xFC, 1, 0) // (Command08 / Command09)
+
+// the text box back to its normal size and the answers off the screen, as when
+// an answer is taken (Command08)
+static void PutAwayChoiceScreen(struct ScriptContext *scriptCtx)
+{
+    u32 i;
+    if (scriptCtx->textboxState == 1 || scriptCtx->textboxState >= 3)
+    {
+        // the text box is put away (or on its way): only its picture goes back
+        for (i = 0; i < 0x2C0; i++)
+            gBG1MapBuffer[i] = gTextboxTiles[i];
+    }
+    else
+        SetTextboxSize(0);
+    for (i = 57; i < 88; i++)
+        gOamObjects[i].attr0 = SPRITE_ATTR0_CLEAR;
+}
+
+// English patch: a section never starts in the middle of a choice. When the
+// script left a choice without an answer, as it did after loading a save made
+// at a choice with an earlier build of the patch, the choice's pointer, its
+// answer labels and the tall text box stayed behind (the pointer showed over
+// the next scenes). Whatever a choice left goes when a section starts.
+void DropStaleChoice(struct ScriptContext *scriptCtx)
+{
+    ChoiceLabelsRestore();  // (an answer taken on the frame the section began)
+    if (gOamObjects[OAM_IDX_POINTER].attr2 == CHOICE_POINTER_ATTR2)
+        gOamObjects[OAM_IDX_POINTER].attr0 = SPRITE_ATTR0_CLEAR;
+    if (!(scriptCtx->flags & SCRIPT_FULLSCREEN) && !VwfChoiceLabelsPending())
+        return;
+    scriptCtx->flags &= ~SCRIPT_FULLSCREEN;
+    scriptCtx->textYOffset = 0x74;
+    scriptCtx->textboxNameId = 0;
+    PutAwayChoiceScreen(scriptCtx);
+    ChoiceLabelsDone();
+}
+
+// English patch: after loading a save. Outside a choice nothing of one is on
+// screen: a save made after a choice was left behind (see above) holds its
+// pointer and its answers in the sprites it restores, and VwfFixSavedScriptPos
+// finds the answer labels with no choice to come (staleChoice): those go, with
+// the tall text box. The answer labels of a choice that is waiting are put back.
+void ChoiceAfterLoad(bool32 staleChoice)
+{
+    struct ScriptContext *scriptCtx = &gScriptContext;
+    u32 i;
+    bool32 atChoice = (scriptCtx->flags & SCRIPT_FULLSCREEN)
+                   && (scriptCtx->currentToken == 0x08 || scriptCtx->currentToken == 0x09);
+    if (!atChoice && gOamObjects[OAM_IDX_POINTER].attr2 == CHOICE_POINTER_ATTR2)
+        gOamObjects[OAM_IDX_POINTER].attr0 = SPRITE_ATTR0_CLEAR;
+    if (!(scriptCtx->flags & SCRIPT_FULLSCREEN))
+    {
+        // (these sprites are only drawn while the answers are up; the map
+        // markers among them are drawn again every frame)
+        for (i = 57; i < 88; i++)
+            gOamObjects[i].attr0 = SPRITE_ATTR0_CLEAR;
+        if (staleChoice)
+        {
+            PutAwayChoiceScreen(scriptCtx);
+            ChoiceLabelsDone();
+        }
+    }
+    VwfReloadChoiceLabels();
+}
+
+bool32 Command5F(struct ScriptContext *scriptCtx)
+{
+    return 0;
+}
