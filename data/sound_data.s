@@ -3574,10 +3574,10 @@ gSongTable:	@ 0x0804132C
 	song gUnknown_08049510, 0, 0 @ Questioning ~ Allegro 2001
 	song gUnknown_08049FF0, 0, 0 @ Investigation ~ Core 2001
 	song gUnknown_0804A6D0, 0, 0 @ Trial
-	song gEnSfx014, 1, 1 @ English patch: DS BGM014 (was gUnknown_0804A704)
-	song gEnSfx015, 1, 1 @ English patch: DS BGM015 (was gUnknown_0804A720)
+	song gUnknown_0804A704, 1, 1 @ SE Realization 1
+	song gUnknown_0804A720, 1, 1 @ SE Got Evidence Jingle
 	song gUnknown_0804A848, 0, 0 @ Jingle ~ It Can't End Here
-	song gEnSfx017, 1, 1 @ English patch: DS BGM017 (was gUnknown_0804A874)
+	song gUnknown_0804A874, 1, 1 @ SE Realization 2
 	song gUnknown_0804AFD4, 0, 0 @ Suspense
 	song gUnknown_0804B5DC, 0, 0 @ Turnabout Sisters Ballad
 	song gUnknown_0804BD08, 0, 0 @ Victory! ~ The First Victory
@@ -3592,8 +3592,8 @@ gSongTable:	@ 0x0804132C
 	song gUnknown_0804F6D8, 0, 0 @ Recollection ~ Class Trial
 	song gUnknown_0804FC98, 0, 0 @ Recollection ~ Light and Shadow of the Film Studio
 	song gUnknown_0804FD4C, 0, 0 @ Birds chirping i guess
-	song gEnSfx032, 1, 1 @ English patch: DS BGM032 (was gUnknown_0804FD68)
-	song gEnSfx033, 0, 0 @ English patch: DS BGM033 (was gUnknown_0804FD84)
+	song gUnknown_0804FD68, 1, 1 @ SE Whoops
+	song gUnknown_0804FD84, 0, 0 @ SE Realization 1 (Clone with BGM music player)
 	song gUnknown_0804FD90, 0, 0 @ Dummy
 	song gUnknown_0804FD98, 0, 0 @ Dummy
 	song gUnknown_0804FDA0, 0, 0 @ Dummy
@@ -3602,70 +3602,70 @@ gSongTable:	@ 0x0804132C
 	song gUnknown_0804FDB8, 0, 0 @ Dummy
 	song gUnknown_0804FDC0, 0, 0 @ Dummy
 	song gUnknown_0804FDC8, 0, 0 @ Dummy
-	song gEnSfx042, 2, 2 @ English patch: DS SE000 (was gUnknown_08088424)
-	song gEnSfx043, 2, 2 @ English patch: DS SE001 (was gUnknown_08088450)
-	song gEnSfx044, 2, 2 @ English patch: DS SE002 (was gUnknown_08088480)
-	song gEnSfx045, 2, 2 @ English patch: DS SE003 (was gUnknown_080884AC)
-	song gEnSfx046, 2, 2 @ English patch: DS SE004 (was gUnknown_080884D8)
-	song gEnSfx047, 2, 2 @ English patch: DS SE005 (was gUnknown_080884F4)
-	song gEnSfx048, 1, 1 @ English patch: DS SE006 (was gUnknown_08088510)
-	song gEnSfx049, 1, 1 @ English patch: DS SE007 (was gUnknown_0808852C)
+	song gUnknown_08088424, 2, 2
+	song gUnknown_08088450, 2, 2
+	song gUnknown_08088480, 2, 2
+	song gUnknown_080884AC, 2, 2
+	song gUnknown_080884D8, 2, 2
+	song gUnknown_080884F4, 2, 2
+	song gUnknown_08088510, 1, 1
+	song gUnknown_0808852C, 1, 1
 	song gUnknown_08088548, 1, 1
-	song gEnSfx051, 1, 1 @ English patch: DS SE009 (was gUnknown_08088564)
-	song gEnSfx052, 1, 1 @ English patch: DS SE00A (was gUnknown_08088580)
-	song gEnSfx053, 1, 1 @ English patch: DS SE00B (was gUnknown_080885B4)
-	song gEnSfx054, 1, 1 @ English patch: DS SE00C (was gUnknown_080885D0)
+	song gUnknown_08088564, 1, 1
+	song gUnknown_08088580, 1, 1
+	song gUnknown_080885B4, 1, 1
+	song gUnknown_080885D0, 1, 1
 	song gEnSfx055, 1, 1 @ English patch: DS SE0B5 (was gUnknown_080885F0)
 	song gEnSfx056, 1, 1 @ English patch: DS SE0B3 (was gUnknown_08088610)
 	song gEnSfx057, 1, 1 @ English patch: DS SE0B2 (was gUnknown_08088630)
-	song gEnSfx058, 3, 3 @ English patch: DS SE010 (was gUnknown_08088654)
-	song gEnSfx059, 3, 3 @ English patch: DS SE011 (was gUnknown_08088680)
-	song gEnSfx060, 3, 3 @ English patch: DS SE012 (was gUnknown_080886A4)
-	song gEnSfx061, 1, 1 @ English patch: DS SE013 (was gUnknown_080886C0)
-	song gEnSfx062, 1, 1 @ English patch: DS SE014 (was gUnknown_080886E0)
-	song gEnSfx063, 1, 1 @ English patch: DS SE015 (was gUnknown_08088774)
-	song gEnSfx064, 1, 1 @ English patch: DS SE016 (was gUnknown_080887B0)
+	song gUnknown_08088654, 3, 3 @ 1 gavel
+	song gUnknown_08088680, 3, 3 @ 3 gavel
+	song gUnknown_080886A4, 3, 3 @ the judge is out of control help
+	song gUnknown_080886C0, 1, 1
+	song gUnknown_080886E0, 1, 1
+	song gUnknown_08088774, 1, 1
+	song gUnknown_080887B0, 1, 1
 	song gEnSfx065, 1, 1 @ English patch: DS SE0B4 (was gUnknown_080887D0)
-	song gEnSfx066, 1, 1 @ English patch: DS SE018 (was gUnknown_080887F0)
-	song gEnSfx067, 1, 1 @ English patch: DS SE019 (was gUnknown_0808880C)
-	song gEnSfx068, 1, 1 @ English patch: DS SE01A (was gUnknown_08088828)
-	song gEnSfx069, 1, 1 @ English patch: DS SE01B (was gUnknown_08088848)
-	song gEnSfx070, 1, 1 @ English patch: DS SE01C (was gUnknown_08088864)
+	song gUnknown_080887F0, 1, 1
+	song gUnknown_0808880C, 1, 1
+	song gUnknown_08088828, 1, 1
+	song gUnknown_08088848, 1, 1
+	song gUnknown_08088864, 1, 1
 	song gEnSfx071, 1, 1 @ English patch: DS SE0B1 (was gUnknown_08088880)
-	song gEnSfx072, 1, 1 @ English patch: DS SE01E (was gUnknown_0808889C)
-	song gEnSfx073, 1, 1 @ English patch: DS SE01F (was gUnknown_080888BC)
-	song gEnSfx074, 1, 1 @ English patch: DS SE020 (was gUnknown_080888D8)
-	song gEnSfx075, 1, 1 @ English patch: DS SE021 (was gUnknown_080888F4)
-	song gEnSfx076, 1, 1 @ English patch: DS SE022 (was gUnknown_08088910)
-	song gEnSfx077, 1, 1 @ English patch: DS SE023 (was gUnknown_08088930)
-	song gEnSfx078, 1, 1 @ English patch: DS SE024 (was gUnknown_0808894C)
-	song gEnSfx079, 1, 1 @ English patch: DS SE025 (was gUnknown_08088968)
-	song gEnSfx080, 1, 1 @ English patch: DS SE026 (was gUnknown_08088984)
+	song gUnknown_0808889C, 1, 1
+	song gUnknown_080888BC, 1, 1
+	song gUnknown_080888D8, 1, 1
+	song gUnknown_080888F4, 1, 1
+	song gUnknown_08088910, 1, 1
+	song gUnknown_08088930, 1, 1
+	song gUnknown_0808894C, 1, 1
+	song gUnknown_08088968, 1, 1
+	song gUnknown_08088984, 1, 1
 	song gEnSfx081, 1, 1 @ English patch: DS SE0B0 (was gUnknown_080889A4)
-	song gEnSfx082, 1, 1 @ English patch: DS SE028 (was gUnknown_080889C4)
-	song gEnSfx083, 1, 1 @ English patch: DS SE029 (was gUnknown_080889E4)
-	song gEnSfx084, 1, 1 @ English patch: DS SE02A (was gUnknown_08088A04)
-	song gEnSfx085, 1, 1 @ English patch: DS SE02B (was gUnknown_08088A24)
-	song gEnSfx086, 1, 1 @ English patch: DS SE02C (was gUnknown_08088A44)
-	song gEnSfx087, 1, 1 @ English patch: DS SE02D (was gUnknown_08088A60)
-	song gEnSfx088, 2, 2 @ English patch: DS SE02E (was gUnknown_08088A80)
-	song gEnSfx089, 2, 2 @ English patch: DS SE02F (was gUnknown_08088AA0)
-	song gEnSfx090, 1, 1 @ English patch: DS SE030 (was gUnknown_08088AFC)
-	song gEnSfx091, 1, 1 @ English patch: DS SE031 (was gUnknown_08088B1C)
-	song gEnSfx092, 1, 1 @ English patch: DS SE032 (was gUnknown_08088B38)
-	song gEnSfx093, 1, 1 @ English patch: DS SE033 (was gUnknown_08088B54)
-	song gEnSfx094, 1, 1 @ English patch: DS SE034 (was gUnknown_08088B70)
-	song gEnSfx095, 1, 1 @ English patch: DS SE035 (was gUnknown_08088B8C)
-	song gEnSfx096, 1, 1 @ English patch: DS SE036 (was gUnknown_08088BA8)
-	song gEnSfx097, 1, 1 @ English patch: DS SE037 (was gUnknown_08088BFC)
-	song gEnSfx098, 1, 1 @ English patch: DS SE038 (was gUnknown_08088C18)
-	song gEnSfx099, 1, 1 @ English patch: DS SE039 (was gUnknown_08088C34)
-	song gEnSfx100, 1, 1 @ English patch: DS SE03A (was gUnknown_08088C50)
-	song gEnSfx101, 1, 1 @ English patch: DS SE03B (was gUnknown_08088C70)
-	song gEnSfx102, 1, 1 @ English patch: DS SE03C (was gUnknown_08088C90)
-	song gEnSfx103, 1, 1 @ English patch: DS SE03D (was gUnknown_08088CAC)
-	song gEnSfx104, 1, 1 @ English patch: DS SE03E (was gUnknown_08088CCC)
-	song gEnSfx105, 1, 1 @ English patch: DS SE03F (was gUnknown_08088CE8)
+	song gUnknown_080889C4, 1, 1
+	song gUnknown_080889E4, 1, 1
+	song gUnknown_08088A04, 1, 1
+	song gUnknown_08088A24, 1, 1
+	song gUnknown_08088A44, 1, 1
+	song gUnknown_08088A60, 1, 1
+	song gUnknown_08088A80, 2, 2
+	song gUnknown_08088AA0, 2, 2
+	song gUnknown_08088AFC, 1, 1
+	song gUnknown_08088B1C, 1, 1
+	song gUnknown_08088B38, 1, 1
+	song gUnknown_08088B54, 1, 1
+	song gUnknown_08088B70, 1, 1
+	song gUnknown_08088B8C, 1, 1
+	song gUnknown_08088BA8, 1, 1
+	song gUnknown_08088BFC, 1, 1
+	song gUnknown_08088C18, 1, 1
+	song gUnknown_08088C34, 1, 1
+	song gUnknown_08088C50, 1, 1
+	song gUnknown_08088C70, 1, 1
+	song gUnknown_08088C90, 1, 1
+	song gUnknown_08088CAC, 1, 1
+	song gUnknown_08088CCC, 1, 1
+	song gUnknown_08088CE8, 1, 1
 	song gUnknown_08088D04, 1, 1
 	song gUnknown_08088D20, 1, 1
 	song gUnknown_08088D3C, 1, 1
