@@ -3,6 +3,7 @@
 #include "main.h"
 #include "animation.h"
 #include "script.h"
+#include "vwf.h"
 #include "sound.h"
 #include "utils.h"
 #include "m4a.h"
@@ -317,7 +318,7 @@ bool32 Command08(struct ScriptContext * scriptCtx)
             scriptCtx->textX = 0;
             scriptCtx->textY = 0;
             scriptCtx->flags &= ~SCRIPT_FULLSCREEN;
-            scriptCtx->textYOffset = 0x74;
+            scriptCtx->textYOffset = VWF_TEXT_Y;
             scriptCtx->textSpeed = scriptCtx->prevTextSpeed;
             scriptCtx->textboxNameId = 0;
             SetTextboxSize(0);
@@ -402,7 +403,7 @@ bool32 Command09(struct ScriptContext * scriptCtx)
             scriptCtx->textX = 0;
             scriptCtx->textY = 0;
             scriptCtx->flags &= ~SCRIPT_FULLSCREEN;
-            scriptCtx->textYOffset = 0x74;
+            scriptCtx->textYOffset = VWF_TEXT_Y;
             scriptCtx->textSpeed = scriptCtx->prevTextSpeed;
             scriptCtx->textboxNameId = 0;
             SetTextboxSize(0);

@@ -7,10 +7,11 @@ third line and slides right and back, 1 px every 3 frames (positions 1 2 3 4
 3 2, an 18-frame cycle): its tip is 3 px from the box's right border at
 position 1 and on the border's inner column at position 4 (measured in the
 DS game, frame by frame: columns 243-251 to 246-254, the border at 254-255).
-Here it is drawn on the box's own layer (BG1) at the same distance from the
-border (238-239): columns 227-235 (position 1) to 230-238 (position 4), rows
-148-156, as low in the third line as the box allows (the DS's box has 9 rows
-to spare under its arrow, this one has 1). Four 2 x 2 tile frames (map rows
+Vertically its centre is on the third line's baseline (DS rows 172-180, the
+baseline 176). Here it is drawn on the box's own layer (BG1) at the same
+distance from the border (238-239): columns 227-235 (position 1) to 230-238
+(position 4), rows 149-157 with the third line's baseline at 153 (vwf.h
+VWF_TEXT_Y), its last row the box's last. Four 2 x 2 tile frames (map rows
 18-19, columns 28-29) built on the box's own corner tiles (1, 7, 9, 5 of the
 message box tileset), 16 tiles in all, loaded at BG tiles 448-463 (the unused
 ASCII charset area). White is palette index 8, as the GBA's own arrow used.
@@ -22,7 +23,7 @@ SRC = os.path.join(ROOT, 'graphics', 'ui', 'message_box', 'save_game_tiles.png')
 OUT = os.path.join(ROOT, 'graphics', 'en', 'next_arrow.png')
 BASE = (1, 7, 9, 5)        # top-left, top-right, bottom-left, bottom-right of the corner
 WHITE = 8
-TOP_Y, LEFT_X = 148, 227   # position 1: rows 148-156, columns 227-235
+TOP_Y, LEFT_X = 149, 227   # position 1: rows 149-157, columns 227-235
 TILE_X, TILE_Y = 224, 144  # the 2 x 2 block's origin (map row 18, column 28)
 
 

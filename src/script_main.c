@@ -181,8 +181,8 @@ void InitScriptSection(struct ScriptContext *scriptCtx)
     scriptCtx->paragraphSkipDelayCounter = 8;
     scriptCtx->soundCueSkip = 1;
     scriptCtx->currentSoundCue = 0;
-    scriptCtx->textXOffset = 9;
-    scriptCtx->textYOffset = 0x74;
+    scriptCtx->textXOffset = VWF_TEXT_X;
+    scriptCtx->textYOffset = VWF_TEXT_Y;
     scriptCtx->nextSection = scriptCtx->currentSection + 1;
     scriptCtx->holdItSection = 0;
     scriptCtx->holdItFlag = 0;

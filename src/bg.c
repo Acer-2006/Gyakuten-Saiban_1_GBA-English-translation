@@ -250,9 +250,9 @@ void SetTextboxSize(u32 unk0)
 }
 
 // English patch: the DS's "next" arrow, a 9 x 9 triangle at the right end of
-// the third line (tools/en/make_next_arrow.py): position 1-4 (its tip 3 px
-// from the box's right border to on the border's inner column, as on the DS),
-// 0 to take it away. Four 2 x 2 tile frames at BG tiles 448-463, on the box's
+// the third line, centred on its baseline (tools/en/make_next_arrow.py):
+// position 1-4 (its tip 3 px from the box's right border to on the border's
+// inner column, as on the DS), 0 to take it away. Four 2 x 2 tile frames at BG tiles 448-463, on the box's
 // own corner (map rows 18-19, columns 28-29, as gTextboxTiles has them).
 void TextboxNextArrow(u32 pos)
 {

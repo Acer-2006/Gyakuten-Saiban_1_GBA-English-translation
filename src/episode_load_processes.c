@@ -753,6 +753,7 @@ void ContinueSaveProcess(struct Main * main) {
             MakeMapMarkerSprites();
             SetTextboxNametag(gScriptContext.textboxNameId & 0x7F, gScriptContext.textboxNameId & 0x80);
             DmaCopy16(3, gSaveDataBuffer.bg1Map, gBG1MapBuffer, sizeof(gBG1MapBuffer));
+            VwfFixSavedTextbox(); // English patch: a save from an earlier build
             DmaCopy16(3, gSaveDataBuffer.bg0Map, gBG0MapBuffer, sizeof(gBG0MapBuffer));
             DecompressBackgroundIntoBuffer(main->currentBG);
             CopyBGDataToVramAndScrollBG(main->currentBG);
