@@ -5,6 +5,11 @@
 #define SOUND_FLAG_DISABLE_BGM (1 << 1)
 #define SOUND_FLAG_DISABLE_CUE (1 << 2)
 
+// English patch: gameStateFlags bit set by Command16 at the end of the credits
+// (the last chapter has no chapter after it): the save prompt leads to the
+// title (SaveGame5). Cleared there and by CourtInit / InvestigationInit.
+#define GAME_STATE_CREDITS_OVER (1 << 31)
+
 struct Joypad
 {
     /* +0x00 */ u16 heldKeys;
@@ -88,7 +93,7 @@ struct Main
     /* +0x090 */ u16 talkingAnimationOffset; // unity: Def_talk_foa
     /* +0x092 */ u16 idleAnimationOffset; // unity: Def_wait_foa
     /* +0x094 */ u32 scriptFlags[8]; // unity: sce_flag matches debug menu
-    /* +0x0B4 */ u32 gameStateFlags; // unity: status_flag matches debug menu
+    /* +0x0B4 */ u32 gameStateFlags; // unity: status_flag matches debug menu (English patch: GAME_STATE_CREDITS_OVER too)
     /* +0x0B8 */ u32 talkEndFlags[8]; // unity: talk_end_flag
     /* +0x0D8 */ u8 roomData[24][8]; // unity: Map_data //TODO: first size might be wrong
     /* +0x198 */ u32 soundFlags;

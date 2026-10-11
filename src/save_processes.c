@@ -62,6 +62,12 @@ u32 LoadSaveData()
         gMain.saveContinueFlags = 0;
         return 1;
     }
+    // English patch: a save made at the prompt after the credits by an earlier
+    // build (v0.7.5 to v0.7.54) says chapter 17, one past the last: Continue
+    // then showed "No clues here." for the chapter's name and could not start
+    // it. The last chapter, as Command16 saves it now.
+    if(gSaveDataBuffer.main.scenarioIdx > 16)
+        gSaveDataBuffer.main.scenarioIdx = 16;
     gMain.saveContinueFlags = 0x10;
     return 0;
 }
@@ -412,6 +418,16 @@ void SaveGame5(struct Main *main)
         return;
     }
     gIORegisters.lcd_dispcnt = 0;
+    // English patch: after the credits (Command16) the title, as the Japanese
+    // game's ending fades to, saved or not
+    if(main->gameStateFlags & GAME_STATE_CREDITS_OVER)
+    {
+        main->gameStateFlags &= ~GAME_STATE_CREDITS_OVER;
+        main->advanceScriptContext = FALSE;
+        main->showTextboxCharacters = FALSE;
+        SET_PROCESS_PTR(TITLE_SCREEN_PROCESS, 0, 0, 0, main);
+        return;
+    }
     gScriptContext.currentSection = 0x80;
     SET_PROCESS_PTR(gCaseStartProcess[main->scenarioIdx], 0, 0, 0, main);
 }

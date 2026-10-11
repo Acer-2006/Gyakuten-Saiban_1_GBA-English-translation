@@ -607,7 +607,16 @@ bool32 Command16(struct ScriptContext * scriptCtx)
     SET_PROCESS(COURT_PROCESS, COURT_EXIT, 0, 0);
     gInvestigation.selectedAction = 0;
     gInvestigation.lastAction = 0;
-    main->scenarioIdx++;
+    // English patch: the DS ends its credits with this command as well (its
+    // game goes on to Rise from the Ashes), the Japanese game without it (it
+    // fades to the title). This game has no chapter after Turnabout Goodbyes'
+    // last: the save the DS offers after the credits is of that chapter
+    // cleared, Continue then offers it from its start, and the prompt leads
+    // to the title (SaveGame5), not to a chapter 17.
+    if (main->scenarioIdx < 16)
+        main->scenarioIdx++;
+    else
+        main->gameStateFlags |= GAME_STATE_CREDITS_OVER;
     PlayBGM(BGM016_JINGLE_SAVE);
     return 1;
 }
