@@ -88,6 +88,7 @@ extern struct MapMarker gMapMarker[8];
 /* begin script data */
 
 extern const u32 std_scripts[];
+extern const u32 gStdScriptSize;
 extern const u8 scenario_0_script[];
 extern const u8 scenario_1_0_script[];
 extern const u8 scenario_1_1_script[];

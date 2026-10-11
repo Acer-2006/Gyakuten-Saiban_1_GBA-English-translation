@@ -486,8 +486,22 @@ bool32 VwfFixSavedScriptPos(void)
     u32 size, n, k, i, sec, start, end, pos, len, oldPos, rel, best, bestDist, d, t, labels;
     bool32 useLog, oldValid = FALSE, oldText = FALSE, choice, same, bestSame = FALSE;
 
-    if (ctx->currentSection < 0x80 || gMain.scenarioIdx > 16)
-        return FALSE;
+    // A save made in the common script (a wrong-evidence penalty, say) is
+    // looked up in it the same way: it is in the ROM at the same address in
+    // every build, but its sections move about as the script changes
+    if (ctx->currentSection < 0x80)
+    {
+        base = (const u8 *)std_scripts;
+        size = gStdScriptSize;
+        sec = ctx->currentSection;
+    }
+    else
+    {
+        if (gMain.scenarioIdx > 16)
+            return FALSE;
+        size = gScriptSizes[gMain.scenarioIdx];
+        sec = ctx->currentSection - 0x80;
+    }
     // A save made at a choice, with the answers up (the tall text box): the
     // place was kept as it was, and with a save from an earlier build the
     // script went on from the wrong place, the choice was lost and its
@@ -495,14 +509,12 @@ bool32 VwfFixSavedScriptPos(void)
     choice = (ctx->flags & SCRIPT_FULLSCREEN) != 0;
     if (choice && ctx->currentToken != 0x08 && ctx->currentToken != 0x09)
         return FALSE;
-    size = gScriptSizes[gMain.scenarioIdx];
     n = *(const u32 *)base;
     offs = (const u32 *)(base + 4);
     // the section offsets come first, in order; jump records follow them
     for (k = 0; k < n; k++)
         if (offs[k] >= size || (k > 0 && offs[k] <= offs[k - 1]))
             break;
-    sec = ctx->currentSection - 0x80;
     if (sec >= k)
         return FALSE;
     start = offs[sec];
