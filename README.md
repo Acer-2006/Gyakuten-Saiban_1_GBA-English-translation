@@ -42,11 +42,19 @@ game, running on the GBA's own engine with its own timing.
 ## How to play
 
 1. **You need your own copy of the game** as a ROM file:
-   *Gyakuten Saiban* (Game Boy Advance, Japan), 8 MB,
-   CRC32 `c88f0952`, SHA-1 `15c0e3389709bb275c42e99ed25212d09e49e361`.
-   Some copies have "DUMPED BY AAA" written at the very end of the file
-   (CRC32 `0d9f9697`). That is the same game with a tag added; the release
-   includes a patch for those copies too. No ROMs are provided here.
+   *Gyakuten Saiban* (Game Boy Advance, Japan), 8 MB. There are two
+   releases of it, and the patch comes in a version for each:
+   - the first release, CRC32 `c88f0952`,
+     SHA-1 `15c0e3389709bb275c42e99ed25212d09e49e361`;
+   - "Rev 1", CRC32 `33f29c07`,
+     SHA-1 `d23b788c80732898c6cfe344a6811900eb060f23` (same game, laid out
+     differently inside, so it needs its own patch: `..._rev1.bps`).
+   Some copies of the first release have "DUMPED BY AAA" written at the
+   very end of the file (CRC32 `0d9f9697`); the release includes a patch
+   for those too (`..._tagged-dump.bps`). No ROMs are provided here.
+   A BPS patch fits only the ROM it was made for: if yours comes out
+   unchanged (the game still in Japanese) or broken, the ROM's CRC32 is
+   not the one that patch expects; most patchers show the ROM's CRC32.
 2. **Download the patch** (`.bps`) from the
    [Releases](../../releases) page.
 3. **Apply it** with a BPS patcher, for example
