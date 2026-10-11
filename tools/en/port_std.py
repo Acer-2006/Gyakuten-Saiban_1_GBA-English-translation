@@ -24,9 +24,12 @@ PAIRS.update({24: 43, 25: 44, 26: 45, 27: 46, 28: 47, 29: 48, 30: 49})
 # load messages are now drawn on the DS plate, which centres each line itself
 # (en_menu.c / vwf.c); "Select an episode." and the new-episode notice
 # (sections 2 and 5) are still drawn at x=9 in a box spanning x=27..216, so
-# those lines are centred here.
+# those lines are centred here. The DS's own centre command (5D) is left
+# out of every section: the plates centre without it, and with it the
+# padded lines would be centred twice.
 WIDTHS = open(os.path.join(os.path.dirname(__file__), '..', '..', 'graphics/vwf/font_widths.bin'), 'rb').read()
 BOX_CENTRE, TEXT_X, SPACE = 121, 9, 4
+CENTRE = 0x5D                      # the DS's centre command (port_script.CENTRE)
 
 def centre(ds, sections):
     from phscr import section_bounds, tokens, parse
@@ -59,8 +62,22 @@ def centre(ds, sections):
                         new.append(op); new.extend(args)
                         line_start = None
                         continue
+                    if op == CENTRE:
+                        continue
                     new.append(op); new.extend(args)
             flush()
+            toks = new
+        elif x:
+            # the DS centres its plate lines with 5D; the plates here centre
+            # each line themselves (en_menu.c EnMenuLineStart), and the box
+            # lines above are centred with spaces, which 5D would centre again
+            items, _ = parse(toks, ds_args)
+            new = []
+            for pos, kind, op, args in items:
+                if kind == 'text':
+                    new.append(op)
+                elif op != CENTRE:
+                    new.append(op); new.extend(args)
             toks = new
         out_secs.append(toks)
     body = bytearray(); newoffs = []

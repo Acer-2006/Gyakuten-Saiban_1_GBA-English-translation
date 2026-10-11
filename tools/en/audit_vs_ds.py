@@ -12,6 +12,9 @@ script):
   white flashes and fades to white, the evidence plate, the text box shown /
   hidden, name tags, music, penalties;
 - who is shown at each line (1E: both games number the people alike);
+- who is given a pose (1E) between the previous wait and each line: a pose
+  the DS gives before a line must be given before it here too (the merge
+  had lined one up with the pose after the line);
 - the Objection! / Hold it! / Take that! bubbles;
 - each choice: the section every answer leads to, in the DS's answer order
   (the answer labels are the DS's).
@@ -114,6 +117,35 @@ def people(items):
     return res
 
 
+WAITS = (0x02, 0x2D, 0x07, 0x0A)
+
+
+def pre_poses(items):
+    """for each line (a run of text between waits): the people given a pose (1E)
+    between the previous wait and the line's first letter. The merge lined the
+    DS's pose after "Mr. Wright, please think the facts over before making
+    accusations." up with the Japanese pose before it, so the line lost the
+    judge's startled pose and got it, mouth moving, after the line instead."""
+    res, pre, intext = [], set(), False
+    for p, k, op, a in items:
+        if k == 'text':
+            if not intext:
+                res.append(pre)
+                pre = set()
+            intext = True
+            continue
+        if k != 'cmd':
+            continue
+        if op in (0x01, 0x03, 0x0B, 0x0C):
+            continue
+        intext = False
+        if op in WAITS:
+            pre = set()
+        elif op == 0x1E and a and a[0]:
+            pre.add(a[0])
+    return res
+
+
 def bubbles(items):
     return [a[0] for p, k, op, a in items if k == 'cmd' and op == 0x2F and a and a[0] in P.SPEECH_BUBBLES]
 
@@ -167,6 +199,10 @@ def audit(name, gfile, efile, dsb, pairs, std=False):
         if len(ep) == len(dp) and ep != dp:
             found += ['%s line %d shows person %s, the DS %s' % (where, k, x, y)
                       for k, (x, y) in enumerate(zip(ep, dp)) if x != y]
+        epp, dpp = pre_poses(ei), pre_poses(di)
+        if len(epp) == len(dpp):
+            found += ['%s line %d: the DS poses %s before it, here not' % (where, k, sorted(y - x))
+                      for k, (x, y) in enumerate(zip(epp, dpp)) if y - x]
         if bubbles(ei) != bubbles(di):
             found.append('%s bubbles %s, the DS %s' % (where, bubbles(ei), bubbles(di)))
         ec = [(op, a) for p, k, op, a in ei if k == 'cmd' and op in (0x08, 0x09)]
