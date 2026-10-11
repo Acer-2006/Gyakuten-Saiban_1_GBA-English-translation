@@ -3,6 +3,7 @@
 #include "script.h"
 #include "ewram.h"
 #include "vwf.h"
+#include "background.h"
 #include "agb_sram.h"
 #include "en_menu.h"
 #include "en_menu_gfx.h"
@@ -455,6 +456,24 @@ static void VwfRestartSavedSection(const u16 * s)
     gVwf->choiceIds[3] = 0;
     for (i = 0; i < ARRAY_COUNT(gTextBoxCharacters); i++)
         gTextBoxCharacters[i].state &= ~0x8000;
+}
+
+// A save from before v0.7.54, loaded (ContinueSaveProcess, SaveGameExitSaveScreen):
+// its text box map may hold that version's "next" arrow (the GBA's, tiles
+// 0x20-0x27 on the box's bottom row), which nothing would take away now that
+// the DS's arrow has its own place (bg.c TextboxNextArrow); and its lines sat
+// 2 px lower (textYOffset 0x74, VWF_TEXT_Y now), which would last until the
+// section ended.
+void VwfFixSavedTextbox(void)
+{
+    u32 i;
+    for (i = 0x260; i < 0x280; i++)
+    {
+        if (gBG1MapBuffer[i] >= 0x20 && gBG1MapBuffer[i] <= 0x27)
+            gBG1MapBuffer[i] = gTextboxTiles[i];
+    }
+    if (gScriptContext.textXOffset == VWF_TEXT_X && gScriptContext.textYOffset == 0x74)
+        gScriptContext.textYOffset = VWF_TEXT_Y;
 }
 
 bool32 VwfFixSavedScriptPos(void)

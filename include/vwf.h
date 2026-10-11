@@ -8,6 +8,13 @@
 #define VWF_BLOCKS_PER_LINE 8          // 8 x 32px = 256px (224px used)
 #define VWF_LINE_PIXELS (VWF_BLOCKS_PER_LINE * 32)
 #define VWF_LINE_HEIGHT 14
+// Where the lines sit in the text box (the sprites' offset: textXOffset,
+// textYOffset). The box's inside is rows 114-157; the glyph cell has two blank
+// rows on top, so the first line's capitals start at 116, two rows in, as the
+// Japanese game's letters did (the DS has five), and the third line's baseline
+// is at 153 with the DS's "next" arrow centred on it (rows 149-157, bg.c).
+#define VWF_TEXT_X 9
+#define VWF_TEXT_Y 114
 #define VWF_GLYPH_ROWS 13
 #define VWF_GLYPH_BYTES (VWF_GLYPH_ROWS * 8)
 #define VWF_GLYPH_COUNT 1400
@@ -28,5 +35,6 @@ bool32 VwfChoiceLabelsPending(void);
 void ReloadChoiceLabelGfx(const u16 *ids);
 void VwfLoadLog(void);
 bool32 VwfFixSavedScriptPos(void);
+void VwfFixSavedTextbox(void);
 
 #endif // GUARD_VWF_H

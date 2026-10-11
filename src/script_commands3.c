@@ -154,8 +154,8 @@ bool32 Command48(struct ScriptContext *scriptCtx)
     if(*scriptCtx->scriptPtr == 0xFFFF) 
     {
         gIORegisters.lcd_dispcnt |= DISPCNT_BG1_ON;
-        scriptCtx->textXOffset = 9;
-        scriptCtx->textYOffset = DISPLAY_HEIGHT-44;
+        scriptCtx->textXOffset = VWF_TEXT_X;
+        scriptCtx->textYOffset = VWF_TEXT_Y;
         scriptCtx->scriptPtr+=2;
     }
     else 
@@ -435,7 +435,7 @@ void DropStaleChoice(struct ScriptContext *scriptCtx)
     if (!(scriptCtx->flags & SCRIPT_FULLSCREEN) && !VwfChoiceLabelsPending())
         return;
     scriptCtx->flags &= ~SCRIPT_FULLSCREEN;
-    scriptCtx->textYOffset = 0x74;
+    scriptCtx->textYOffset = VWF_TEXT_Y;
     scriptCtx->textboxNameId = 0;
     PutAwayChoiceScreen(scriptCtx);
     ChoiceLabelsDone();

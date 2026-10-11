@@ -348,6 +348,7 @@ void SaveGameExitSaveScreen(struct Main *main)
     VwfRestore();
     RedrawTextboxCharacters();
     DmaCopy16(3, &gSaveDataBuffer.scriptCtx, &gScriptContext, sizeof(gScriptContext));
+    VwfFixSavedTextbox(); // English patch: a save from an earlier build
     DmaCopy16(3, &gSaveDataBuffer.ioRegs, &gIORegisters, sizeof(gIORegisters));
     DmaCopy16(3, gSaveDataBuffer.mapMarker, gMapMarker, sizeof(gMapMarker));
     DmaCopy16(3, gSaveDataBuffer.talkData, gTalkData, sizeof(gTalkData));
