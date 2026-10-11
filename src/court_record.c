@@ -617,8 +617,7 @@ void InitializeCourtRecordForScenario(struct Main * main, struct CourtRecord * c
 
 void CourtRecordProcess(struct Main * main) // Status
 {
-    gBG1MapBuffer[635] = 9;
-    gBG1MapBuffer[636] = 9;
+    TextboxNextArrow(0); // English patch
     gCourtRecordProcessStates[main->process[GAME_PROCESS_STATE]](main, &gCourtRecord);
 }
 
@@ -908,8 +907,7 @@ void CourtRecordExit(struct Main * main, struct CourtRecord * courtRecord) // st
         courtRecord->flags &= ~2;
         if(main->process[GAME_PROCESS_VAR2] == 0 && !(gScriptContext.flags & SCRIPT_FULLSCREEN))
         {
-            gBG1MapBuffer[635] = 0x20;
-            gBG1MapBuffer[636] = 0x21;
+            TextboxNextArrowNow(); // English patch: the DS's arrow, as the wait has it (script_commands.c)
         }
         RESTORE_PROCESS_PTR(main);
     }

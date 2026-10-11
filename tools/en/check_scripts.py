@@ -23,7 +23,9 @@ the Japanese script (the English scripts keep the Japanese sections):
 - Lines that fit: no line wider than the 224 pixels of the text box, no page
   whose text reaches a fourth line (the engine draws it into the third: the
   Gourd Lake map scene had "searchingfor something." when a DS command's
-  second argument was read as a line break).
+  second argument was read as a line break), no third line reaching the
+  "next" arrow at the line's right end (the DS's, from 227 px: a third line
+  may be 217 px wide; the widest is 188).
 - No wait for A with the text box hidden (nothing to read, no arrow) where
   the Japanese section has none: after "(Maybe I should just listen to the
   testimony again.)" the Japanese wait-and-jump had been kept after the DS's
@@ -42,6 +44,7 @@ TEXT_KEEPS = (0x01, 0x03, 0x0B, 0x0C)  # new line, colour, speed, wait: still th
 CHOICES = {0x08: 2, 0x09: 3}           # answers' sections: the first 2 / 3 arguments
 JUMPS = {0x0A: (0,), 0x2C: (0,), 0x20: (0,), 0x2A: (1, 2)}   # section arguments
 LINE_PIXELS = 224                      # vwf.h: 8 x 32 px blocks, 224 px used
+THIRD_LINE_PIXELS = 217                # the "next" arrow (bg.c TextboxNextArrow) starts 227 px in, the text 9 px in
 SPACE = 4
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
 WIDTHS = open(os.path.join(ROOT, 'graphics', 'vwf', 'font_widths.bin'), 'rb').read()
@@ -127,17 +130,20 @@ def branches(items):
 
 
 def wide_lines(items):
-    """[(pixels, text)] for lines wider than the text box"""
-    res, w, s = [], 0, ''
+    """[(pixels, text, limit)] for lines wider than the text box, and third
+    lines (of a page the arrow waits on) reaching the "next" arrow"""
+    res, w, s, y = [], 0, '', 0
     for p, k, op, a in items + [(None, 'cmd', 0x01, ())]:
         if k == 'text':
             c = op - 0x80
             w += SPACE if c == 0xFF else (WIDTHS[c] + 1 if c < len(WIDTHS) else 99)
             s += ch(op)
         elif k == 'cmd' and op in (0x01, 0x02, 0x07, 0x08, 0x09, 0x0A, 0x0D, 0x2D, 0x2E):
-            if w - 1 > LINE_PIXELS:
-                res.append((w - 1, s))
+            limit = THIRD_LINE_PIXELS if y == 2 and op in (0x02, 0x0A, 0x2D) else LINE_PIXELS
+            if w - 1 > limit:
+                res.append((w - 1, s, limit))
             w, s = 0, ''
+            y = y + 1 if op == 0x01 else 0
     return res
 
 
@@ -240,8 +246,9 @@ def check_file(jp_path, en_path):
                                                                  sorted(hex(x) for x in gj.elements())))
         for e in bad_jumps(eb, gn, eo, en_items, i):
             errors.append('%s: %s' % (where, e))
-        for w, s in wide_lines(ei):
-            errors.append('%s: line %d pixels wide (the box has %d): "%s"' % (where, w, LINE_PIXELS, s))
+        for w, s, limit in wide_lines(ei):
+            errors.append('%s: line %d pixels wide (%s): "%s"' % (where, w, 'the box has %d' % limit if limit == LINE_PIXELS
+                                                                 else 'a third line has %d before the arrow' % limit, s))
         for s in fourth_lines(ei):
             errors.append('%s: text on a fourth line: "%s"' % (where, s))
         eh, gh = hidden_waits(ei), hidden_waits(gi)
@@ -268,7 +275,8 @@ def main():
         print('script check failed: %d problem(s)' % len(errors), file=sys.stderr)
         return 1
     print('script check: %d scripts: no line on a black screen, penalties and branches as in the '
-          'Japanese game, every jump lands, every line fits, no fourth line, no wait on a hidden box' % n)
+          'Japanese game, every jump lands, every line fits (third lines clear of the arrow), no fourth line, '
+          'no wait on a hidden box' % n)
     return 0
 
 
