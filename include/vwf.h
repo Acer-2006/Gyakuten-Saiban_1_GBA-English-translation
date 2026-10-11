@@ -11,8 +11,8 @@
 // Where the lines sit in the text box (the sprites' offset: textXOffset,
 // textYOffset). The box's inside is rows 114-157; the glyph cell has two blank
 // rows on top, so the first line's capitals start at 116, two rows in, as the
-// Japanese game's letters did (the DS has five), and the third line's baseline
-// is at 153 with the DS's "next" arrow centred on it (rows 149-157, bg.c).
+// Japanese game's letters did (the DS has five); the third line's capitals are
+// at 144-153, where the DS's "next" arrow sits (rows 144-152, bg.c).
 #define VWF_TEXT_X 9
 #define VWF_TEXT_Y 114
 #define VWF_GLYPH_ROWS 13
