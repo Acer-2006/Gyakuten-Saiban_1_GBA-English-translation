@@ -17,7 +17,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 from phscr import GBA_ARGS, load, section_bounds, tokens, parse
 
 DS_ARGS = {int(k, 16): v for k, v in json.load(open(os.path.join(os.path.dirname(__file__), 'ds_args.json'))).items()}
-DS_ONLY = {0x69, 0x6b, 0x74, 0x5d, 0x75, 0x4d, 0x4e, 0x65, 0x6f, 0x78, 0x7a}
+DS_ONLY = {0x69, 0x6b, 0x74, 0x5d, 0x75, 0x4d, 0x4e, 0x65, 0x6f, 0x78}
+GAMEOVER_CHECK = 0x5F   # GBA: the DS's 7A (script_commands3.c)
 # Commands whose DS arguments can be used directly on GBA when unmatched
 DS_KEEP = {0x01, 0x02, 0x03, 0x07, 0x0B, 0x0C, 0x0D, 0x0E, 0x11, 0x14, 0x16, 0x1F,
            0x21, 0x24, 0x27, 0x2B, 0x2D, 0x2E, 0x30, 0x40, 0x41, 0x49, 0x4C}
@@ -928,6 +929,14 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 anim = look_pick(args[2], args[3], dest, 1, None)
             out.extend([0x1A, args[0], args[1], args[2], anim])
             stats['ds_pan'] = stats.get('ds_pan', 0) + 1
+        elif op == 0x7A:
+            # the DS's game over check, after a penalty in the scenes the DS
+            # ends with a plain jump (2C) where the Japanese game's 0A checked
+            # the marks: with none left the game over comes here, as on the DS
+            # (after "Oh. Whoops. Wrong evidence." the judge's "Luckily for
+            # you, I'm in a patient mood" is not said)
+            out.extend([GAMEOVER_CHECK, args[0] if args else 0])
+            stats['ds_gameover_check'] = stats.get('ds_gameover_check', 0) + 1
         elif op == DS_WAIT:
             # the DS pauses with the speaker's mouth closed: 0C with bit 15 (script_commands.c)
             out.extend([0x0C, 0x8000 | (args[0] & 0x7FFF)])
@@ -1040,8 +1049,13 @@ def merge_section(gtoks, dtoks, choice_ids=None):
     # screen: after Edgeworth asks Cody to change his testimony (Turnabout
     # Samurai) the text box went and the game sat there, no arrow, until A
     # brought in "I took a few shots...". Such a 0A becomes a 2C (same
-    # target, no wait).
-    def text_since_wait(items, upto):
+    # target, no wait). The same when the DS has put the line away before
+    # the jump (the text box hidden, 1C 1, with no line after it): after
+    # "(Maybe I should just listen to the testimony again.)" (Turnabout
+    # Sisters, day 2) the DS hides the box and fades to April May without a
+    # wait, and the Japanese 0A after the DS's fade waited for A on a screen
+    # with nothing to read and no arrow.
+    def text_since_wait(items, upto, shown=False):
         t = False
         for x in items:
             if x[0] >= upto:
@@ -1050,12 +1064,14 @@ def merge_section(gtoks, dtoks, choice_ids=None):
                 t = True
             elif x[2] in (0x02, 0x07, 0x0A, 0x2D):
                 t = False
+            elif shown and x[2] == 0x1C and x[3] and x[3][0] == 1:
+                t = False
         return t
     oitems = parse(out, GBA_ARGS)[0]
     for x in g:
         if x[1] == 'cmd' and x[2] == 0x0A and x[0] in gpos_to_out and text_since_wait(g, x[0]):
             o = gpos_to_out[x[0]]
-            if out[o:o + 1] == [0x0A] and not text_since_wait(oitems, o):
+            if out[o:o + 1] == [0x0A] and not text_since_wait(oitems, o, shown=True):
                 out[o] = 0x2C
                 stats['wait_jump_after_wait'] = stats.get('wait_jump_after_wait', 0) + 1
     # every GBA section starts with 00 (reset the text box and script state

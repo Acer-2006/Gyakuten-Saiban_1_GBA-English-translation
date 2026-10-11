@@ -183,6 +183,28 @@ def audit(name, gfile, efile, dsb, pairs, std=False):
     return found, expected
 
 
+def ds_parse_check(dsb, name):
+    """The DS script must parse cleanly with ds_args.json: an unknown opcode, or a
+    00 (section start) in the middle of a section, means a command's argument
+    count is short and its last argument is being read as a command (4B's second
+    argument came through as a line break and a page break, 6B's third as 1F)."""
+    dn = struct.unpack_from('<I', dsb, 0)[0]
+    D = section_bounds(dsb, list(struct.unpack_from('<%dI' % dn, dsb, 4)))
+    found = []
+    for j, x in enumerate(D):
+        if not x:
+            continue
+        items = parse(tokens(dsb, *x), P.DS_ARGS)[0]
+        for q, (p, k, op, a) in enumerate(items):
+            if k == 'bad':
+                found.append('%s DS %X: unknown opcode %X' % (name, j + 0x80, op))
+            elif k == 'cmd' and op == 0x00 and p > 0:
+                prev = items[q - 1]
+                found.append('%s DS %X: 00 mid-section after %s (argument count short?)'
+                             % (name, j + 0x80, ('%X' % prev[2]) if prev[1] == 'cmd' else 'text'))
+    return found
+
+
 def pairs_of(report):
     res = {}
     for l in open(report):
@@ -199,9 +221,11 @@ def main():
     for idx, nm in enumerate(NAMES):
         f = nm + '_script.phscr'
         dsb = open(os.path.join(ds_dir, '%02d.bin' % (2 * idx + 1)), 'rb').read()
+        found += ds_parse_check(dsb, nm)
         r, e = audit(nm, 'script/' + f, 'script_en/' + f, dsb, pairs_of('script_en/' + f + '.report.txt'))
         found += r; expected += e
     from port_std import ds_std, PAIRS
+    found += ds_parse_check(ds_std(mes_all), 'std')
     r, e = audit('std', 'script/std_scripts.phscr', 'script_en/std_scripts.phscr', ds_std(mes_all), PAIRS, std=True)
     found += r; expected += e
     for x in found:

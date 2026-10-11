@@ -8,6 +8,7 @@ GBA_ARGS = {
  0x40:0,0x41:0,0x42:1,0x43:1,0x44:1,0x45:0,0x46:1,0x47:2,0x48:2,0x49:0,0x4A:1,0x4B:1,0x4C:0,
  0x5D:1,  # English patch: centre the following lines (1) / stop (0), as the DS
  0x5E:3,  # English patch: show DS choice labels
+ 0x5F:1,  # English patch: the DS's 7A, game over check (the DS's argument)
 }
 def load(path_or_bytes):
     b = path_or_bytes if isinstance(path_or_bytes,(bytes,bytearray)) else open(path_or_bytes,'rb').read()
