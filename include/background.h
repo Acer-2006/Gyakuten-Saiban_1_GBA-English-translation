@@ -69,6 +69,9 @@ u32 GetBGControlBits(u32);
 u8 * GetBGPalettePtr(u32);
 void CopyBGDataToVramAndScrollBG(u32);
 void SetTextboxSize(u32);
+void TextboxNextArrow(u32); // English patch: the DS's "next" arrow (bg.c)
+void TextboxNextArrowNow(void); // English patch: the arrow as the wait has it (script_commands.c)
+extern const u8 gGfxEnNextArrow[];
 void UpdateTextbox();
 void SlideTextbox(u32);
 void SlideInBG2Window(u32, u32);

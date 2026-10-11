@@ -17,6 +17,11 @@ gGfxSaveGameTiles_en:
 	.incbin "graphics/ui/message_box/save_game_tiles.4bpp"
 
 	.align 2
+	.global gGfxEnNextArrow
+gGfxEnNextArrow:
+	.incbin "graphics/en/next_arrow.4bpp"
+
+	.align 2
 	.global gGfx4bppNametags_en
 gGfx4bppNametags_en:
 	.incbin "graphics/ui/message_box/nametags.4bpp"

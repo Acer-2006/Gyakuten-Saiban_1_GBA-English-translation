@@ -249,6 +249,29 @@ void SetTextboxSize(u32 unk0)
     }
 }
 
+// English patch: the DS's "next" arrow, a 9 x 9 triangle at the right end of
+// the third line (tools/en/make_next_arrow.py): position 1-4 (its tip 3 px
+// from the box's right border to on the border's inner column, as on the DS),
+// 0 to take it away. Four 2 x 2 tile frames at BG tiles 448-463, on the box's
+// own corner (map rows 18-19, columns 28-29, as gTextboxTiles has them).
+void TextboxNextArrow(u32 pos)
+{
+    u16 * map = gBG1MapBuffer;
+    if (pos == 0)
+    {
+        map[604] = gTextboxTiles[604];
+        map[605] = gTextboxTiles[605];
+        map[636] = gTextboxTiles[636];
+        map[637] = gTextboxTiles[637];
+        return;
+    }
+    pos = 448 + (pos - 1) * 4;
+    map[604] = pos;
+    map[605] = pos + 1;
+    map[636] = pos + 2;
+    map[637] = pos + 3;
+}
+
 void UpdateTextbox()
 {
     struct ScriptContext * scriptCtx = &gScriptContext;
@@ -315,8 +338,7 @@ void SlideTextbox(u32 slideUp)
         gScriptContext.textboxState = 3;
         gInvestigation.actionState = 3;
         gIORegisters.lcd_dispcnt |= DISPCNT_BG1_ON;
-        gBG1MapBuffer[635] = 9;
-        gBG1MapBuffer[636] = 9;
+        TextboxNextArrow(0); // English patch
     }
     else
     {

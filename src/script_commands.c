@@ -33,11 +33,23 @@ u8 * const gCourtScrollGfxPointers[] = {
     EN_COURT_PAN(2),
 };
 
-// English patch: the "next" arrow moved from the bottom centre (tiles 622/623)
-// to the bottom right (635/636) so it no longer covers the third text line.
-const u8 gTextboxDownArrowTileIndexes[] = {
-    0x20, 0x22, 0x24, 0x26, 0x24, 0x22,
-};
+// English patch: the "next" arrow is the DS's (TextboxNextArrow, bg.c): at
+// the right end of the third line, sliding right and back 1 px every 3
+// frames, positions 1 2 3 4 3 2 (an 18-frame cycle), shown from the third
+// frame of the wait. The GBA's own arrow (six frames of a bouncing triangle,
+// two tiles at the bottom centre) went over the third line.
+static const u8 sNextArrowPositions[6] = { 1, 2, 3, 4, 3, 2 };
+
+// English patch: the arrow as the wait has it now (CourtRecordExit, court_record.c)
+void TextboxNextArrowNow(void)
+{
+    struct ScriptContext * scriptCtx = &gScriptContext;
+    u32 phase = scriptCtx->textboxDownArrowDelayCounter;
+    if (scriptCtx->textboxDownArrowIndex == 0 && phase < 2)
+        TextboxNextArrow(0);
+    else
+        TextboxNextArrow(sNextArrowPositions[phase / 3]);
+}
 
 bool32 CommandDummy(struct ScriptContext * scriptCtx)
 {
@@ -104,8 +116,7 @@ bool32 Command02(struct ScriptContext * scriptCtx)
     if(scriptCtx->flags & 2)
     {
         PlaySE(SE005_TEXT_ADVANCE);
-        gBG1MapBuffer[635] = 9;
-        gBG1MapBuffer[636] = 9;
+        TextboxNextArrow(0);
         scriptCtx->flags &= ~(2 | 1);
         if(scriptCtx->textSkip > 0)
         {
@@ -168,31 +179,30 @@ bool32 Command02(struct ScriptContext * scriptCtx)
         }
         if(gMain.process[GAME_PROCESS] != VERDICT_PROCESS)
         {
-            scriptCtx->textboxDownArrowDelayCounter++;
-            if(scriptCtx->textboxDownArrowDelayCounter > 1)
+            // English patch: the DS's arrow (see sNextArrowPositions). The delay
+            // counter is the frame of the 18-frame cycle, the index whether the
+            // first cycle is over (the arrow is hidden for the first two frames of
+            // the wait only); both start at 0 with the page. With the Court Record
+            // open the arrow runs on to its resting position (1) and waits there,
+            // as the GBA's did (the record hides it, CourtRecordExit shows it again).
             {
-                scriptCtx->textboxDownArrowDelayCounter = 0;
-                if(scriptCtx->textboxDownArrowIndex == 0 && gMain.process[GAME_PROCESS] == COURT_RECORD_PROCESS)
+                u32 phase = scriptCtx->textboxDownArrowDelayCounter;
+                if (gMain.process[GAME_PROCESS] != COURT_RECORD_PROCESS || phase != 0 || scriptCtx->textboxDownArrowIndex == 0)
                 {
-                    scriptCtx->textboxDownArrowIndex = 0;
+                    scriptCtx->textboxDownArrowDelayCounter = phase + 1 < 18 ? phase + 1 : 0;
+                    if (scriptCtx->textboxDownArrowDelayCounter == 0)
+                        scriptCtx->textboxDownArrowIndex = 1;
                 }
+                if (scriptCtx->textboxDownArrowIndex == 0 && phase < 2)
+                    TextboxNextArrow(0);
                 else
-                {
-                    scriptCtx->textboxDownArrowIndex++;
-                    if(scriptCtx->textboxDownArrowIndex > 5)
-                    {
-                        scriptCtx->textboxDownArrowIndex = 0;
-                    }
-                }
+                    TextboxNextArrow(sNextArrowPositions[phase / 3]);
             }
-            gBG1MapBuffer[635] = gTextboxDownArrowTileIndexes[scriptCtx->textboxDownArrowIndex];
-            gBG1MapBuffer[636] = gTextboxDownArrowTileIndexes[scriptCtx->textboxDownArrowIndex]+1;
             return 1;
         }
         scriptCtx->textboxDownArrowIndex = 0;
         scriptCtx->textboxDownArrowDelayCounter = 0;
-        gBG1MapBuffer[635] = 9;
-        gBG1MapBuffer[636] = 9;
+        TextboxNextArrow(0);
     }
     return 1;
 }
