@@ -8,6 +8,7 @@
 #include "investigation.h"
 #include "graphics.h"
 #include "constants/script.h"
+#include "case_data.h"
 #include "constants/process.h"
 #include "constants/oam_allocations.h"
 
@@ -468,7 +469,21 @@ void ChoiceAfterLoad(bool32 staleChoice)
     VwfReloadChoiceLabels();
 }
 
+// English patch: the DS's 7A, a game over check. The DS puts it after a
+// penalty (2B) in the scenes it ends with a plain jump (2C) or an 0A: with no
+// mark left the game over comes here, at once (after "Oh. Whoops. Wrong
+// evidence." the DS does not say the judge's "Luckily for you, I'm in a
+// patient mood"; checked on the DS: with the 7A taken out of the script, it
+// did, and the trial went on with no marks), and with marks left it does
+// nothing. The Japanese game checks the marks in its 0A instead; the port
+// keeps the DS's order of the scene. The argument is the DS's, unused.
 bool32 Command5F(struct ScriptContext *scriptCtx)
 {
+    if (gMain.health <= 0)
+    {
+        ChangeScriptSection(gCaseGameoverSections[gMain.scenarioIdx]);
+        return 0;
+    }
+    scriptCtx->scriptPtr += 2;
     return 0;
 }

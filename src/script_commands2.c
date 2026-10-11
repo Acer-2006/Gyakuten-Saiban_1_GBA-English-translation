@@ -626,9 +626,10 @@ bool32 Command2C(struct ScriptContext *scriptCtx)
     scriptCtx->scriptPtr++;
     // English patch: the DS ends some scenes with this jump where the Japanese
     // game has 0A, which jumps only while health is left (Turnabout Goodbyes:
-    // "Oh. Whoops. Wrong evidence." and three more). A penalty (2B) that took
-    // the last mark has already set the game over: keep it, as 0A does, or
-    // the trial went on with no marks left
+    // "Oh. Whoops. Wrong evidence." and three more); there the DS's own game
+    // over check (7A, Command5F here) ends the scene first. Should a penalty
+    // (2B) that took the last mark ever reach this jump, the game over it set
+    // is kept, as 0A keeps it: the trial must not go on with no marks left
     if (!(gMain.health <= 0 && scriptCtx->nextSection == gCaseGameoverSections[gMain.scenarioIdx]))
         scriptCtx->nextSection = *scriptCtx->scriptPtr;
     scriptCtx->scriptPtr++;

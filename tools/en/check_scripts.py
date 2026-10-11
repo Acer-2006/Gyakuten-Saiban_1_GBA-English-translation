@@ -20,7 +20,14 @@ the Japanese script (the English scripts keep the Japanese sections):
 - Jumps that land: a jump in the section (35) on a command, a jump record
   (35 / 36) on a command of an existing section, a section number on an
   existing section.
-- Lines that fit: no line wider than the 224 pixels of the text box.
+- Lines that fit: no line wider than the 224 pixels of the text box, no page
+  whose text reaches a fourth line (the engine draws it into the third: the
+  Gourd Lake map scene had "searchingfor something." when a DS command's
+  second argument was read as a line break).
+- No wait for A with the text box hidden (nothing to read, no arrow) where
+  the Japanese section has none: after "(Maybe I should just listen to the
+  testimony again.)" the Japanese wait-and-jump had been kept after the DS's
+  box hide and fade.
 
 The Makefile runs this before the scripts are built into the ROM.
 usage: check_scripts.py [JAPANESE_DIR ENGLISH_DIR]"""
@@ -134,6 +141,39 @@ def wide_lines(items):
     return res
 
 
+def fourth_lines(items):
+    """[text] of pages whose text reaches a fourth line"""
+    res, y, intext, s = [], 0, False, ''
+    for p, k, op, a in items:
+        if k == 'text':
+            if y >= 3 and not intext:
+                res.append(s[-40:])
+            intext = True; s += ch(op); continue
+        intext = False
+        if k == 'cmd' and op == 0x01:
+            y += 1; s += '/'
+        elif k == 'cmd' and op in PRESS_ON + (0x07, 0x0A, 0x2C, 0x2E, 0x08, 0x09, 0x00):
+            y = 0; s = ''
+    return res
+
+
+def hidden_waits(items):
+    """waits for A (02/07/0A/2D) reached with the text box hidden"""
+    res, box, s = [], True, ''
+    for p, k, op, a in items:
+        if k == 'text':
+            s = (s + ch(op))[-40:]; continue
+        if k != 'cmd':
+            continue
+        if op == 0x1C and a and a[0] in (0, 1):
+            box = a[0] == 0
+        if op in (0x02, 0x07, 0x0A, 0x2D):
+            if not box:
+                res.append(s)
+            s = ''
+    return res
+
+
 def bad_jumps(b, n, offs, sec_items, here):
     """jumps of section `here` that land nowhere"""
     res = []
@@ -202,6 +242,11 @@ def check_file(jp_path, en_path):
             errors.append('%s: %s' % (where, e))
         for w, s in wide_lines(ei):
             errors.append('%s: line %d pixels wide (the box has %d): "%s"' % (where, w, LINE_PIXELS, s))
+        for s in fourth_lines(ei):
+            errors.append('%s: text on a fourth line: "%s"' % (where, s))
+        eh, gh = hidden_waits(ei), hidden_waits(gi)
+        if len(eh) > len(gh):
+            errors.append('%s: wait for A with the text box hidden (the Japanese has %d such): after "%s"' % (where, len(gh), eh[-1]))
     return errors
 
 
@@ -223,7 +268,7 @@ def main():
         print('script check failed: %d problem(s)' % len(errors), file=sys.stderr)
         return 1
     print('script check: %d scripts: no line on a black screen, penalties and branches as in the '
-          'Japanese game, every jump lands, every line fits' % n)
+          'Japanese game, every jump lands, every line fits, no fourth line, no wait on a hidden box' % n)
     return 0
 
 
