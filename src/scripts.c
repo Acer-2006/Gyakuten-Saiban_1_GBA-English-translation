@@ -30,3 +30,6 @@ SCRIPT_DATA const u32 gScriptSizes[] = {
     sizeof(scenario_3_0_script), sizeof(scenario_3_1_script), sizeof(scenario_3_2_script),
     sizeof(scenario_3_3_script), sizeof(scenario_3_4_script), sizeof(scenario_3_5_script),
 };
+
+// English patch: the common script's size, for the same check on a save made in it
+SCRIPT_DATA const u32 gStdScriptSize = sizeof(std_scripts);
