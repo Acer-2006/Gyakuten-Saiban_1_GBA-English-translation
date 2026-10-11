@@ -55,9 +55,18 @@ DS_MUSIC = {0x05, 0x22, 0x23, 0x47}
 # the 1E) work alike on the GBA: a new person keeps the slot's fade.
 # (Fades of a numbered animation, 31 xx04, stay the GBA's: the two games
 # number that animation differently.)
-DS_AUTH = {0x06, 0x1C, 0x27, 0x13, 0x14, 0x0E} | DS_MUSIC
+# Fades to white (12 with blend mode 4) are the DS's too, like the flashes that
+# end them: paired with the GBA's by kind, one was put a page late (April
+# May changed without the screen going white first, and it went white
+# before "She did it!" instead; the first "Pink Princess" lost its fade and
+# the second had two).
+# Penalties (2B) are the DS's as well: when Phoenix shows the wrong evidence
+# on purpose ("Oh. Whoops. Wrong evidence.", Turnabout Goodbyes, day 2) the
+# DS's penalty after his line and the Japanese one at the end of the scene
+# were both kept, and the mistake cost two marks.
+DS_AUTH = {0x06, 0x1C, 0x27, 0x13, 0x14, 0x0E, 0x2B} | DS_MUSIC
 def ds_auth(op, args):
-    return op in DS_AUTH or (op == 0x12 and args and args[0] >> 8 == 3) \
+    return op in DS_AUTH or (op == 0x12 and args and args[0] >> 8 in (3, 4)) \
         or (op == 0x31 and args and not args[0] >> 8)
 DS_PLATE_HIDE = (0x62, 0x243)
 PLATE_OPEN_WAIT, PLATE_CLOSE_WAIT = 15, 24   # frames the DS waits on 13 / 14 (measured)
@@ -1899,6 +1908,38 @@ def fix_start_holds(out):
 BOX_HOLDS = {0x02, 0x07, 0x08, 0x09, 0x0A, 0x0C, 0x0D, 0x15, 0x2D, 0x2E, 0x35, 0x36}
 
 
+def fix_choice_order(out, dtoks, pairs):
+    """A choice (08 / 09) whose answers the DS lists in another order than the
+    Japanese script. The answer labels are the DS's, in the DS's order, and
+    the jumps were the Japanese ones: in the chief's office (Turnabout
+    Sisters, day 2) "File "J-S"" opened the T-Z file ("White"!) and "File
+    "T-Z"" the J-S one. The jumps are put in the DS's order (the section the
+    DS jumps to is the one paired with it), so each label leads to its own
+    scene and the answers come in the DS's order. Section numbers only: no
+    position in the section moves."""
+    out = list(out)
+    eo = [(p, op, a) for p, k, op, a in parse(out, GBA_ARGS)[0] if k == 'cmd' and op in (0x08, 0x09)]
+    do = [(op, a) for p, k, op, a in parse(dtoks, DS_ARGS)[0] if k == 'cmd' and op in (0x08, 0x09)]
+    n = 0
+    if len(eo) != len(do):
+        return out, n
+    for (p, op, a), (dop, da) in zip(eo, do):
+        k = 2 if op == 0x08 else 3
+        if dop != op or len(da) < k:
+            continue
+        cur = list(a[:k])
+        want = []
+        for d in da[:k]:
+            m = [g for g in cur if g >= 0x80 and pairs.get(g - 0x80) == d - 0x80]
+            if len(m) != 1:
+                break
+            want.append(m[0])
+        if len(want) == k and sorted(want) == sorted(cur) and want != cur:
+            out[p + 1:p + 1 + k] = want
+            n += 1
+    return out, n
+
+
 def fix_box_flash(out):
     """A text box shown (1C 0) and hidden again (1C 1) before any line, with
     a background change between them: the box came up for the one frame the
@@ -2099,6 +2140,9 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             out, n = fix_box_flash(out)
             if n:
                 st = dict(st, box_flash=n)
+            out, n = fix_choice_order(out, dt, pairs)
+            if n:
+                st = dict(st, choice_order=n)
             nj = [0, 0]
             for idx, tgt, dtg in patches:
                 if dtg is not None and dtg in dm:

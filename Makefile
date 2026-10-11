@@ -196,13 +196,14 @@ endif
 $(C_BUILDDIR)/%.o: $(C_SUBDIR)/%.s $$(c_asm_dep)
 	$(AS) $(ASFLAGS) -o $@ $<
 
-# English patch: before the scripts go into the ROM, check that no English
-# line is shown on a screen faded to black where the Japanese game shows none
-# (tools/en/check_scripts.py; a wrong-evidence penalty scene did this).
+# English patch: before the scripts go into the ROM, check them against the
+# Japanese ones (tools/en/check_scripts.py): no line on a screen faded to
+# black where the Japanese game shows none, the same penalties and branches,
+# jumps that land and lines that fit the text box.
 # Skipped, with a warning, where python3 is not installed.
 SCRIPT_CHECK := $(OBJ_DIR)/script_check.ok
 
-$(SCRIPT_CHECK): tools/en/check_scripts.py tools/en/phscr.py tools/en/pdump.py $(wildcard script/*.phscr) $(wildcard script_en/*.phscr)
+$(SCRIPT_CHECK): tools/en/check_scripts.py tools/en/phscr.py tools/en/pdump.py graphics/vwf/font_widths.bin $(wildcard script/*.phscr) $(wildcard script_en/*.phscr)
 	@if command -v python3 >/dev/null 2>&1; then python3 tools/en/check_scripts.py; \
 	else echo "warning: python3 not found, English script check skipped"; fi
 	@touch $@
