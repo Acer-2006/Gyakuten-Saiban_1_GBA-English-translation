@@ -17,6 +17,9 @@
 #include "constants/songs.h"
 #include "constants/process.h"
 #include "constants/oam_allocations.h"
+#if RFTA
+#include "en_rfta_descriptions.h"
+#endif
 
 struct EvidenceProfileData
 {

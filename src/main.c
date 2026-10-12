@@ -13,6 +13,7 @@
 #include "court.h"
 #include "constants/process.h"
 #include "en_menu.h"
+#include "en_rfta.h"
 
 static void DoGameProcess();
 static void VBlankIntr();
@@ -64,8 +65,13 @@ void (*gGameProcesses[])(struct Main *) = {
     EvidenceAddedProcess,
     VerdictProcess,
     SaveGameProcess,
+#if RFTA
+    RftaEpisodeClearedProcess, // English patch: five episodes (en_rfta_episodes.c)
+    RftaSelectEpisodeProcess,
+#else
     EpisodeClearedProcess,
     SelectEpisodeProcess,
+#endif
     ContinueSaveProcess,
     ClearSaveProcess
 };

@@ -8,68 +8,68 @@
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 0, .evidenceDetailId = 0 }, // 0x71 unused
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 0, .evidenceDetailId = 0 }, // 0x72 unused
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 0, .evidenceDetailId = 0 }, // 0x73 unused
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 119, .evidenceDetailId = 0 }, // 0x74
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 120, .evidenceDetailId = 0 }, // 0x75
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 120, .evidenceDetailId = 0 }, // 0x76
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 121, .evidenceDetailId = 0 }, // 0x77
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 122, .evidenceDetailId = 0 }, // 0x78
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 125, .evidenceDetailId = 0 }, // 0x79
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 125, .evidenceDetailId = 0 }, // 0x7A
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 124, .evidenceDetailId = 0 }, // 0x7B
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 123, .evidenceDetailId = 0 }, // 0x7C
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 70, .evidenceDetailId = 0 }, // 0x7D
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 72, .evidenceDetailId = 0 }, // 0x7E
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 73, .evidenceDetailId = 0 }, // 0x7F
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 74, .evidenceDetailId = 0 }, // 0x80
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 75, .evidenceDetailId = 0 }, // 0x81
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 75, .evidenceDetailId = 0 }, // 0x82
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 76, .evidenceDetailId = 0 }, // 0x83
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 16, .evidenceDetailId = 0 }, // 0x84 (DS check page 21)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 77, .evidenceDetailId = 0 }, // 0x85 (DS check page 24)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 78, .evidenceDetailId = 0 }, // 0x86
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 78, .evidenceDetailId = 0 }, // 0x87
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 78, .evidenceDetailId = 0 }, // 0x88
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 9, .evidenceDetailId = 0 }, // 0x89 (DS check page 13)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 146, .evidenceDetailId = 0 }, // 0x8A (DS check page 18)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 146, .evidenceDetailId = 0 }, // 0x8B (DS check page 18)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 80, .evidenceDetailId = 0 }, // 0x8C
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 113, .evidenceDetailId = 0 }, // 0x8D
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 113, .evidenceDetailId = 0 }, // 0x8E
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 113, .evidenceDetailId = 0 }, // 0x8F
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 84, .evidenceDetailId = 0 }, // 0x90
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 85, .evidenceDetailId = 0 }, // 0x91
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 87, .evidenceDetailId = 0 }, // 0x92 (DS check page 32)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 87, .evidenceDetailId = 0 }, // 0x93 (DS check page 32)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 118, .evidenceDetailId = 0 }, // 0x94 (DS check page 14)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 118, .evidenceDetailId = 0 }, // 0x95 (DS check page 15)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 118, .evidenceDetailId = 0 }, // 0x96 (DS check page 16)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 111, .evidenceDetailId = 0 }, // 0x97 (DS check page 23)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 9, .evidenceDetailId = 0 }, // 0x98 (DS check page 17)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 88, .evidenceDetailId = 0 }, // 0x99 (DS check page 20)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 92, .evidenceDetailId = 0 }, // 0x9A
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 89, .evidenceDetailId = 0 }, // 0x9B
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 90, .evidenceDetailId = 0 }, // 0x9C
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 86, .evidenceDetailId = 0 }, // 0x9D
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 93, .evidenceDetailId = 0 }, // 0x9E
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 110, .evidenceDetailId = 0 }, // 0x9F (DS check page 25)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 110, .evidenceDetailId = 0 }, // 0xA0 (DS check page 25)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 16, .evidenceDetailId = 0 }, // 0xA1
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 95, .evidenceDetailId = 0 }, // 0xA2 (DS check page 31)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 112, .evidenceDetailId = 0 }, // 0xA3 (DS check page 12)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 116, .evidenceDetailId = 0 }, // 0xA4 (DS check page 26)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 16, .evidenceDetailId = 0 }, // 0xA5 (DS check page 22)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 96, .evidenceDetailId = 0 }, // 0xA6
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 72, .evidenceDetailId = 0 }, // 0xA7
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 140, .evidenceDetailId = 0 }, // 0xA8
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 115, .evidenceDetailId = 0 }, // 0xA9 (DS check page 28)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 98, .evidenceDetailId = 0 }, // 0xAA
+	{ .descriptionTiles = gGfxRftaDescription74, .evidenceImageId = 119, .evidenceDetailId = 0 }, // 0x74
+	{ .descriptionTiles = gGfxRftaDescription75, .evidenceImageId = 120, .evidenceDetailId = 0 }, // 0x75
+	{ .descriptionTiles = gGfxRftaDescription76, .evidenceImageId = 120, .evidenceDetailId = 0 }, // 0x76
+	{ .descriptionTiles = gGfxRftaDescription77, .evidenceImageId = 121, .evidenceDetailId = 0 }, // 0x77
+	{ .descriptionTiles = gGfxRftaDescription78, .evidenceImageId = 122, .evidenceDetailId = 0 }, // 0x78
+	{ .descriptionTiles = gGfxRftaDescription79, .evidenceImageId = 125, .evidenceDetailId = 0 }, // 0x79
+	{ .descriptionTiles = gGfxRftaDescription7A, .evidenceImageId = 125, .evidenceDetailId = 0 }, // 0x7A
+	{ .descriptionTiles = gGfxRftaDescription7B, .evidenceImageId = 124, .evidenceDetailId = 0 }, // 0x7B
+	{ .descriptionTiles = gGfxRftaDescription7C, .evidenceImageId = 123, .evidenceDetailId = 0 }, // 0x7C
+	{ .descriptionTiles = gGfxRftaDescription7D, .evidenceImageId = 70, .evidenceDetailId = 0 }, // 0x7D
+	{ .descriptionTiles = gGfxRftaDescription7E, .evidenceImageId = 72, .evidenceDetailId = 0 }, // 0x7E
+	{ .descriptionTiles = gGfxRftaDescription7F, .evidenceImageId = 73, .evidenceDetailId = 0 }, // 0x7F
+	{ .descriptionTiles = gGfxRftaDescription80, .evidenceImageId = 74, .evidenceDetailId = 0 }, // 0x80
+	{ .descriptionTiles = gGfxRftaDescription81, .evidenceImageId = 75, .evidenceDetailId = 0 }, // 0x81
+	{ .descriptionTiles = gGfxRftaDescription82, .evidenceImageId = 75, .evidenceDetailId = 0 }, // 0x82
+	{ .descriptionTiles = gGfxRftaDescription83, .evidenceImageId = 76, .evidenceDetailId = 0 }, // 0x83
+	{ .descriptionTiles = gGfxRftaDescription84, .evidenceImageId = 16, .evidenceDetailId = 0 }, // 0x84 (DS check page 21)
+	{ .descriptionTiles = gGfxRftaDescription85, .evidenceImageId = 77, .evidenceDetailId = 0 }, // 0x85 (DS check page 24)
+	{ .descriptionTiles = gGfxRftaDescription86, .evidenceImageId = 78, .evidenceDetailId = 0 }, // 0x86
+	{ .descriptionTiles = gGfxRftaDescription87, .evidenceImageId = 78, .evidenceDetailId = 0 }, // 0x87
+	{ .descriptionTiles = gGfxRftaDescription88, .evidenceImageId = 78, .evidenceDetailId = 0 }, // 0x88
+	{ .descriptionTiles = gGfxRftaDescription89, .evidenceImageId = 9, .evidenceDetailId = 0 }, // 0x89 (DS check page 13)
+	{ .descriptionTiles = gGfxRftaDescription8A, .evidenceImageId = 146, .evidenceDetailId = 0 }, // 0x8A (DS check page 18)
+	{ .descriptionTiles = gGfxRftaDescription8B, .evidenceImageId = 146, .evidenceDetailId = 0 }, // 0x8B (DS check page 18)
+	{ .descriptionTiles = gGfxRftaDescription8C, .evidenceImageId = 80, .evidenceDetailId = 0 }, // 0x8C
+	{ .descriptionTiles = gGfxRftaDescription8D, .evidenceImageId = 113, .evidenceDetailId = 0 }, // 0x8D
+	{ .descriptionTiles = gGfxRftaDescription8E, .evidenceImageId = 113, .evidenceDetailId = 0 }, // 0x8E
+	{ .descriptionTiles = gGfxRftaDescription8F, .evidenceImageId = 113, .evidenceDetailId = 0 }, // 0x8F
+	{ .descriptionTiles = gGfxRftaDescription90, .evidenceImageId = 84, .evidenceDetailId = 0 }, // 0x90
+	{ .descriptionTiles = gGfxRftaDescription91, .evidenceImageId = 85, .evidenceDetailId = 0 }, // 0x91
+	{ .descriptionTiles = gGfxRftaDescription92, .evidenceImageId = 87, .evidenceDetailId = 0 }, // 0x92 (DS check page 32)
+	{ .descriptionTiles = gGfxRftaDescription93, .evidenceImageId = 87, .evidenceDetailId = 0 }, // 0x93 (DS check page 32)
+	{ .descriptionTiles = gGfxRftaDescription94, .evidenceImageId = 118, .evidenceDetailId = 0 }, // 0x94 (DS check page 14)
+	{ .descriptionTiles = gGfxRftaDescription95, .evidenceImageId = 118, .evidenceDetailId = 0 }, // 0x95 (DS check page 15)
+	{ .descriptionTiles = gGfxRftaDescription96, .evidenceImageId = 118, .evidenceDetailId = 0 }, // 0x96 (DS check page 16)
+	{ .descriptionTiles = gGfxRftaDescription97, .evidenceImageId = 111, .evidenceDetailId = 0 }, // 0x97 (DS check page 23)
+	{ .descriptionTiles = gGfxRftaDescription98, .evidenceImageId = 9, .evidenceDetailId = 0 }, // 0x98 (DS check page 17)
+	{ .descriptionTiles = gGfxRftaDescription99, .evidenceImageId = 88, .evidenceDetailId = 0 }, // 0x99 (DS check page 20)
+	{ .descriptionTiles = gGfxRftaDescription9A, .evidenceImageId = 92, .evidenceDetailId = 0 }, // 0x9A
+	{ .descriptionTiles = gGfxRftaDescription9B, .evidenceImageId = 89, .evidenceDetailId = 0 }, // 0x9B
+	{ .descriptionTiles = gGfxRftaDescription9C, .evidenceImageId = 90, .evidenceDetailId = 0 }, // 0x9C
+	{ .descriptionTiles = gGfxRftaDescription9D, .evidenceImageId = 86, .evidenceDetailId = 0 }, // 0x9D
+	{ .descriptionTiles = gGfxRftaDescription9E, .evidenceImageId = 93, .evidenceDetailId = 0 }, // 0x9E
+	{ .descriptionTiles = gGfxRftaDescription9F, .evidenceImageId = 110, .evidenceDetailId = 0 }, // 0x9F (DS check page 25)
+	{ .descriptionTiles = gGfxRftaDescriptionA0, .evidenceImageId = 110, .evidenceDetailId = 0 }, // 0xA0 (DS check page 25)
+	{ .descriptionTiles = gGfxRftaDescriptionA1, .evidenceImageId = 16, .evidenceDetailId = 0 }, // 0xA1
+	{ .descriptionTiles = gGfxRftaDescriptionA2, .evidenceImageId = 95, .evidenceDetailId = 0 }, // 0xA2 (DS check page 31)
+	{ .descriptionTiles = gGfxRftaDescriptionA3, .evidenceImageId = 112, .evidenceDetailId = 0 }, // 0xA3 (DS check page 12)
+	{ .descriptionTiles = gGfxRftaDescriptionA4, .evidenceImageId = 116, .evidenceDetailId = 0 }, // 0xA4 (DS check page 26)
+	{ .descriptionTiles = gGfxRftaDescriptionA5, .evidenceImageId = 16, .evidenceDetailId = 0 }, // 0xA5 (DS check page 22)
+	{ .descriptionTiles = gGfxRftaDescriptionA6, .evidenceImageId = 96, .evidenceDetailId = 0 }, // 0xA6
+	{ .descriptionTiles = gGfxRftaDescriptionA7, .evidenceImageId = 72, .evidenceDetailId = 0 }, // 0xA7
+	{ .descriptionTiles = gGfxRftaDescriptionA8, .evidenceImageId = 140, .evidenceDetailId = 0 }, // 0xA8
+	{ .descriptionTiles = gGfxRftaDescriptionA9, .evidenceImageId = 115, .evidenceDetailId = 0 }, // 0xA9 (DS check page 28)
+	{ .descriptionTiles = gGfxRftaDescriptionAA, .evidenceImageId = 98, .evidenceDetailId = 0 }, // 0xAA
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 79, .evidenceDetailId = 0 }, // 0xAB
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 81, .evidenceDetailId = 0 }, // 0xAC
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 83, .evidenceDetailId = 0 }, // 0xAD
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 90, .evidenceDetailId = 0 }, // 0xAE
+	{ .descriptionTiles = gGfxRftaDescriptionAE, .evidenceImageId = 90, .evidenceDetailId = 0 }, // 0xAE
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 91, .evidenceDetailId = 0 }, // 0xAF
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 94, .evidenceDetailId = 0 }, // 0xB0
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 97, .evidenceDetailId = 0 }, // 0xB1
+	{ .descriptionTiles = gGfxRftaDescriptionB1, .evidenceImageId = 97, .evidenceDetailId = 0 }, // 0xB1
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 99, .evidenceDetailId = 0 }, // 0xB2
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 100, .evidenceDetailId = 0 }, // 0xB3
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 101, .evidenceDetailId = 0 }, // 0xB4
@@ -83,21 +83,21 @@
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 83, .evidenceDetailId = 0 }, // 0xBC
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 114, .evidenceDetailId = 0 }, // 0xBD
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 117, .evidenceDetailId = 0 }, // 0xBE
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 118, .evidenceDetailId = 0 }, // 0xBF
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 126, .evidenceDetailId = 0 }, // 0xC0
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 127, .evidenceDetailId = 0 }, // 0xC1
+	{ .descriptionTiles = gGfxRftaDescriptionBF, .evidenceImageId = 118, .evidenceDetailId = 0 }, // 0xBF
+	{ .descriptionTiles = gGfxRftaDescriptionC0, .evidenceImageId = 126, .evidenceDetailId = 0 }, // 0xC0
+	{ .descriptionTiles = gGfxRftaDescriptionC1, .evidenceImageId = 127, .evidenceDetailId = 0 }, // 0xC1
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 139, .evidenceDetailId = 0 }, // 0xC2
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 128, .evidenceDetailId = 0 }, // 0xC3
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 82, .evidenceDetailId = 0 }, // 0xC4
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 145, .evidenceDetailId = 0 }, // 0xC5 (DS check page 27)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 130, .evidenceDetailId = 0 }, // 0xC6
+	{ .descriptionTiles = gGfxRftaDescriptionC4, .evidenceImageId = 82, .evidenceDetailId = 0 }, // 0xC4
+	{ .descriptionTiles = gGfxRftaDescriptionC5, .evidenceImageId = 145, .evidenceDetailId = 0 }, // 0xC5 (DS check page 27)
+	{ .descriptionTiles = gGfxRftaDescriptionC6, .evidenceImageId = 130, .evidenceDetailId = 0 }, // 0xC6
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 129, .evidenceDetailId = 0 }, // 0xC7 (DS check page 29)
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 142, .evidenceDetailId = 0 }, // 0xC8
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 143, .evidenceDetailId = 0 }, // 0xC9
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 6, .evidenceDetailId = 0 }, // 0xCA
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 144, .evidenceDetailId = 0 }, // 0xCB (DS check page 33)
+	{ .descriptionTiles = gGfxRftaDescriptionCA, .evidenceImageId = 6, .evidenceDetailId = 0 }, // 0xCA
+	{ .descriptionTiles = gGfxRftaDescriptionCB, .evidenceImageId = 144, .evidenceDetailId = 0 }, // 0xCB (DS check page 33)
 	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 141, .evidenceDetailId = 0 }, // 0xCC
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 90, .evidenceDetailId = 0 }, // 0xCD
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 130, .evidenceDetailId = 0 }, // 0xCE (DS check page 29)
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 119, .evidenceDetailId = 0 }, // 0xCF
-	{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = 78, .evidenceDetailId = 0 }, // 0xD0
+	{ .descriptionTiles = gGfxRftaDescriptionCD, .evidenceImageId = 90, .evidenceDetailId = 0 }, // 0xCD
+	{ .descriptionTiles = gGfxRftaDescriptionCE, .evidenceImageId = 130, .evidenceDetailId = 0 }, // 0xCE (DS check page 29)
+	{ .descriptionTiles = gGfxRftaDescriptionCF, .evidenceImageId = 119, .evidenceDetailId = 0 }, // 0xCF
+	{ .descriptionTiles = gGfxRftaDescriptionD0, .evidenceImageId = 78, .evidenceDetailId = 0 }, // 0xD0

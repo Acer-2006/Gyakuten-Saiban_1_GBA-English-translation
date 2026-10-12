@@ -48,6 +48,25 @@ void EnRftaDay1RoomHook(struct Main * main);
 void EnRftaDay2RoomHook(struct Main * main);
 void EnRftaDay3RoomHook(struct Main * main);
 
+// the Move and Talk menus' plates: the fifth episode's rooms 0x10-0x17 and
+// topics 125-187 are its own (tools/en/rfta/plates.py)
+#define RFTA_FIRST_TOPIC 125
+extern u8 gRftaLocationChoices[];
+extern u8 gRftaTalkChoices[];
+extern u8 gRftaEpisodeTitle[];
+const u8 * EnLocationPlate(u32 room);
+const u8 * EnTalkPlate(u32 icon);
+
+// the "point at it" pictures: the GBA's lowest pointer row (above the text
+// box); the box makes way for a fifth-episode picture with a spot lower down
+#define SPOTSELECT_BOTTOM 102
+void EnSpotSelectTextbox(bool32 hide);
+
+// the episode select with the fifth episode (en_rfta_episodes.c)
+#define EPISODES 5
+void RftaEpisodeClearedProcess(struct Main * main);
+void RftaSelectEpisodeProcess(struct Main * main);
+
 #else
 #define LAST_CHAPTER 16
 #define CHAPTER_TITLE_SECTION(idx) ((idx) + 7)
