@@ -198,4 +198,35 @@ bool32 Command60(struct ScriptContext * scriptCtx)
     EnLoadChapter(chapter);
     return 0;
 }
+
+// After the right evidence in a cross-examination the game leaves it for
+// the scene the answer starts; for these answers the DS stays in the
+// cross-examination instead (its 0x02031754: the scene ends by going back to
+// a statement, adding one). Chapter, section.
+static const u8 sReturnToQuestioning[][2] = {
+    { 19, 0x97 }, { 19, 0xAA }, { 20, 0xBC }, { 20, 0xBD }, { 21, 0xA9 }, { 25, 0x9B }, { 32, 0x90 },
+};
+
+bool32 EnPresentReturnsToQuestioning(u32 section)
+{
+    u32 i;
+    for (i = 0; i < ARRAY_COUNT(sReturnToQuestioning); i++)
+        if (sReturnToQuestioning[i][0] == gMain.scenarioIdx && sReturnToQuestioning[i][1] == section)
+            return TRUE;
+    return FALSE;
+}
+
+// Script command 61: go on in section n. Where the DS hands over to one of
+// its own systems (the evidence turned over in 3D, the luminol, the prints,
+// the footage) and that system starts the next section, the translator
+// (translate.py, BYPASS) goes on in that section straight away until the
+// system exists here.
+bool32 Command61(struct ScriptContext * scriptCtx)
+{
+    u32 section;
+    scriptCtx->scriptPtr++;
+    section = *scriptCtx->scriptPtr;
+    ChangeScriptSection(section);
+    return 0;
+}
 #endif // RFTA

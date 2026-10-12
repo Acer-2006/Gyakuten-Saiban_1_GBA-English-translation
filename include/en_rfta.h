@@ -43,6 +43,8 @@ void EnDecompressBackground(u32 bg);
 void EnShowBackground(u32 bg);
 void EnScrollBackgroundEnd(u32 bg);
 bool32 Command60(struct ScriptContext * scriptCtx);
+bool32 Command61(struct ScriptContext * scriptCtx);
+bool32 EnPresentReturnsToQuestioning(u32 section);
 
 void EnRftaDay1RoomHook(struct Main * main);
 void EnRftaDay2RoomHook(struct Main * main);

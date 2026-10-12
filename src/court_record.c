@@ -17,6 +17,7 @@
 #include "constants/songs.h"
 #include "constants/process.h"
 #include "constants/oam_allocations.h"
+#include "en_rfta.h"
 #if RFTA
 #include "en_rfta_descriptions.h"
 #endif
@@ -768,6 +769,13 @@ void CourtRecordMain(struct Main * main, struct CourtRecord * courtRecord) // st
             {
                 StopBGM();
                 ChangeScriptSection(section);
+#if RFTA
+                // English patch: the DS goes back to the cross-examination
+                // after a few of the fifth episode's answers (en_rfta.c)
+                if(EnPresentReturnsToQuestioning(section))
+                    SET_PROCESS_BACKUP_PTR(QUESTIONING_PROCESS, QUESTIONING_MAIN, 0, 0, main);
+                else
+#endif
                 SET_PROCESS_BACKUP_PTR(COURT_PROCESS, COURT_MAIN, 0, 0, main);
             }
             else

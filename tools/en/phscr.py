@@ -9,6 +9,8 @@ GBA_ARGS = {
  0x5D:1,  # English patch: centre the following lines (1) / stop (0), as the DS
  0x5E:3,  # English patch: show DS choice labels
  0x5F:1,  # English patch: the DS's 7A, game over check (the DS's argument)
+ 0x60:1,  # Rise from the Ashes build: go on in chapter file n
+ 0x61:1,  # Rise from the Ashes build: go on in section n
 }
 def load(path_or_bytes):
     b = path_or_bytes if isinstance(path_or_bytes,(bytes,bytearray)) else open(path_or_bytes,'rb').read()

@@ -37,6 +37,20 @@ from arm9_tables import room
 ROOT = os.path.join(HERE, '..', '..', '..')
 GAMEOVER_CHECK = 0x5F       # the GBA's command for the DS's 7A
 CONTINUE_CHAPTER = 0x60     # new GBA command: go on in chapter file n (the DS's 6A)
+GOTO_SECTION = 0x61         # new GBA command: go on in section n
+# Where the DS hands over to a system of its own that the GBA does not have
+# yet (the evidence turned over in 3D, the luminol, the fingerprints, the
+# security footage) and that system then starts the section that follows, the
+# GBA goes on in that section straight away: (DS file, section) -> the
+# sections to go on in, in order. Each is entered where the source section
+# would have handed over (its last "1C 3 / 15": back to the menu), the
+# DS's tutorial sections for the system itself are left out.
+BYPASS = {
+    # Day 1: the wallet turned over (C0, C1: how to turn evidence over) -> the ID card inside, then it replaces the wallet
+    (18, 0xBF): 0xC2, (18, 0xC2): 0xC3,
+    # Day 1: Ms. Skye's phone looked over: the redial display, the call, the patrolman
+    (18, 0xF9): 0xFB, (18, 0xFB): 0xFC, (18, 0xFC): 0xFD,
+}
 MAX_MARKER = 0x0C           # map marker sprites the GBA has (sMapMarkerSprites)
 # people the GBA has, standing in for the fifth episode's until their sprites exist
 # (Gumshoe is in the fifth episode himself, in the same rooms as Marshall, so
@@ -253,6 +267,12 @@ class Translator:
                 continue
             items, _ = parse(tokens(b, *bd), DS_ARGS)
             secs[si], maps[si] = self.section(items, 'file %d sec %d' % (k, si))
+            if (k, 0x80 + si) in BYPASS:
+                out = secs[si]
+                tail = max(i for i in range(len(out) - 2) if out[i:i + 3] == [0x1C, 3, 0x15])
+                # (as long as what it replaces: jumps within the section keep their places)
+                secs[si] = out[:tail] + [GOTO_SECTION, BYPASS[(k, 0x80 + si)], 0x15] + out[tail + 3:]
+                self.stats['bypass to a section'] += 1
         # lay out: header, then sections on 4-byte boundaries
         body = bytearray(); new_offs = [0] * n
         head = 4 + 4 * n
