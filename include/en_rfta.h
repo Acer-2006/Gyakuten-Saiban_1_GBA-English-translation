@@ -57,6 +57,13 @@ extern u8 gRftaEpisodeTitle[];
 const u8 * EnLocationPlate(u32 room);
 const u8 * EnTalkPlate(u32 icon);
 
+// the examine areas: the fifth episode's tables are up to 32 entries, the
+// GBA's gExaminationData holds 16. The table in use is kept by its number
+// (gMain.unk8B, saved with gMain) and read from ROM
+struct ExaminationData;
+void EnLoadExamData(u32 table);
+const struct ExaminationData * EnExamData(u32 * count);
+
 // the "point at it" pictures: the GBA's lowest pointer row (above the text
 // box); the box makes way for a fifth-episode picture with a spot lower down
 #define SPOTSELECT_BOTTOM 102

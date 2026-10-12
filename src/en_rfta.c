@@ -144,6 +144,31 @@ void EnScrollBackgroundEnd(u32 bg)
     CopyBGDataToVram(GbaBg(bg));
 }
 
+extern const struct ExaminationData * const gRftaExamTables[];
+extern const u8 gRftaExamCounts[];
+
+// The DS's examine table copy (its examine data holds 32 entries): the first
+// 16 into gExaminationData as the GBA keeps them (and saves them), the table's
+// number into gMain.unk8B (unused by the game) for the examining itself
+void EnLoadExamData(u32 table)
+{
+    u32 n = gRftaExamCounts[table];
+    DmaCopy16(3, gRftaExamTables[table], gExaminationData, (n < 16 ? n : 16) * sizeof(struct ExaminationData));
+    gMain.unk8B = table + 1;
+}
+
+// The examine areas in force: the fifth episode's table, or gExaminationData
+const struct ExaminationData * EnExamData(u32 * count)
+{
+    if (gMain.scenarioIdx >= RFTA_FIRST_CHAPTER && gMain.unk8B != 0)
+    {
+        *count = gRftaExamCounts[gMain.unk8B - 1];
+        return gRftaExamTables[gMain.unk8B - 1];
+    }
+    *count = 16;
+    return gExaminationData;
+}
+
 // The text box out of the way of a spot the pointer is over, or back
 void EnSpotSelectTextbox(bool32 hide)
 {

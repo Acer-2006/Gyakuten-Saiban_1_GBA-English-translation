@@ -1543,6 +1543,20 @@ u32 GetExaminedAreaSection(struct InvestigationStruct * investigation) // finger
     if(GetFlag(0, 0x41) == FALSE)
         return 0x19;
     animId = CheckRectCollisionWithAnim(&rect);
+#if RFTA
+    {
+        // English patch: the fifth episode's examine tables are longer than
+        // gExaminationData (en_rfta.c)
+        u32 count, i;
+        const struct ExaminationData * exams = EnExamData(&count);
+        for(i = 0; i < count && exams[i].type != 0xFF; i++)
+            if(exams[i].type == 0xFE && animId == exams[i].animId)
+                return exams[i].examinationSection;
+        for(i = 0; i < count && exams[i].type != 0xFF; i++)
+            if(exams[i].type != 0xFE && CheckRectCollisionWithArea(&rect, (struct Point4 *)&exams[i].area))
+                return exams[i].examinationSection;
+    }
+#else
     for(examData = gExaminationData; examData->type != 0xFF; examData++) // Check for collision with animation
     {
         if(examData->type == 0xFE && animId == examData->animId)
@@ -1555,6 +1569,7 @@ u32 GetExaminedAreaSection(struct InvestigationStruct * investigation) // finger
         if(CheckRectCollisionWithArea(&rect, &examData->area))
             return examData->examinationSection;
     } 
+#endif
     return 0x18;
 }
 

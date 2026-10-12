@@ -19,4 +19,35 @@ void InvestigationRoomSetup_5_11(struct Main *main);
 void EnRftaDay3RoomHook(struct Main *main);
 void InvestigationSegmentSetup_5_11(struct Main *main);
 
+#define EXAM_gExaminationData_5_20b050c 0
+#define EXAM_gExaminationData_5_20b0520 1
+#define EXAM_gExaminationData_5_20b0534 2
+#define EXAM_gExaminationData_5_20b0548 3
+#define EXAM_gExaminationData_5_20b055c 4
+#define EXAM_gExaminationData_5_20b0598 5
+#define EXAM_gExaminationData_5_20b079c 6
+#define EXAM_gExaminationData_5_20b088c 7
+#define EXAM_gExaminationData_5_20b097c 8
+#define EXAM_gExaminationData_5_20b0a80 9
+#define EXAM_gExaminationData_5_20b15a0 10
+#define EXAM_gExaminationData_5_20b15b4 11
+#define EXAM_gExaminationData_5_20b15f0 12
+#define EXAM_gExaminationData_5_20b167c 13
+#define EXAM_gExaminationData_5_20b1810 14
+#define EXAM_gExaminationData_5_20b1900 15
+#define EXAM_gExaminationData_5_20b19f0 16
+#define EXAM_gExaminationData_5_20b1af4 17
+#define EXAM_gExaminationData_5_20b1d40 18
+#define EXAM_gExaminationData_5_20b1ed0 19
+#define EXAM_gExaminationData_5_20b236c 20
+#define EXAM_gExaminationData_5_20b2380 21
+#define EXAM_gExaminationData_5_20b2394 22
+#define EXAM_gExaminationData_5_20b23d0 23
+#define EXAM_gExaminationData_5_20b245c 24
+#define EXAM_gExaminationData_5_20b25f0 25
+#define EXAM_gExaminationData_5_20b26e0 26
+#define EXAM_gExaminationData_5_20b27d0 27
+#define EXAM_gExaminationData_5_20b28e8 28
+#define EXAM_gExaminationData_5_20b2a14 29
+
 #endif

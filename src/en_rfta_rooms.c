@@ -29,18 +29,18 @@ const struct ExaminationData gExaminationData_5_20b0548[1] = {
 };
 
 const struct ExaminationData gExaminationData_5_20b055c[3] = {
-    { .examinationSection = 0x8F, .type = 0x2, .animId = 0xFF, .area = { .points = { {201, 76}, {220, 81}, {228, 151}, {200, 151} } } },
-    { .examinationSection = 0x90, .type = 0x2, .animId = 0xFF, .area = { .points = { {35, 37}, {49, 40}, {53, 57}, {36, 52} } } },
+    { .examinationSection = 0x8F, .type = 0x2, .animId = 0xFF, .area = { .points = { {193, 60}, {212, 65}, {220, 135}, {192, 135} } } },
+    { .examinationSection = 0x90, .type = 0x2, .animId = 0xFF, .area = { .points = { {27, 21}, {41, 24}, {45, 41}, {28, 36} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b0598[7] = {
-    { .examinationSection = 0x82, .type = 0x6, .animId = 0xFF, .area = { .points = { {107, 89}, {129, 81}, {142, 109}, {107, 109} } } },
-    { .examinationSection = 0x82, .type = 0x6, .animId = 0xFF, .area = { .points = { {106, 108}, {142, 108}, {124, 190}, {113, 190} } } },
-    { .examinationSection = 0x83, .type = 0x6, .animId = 0xFF, .area = { .points = { {231, 36}, {256, 33}, {256, 109}, {231, 109} } } },
-    { .examinationSection = 0x84, .type = 0x6, .animId = 0xFF, .area = { .points = { {0, 16}, {95, 49}, {94, 129}, {0, 153} } } },
-    { .examinationSection = 0x85, .type = 0x6, .animId = 0xFF, .area = { .points = { {155, 150}, {255, 154}, {256, 192}, {156, 192} } } },
-    { .examinationSection = 0x86, .type = 0x6, .animId = 0xFF, .area = { .points = { {157, 54}, {203, 50}, {202, 119}, {156, 119} } } },
+    { .examinationSection = 0x82, .type = 0x6, .animId = 0xFF, .area = { .points = { {99, 73}, {121, 65}, {134, 93}, {99, 93} } } },
+    { .examinationSection = 0x82, .type = 0x6, .animId = 0xFF, .area = { .points = { {98, 92}, {134, 92}, {116, 174}, {105, 174} } } },
+    { .examinationSection = 0x83, .type = 0x6, .animId = 0xFF, .area = { .points = { {223, 20}, {248, 17}, {248, 93}, {223, 93} } } },
+    { .examinationSection = 0x84, .type = 0x6, .animId = 0xFF, .area = { .points = { {0, 0}, {87, 33}, {86, 113}, {0, 137} } } },
+    { .examinationSection = 0x85, .type = 0x6, .animId = 0xFF, .area = { .points = { {147, 134}, {247, 138}, {248, 176}, {148, 176} } } },
+    { .examinationSection = 0x86, .type = 0x6, .animId = 0xFF, .area = { .points = { {149, 38}, {195, 34}, {194, 103}, {148, 103} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
@@ -70,73 +70,73 @@ const u8 gRoomData_5_20b06bc[22][8] = {
 };
 
 const struct ExaminationData gExaminationData_5_20b079c[12] = {
-    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {43, 120}, {68, 104}, {88, 118}, {71, 150} } } },
-    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {59, 140}, {79, 140}, {81, 176}, {47, 175} } } },
-    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {95, 140}, {103, 144}, {94, 150}, {78, 140} } } },
-    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {58, 141}, {80, 140}, {82, 178}, {45, 176} } } },
-    { .examinationSection = 0xE2, .type = 0x18, .animId = 0xFF, .area = { .points = { {157, 119}, {185, 114}, {183, 166}, {156, 163} } } },
-    { .examinationSection = 0xDD, .type = 0x18, .animId = 0xFF, .area = { .points = { {84, 102}, {170, 102}, {169, 149}, {85, 148} } } },
-    { .examinationSection = 0xDE, .type = 0x18, .animId = 0xFF, .area = { .points = { {0, 106}, {18, 106}, {19, 136}, {0, 136} } } },
-    { .examinationSection = 0xDF, .type = 0x18, .animId = 0xFF, .area = { .points = { {221, 0}, {248, 0}, {253, 90}, {225, 90} } } },
-    { .examinationSection = 0xE0, .type = 0x18, .animId = 0xFF, .area = { .points = { {229, 115}, {256, 115}, {256, 179}, {208, 133} } } },
-    { .examinationSection = 0xE0, .type = 0x18, .animId = 0xFF, .area = { .points = { {208, 132}, {255, 176}, {225, 165}, {205, 155} } } },
-    { .examinationSection = 0xE1, .type = 0x18, .animId = 0xFF, .area = { .points = { {104, 37}, {153, 37}, {153, 47}, {104, 47} } } },
+    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {35, 104}, {60, 88}, {80, 102}, {63, 134} } } },
+    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {51, 124}, {71, 124}, {73, 160}, {39, 159} } } },
+    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {87, 124}, {95, 128}, {86, 134}, {70, 124} } } },
+    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {50, 125}, {72, 124}, {74, 162}, {37, 160} } } },
+    { .examinationSection = 0xE2, .type = 0x18, .animId = 0xFF, .area = { .points = { {149, 103}, {177, 98}, {175, 150}, {148, 147} } } },
+    { .examinationSection = 0xDD, .type = 0x18, .animId = 0xFF, .area = { .points = { {76, 86}, {162, 86}, {161, 133}, {77, 132} } } },
+    { .examinationSection = 0xDE, .type = 0x18, .animId = 0xFF, .area = { .points = { {0, 90}, {10, 90}, {11, 120}, {0, 120} } } },
+    { .examinationSection = 0xDF, .type = 0x18, .animId = 0xFF, .area = { .points = { {213, 0}, {240, 0}, {245, 74}, {217, 74} } } },
+    { .examinationSection = 0xE0, .type = 0x18, .animId = 0xFF, .area = { .points = { {221, 99}, {248, 99}, {248, 163}, {200, 117} } } },
+    { .examinationSection = 0xE0, .type = 0x18, .animId = 0xFF, .area = { .points = { {200, 116}, {247, 160}, {217, 149}, {197, 139} } } },
+    { .examinationSection = 0xE1, .type = 0x18, .animId = 0xFF, .area = { .points = { {96, 21}, {145, 21}, {145, 31}, {96, 31} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b088c[12] = {
-    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {43, 120}, {68, 104}, {88, 118}, {71, 150} } } },
-    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {59, 140}, {79, 140}, {81, 176}, {47, 175} } } },
-    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {95, 140}, {103, 144}, {94, 150}, {78, 140} } } },
-    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {58, 141}, {80, 140}, {82, 178}, {45, 176} } } },
-    { .examinationSection = 0xE2, .type = 0x18, .animId = 0xFF, .area = { .points = { {157, 119}, {185, 114}, {183, 166}, {156, 163} } } },
-    { .examinationSection = 0xDD, .type = 0x18, .animId = 0xFF, .area = { .points = { {84, 102}, {170, 102}, {169, 149}, {85, 148} } } },
-    { .examinationSection = 0xDE, .type = 0x18, .animId = 0xFF, .area = { .points = { {0, 106}, {18, 106}, {19, 136}, {0, 136} } } },
-    { .examinationSection = 0xDF, .type = 0x18, .animId = 0xFF, .area = { .points = { {221, 0}, {248, 0}, {253, 90}, {225, 90} } } },
-    { .examinationSection = 0xE0, .type = 0x18, .animId = 0xFF, .area = { .points = { {229, 115}, {256, 115}, {256, 179}, {208, 133} } } },
-    { .examinationSection = 0xE0, .type = 0x18, .animId = 0xFF, .area = { .points = { {208, 132}, {255, 176}, {225, 165}, {205, 155} } } },
-    { .examinationSection = 0xE1, .type = 0x18, .animId = 0xFF, .area = { .points = { {118, 34}, {134, 34}, {134, 50}, {118, 50} } } },
+    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {35, 104}, {60, 88}, {80, 102}, {63, 134} } } },
+    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {51, 124}, {71, 124}, {73, 160}, {39, 159} } } },
+    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {87, 124}, {95, 128}, {86, 134}, {70, 124} } } },
+    { .examinationSection = 0xDC, .type = 0x18, .animId = 0xFF, .area = { .points = { {50, 125}, {72, 124}, {74, 162}, {37, 160} } } },
+    { .examinationSection = 0xE2, .type = 0x18, .animId = 0xFF, .area = { .points = { {149, 103}, {177, 98}, {175, 150}, {148, 147} } } },
+    { .examinationSection = 0xDD, .type = 0x18, .animId = 0xFF, .area = { .points = { {76, 86}, {162, 86}, {161, 133}, {77, 132} } } },
+    { .examinationSection = 0xDE, .type = 0x18, .animId = 0xFF, .area = { .points = { {0, 90}, {10, 90}, {11, 120}, {0, 120} } } },
+    { .examinationSection = 0xDF, .type = 0x18, .animId = 0xFF, .area = { .points = { {213, 0}, {240, 0}, {245, 74}, {217, 74} } } },
+    { .examinationSection = 0xE0, .type = 0x18, .animId = 0xFF, .area = { .points = { {221, 99}, {248, 99}, {248, 163}, {200, 117} } } },
+    { .examinationSection = 0xE0, .type = 0x18, .animId = 0xFF, .area = { .points = { {200, 116}, {247, 160}, {217, 149}, {197, 139} } } },
+    { .examinationSection = 0xE1, .type = 0x18, .animId = 0xFF, .area = { .points = { {110, 18}, {126, 18}, {126, 34}, {110, 34} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b097c[13] = {
-    { .examinationSection = 0x99, .type = 0x17, .animId = 0xFF, .area = { .points = { {34, 94}, {47, 94}, {48, 117}, {31, 108} } } },
-    { .examinationSection = 0x9C, .type = 0x17, .animId = 0xFF, .area = { .points = { {85, 93}, {177, 94}, {191, 106}, {66, 106} } } },
-    { .examinationSection = 0x9C, .type = 0x17, .animId = 0xFF, .area = { .points = { {110, 77}, {126, 76}, {135, 96}, {116, 95} } } },
-    { .examinationSection = 0xA0, .type = 0x17, .animId = 0xFF, .area = { .points = { {195, 122}, {225, 120}, {246, 135}, {210, 137} } } },
-    { .examinationSection = 0x9E, .type = 0x17, .animId = 0xFF, .area = { .points = { {199, 0}, {256, 0}, {256, 156}, {198, 117} } } },
-    { .examinationSection = 0xA2, .type = 0x17, .animId = 0xFF, .area = { .points = { {171, 64}, {185, 64}, {193, 84}, {165, 84} } } },
-    { .examinationSection = 0xA3, .type = 0x17, .animId = 0xFF, .area = { .points = { {76, 30}, {91, 65}, {91, 84}, {60, 83} } } },
-    { .examinationSection = 0xA3, .type = 0x17, .animId = 0xFF, .area = { .points = { {91, 66}, {106, 65}, {107, 83}, {91, 82} } } },
-    { .examinationSection = 0xA5, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 99}, {33, 92}, {62, 108}, {63, 132} } } },
-    { .examinationSection = 0xA5, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 98}, {63, 132}, {15, 179}, {0, 177} } } },
-    { .examinationSection = 0xA7, .type = 0x17, .animId = 0xFF, .area = { .points = { {2, 9}, {31, 23}, {32, 90}, {0, 98} } } },
-    { .examinationSection = 0x9B, .type = 0x17, .animId = 0xFF, .area = { .points = { {105, 8}, {151, 7}, {191, 80}, {79, 81} } } },
+    { .examinationSection = 0x99, .type = 0x17, .animId = 0xFF, .area = { .points = { {26, 78}, {39, 78}, {40, 101}, {23, 92} } } },
+    { .examinationSection = 0x9C, .type = 0x17, .animId = 0xFF, .area = { .points = { {77, 77}, {169, 78}, {183, 90}, {58, 90} } } },
+    { .examinationSection = 0x9C, .type = 0x17, .animId = 0xFF, .area = { .points = { {102, 61}, {118, 60}, {127, 80}, {108, 79} } } },
+    { .examinationSection = 0xA0, .type = 0x17, .animId = 0xFF, .area = { .points = { {187, 106}, {217, 104}, {238, 119}, {202, 121} } } },
+    { .examinationSection = 0x9E, .type = 0x17, .animId = 0xFF, .area = { .points = { {191, 0}, {248, 0}, {248, 140}, {190, 101} } } },
+    { .examinationSection = 0xA2, .type = 0x17, .animId = 0xFF, .area = { .points = { {163, 48}, {177, 48}, {185, 68}, {157, 68} } } },
+    { .examinationSection = 0xA3, .type = 0x17, .animId = 0xFF, .area = { .points = { {68, 14}, {83, 49}, {83, 68}, {52, 67} } } },
+    { .examinationSection = 0xA3, .type = 0x17, .animId = 0xFF, .area = { .points = { {83, 50}, {98, 49}, {99, 67}, {83, 66} } } },
+    { .examinationSection = 0xA5, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 83}, {25, 76}, {54, 92}, {55, 116} } } },
+    { .examinationSection = 0xA5, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 82}, {55, 116}, {7, 163}, {0, 161} } } },
+    { .examinationSection = 0xA7, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 0}, {23, 7}, {24, 74}, {0, 82} } } },
+    { .examinationSection = 0x9B, .type = 0x17, .animId = 0xFF, .area = { .points = { {97, 0}, {143, 0}, {183, 64}, {71, 65} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b0a80[22] = {
-    { .examinationSection = 0xC5, .type = 0x16, .animId = 0xFF, .area = { .points = { {0, 38}, {36, 45}, {37, 153}, {0, 159} } } },
-    { .examinationSection = 0xC7, .type = 0x16, .animId = 0xFF, .area = { .points = { {138, 53}, {153, 53}, {144, 124}, {127, 124} } } },
-    { .examinationSection = 0xC9, .type = 0x16, .animId = 0xFF, .area = { .points = { {91, 63}, {119, 63}, {119, 124}, {90, 124} } } },
-    { .examinationSection = 0xCB, .type = 0x16, .animId = 0xFF, .area = { .points = { {29, 0}, {98, 0}, {99, 33}, {30, 0} } } },
-    { .examinationSection = 0xCD, .type = 0x16, .animId = 0xFF, .area = { .points = { {238, 92}, {258, 93}, {258, 126}, {238, 121} } } },
-    { .examinationSection = 0xCD, .type = 0x16, .animId = 0xFF, .area = { .points = { {231, 119}, {266, 131}, {258, 151}, {227, 142} } } },
-    { .examinationSection = 0xD1, .type = 0x16, .animId = 0xFF, .area = { .points = { {192, 81}, {204, 81}, {204, 98}, {193, 98} } } },
-    { .examinationSection = 0xCF, .type = 0x16, .animId = 0xFF, .area = { .points = { {208, 48}, {223, 48}, {223, 153}, {208, 153} } } },
-    { .examinationSection = 0xF0, .type = 0x16, .animId = 0xFF, .area = { .points = { {313, 108}, {332, 105}, {343, 119}, {319, 122} } } },
-    { .examinationSection = 0xF0, .type = 0x16, .animId = 0xFF, .area = { .points = { {320, 86}, {329, 88}, {342, 113}, {321, 96} } } },
-    { .examinationSection = 0xFE, .type = 0x16, .animId = 0xFF, .area = { .points = { {405, 146}, {405, 110}, {446, 122}, {446, 148} } } },
-    { .examinationSection = 0xFE, .type = 0x16, .animId = 0xFF, .area = { .points = { {385, 100}, {406, 111}, {406, 146}, {384, 146} } } },
-    { .examinationSection = 0xFE, .type = 0x16, .animId = 0xFF, .area = { .points = { {340, 98}, {385, 101}, {384, 147}, {342, 146} } } },
-    { .examinationSection = 0xFE, .type = 0x16, .animId = 0xFF, .area = { .points = { {322, 123}, {342, 119}, {342, 147}, {322, 142} } } },
-    { .examinationSection = 0x100, .type = 0x16, .animId = 0xFF, .area = { .points = { {267, 60}, {287, 60}, {287, 81}, {267, 81} } } },
-    { .examinationSection = 0x102, .type = 0x16, .animId = 0xFF, .area = { .points = { {427, 29}, {490, 0}, {512, 0}, {512, 29} } } },
-    { .examinationSection = 0x102, .type = 0x16, .animId = 0xFF, .area = { .points = { {427, 27}, {512, 27}, {511, 152}, {427, 112} } } },
-    { .examinationSection = 0x102, .type = 0x16, .animId = 0xFF, .area = { .points = { {450, 123}, {512, 151}, {512, 178}, {450, 140} } } },
-    { .examinationSection = 0x104, .type = 0x16, .animId = 0xFF, .area = { .points = { {297, 138}, {314, 127}, {316, 153}, {298, 157} } } },
-    { .examinationSection = 0xF6, .type = 0xFD, .animId = 0x13, .area = { .points = { {264, 152}, {280, 152}, {280, 160}, {264, 160} } } },
-    { .examinationSection = 0xBE, .type = 0xFD, .animId = 0x12, .area = { .points = { {80, 128}, {96, 128}, {96, 144}, {80, 144} } } },
+    { .examinationSection = 0xC5, .type = 0x16, .animId = 0xFF, .area = { .points = { {0, 22}, {20, 29}, {21, 137}, {0, 143} } } },
+    { .examinationSection = 0xC7, .type = 0x16, .animId = 0xFF, .area = { .points = { {122, 37}, {137, 37}, {128, 108}, {111, 108} } } },
+    { .examinationSection = 0xC9, .type = 0x16, .animId = 0xFF, .area = { .points = { {75, 47}, {103, 47}, {103, 108}, {74, 108} } } },
+    { .examinationSection = 0xCB, .type = 0x16, .animId = 0xFF, .area = { .points = { {13, 0}, {82, 0}, {83, 17}, {14, 0} } } },
+    { .examinationSection = 0xCD, .type = 0x16, .animId = 0xFF, .area = { .points = { {222, 76}, {242, 77}, {242, 110}, {222, 105} } } },
+    { .examinationSection = 0xCD, .type = 0x16, .animId = 0xFF, .area = { .points = { {215, 103}, {250, 115}, {242, 135}, {211, 126} } } },
+    { .examinationSection = 0xD1, .type = 0x16, .animId = 0xFF, .area = { .points = { {176, 65}, {188, 65}, {188, 82}, {177, 82} } } },
+    { .examinationSection = 0xCF, .type = 0x16, .animId = 0xFF, .area = { .points = { {192, 32}, {207, 32}, {207, 137}, {192, 137} } } },
+    { .examinationSection = 0xF0, .type = 0x16, .animId = 0xFF, .area = { .points = { {297, 92}, {316, 89}, {327, 103}, {303, 106} } } },
+    { .examinationSection = 0xF0, .type = 0x16, .animId = 0xFF, .area = { .points = { {304, 70}, {313, 72}, {326, 97}, {305, 80} } } },
+    { .examinationSection = 0xFE, .type = 0x16, .animId = 0xFF, .area = { .points = { {389, 130}, {389, 94}, {430, 106}, {430, 132} } } },
+    { .examinationSection = 0xFE, .type = 0x16, .animId = 0xFF, .area = { .points = { {369, 84}, {390, 95}, {390, 130}, {368, 130} } } },
+    { .examinationSection = 0xFE, .type = 0x16, .animId = 0xFF, .area = { .points = { {324, 82}, {369, 85}, {368, 131}, {326, 130} } } },
+    { .examinationSection = 0xFE, .type = 0x16, .animId = 0xFF, .area = { .points = { {306, 107}, {326, 103}, {326, 131}, {306, 126} } } },
+    { .examinationSection = 0x100, .type = 0x16, .animId = 0xFF, .area = { .points = { {251, 44}, {271, 44}, {271, 65}, {251, 65} } } },
+    { .examinationSection = 0x102, .type = 0x16, .animId = 0xFF, .area = { .points = { {411, 13}, {474, 0}, {496, 0}, {496, 13} } } },
+    { .examinationSection = 0x102, .type = 0x16, .animId = 0xFF, .area = { .points = { {411, 11}, {496, 11}, {495, 136}, {411, 96} } } },
+    { .examinationSection = 0x102, .type = 0x16, .animId = 0xFF, .area = { .points = { {434, 107}, {496, 135}, {496, 162}, {434, 124} } } },
+    { .examinationSection = 0x104, .type = 0x16, .animId = 0xFF, .area = { .points = { {281, 122}, {298, 111}, {300, 137}, {282, 141} } } },
+    { .examinationSection = 0xF6, .type = 0xFD, .animId = 0x13, .area = { .points = { {248, 136}, {264, 136}, {264, 144}, {248, 144} } } },
+    { .examinationSection = 0xBE, .type = 0xFD, .animId = 0x12, .area = { .points = { {64, 112}, {80, 112}, {80, 128}, {64, 128} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
@@ -180,30 +180,30 @@ const struct ExaminationData gExaminationData_5_20b15a0[1] = {
 };
 
 const struct ExaminationData gExaminationData_5_20b15b4[3] = {
-    { .examinationSection = 0xBE, .type = 0x2, .animId = 0xFF, .area = { .points = { {201, 76}, {220, 81}, {228, 151}, {200, 151} } } },
-    { .examinationSection = 0xBF, .type = 0x2, .animId = 0xFF, .area = { .points = { {35, 37}, {49, 40}, {53, 57}, {36, 52} } } },
+    { .examinationSection = 0xBE, .type = 0x2, .animId = 0xFF, .area = { .points = { {193, 60}, {212, 65}, {220, 135}, {192, 135} } } },
+    { .examinationSection = 0xBF, .type = 0x2, .animId = 0xFF, .area = { .points = { {27, 21}, {41, 24}, {45, 41}, {28, 36} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b15f0[7] = {
-    { .examinationSection = 0x82, .type = 0x6, .animId = 0xFF, .area = { .points = { {107, 89}, {129, 81}, {142, 109}, {107, 109} } } },
-    { .examinationSection = 0x82, .type = 0x6, .animId = 0xFF, .area = { .points = { {106, 108}, {142, 108}, {124, 190}, {113, 190} } } },
-    { .examinationSection = 0x83, .type = 0x6, .animId = 0xFF, .area = { .points = { {231, 36}, {256, 33}, {256, 109}, {231, 109} } } },
-    { .examinationSection = 0x84, .type = 0x6, .animId = 0xFF, .area = { .points = { {0, 16}, {95, 49}, {94, 129}, {0, 153} } } },
-    { .examinationSection = 0x85, .type = 0x6, .animId = 0xFF, .area = { .points = { {155, 150}, {255, 154}, {256, 192}, {156, 192} } } },
-    { .examinationSection = 0x86, .type = 0x6, .animId = 0xFF, .area = { .points = { {157, 54}, {203, 50}, {202, 119}, {156, 119} } } },
+    { .examinationSection = 0x82, .type = 0x6, .animId = 0xFF, .area = { .points = { {99, 73}, {121, 65}, {134, 93}, {99, 93} } } },
+    { .examinationSection = 0x82, .type = 0x6, .animId = 0xFF, .area = { .points = { {98, 92}, {134, 92}, {116, 174}, {105, 174} } } },
+    { .examinationSection = 0x83, .type = 0x6, .animId = 0xFF, .area = { .points = { {223, 20}, {248, 17}, {248, 93}, {223, 93} } } },
+    { .examinationSection = 0x84, .type = 0x6, .animId = 0xFF, .area = { .points = { {0, 0}, {87, 33}, {86, 113}, {0, 137} } } },
+    { .examinationSection = 0x85, .type = 0x6, .animId = 0xFF, .area = { .points = { {147, 134}, {247, 138}, {248, 176}, {148, 176} } } },
+    { .examinationSection = 0x86, .type = 0x6, .animId = 0xFF, .area = { .points = { {149, 38}, {195, 34}, {194, 103}, {148, 103} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b167c[9] = {
-    { .examinationSection = 0xE0, .type = 0xE, .animId = 0xFF, .area = { .points = { {161, 51}, {177, 51}, {177, 67}, {161, 67} } } },
-    { .examinationSection = 0xE1, .type = 0xE, .animId = 0xFF, .area = { .points = { {14, 61}, {26, 61}, {27, 107}, {0, 105} } } },
-    { .examinationSection = 0xE2, .type = 0xE, .animId = 0xFF, .area = { .points = { {122, 52}, {129, 52}, {136, 72}, {120, 72} } } },
-    { .examinationSection = 0xE3, .type = 0xE, .animId = 0xFF, .area = { .points = { {123, 34}, {139, 34}, {139, 50}, {123, 50} } } },
-    { .examinationSection = 0xE4, .type = 0xE, .animId = 0xFF, .area = { .points = { {86, 71}, {109, 70}, {111, 89}, {55, 192} } } },
-    { .examinationSection = 0xE4, .type = 0xE, .animId = 0xFF, .area = { .points = { {0, 126}, {87, 71}, {52, 192}, {0, 192} } } },
-    { .examinationSection = 0xE4, .type = 0xE, .animId = 0xFF, .area = { .points = { {151, 88}, {187, 81}, {256, 122}, {222, 191} } } },
-    { .examinationSection = 0xE4, .type = 0xE, .animId = 0xFF, .area = { .points = { {235, 161}, {256, 121}, {256, 191}, {221, 192} } } },
+    { .examinationSection = 0xE0, .type = 0xE, .animId = 0xFF, .area = { .points = { {153, 35}, {169, 35}, {169, 51}, {153, 51} } } },
+    { .examinationSection = 0xE1, .type = 0xE, .animId = 0xFF, .area = { .points = { {6, 45}, {18, 45}, {19, 91}, {0, 89} } } },
+    { .examinationSection = 0xE2, .type = 0xE, .animId = 0xFF, .area = { .points = { {114, 36}, {121, 36}, {128, 56}, {112, 56} } } },
+    { .examinationSection = 0xE3, .type = 0xE, .animId = 0xFF, .area = { .points = { {115, 18}, {131, 18}, {131, 34}, {115, 34} } } },
+    { .examinationSection = 0xE4, .type = 0xE, .animId = 0xFF, .area = { .points = { {78, 55}, {101, 54}, {103, 73}, {47, 176} } } },
+    { .examinationSection = 0xE4, .type = 0xE, .animId = 0xFF, .area = { .points = { {0, 110}, {79, 55}, {44, 176}, {0, 176} } } },
+    { .examinationSection = 0xE4, .type = 0xE, .animId = 0xFF, .area = { .points = { {143, 72}, {179, 65}, {248, 106}, {214, 175} } } },
+    { .examinationSection = 0xE4, .type = 0xE, .animId = 0xFF, .area = { .points = { {227, 145}, {248, 105}, {248, 175}, {213, 176} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
@@ -233,117 +233,117 @@ const u8 gRoomData_5_20b1730[22][8] = {
 };
 
 const struct ExaminationData gExaminationData_5_20b1810[12] = {
-    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {43, 120}, {68, 104}, {88, 118}, {71, 150} } } },
-    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {59, 140}, {79, 140}, {81, 176}, {47, 175} } } },
-    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {95, 140}, {103, 144}, {94, 150}, {78, 140} } } },
-    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {58, 141}, {80, 140}, {82, 178}, {45, 176} } } },
-    { .examinationSection = 0xBA, .type = 0x18, .animId = 0xFF, .area = { .points = { {157, 119}, {185, 114}, {183, 166}, {156, 163} } } },
-    { .examinationSection = 0xB5, .type = 0x18, .animId = 0xFF, .area = { .points = { {84, 102}, {170, 102}, {169, 149}, {85, 148} } } },
-    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {0, 106}, {18, 106}, {19, 136}, {0, 136} } } },
-    { .examinationSection = 0xB7, .type = 0x18, .animId = 0xFF, .area = { .points = { {221, 0}, {248, 0}, {253, 90}, {225, 90} } } },
-    { .examinationSection = 0xB8, .type = 0x18, .animId = 0xFF, .area = { .points = { {229, 115}, {256, 115}, {256, 179}, {208, 133} } } },
-    { .examinationSection = 0xB8, .type = 0x18, .animId = 0xFF, .area = { .points = { {208, 132}, {255, 176}, {225, 165}, {205, 155} } } },
-    { .examinationSection = 0xB9, .type = 0x18, .animId = 0xFF, .area = { .points = { {118, 34}, {134, 34}, {134, 50}, {118, 50} } } },
+    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {35, 104}, {60, 88}, {80, 102}, {63, 134} } } },
+    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {51, 124}, {71, 124}, {73, 160}, {39, 159} } } },
+    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {87, 124}, {95, 128}, {86, 134}, {70, 124} } } },
+    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {50, 125}, {72, 124}, {74, 162}, {37, 160} } } },
+    { .examinationSection = 0xBA, .type = 0x18, .animId = 0xFF, .area = { .points = { {149, 103}, {177, 98}, {175, 150}, {148, 147} } } },
+    { .examinationSection = 0xB5, .type = 0x18, .animId = 0xFF, .area = { .points = { {76, 86}, {162, 86}, {161, 133}, {77, 132} } } },
+    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {0, 90}, {10, 90}, {11, 120}, {0, 120} } } },
+    { .examinationSection = 0xB7, .type = 0x18, .animId = 0xFF, .area = { .points = { {213, 0}, {240, 0}, {245, 74}, {217, 74} } } },
+    { .examinationSection = 0xB8, .type = 0x18, .animId = 0xFF, .area = { .points = { {221, 99}, {248, 99}, {248, 163}, {200, 117} } } },
+    { .examinationSection = 0xB8, .type = 0x18, .animId = 0xFF, .area = { .points = { {200, 116}, {247, 160}, {217, 149}, {197, 139} } } },
+    { .examinationSection = 0xB9, .type = 0x18, .animId = 0xFF, .area = { .points = { {110, 18}, {126, 18}, {126, 34}, {110, 34} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b1900[12] = {
-    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {43, 120}, {68, 104}, {88, 118}, {71, 150} } } },
-    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {59, 140}, {79, 140}, {81, 176}, {47, 175} } } },
-    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {95, 140}, {103, 144}, {94, 150}, {78, 140} } } },
-    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {58, 141}, {80, 140}, {82, 178}, {45, 176} } } },
-    { .examinationSection = 0xBA, .type = 0x18, .animId = 0xFF, .area = { .points = { {157, 119}, {185, 114}, {183, 166}, {156, 163} } } },
-    { .examinationSection = 0xB5, .type = 0x18, .animId = 0xFF, .area = { .points = { {84, 102}, {170, 102}, {169, 149}, {85, 148} } } },
-    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {0, 106}, {18, 106}, {19, 136}, {0, 136} } } },
-    { .examinationSection = 0xB7, .type = 0x18, .animId = 0xFF, .area = { .points = { {221, 0}, {248, 0}, {253, 90}, {225, 90} } } },
-    { .examinationSection = 0xB8, .type = 0x18, .animId = 0xFF, .area = { .points = { {229, 115}, {256, 115}, {256, 179}, {208, 133} } } },
-    { .examinationSection = 0xB8, .type = 0x18, .animId = 0xFF, .area = { .points = { {208, 132}, {255, 176}, {225, 165}, {205, 155} } } },
-    { .examinationSection = 0xB9, .type = 0x18, .animId = 0xFF, .area = { .points = { {104, 37}, {153, 37}, {153, 47}, {104, 47} } } },
+    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {35, 104}, {60, 88}, {80, 102}, {63, 134} } } },
+    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {51, 124}, {71, 124}, {73, 160}, {39, 159} } } },
+    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {87, 124}, {95, 128}, {86, 134}, {70, 124} } } },
+    { .examinationSection = 0xB4, .type = 0x18, .animId = 0xFF, .area = { .points = { {50, 125}, {72, 124}, {74, 162}, {37, 160} } } },
+    { .examinationSection = 0xBA, .type = 0x18, .animId = 0xFF, .area = { .points = { {149, 103}, {177, 98}, {175, 150}, {148, 147} } } },
+    { .examinationSection = 0xB5, .type = 0x18, .animId = 0xFF, .area = { .points = { {76, 86}, {162, 86}, {161, 133}, {77, 132} } } },
+    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {0, 90}, {10, 90}, {11, 120}, {0, 120} } } },
+    { .examinationSection = 0xB7, .type = 0x18, .animId = 0xFF, .area = { .points = { {213, 0}, {240, 0}, {245, 74}, {217, 74} } } },
+    { .examinationSection = 0xB8, .type = 0x18, .animId = 0xFF, .area = { .points = { {221, 99}, {248, 99}, {248, 163}, {200, 117} } } },
+    { .examinationSection = 0xB8, .type = 0x18, .animId = 0xFF, .area = { .points = { {200, 116}, {247, 160}, {217, 149}, {197, 139} } } },
+    { .examinationSection = 0xB9, .type = 0x18, .animId = 0xFF, .area = { .points = { {96, 21}, {145, 21}, {145, 31}, {96, 31} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b19f0[13] = {
-    { .examinationSection = 0xD6, .type = 0x17, .animId = 0xFF, .area = { .points = { {34, 94}, {47, 94}, {48, 117}, {31, 108} } } },
-    { .examinationSection = 0xCF, .type = 0x17, .animId = 0xFF, .area = { .points = { {85, 93}, {177, 94}, {191, 106}, {66, 106} } } },
-    { .examinationSection = 0xCF, .type = 0x17, .animId = 0xFF, .area = { .points = { {110, 77}, {126, 76}, {135, 96}, {116, 95} } } },
-    { .examinationSection = 0xD1, .type = 0x17, .animId = 0xFF, .area = { .points = { {195, 122}, {225, 120}, {246, 135}, {210, 137} } } },
-    { .examinationSection = 0xD0, .type = 0x17, .animId = 0xFF, .area = { .points = { {199, 0}, {256, 0}, {256, 156}, {198, 117} } } },
-    { .examinationSection = 0xD2, .type = 0x17, .animId = 0xFF, .area = { .points = { {171, 64}, {185, 64}, {193, 84}, {165, 84} } } },
-    { .examinationSection = 0xD3, .type = 0x17, .animId = 0xFF, .area = { .points = { {76, 30}, {91, 65}, {91, 84}, {60, 83} } } },
-    { .examinationSection = 0xD3, .type = 0x17, .animId = 0xFF, .area = { .points = { {91, 66}, {106, 65}, {107, 83}, {91, 82} } } },
-    { .examinationSection = 0xD4, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 99}, {33, 92}, {62, 108}, {63, 132} } } },
-    { .examinationSection = 0xD4, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 98}, {63, 132}, {15, 179}, {0, 177} } } },
-    { .examinationSection = 0xD5, .type = 0x17, .animId = 0xFF, .area = { .points = { {2, 9}, {31, 23}, {32, 90}, {0, 98} } } },
-    { .examinationSection = 0xCE, .type = 0x17, .animId = 0xFF, .area = { .points = { {105, 8}, {151, 7}, {191, 80}, {79, 81} } } },
+    { .examinationSection = 0xD6, .type = 0x17, .animId = 0xFF, .area = { .points = { {26, 78}, {39, 78}, {40, 101}, {23, 92} } } },
+    { .examinationSection = 0xCF, .type = 0x17, .animId = 0xFF, .area = { .points = { {77, 77}, {169, 78}, {183, 90}, {58, 90} } } },
+    { .examinationSection = 0xCF, .type = 0x17, .animId = 0xFF, .area = { .points = { {102, 61}, {118, 60}, {127, 80}, {108, 79} } } },
+    { .examinationSection = 0xD1, .type = 0x17, .animId = 0xFF, .area = { .points = { {187, 106}, {217, 104}, {238, 119}, {202, 121} } } },
+    { .examinationSection = 0xD0, .type = 0x17, .animId = 0xFF, .area = { .points = { {191, 0}, {248, 0}, {248, 140}, {190, 101} } } },
+    { .examinationSection = 0xD2, .type = 0x17, .animId = 0xFF, .area = { .points = { {163, 48}, {177, 48}, {185, 68}, {157, 68} } } },
+    { .examinationSection = 0xD3, .type = 0x17, .animId = 0xFF, .area = { .points = { {68, 14}, {83, 49}, {83, 68}, {52, 67} } } },
+    { .examinationSection = 0xD3, .type = 0x17, .animId = 0xFF, .area = { .points = { {83, 50}, {98, 49}, {99, 67}, {83, 66} } } },
+    { .examinationSection = 0xD4, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 83}, {25, 76}, {54, 92}, {55, 116} } } },
+    { .examinationSection = 0xD4, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 82}, {55, 116}, {7, 163}, {0, 161} } } },
+    { .examinationSection = 0xD5, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 0}, {23, 7}, {24, 74}, {0, 82} } } },
+    { .examinationSection = 0xCE, .type = 0x17, .animId = 0xFF, .area = { .points = { {97, 0}, {143, 0}, {183, 64}, {71, 65} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b1af4[13] = {
-    { .examinationSection = 0xED, .type = 0x1A, .animId = 0xFF, .area = { .points = { {0, 130}, {30, 130}, {30, 191}, {0, 191} } } },
-    { .examinationSection = 0xED, .type = 0x1A, .animId = 0xFF, .area = { .points = { {20, 126}, {35, 126}, {35, 187}, {30, 191} } } },
-    { .examinationSection = 0xED, .type = 0x1A, .animId = 0xFF, .area = { .points = { {36, 64}, {51, 64}, {51, 173}, {36, 187} } } },
-    { .examinationSection = 0xED, .type = 0x1A, .animId = 0xFF, .area = { .points = { {50, 80}, {81, 81}, {83, 102}, {59, 137} } } },
-    { .examinationSection = 0xEF, .type = 0x1A, .animId = 0xFF, .area = { .points = { {50, 46}, {91, 46}, {91, 80}, {50, 80} } } },
-    { .examinationSection = 0xEF, .type = 0x1A, .animId = 0xFF, .area = { .points = { {115, 46}, {156, 46}, {156, 80}, {115, 80} } } },
-    { .examinationSection = 0xEF, .type = 0x1A, .animId = 0xFF, .area = { .points = { {155, 70}, {178, 70}, {178, 90}, {155, 90} } } },
-    { .examinationSection = 0xF1, .type = 0x1A, .animId = 0xFF, .area = { .points = { {0, 50}, {30, 50}, {30, 110}, {0, 115} } } },
-    { .examinationSection = 0xF3, .type = 0x1A, .animId = 0xFF, .area = { .points = { {185, 110}, {210, 110}, {210, 125}, {185, 125} } } },
-    { .examinationSection = 0xF5, .type = 0x1A, .animId = 0xFF, .area = { .points = { {188, 38}, {230, 38}, {230, 110}, {188, 110} } } },
-    { .examinationSection = 0xF5, .type = 0x1A, .animId = 0xFF, .area = { .points = { {235, 62}, {242, 62}, {242, 77}, {235, 77} } } },
-    { .examinationSection = 0xF8, .type = 0x1A, .animId = 0xFF, .area = { .points = { {67, 160}, {106, 141}, {110, 191}, {67, 191} } } },
+    { .examinationSection = 0xED, .type = 0x1A, .animId = 0xFF, .area = { .points = { {0, 114}, {22, 114}, {22, 175}, {0, 175} } } },
+    { .examinationSection = 0xED, .type = 0x1A, .animId = 0xFF, .area = { .points = { {12, 110}, {27, 110}, {27, 171}, {22, 175} } } },
+    { .examinationSection = 0xED, .type = 0x1A, .animId = 0xFF, .area = { .points = { {28, 48}, {43, 48}, {43, 157}, {28, 171} } } },
+    { .examinationSection = 0xED, .type = 0x1A, .animId = 0xFF, .area = { .points = { {42, 64}, {73, 65}, {75, 86}, {51, 121} } } },
+    { .examinationSection = 0xEF, .type = 0x1A, .animId = 0xFF, .area = { .points = { {42, 30}, {83, 30}, {83, 64}, {42, 64} } } },
+    { .examinationSection = 0xEF, .type = 0x1A, .animId = 0xFF, .area = { .points = { {107, 30}, {148, 30}, {148, 64}, {107, 64} } } },
+    { .examinationSection = 0xEF, .type = 0x1A, .animId = 0xFF, .area = { .points = { {147, 54}, {170, 54}, {170, 74}, {147, 74} } } },
+    { .examinationSection = 0xF1, .type = 0x1A, .animId = 0xFF, .area = { .points = { {0, 34}, {22, 34}, {22, 94}, {0, 99} } } },
+    { .examinationSection = 0xF3, .type = 0x1A, .animId = 0xFF, .area = { .points = { {177, 94}, {202, 94}, {202, 109}, {177, 109} } } },
+    { .examinationSection = 0xF5, .type = 0x1A, .animId = 0xFF, .area = { .points = { {180, 22}, {222, 22}, {222, 94}, {180, 94} } } },
+    { .examinationSection = 0xF5, .type = 0x1A, .animId = 0xFF, .area = { .points = { {227, 46}, {234, 46}, {234, 61}, {227, 61} } } },
+    { .examinationSection = 0xF8, .type = 0x1A, .animId = 0xFF, .area = { .points = { {59, 144}, {98, 125}, {102, 175}, {59, 175} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b1d40[20] = {
-    { .examinationSection = 0x9B, .type = 0x16, .animId = 0xFF, .area = { .points = { {0, 38}, {36, 45}, {37, 153}, {0, 159} } } },
-    { .examinationSection = 0x9C, .type = 0x16, .animId = 0xFF, .area = { .points = { {138, 53}, {153, 53}, {144, 124}, {127, 124} } } },
-    { .examinationSection = 0x9D, .type = 0x16, .animId = 0xFF, .area = { .points = { {91, 63}, {119, 63}, {119, 124}, {90, 124} } } },
-    { .examinationSection = 0x9E, .type = 0x16, .animId = 0xFF, .area = { .points = { {29, 0}, {98, 0}, {99, 33}, {30, 0} } } },
-    { .examinationSection = 0x9F, .type = 0x16, .animId = 0xFF, .area = { .points = { {238, 92}, {258, 93}, {258, 126}, {238, 121} } } },
-    { .examinationSection = 0x9F, .type = 0x16, .animId = 0xFF, .area = { .points = { {231, 119}, {266, 131}, {258, 151}, {227, 142} } } },
-    { .examinationSection = 0xA1, .type = 0x16, .animId = 0xFF, .area = { .points = { {192, 81}, {204, 81}, {204, 98}, {193, 98} } } },
-    { .examinationSection = 0xA0, .type = 0x16, .animId = 0xFF, .area = { .points = { {208, 48}, {223, 48}, {223, 153}, {208, 153} } } },
-    { .examinationSection = 0xA6, .type = 0x16, .animId = 0xFF, .area = { .points = { {313, 108}, {332, 105}, {343, 119}, {319, 122} } } },
-    { .examinationSection = 0xA6, .type = 0x16, .animId = 0xFF, .area = { .points = { {320, 86}, {329, 88}, {342, 113}, {321, 96} } } },
-    { .examinationSection = 0xA2, .type = 0x16, .animId = 0xFF, .area = { .points = { {405, 146}, {405, 110}, {446, 122}, {446, 148} } } },
-    { .examinationSection = 0xA2, .type = 0x16, .animId = 0xFF, .area = { .points = { {385, 100}, {406, 111}, {406, 146}, {384, 146} } } },
-    { .examinationSection = 0xA2, .type = 0x16, .animId = 0xFF, .area = { .points = { {340, 98}, {385, 101}, {384, 147}, {342, 146} } } },
-    { .examinationSection = 0xA2, .type = 0x16, .animId = 0xFF, .area = { .points = { {322, 123}, {342, 119}, {342, 147}, {322, 142} } } },
-    { .examinationSection = 0xA3, .type = 0x16, .animId = 0xFF, .area = { .points = { {267, 60}, {287, 60}, {287, 81}, {267, 81} } } },
-    { .examinationSection = 0xA4, .type = 0x16, .animId = 0xFF, .area = { .points = { {427, 29}, {490, 0}, {512, 0}, {512, 29} } } },
-    { .examinationSection = 0xA4, .type = 0x16, .animId = 0xFF, .area = { .points = { {427, 27}, {512, 27}, {511, 152}, {427, 112} } } },
-    { .examinationSection = 0xA4, .type = 0x16, .animId = 0xFF, .area = { .points = { {450, 123}, {512, 151}, {512, 178}, {450, 140} } } },
-    { .examinationSection = 0xA5, .type = 0x16, .animId = 0xFF, .area = { .points = { {297, 138}, {314, 127}, {316, 153}, {298, 157} } } },
+    { .examinationSection = 0x9B, .type = 0x16, .animId = 0xFF, .area = { .points = { {0, 22}, {20, 29}, {21, 137}, {0, 143} } } },
+    { .examinationSection = 0x9C, .type = 0x16, .animId = 0xFF, .area = { .points = { {122, 37}, {137, 37}, {128, 108}, {111, 108} } } },
+    { .examinationSection = 0x9D, .type = 0x16, .animId = 0xFF, .area = { .points = { {75, 47}, {103, 47}, {103, 108}, {74, 108} } } },
+    { .examinationSection = 0x9E, .type = 0x16, .animId = 0xFF, .area = { .points = { {13, 0}, {82, 0}, {83, 17}, {14, 0} } } },
+    { .examinationSection = 0x9F, .type = 0x16, .animId = 0xFF, .area = { .points = { {222, 76}, {242, 77}, {242, 110}, {222, 105} } } },
+    { .examinationSection = 0x9F, .type = 0x16, .animId = 0xFF, .area = { .points = { {215, 103}, {250, 115}, {242, 135}, {211, 126} } } },
+    { .examinationSection = 0xA1, .type = 0x16, .animId = 0xFF, .area = { .points = { {176, 65}, {188, 65}, {188, 82}, {177, 82} } } },
+    { .examinationSection = 0xA0, .type = 0x16, .animId = 0xFF, .area = { .points = { {192, 32}, {207, 32}, {207, 137}, {192, 137} } } },
+    { .examinationSection = 0xA6, .type = 0x16, .animId = 0xFF, .area = { .points = { {297, 92}, {316, 89}, {327, 103}, {303, 106} } } },
+    { .examinationSection = 0xA6, .type = 0x16, .animId = 0xFF, .area = { .points = { {304, 70}, {313, 72}, {326, 97}, {305, 80} } } },
+    { .examinationSection = 0xA2, .type = 0x16, .animId = 0xFF, .area = { .points = { {389, 130}, {389, 94}, {430, 106}, {430, 132} } } },
+    { .examinationSection = 0xA2, .type = 0x16, .animId = 0xFF, .area = { .points = { {369, 84}, {390, 95}, {390, 130}, {368, 130} } } },
+    { .examinationSection = 0xA2, .type = 0x16, .animId = 0xFF, .area = { .points = { {324, 82}, {369, 85}, {368, 131}, {326, 130} } } },
+    { .examinationSection = 0xA2, .type = 0x16, .animId = 0xFF, .area = { .points = { {306, 107}, {326, 103}, {326, 131}, {306, 126} } } },
+    { .examinationSection = 0xA3, .type = 0x16, .animId = 0xFF, .area = { .points = { {251, 44}, {271, 44}, {271, 65}, {251, 65} } } },
+    { .examinationSection = 0xA4, .type = 0x16, .animId = 0xFF, .area = { .points = { {411, 13}, {474, 0}, {496, 0}, {496, 13} } } },
+    { .examinationSection = 0xA4, .type = 0x16, .animId = 0xFF, .area = { .points = { {411, 11}, {496, 11}, {495, 136}, {411, 96} } } },
+    { .examinationSection = 0xA4, .type = 0x16, .animId = 0xFF, .area = { .points = { {434, 107}, {496, 135}, {496, 162}, {434, 124} } } },
+    { .examinationSection = 0xA5, .type = 0x16, .animId = 0xFF, .area = { .points = { {281, 122}, {298, 111}, {300, 137}, {282, 141} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b1ed0[27] = {
-    { .examinationSection = 0x10F, .type = 0x1B, .animId = 0xFF, .area = { .points = { {2, 41}, {16, 53}, {16, 181}, {2, 191} } } },
-    { .examinationSection = 0x110, .type = 0x1B, .animId = 0xFF, .area = { .points = { {28, 102}, {61, 102}, {61, 160}, {25, 176} } } },
-    { .examinationSection = 0x110, .type = 0x1B, .animId = 0xFF, .area = { .points = { {50, 66}, {64, 66}, {64, 110}, {40, 110} } } },
-    { .examinationSection = 0x111, .type = 0x1B, .animId = 0xFF, .area = { .points = { {71, 67}, {108, 67}, {108, 93}, {71, 93} } } },
-    { .examinationSection = 0x111, .type = 0x1B, .animId = 0xFF, .area = { .points = { {70, 82}, {92, 82}, {81, 105}, {80, 104} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {116, 67}, {152, 67}, {152, 93}, {116, 93} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {159, 67}, {193, 67}, {193, 94}, {159, 94} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {70, 118}, {108, 118}, {108, 145}, {70, 145} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {116, 117}, {152, 117}, {152, 144}, {116, 144} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {159, 117}, {194, 117}, {194, 142}, {159, 142} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {230, 68}, {265, 68}, {265, 94}, {230, 94} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {230, 116}, {266, 116}, {266, 141}, {230, 141} } } },
-    { .examinationSection = 0x115, .type = 0x1B, .animId = 0xFF, .area = { .points = { {198, 96}, {218, 96}, {224, 161}, {198, 161} } } },
-    { .examinationSection = 0x115, .type = 0x1B, .animId = 0xFF, .area = { .points = { {200, 47}, {202, 47}, {210, 97}, {200, 97} } } },
-    { .examinationSection = 0x118, .type = 0x1B, .animId = 0xFF, .area = { .points = { {382, 74}, {394, 72}, {394, 92}, {382, 90} } } },
-    { .examinationSection = 0x11B, .type = 0x1B, .animId = 0xFF, .area = { .points = { {312, 68}, {344, 68}, {344, 93}, {312, 93} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {273, 68}, {306, 68}, {306, 93}, {273, 93} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {272, 116}, {305, 116}, {305, 141}, {272, 141} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {312, 116}, {344, 116}, {344, 139}, {312, 139} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {364, 73}, {378, 73}, {377, 91}, {364, 91} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {400, 73}, {417, 73}, {417, 91}, {400, 91} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {439, 73}, {511, 69}, {511, 93}, {439, 91} } } },
-    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {437, 107}, {511, 114}, {511, 140}, {437, 126} } } },
-    { .examinationSection = 0x11C, .type = 0x1B, .animId = 0xFF, .area = { .points = { {399, 103}, {413, 103}, {413, 120}, {399, 120} } } },
-    { .examinationSection = 0x11F, .type = 0x1B, .animId = 0xFF, .area = { .points = { {349, 122}, {390, 127}, {391, 145}, {349, 146} } } },
-    { .examinationSection = 0x123, .type = 0x1B, .animId = 0xFF, .area = { .points = { {456, 162}, {495, 155}, {511, 184}, {452, 191} } } },
+    { .examinationSection = 0x10F, .type = 0x1B, .animId = 0xFF, .area = { .points = { {0, 25}, {0, 37}, {0, 165}, {0, 175} } } },
+    { .examinationSection = 0x110, .type = 0x1B, .animId = 0xFF, .area = { .points = { {12, 86}, {45, 86}, {45, 144}, {9, 160} } } },
+    { .examinationSection = 0x110, .type = 0x1B, .animId = 0xFF, .area = { .points = { {34, 50}, {48, 50}, {48, 94}, {24, 94} } } },
+    { .examinationSection = 0x111, .type = 0x1B, .animId = 0xFF, .area = { .points = { {55, 51}, {92, 51}, {92, 77}, {55, 77} } } },
+    { .examinationSection = 0x111, .type = 0x1B, .animId = 0xFF, .area = { .points = { {54, 66}, {76, 66}, {65, 89}, {64, 88} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {100, 51}, {136, 51}, {136, 77}, {100, 77} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {143, 51}, {177, 51}, {177, 78}, {143, 78} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {54, 102}, {92, 102}, {92, 129}, {54, 129} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {100, 101}, {136, 101}, {136, 128}, {100, 128} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {143, 101}, {178, 101}, {178, 126}, {143, 126} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {214, 52}, {249, 52}, {249, 78}, {214, 78} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {214, 100}, {250, 100}, {250, 125}, {214, 125} } } },
+    { .examinationSection = 0x115, .type = 0x1B, .animId = 0xFF, .area = { .points = { {182, 80}, {202, 80}, {208, 145}, {182, 145} } } },
+    { .examinationSection = 0x115, .type = 0x1B, .animId = 0xFF, .area = { .points = { {184, 31}, {186, 31}, {194, 81}, {184, 81} } } },
+    { .examinationSection = 0x118, .type = 0x1B, .animId = 0xFF, .area = { .points = { {366, 58}, {378, 56}, {378, 76}, {366, 74} } } },
+    { .examinationSection = 0x11B, .type = 0x1B, .animId = 0xFF, .area = { .points = { {296, 52}, {328, 52}, {328, 77}, {296, 77} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {257, 52}, {290, 52}, {290, 77}, {257, 77} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {256, 100}, {289, 100}, {289, 125}, {256, 125} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {296, 100}, {328, 100}, {328, 123}, {296, 123} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {348, 57}, {362, 57}, {361, 75}, {348, 75} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {384, 57}, {401, 57}, {401, 75}, {384, 75} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {423, 57}, {495, 53}, {495, 77}, {423, 75} } } },
+    { .examinationSection = 0x114, .type = 0x1B, .animId = 0xFF, .area = { .points = { {421, 91}, {495, 98}, {495, 124}, {421, 110} } } },
+    { .examinationSection = 0x11C, .type = 0x1B, .animId = 0xFF, .area = { .points = { {383, 87}, {397, 87}, {397, 104}, {383, 104} } } },
+    { .examinationSection = 0x11F, .type = 0x1B, .animId = 0xFF, .area = { .points = { {333, 106}, {374, 111}, {375, 129}, {333, 130} } } },
+    { .examinationSection = 0x123, .type = 0x1B, .animId = 0xFF, .area = { .points = { {440, 146}, {479, 139}, {495, 168}, {436, 175} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
@@ -391,30 +391,30 @@ const struct ExaminationData gExaminationData_5_20b2380[1] = {
 };
 
 const struct ExaminationData gExaminationData_5_20b2394[3] = {
-    { .examinationSection = 0x9D, .type = 0x2, .animId = 0xFF, .area = { .points = { {201, 76}, {220, 81}, {228, 151}, {200, 151} } } },
-    { .examinationSection = 0x9E, .type = 0x2, .animId = 0xFF, .area = { .points = { {35, 37}, {49, 40}, {53, 57}, {36, 52} } } },
+    { .examinationSection = 0x9D, .type = 0x2, .animId = 0xFF, .area = { .points = { {193, 60}, {212, 65}, {220, 135}, {192, 135} } } },
+    { .examinationSection = 0x9E, .type = 0x2, .animId = 0xFF, .area = { .points = { {27, 21}, {41, 24}, {45, 41}, {28, 36} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b23d0[7] = {
-    { .examinationSection = 0x82, .type = 0x6, .animId = 0xFF, .area = { .points = { {107, 89}, {129, 81}, {142, 109}, {107, 109} } } },
-    { .examinationSection = 0x82, .type = 0x6, .animId = 0xFF, .area = { .points = { {106, 108}, {142, 108}, {124, 190}, {113, 190} } } },
-    { .examinationSection = 0x83, .type = 0x6, .animId = 0xFF, .area = { .points = { {231, 36}, {256, 33}, {256, 109}, {231, 109} } } },
-    { .examinationSection = 0x84, .type = 0x6, .animId = 0xFF, .area = { .points = { {0, 16}, {95, 49}, {94, 129}, {0, 153} } } },
-    { .examinationSection = 0x85, .type = 0x6, .animId = 0xFF, .area = { .points = { {155, 150}, {255, 154}, {256, 192}, {156, 192} } } },
-    { .examinationSection = 0x86, .type = 0x6, .animId = 0xFF, .area = { .points = { {157, 54}, {203, 50}, {202, 119}, {156, 119} } } },
+    { .examinationSection = 0x82, .type = 0x6, .animId = 0xFF, .area = { .points = { {99, 73}, {121, 65}, {134, 93}, {99, 93} } } },
+    { .examinationSection = 0x82, .type = 0x6, .animId = 0xFF, .area = { .points = { {98, 92}, {134, 92}, {116, 174}, {105, 174} } } },
+    { .examinationSection = 0x83, .type = 0x6, .animId = 0xFF, .area = { .points = { {223, 20}, {248, 17}, {248, 93}, {223, 93} } } },
+    { .examinationSection = 0x84, .type = 0x6, .animId = 0xFF, .area = { .points = { {0, 0}, {87, 33}, {86, 113}, {0, 137} } } },
+    { .examinationSection = 0x85, .type = 0x6, .animId = 0xFF, .area = { .points = { {147, 134}, {247, 138}, {248, 176}, {148, 176} } } },
+    { .examinationSection = 0x86, .type = 0x6, .animId = 0xFF, .area = { .points = { {149, 38}, {195, 34}, {194, 103}, {148, 103} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b245c[9] = {
-    { .examinationSection = 0xEF, .type = 0xE, .animId = 0xFF, .area = { .points = { {161, 51}, {177, 51}, {177, 67}, {161, 67} } } },
-    { .examinationSection = 0xEE, .type = 0xE, .animId = 0xFF, .area = { .points = { {14, 61}, {26, 61}, {27, 107}, {0, 105} } } },
-    { .examinationSection = 0xF1, .type = 0xE, .animId = 0xFF, .area = { .points = { {122, 52}, {129, 52}, {136, 72}, {120, 72} } } },
-    { .examinationSection = 0xF0, .type = 0xE, .animId = 0xFF, .area = { .points = { {123, 34}, {139, 34}, {139, 50}, {123, 50} } } },
-    { .examinationSection = 0xF2, .type = 0xE, .animId = 0xFF, .area = { .points = { {86, 71}, {109, 70}, {111, 89}, {55, 192} } } },
-    { .examinationSection = 0xF2, .type = 0xE, .animId = 0xFF, .area = { .points = { {0, 126}, {87, 71}, {52, 192}, {0, 192} } } },
-    { .examinationSection = 0xF2, .type = 0xE, .animId = 0xFF, .area = { .points = { {151, 88}, {187, 81}, {256, 122}, {222, 191} } } },
-    { .examinationSection = 0xF2, .type = 0xE, .animId = 0xFF, .area = { .points = { {235, 161}, {256, 121}, {256, 191}, {221, 192} } } },
+    { .examinationSection = 0xEF, .type = 0xE, .animId = 0xFF, .area = { .points = { {153, 35}, {169, 35}, {169, 51}, {153, 51} } } },
+    { .examinationSection = 0xEE, .type = 0xE, .animId = 0xFF, .area = { .points = { {6, 45}, {18, 45}, {19, 91}, {0, 89} } } },
+    { .examinationSection = 0xF1, .type = 0xE, .animId = 0xFF, .area = { .points = { {114, 36}, {121, 36}, {128, 56}, {112, 56} } } },
+    { .examinationSection = 0xF0, .type = 0xE, .animId = 0xFF, .area = { .points = { {115, 18}, {131, 18}, {131, 34}, {115, 34} } } },
+    { .examinationSection = 0xF2, .type = 0xE, .animId = 0xFF, .area = { .points = { {78, 55}, {101, 54}, {103, 73}, {47, 176} } } },
+    { .examinationSection = 0xF2, .type = 0xE, .animId = 0xFF, .area = { .points = { {0, 110}, {79, 55}, {44, 176}, {0, 176} } } },
+    { .examinationSection = 0xF2, .type = 0xE, .animId = 0xFF, .area = { .points = { {143, 72}, {179, 65}, {248, 106}, {214, 175} } } },
+    { .examinationSection = 0xF2, .type = 0xE, .animId = 0xFF, .area = { .points = { {227, 145}, {248, 105}, {248, 175}, {213, 176} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
@@ -444,90 +444,90 @@ const u8 gRoomData_5_20b2510[22][8] = {
 };
 
 const struct ExaminationData gExaminationData_5_20b25f0[12] = {
-    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {43, 120}, {68, 104}, {88, 118}, {71, 150} } } },
-    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {59, 140}, {79, 140}, {81, 176}, {47, 175} } } },
-    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {95, 140}, {103, 144}, {94, 150}, {78, 140} } } },
-    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {58, 141}, {80, 140}, {82, 178}, {45, 176} } } },
-    { .examinationSection = 0xBC, .type = 0x18, .animId = 0xFF, .area = { .points = { {157, 119}, {185, 114}, {183, 166}, {156, 163} } } },
-    { .examinationSection = 0xB7, .type = 0x18, .animId = 0xFF, .area = { .points = { {84, 102}, {170, 102}, {169, 149}, {85, 148} } } },
-    { .examinationSection = 0xB8, .type = 0x18, .animId = 0xFF, .area = { .points = { {0, 106}, {18, 106}, {19, 136}, {0, 136} } } },
-    { .examinationSection = 0xB9, .type = 0x18, .animId = 0xFF, .area = { .points = { {221, 0}, {248, 0}, {253, 90}, {225, 90} } } },
-    { .examinationSection = 0xBA, .type = 0x18, .animId = 0xFF, .area = { .points = { {229, 115}, {256, 115}, {256, 179}, {208, 133} } } },
-    { .examinationSection = 0xBA, .type = 0x18, .animId = 0xFF, .area = { .points = { {208, 132}, {255, 176}, {225, 165}, {205, 155} } } },
-    { .examinationSection = 0xBB, .type = 0x18, .animId = 0xFF, .area = { .points = { {104, 37}, {153, 37}, {153, 47}, {104, 47} } } },
+    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {35, 104}, {60, 88}, {80, 102}, {63, 134} } } },
+    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {51, 124}, {71, 124}, {73, 160}, {39, 159} } } },
+    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {87, 124}, {95, 128}, {86, 134}, {70, 124} } } },
+    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {50, 125}, {72, 124}, {74, 162}, {37, 160} } } },
+    { .examinationSection = 0xBC, .type = 0x18, .animId = 0xFF, .area = { .points = { {149, 103}, {177, 98}, {175, 150}, {148, 147} } } },
+    { .examinationSection = 0xB7, .type = 0x18, .animId = 0xFF, .area = { .points = { {76, 86}, {162, 86}, {161, 133}, {77, 132} } } },
+    { .examinationSection = 0xB8, .type = 0x18, .animId = 0xFF, .area = { .points = { {0, 90}, {10, 90}, {11, 120}, {0, 120} } } },
+    { .examinationSection = 0xB9, .type = 0x18, .animId = 0xFF, .area = { .points = { {213, 0}, {240, 0}, {245, 74}, {217, 74} } } },
+    { .examinationSection = 0xBA, .type = 0x18, .animId = 0xFF, .area = { .points = { {221, 99}, {248, 99}, {248, 163}, {200, 117} } } },
+    { .examinationSection = 0xBA, .type = 0x18, .animId = 0xFF, .area = { .points = { {200, 116}, {247, 160}, {217, 149}, {197, 139} } } },
+    { .examinationSection = 0xBB, .type = 0x18, .animId = 0xFF, .area = { .points = { {96, 21}, {145, 21}, {145, 31}, {96, 31} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b26e0[12] = {
-    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {43, 120}, {68, 104}, {88, 118}, {71, 150} } } },
-    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {59, 140}, {79, 140}, {81, 176}, {47, 175} } } },
-    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {95, 140}, {103, 144}, {94, 150}, {78, 140} } } },
-    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {58, 141}, {80, 140}, {82, 178}, {45, 176} } } },
-    { .examinationSection = 0xBC, .type = 0x18, .animId = 0xFF, .area = { .points = { {157, 119}, {185, 114}, {183, 166}, {156, 163} } } },
-    { .examinationSection = 0xB7, .type = 0x18, .animId = 0xFF, .area = { .points = { {84, 102}, {170, 102}, {169, 149}, {85, 148} } } },
-    { .examinationSection = 0xB8, .type = 0x18, .animId = 0xFF, .area = { .points = { {0, 106}, {18, 106}, {19, 136}, {0, 136} } } },
-    { .examinationSection = 0xB9, .type = 0x18, .animId = 0xFF, .area = { .points = { {221, 0}, {248, 0}, {253, 90}, {225, 90} } } },
-    { .examinationSection = 0xBA, .type = 0x18, .animId = 0xFF, .area = { .points = { {229, 115}, {256, 115}, {256, 179}, {208, 133} } } },
-    { .examinationSection = 0xBA, .type = 0x18, .animId = 0xFF, .area = { .points = { {208, 132}, {255, 176}, {225, 165}, {205, 155} } } },
-    { .examinationSection = 0xBB, .type = 0x18, .animId = 0xFF, .area = { .points = { {118, 34}, {134, 34}, {134, 50}, {118, 50} } } },
+    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {35, 104}, {60, 88}, {80, 102}, {63, 134} } } },
+    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {51, 124}, {71, 124}, {73, 160}, {39, 159} } } },
+    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {87, 124}, {95, 128}, {86, 134}, {70, 124} } } },
+    { .examinationSection = 0xB6, .type = 0x18, .animId = 0xFF, .area = { .points = { {50, 125}, {72, 124}, {74, 162}, {37, 160} } } },
+    { .examinationSection = 0xBC, .type = 0x18, .animId = 0xFF, .area = { .points = { {149, 103}, {177, 98}, {175, 150}, {148, 147} } } },
+    { .examinationSection = 0xB7, .type = 0x18, .animId = 0xFF, .area = { .points = { {76, 86}, {162, 86}, {161, 133}, {77, 132} } } },
+    { .examinationSection = 0xB8, .type = 0x18, .animId = 0xFF, .area = { .points = { {0, 90}, {10, 90}, {11, 120}, {0, 120} } } },
+    { .examinationSection = 0xB9, .type = 0x18, .animId = 0xFF, .area = { .points = { {213, 0}, {240, 0}, {245, 74}, {217, 74} } } },
+    { .examinationSection = 0xBA, .type = 0x18, .animId = 0xFF, .area = { .points = { {221, 99}, {248, 99}, {248, 163}, {200, 117} } } },
+    { .examinationSection = 0xBA, .type = 0x18, .animId = 0xFF, .area = { .points = { {200, 116}, {247, 160}, {217, 149}, {197, 139} } } },
+    { .examinationSection = 0xBB, .type = 0x18, .animId = 0xFF, .area = { .points = { {110, 18}, {126, 18}, {126, 34}, {110, 34} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b27d0[14] = {
-    { .examinationSection = 0xD6, .type = 0x17, .animId = 0xFF, .area = { .points = { {34, 94}, {47, 94}, {48, 117}, {31, 108} } } },
-    { .examinationSection = 0xD8, .type = 0x17, .animId = 0xFF, .area = { .points = { {85, 93}, {177, 94}, {191, 106}, {66, 106} } } },
-    { .examinationSection = 0xD8, .type = 0x17, .animId = 0xFF, .area = { .points = { {110, 77}, {126, 76}, {135, 96}, {116, 95} } } },
-    { .examinationSection = 0xDA, .type = 0x17, .animId = 0xFF, .area = { .points = { {195, 122}, {225, 120}, {246, 135}, {210, 137} } } },
-    { .examinationSection = 0xD9, .type = 0x17, .animId = 0xFF, .area = { .points = { {199, 0}, {256, 0}, {256, 156}, {198, 117} } } },
-    { .examinationSection = 0xDB, .type = 0x17, .animId = 0xFF, .area = { .points = { {171, 64}, {185, 64}, {193, 84}, {165, 84} } } },
-    { .examinationSection = 0xDC, .type = 0x17, .animId = 0xFF, .area = { .points = { {76, 30}, {91, 65}, {91, 84}, {60, 83} } } },
-    { .examinationSection = 0xDC, .type = 0x17, .animId = 0xFF, .area = { .points = { {91, 66}, {106, 65}, {107, 83}, {91, 82} } } },
-    { .examinationSection = 0xDD, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 99}, {33, 92}, {62, 108}, {63, 132} } } },
-    { .examinationSection = 0xDD, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 98}, {63, 132}, {15, 179}, {0, 177} } } },
-    { .examinationSection = 0xDE, .type = 0x17, .animId = 0xFF, .area = { .points = { {2, 9}, {31, 23}, {32, 90}, {0, 98} } } },
-    { .examinationSection = 0xD7, .type = 0x17, .animId = 0xFF, .area = { .points = { {105, 8}, {151, 7}, {191, 80}, {79, 81} } } },
-    { .examinationSection = 0xE1, .type = 0xFD, .animId = 0xBA, .area = { .points = { {159, 128}, {168, 136}, {161, 144}, {152, 137} } } },
+    { .examinationSection = 0xD6, .type = 0x17, .animId = 0xFF, .area = { .points = { {26, 78}, {39, 78}, {40, 101}, {23, 92} } } },
+    { .examinationSection = 0xD8, .type = 0x17, .animId = 0xFF, .area = { .points = { {77, 77}, {169, 78}, {183, 90}, {58, 90} } } },
+    { .examinationSection = 0xD8, .type = 0x17, .animId = 0xFF, .area = { .points = { {102, 61}, {118, 60}, {127, 80}, {108, 79} } } },
+    { .examinationSection = 0xDA, .type = 0x17, .animId = 0xFF, .area = { .points = { {187, 106}, {217, 104}, {238, 119}, {202, 121} } } },
+    { .examinationSection = 0xD9, .type = 0x17, .animId = 0xFF, .area = { .points = { {191, 0}, {248, 0}, {248, 140}, {190, 101} } } },
+    { .examinationSection = 0xDB, .type = 0x17, .animId = 0xFF, .area = { .points = { {163, 48}, {177, 48}, {185, 68}, {157, 68} } } },
+    { .examinationSection = 0xDC, .type = 0x17, .animId = 0xFF, .area = { .points = { {68, 14}, {83, 49}, {83, 68}, {52, 67} } } },
+    { .examinationSection = 0xDC, .type = 0x17, .animId = 0xFF, .area = { .points = { {83, 50}, {98, 49}, {99, 67}, {83, 66} } } },
+    { .examinationSection = 0xDD, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 83}, {25, 76}, {54, 92}, {55, 116} } } },
+    { .examinationSection = 0xDD, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 82}, {55, 116}, {7, 163}, {0, 161} } } },
+    { .examinationSection = 0xDE, .type = 0x17, .animId = 0xFF, .area = { .points = { {0, 0}, {23, 7}, {24, 74}, {0, 82} } } },
+    { .examinationSection = 0xD7, .type = 0x17, .animId = 0xFF, .area = { .points = { {97, 0}, {143, 0}, {183, 64}, {71, 65} } } },
+    { .examinationSection = 0xE1, .type = 0xFD, .animId = 0xBA, .area = { .points = { {151, 112}, {160, 120}, {153, 128}, {144, 121} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b28e8[15] = {
-    { .examinationSection = 0x112, .type = 0x19, .animId = 0xFF, .area = { .points = { {0, 19}, {24, 37}, {23, 122}, {0, 128} } } },
-    { .examinationSection = 0x113, .type = 0x19, .animId = 0xFF, .area = { .points = { {108, 61}, {153, 62}, {153, 96}, {106, 97} } } },
-    { .examinationSection = 0x114, .type = 0x19, .animId = 0xFF, .area = { .points = { {127, 117}, {165, 120}, {127, 143}, {75, 143} } } },
-    { .examinationSection = 0x116, .type = 0x19, .animId = 0xFF, .area = { .points = { {87, 92}, {100, 92}, {100, 120}, {86, 120} } } },
-    { .examinationSection = 0x116, .type = 0x19, .animId = 0xFF, .area = { .points = { {100, 105}, {116, 105}, {116, 121}, {100, 121} } } },
-    { .examinationSection = 0x116, .type = 0x19, .animId = 0xFF, .area = { .points = { {34, 80}, {67, 80}, {66, 141}, {35, 140} } } },
-    { .examinationSection = 0x115, .type = 0x19, .animId = 0xFF, .area = { .points = { {206, 0}, {308, 0}, {308, 147}, {205, 147} } } },
-    { .examinationSection = 0x115, .type = 0x19, .animId = 0xFF, .area = { .points = { {173, 35}, {212, 35}, {211, 145}, {172, 145} } } },
-    { .examinationSection = 0x115, .type = 0x19, .animId = 0xFF, .area = { .points = { {303, 35}, {340, 35}, {341, 146}, {303, 146} } } },
-    { .examinationSection = 0x117, .type = 0x19, .animId = 0xFF, .area = { .points = { {186, 150}, {330, 151}, {362, 192}, {145, 192} } } },
-    { .examinationSection = 0x118, .type = 0x19, .animId = 0xFF, .area = { .points = { {347, 120}, {383, 119}, {454, 143}, {377, 143} } } },
-    { .examinationSection = 0x11A, .type = 0x19, .animId = 0xFF, .area = { .points = { {398, 82}, {424, 82}, {424, 100}, {398, 100} } } },
-    { .examinationSection = 0x120, .type = 0x19, .animId = 0xFF, .area = { .points = { {478, 82}, {494, 83}, {498, 155}, {473, 154} } } },
-    { .examinationSection = 0x121, .type = 0x19, .animId = 0xFF, .area = { .points = { {490, 32}, {511, 18}, {512, 127}, {489, 122} } } },
+    { .examinationSection = 0x112, .type = 0x19, .animId = 0xFF, .area = { .points = { {0, 3}, {8, 21}, {7, 106}, {0, 112} } } },
+    { .examinationSection = 0x113, .type = 0x19, .animId = 0xFF, .area = { .points = { {92, 45}, {137, 46}, {137, 80}, {90, 81} } } },
+    { .examinationSection = 0x114, .type = 0x19, .animId = 0xFF, .area = { .points = { {111, 101}, {149, 104}, {111, 127}, {59, 127} } } },
+    { .examinationSection = 0x116, .type = 0x19, .animId = 0xFF, .area = { .points = { {71, 76}, {84, 76}, {84, 104}, {70, 104} } } },
+    { .examinationSection = 0x116, .type = 0x19, .animId = 0xFF, .area = { .points = { {84, 89}, {100, 89}, {100, 105}, {84, 105} } } },
+    { .examinationSection = 0x116, .type = 0x19, .animId = 0xFF, .area = { .points = { {18, 64}, {51, 64}, {50, 125}, {19, 124} } } },
+    { .examinationSection = 0x115, .type = 0x19, .animId = 0xFF, .area = { .points = { {190, 0}, {292, 0}, {292, 131}, {189, 131} } } },
+    { .examinationSection = 0x115, .type = 0x19, .animId = 0xFF, .area = { .points = { {157, 19}, {196, 19}, {195, 129}, {156, 129} } } },
+    { .examinationSection = 0x115, .type = 0x19, .animId = 0xFF, .area = { .points = { {287, 19}, {324, 19}, {325, 130}, {287, 130} } } },
+    { .examinationSection = 0x117, .type = 0x19, .animId = 0xFF, .area = { .points = { {170, 134}, {314, 135}, {346, 176}, {129, 176} } } },
+    { .examinationSection = 0x118, .type = 0x19, .animId = 0xFF, .area = { .points = { {331, 104}, {367, 103}, {438, 127}, {361, 127} } } },
+    { .examinationSection = 0x11A, .type = 0x19, .animId = 0xFF, .area = { .points = { {382, 66}, {408, 66}, {408, 84}, {382, 84} } } },
+    { .examinationSection = 0x120, .type = 0x19, .animId = 0xFF, .area = { .points = { {462, 66}, {478, 67}, {482, 139}, {457, 138} } } },
+    { .examinationSection = 0x121, .type = 0x19, .animId = 0xFF, .area = { .points = { {474, 16}, {495, 2}, {496, 111}, {473, 106} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
 const struct ExaminationData gExaminationData_5_20b2a14[20] = {
-    { .examinationSection = 0xC3, .type = 0x16, .animId = 0xFF, .area = { .points = { {0, 38}, {36, 45}, {37, 153}, {0, 159} } } },
-    { .examinationSection = 0xC4, .type = 0x16, .animId = 0xFF, .area = { .points = { {138, 53}, {153, 53}, {144, 124}, {127, 124} } } },
-    { .examinationSection = 0xC5, .type = 0x16, .animId = 0xFF, .area = { .points = { {91, 63}, {119, 63}, {119, 124}, {90, 124} } } },
-    { .examinationSection = 0xC6, .type = 0x16, .animId = 0xFF, .area = { .points = { {29, 0}, {98, 0}, {99, 33}, {30, 0} } } },
-    { .examinationSection = 0xC7, .type = 0x16, .animId = 0xFF, .area = { .points = { {238, 92}, {258, 93}, {258, 126}, {238, 121} } } },
-    { .examinationSection = 0xC7, .type = 0x16, .animId = 0xFF, .area = { .points = { {231, 119}, {266, 131}, {258, 151}, {227, 142} } } },
-    { .examinationSection = 0xC9, .type = 0x16, .animId = 0xFF, .area = { .points = { {192, 81}, {204, 81}, {204, 98}, {193, 98} } } },
-    { .examinationSection = 0xC8, .type = 0x16, .animId = 0xFF, .area = { .points = { {208, 48}, {223, 48}, {223, 153}, {208, 153} } } },
-    { .examinationSection = 0xCE, .type = 0x16, .animId = 0xFF, .area = { .points = { {313, 108}, {332, 105}, {343, 119}, {319, 122} } } },
-    { .examinationSection = 0xCE, .type = 0x16, .animId = 0xFF, .area = { .points = { {320, 86}, {329, 88}, {342, 113}, {321, 96} } } },
-    { .examinationSection = 0xCA, .type = 0x16, .animId = 0xFF, .area = { .points = { {405, 146}, {405, 110}, {446, 122}, {446, 148} } } },
-    { .examinationSection = 0xCA, .type = 0x16, .animId = 0xFF, .area = { .points = { {385, 100}, {406, 111}, {406, 146}, {384, 146} } } },
-    { .examinationSection = 0xCA, .type = 0x16, .animId = 0xFF, .area = { .points = { {340, 98}, {385, 101}, {384, 147}, {342, 146} } } },
-    { .examinationSection = 0xCA, .type = 0x16, .animId = 0xFF, .area = { .points = { {322, 123}, {342, 119}, {342, 147}, {322, 142} } } },
-    { .examinationSection = 0xCB, .type = 0x16, .animId = 0xFF, .area = { .points = { {267, 60}, {287, 60}, {287, 81}, {267, 81} } } },
-    { .examinationSection = 0xCC, .type = 0x16, .animId = 0xFF, .area = { .points = { {427, 29}, {490, 0}, {512, 0}, {512, 29} } } },
-    { .examinationSection = 0xCC, .type = 0x16, .animId = 0xFF, .area = { .points = { {427, 27}, {512, 27}, {511, 152}, {427, 112} } } },
-    { .examinationSection = 0xCC, .type = 0x16, .animId = 0xFF, .area = { .points = { {450, 123}, {512, 151}, {512, 178}, {450, 140} } } },
-    { .examinationSection = 0xCD, .type = 0x16, .animId = 0xFF, .area = { .points = { {297, 138}, {314, 127}, {316, 153}, {298, 157} } } },
+    { .examinationSection = 0xC3, .type = 0x16, .animId = 0xFF, .area = { .points = { {0, 22}, {20, 29}, {21, 137}, {0, 143} } } },
+    { .examinationSection = 0xC4, .type = 0x16, .animId = 0xFF, .area = { .points = { {122, 37}, {137, 37}, {128, 108}, {111, 108} } } },
+    { .examinationSection = 0xC5, .type = 0x16, .animId = 0xFF, .area = { .points = { {75, 47}, {103, 47}, {103, 108}, {74, 108} } } },
+    { .examinationSection = 0xC6, .type = 0x16, .animId = 0xFF, .area = { .points = { {13, 0}, {82, 0}, {83, 17}, {14, 0} } } },
+    { .examinationSection = 0xC7, .type = 0x16, .animId = 0xFF, .area = { .points = { {222, 76}, {242, 77}, {242, 110}, {222, 105} } } },
+    { .examinationSection = 0xC7, .type = 0x16, .animId = 0xFF, .area = { .points = { {215, 103}, {250, 115}, {242, 135}, {211, 126} } } },
+    { .examinationSection = 0xC9, .type = 0x16, .animId = 0xFF, .area = { .points = { {176, 65}, {188, 65}, {188, 82}, {177, 82} } } },
+    { .examinationSection = 0xC8, .type = 0x16, .animId = 0xFF, .area = { .points = { {192, 32}, {207, 32}, {207, 137}, {192, 137} } } },
+    { .examinationSection = 0xCE, .type = 0x16, .animId = 0xFF, .area = { .points = { {297, 92}, {316, 89}, {327, 103}, {303, 106} } } },
+    { .examinationSection = 0xCE, .type = 0x16, .animId = 0xFF, .area = { .points = { {304, 70}, {313, 72}, {326, 97}, {305, 80} } } },
+    { .examinationSection = 0xCA, .type = 0x16, .animId = 0xFF, .area = { .points = { {389, 130}, {389, 94}, {430, 106}, {430, 132} } } },
+    { .examinationSection = 0xCA, .type = 0x16, .animId = 0xFF, .area = { .points = { {369, 84}, {390, 95}, {390, 130}, {368, 130} } } },
+    { .examinationSection = 0xCA, .type = 0x16, .animId = 0xFF, .area = { .points = { {324, 82}, {369, 85}, {368, 131}, {326, 130} } } },
+    { .examinationSection = 0xCA, .type = 0x16, .animId = 0xFF, .area = { .points = { {306, 107}, {326, 103}, {326, 131}, {306, 126} } } },
+    { .examinationSection = 0xCB, .type = 0x16, .animId = 0xFF, .area = { .points = { {251, 44}, {271, 44}, {271, 65}, {251, 65} } } },
+    { .examinationSection = 0xCC, .type = 0x16, .animId = 0xFF, .area = { .points = { {411, 13}, {474, 0}, {496, 0}, {496, 13} } } },
+    { .examinationSection = 0xCC, .type = 0x16, .animId = 0xFF, .area = { .points = { {411, 11}, {496, 11}, {495, 136}, {411, 96} } } },
+    { .examinationSection = 0xCC, .type = 0x16, .animId = 0xFF, .area = { .points = { {434, 107}, {496, 135}, {496, 162}, {434, 124} } } },
+    { .examinationSection = 0xCD, .type = 0x16, .animId = 0xFF, .area = { .points = { {281, 122}, {298, 111}, {300, 137}, {282, 141} } } },
     { .examinationSection = 0xFFFF, .type = 0xFF, .animId = 0xFF, .area = { .points = { {65535, 4095}, {65535, 65535}, {65535, 65535}, {65535, 65535} } } },
 };
 
@@ -566,6 +566,40 @@ const struct TalkData gTalkData_5_20b2ddc[32] = {
     { .roomId = 0x0, .personId = 0x0, .unk2 = 0x0, .enableFlag = 0x0, .iconId = {0x0, 0x0, 0x0, 0x0}, .talkFlagId = {0x0, 0x0, 0x0, 0x0}, .talkSection = {0x0, 0x0, 0x0, 0x0} },
 };
 
+const struct ExaminationData * const gRftaExamTables[] = {
+    gExaminationData_5_20b050c,
+    gExaminationData_5_20b0520,
+    gExaminationData_5_20b0534,
+    gExaminationData_5_20b0548,
+    gExaminationData_5_20b055c,
+    gExaminationData_5_20b0598,
+    gExaminationData_5_20b079c,
+    gExaminationData_5_20b088c,
+    gExaminationData_5_20b097c,
+    gExaminationData_5_20b0a80,
+    gExaminationData_5_20b15a0,
+    gExaminationData_5_20b15b4,
+    gExaminationData_5_20b15f0,
+    gExaminationData_5_20b167c,
+    gExaminationData_5_20b1810,
+    gExaminationData_5_20b1900,
+    gExaminationData_5_20b19f0,
+    gExaminationData_5_20b1af4,
+    gExaminationData_5_20b1d40,
+    gExaminationData_5_20b1ed0,
+    gExaminationData_5_20b236c,
+    gExaminationData_5_20b2380,
+    gExaminationData_5_20b2394,
+    gExaminationData_5_20b23d0,
+    gExaminationData_5_20b245c,
+    gExaminationData_5_20b25f0,
+    gExaminationData_5_20b26e0,
+    gExaminationData_5_20b27d0,
+    gExaminationData_5_20b28e8,
+    gExaminationData_5_20b2a14,
+};
+const u8 gRftaExamCounts[] = { 1, 1, 1, 1, 3, 7, 12, 12, 13, 22, 1, 3, 7, 9, 12, 12, 13, 13, 20, 27, 1, 1, 3, 7, 9, 12, 12, 14, 15, 20 };
+
 // DS 02067f48, 1 instructions
 void InvestigationRoomUpdate_5_00(struct Main *main)
 {
@@ -585,7 +619,7 @@ void InvestigationRoomSetup_5_00(struct Main *main)
     r0 = sp0;
     r1 = 0x20CE888;
     r2 = 0x280;
-    DmaFill16(3, 0xFFFF, gExaminationData, sizeof(gExaminationData));
+    DmaFill16(3, 0xFFFF, gExaminationData, sizeof(gExaminationData)); gMain.unk8B = 0;
     EnRftaDay1RoomHook(main);
     r0 = EnDsRoom(main->currentRoomId);
     cA = r0; cB = 0xE;
@@ -673,7 +707,7 @@ L_2068090: ;
     r0 = 0x20B0598;
     r1 = 0x20CE888;
     r2 = 0x8C;
-    LOADEXAMDATA(gExaminationData_5_20b0598);
+    EnLoadExamData(EXAM_gExaminationData_5_20b0598);
     return;
 L_20680ac: ;
     r0 = 0x0;
@@ -706,7 +740,7 @@ L_2068110: ;
     r0 = 0x20B055C;
     r1 = 0x20CE888;
     r2 = 0x3C;
-    LOADEXAMDATA(gExaminationData_5_20b055c);
+    EnLoadExamData(EXAM_gExaminationData_5_20b055c);
     return;
 L_206812c: ;
     r0 = 0x0;
@@ -771,7 +805,7 @@ L_2068204: ;
     r0 = 0x20B0A80;
     r1 = 0x20CE888;
     r2 = 0x1B8;
-    LOADEXAMDATA(gExaminationData_5_20b0a80);
+    EnLoadExamData(EXAM_gExaminationData_5_20b0a80);
     return;
 L_2068220: ;
     r0 = 0x0;
@@ -835,19 +869,19 @@ L_20682f8: ;
     r0 = 0x20B097C;
     r1 = 0x20CE888;
     r2 = 0x104;
-    LOADEXAMDATA(gExaminationData_5_20b097c);
+    EnLoadExamData(EXAM_gExaminationData_5_20b097c);
     return;
 L_2068314: ;
     r0 = 0x20B050C;
     r1 = 0x20CE888;
     r2 = 0x14;
-    LOADEXAMDATA(gExaminationData_5_20b050c);
+    EnLoadExamData(EXAM_gExaminationData_5_20b050c);
     return;
 L_2068330: ;
     r0 = 0x20B0520;
     r1 = 0x20CE888;
     r2 = 0x14;
-    LOADEXAMDATA(gExaminationData_5_20b0520);
+    EnLoadExamData(EXAM_gExaminationData_5_20b0520);
     return;
 L_206834c: ;
     r0 = 0x0;
@@ -879,25 +913,25 @@ L_206839c: ;
     r0 = 0x20B079C;
     r1 = 0x20CE888;
     r2 = 0xF0;
-    LOADEXAMDATA(gExaminationData_5_20b079c);
+    EnLoadExamData(EXAM_gExaminationData_5_20b079c);
     return;
 L_20683c8: ;
     r0 = 0x20B088C;
     r1 = 0x20CE888;
     r2 = 0xF0;
-    LOADEXAMDATA(gExaminationData_5_20b088c);
+    EnLoadExamData(EXAM_gExaminationData_5_20b088c);
     return;
 L_20683e4: ;
     r0 = 0x20B0548;
     r1 = 0x20CE888;
     r2 = 0x14;
-    LOADEXAMDATA(gExaminationData_5_20b0548);
+    EnLoadExamData(EXAM_gExaminationData_5_20b0548);
     return;
 L_2068400: ;
     r0 = 0x20B0534;
     r1 = 0x20CE888;
     r2 = 0x14;
-    LOADEXAMDATA(gExaminationData_5_20b0534);
+    EnLoadExamData(EXAM_gExaminationData_5_20b0534);
 L_2068410: ;
     return;
 }
@@ -1019,7 +1053,7 @@ void InvestigationRoomSetup_5_05(struct Main *main)
     r0 = sp0;
     r1 = 0x20CE888;
     r2 = 0x280;
-    DmaFill16(3, 0xFFFF, gExaminationData, sizeof(gExaminationData));
+    DmaFill16(3, 0xFFFF, gExaminationData, sizeof(gExaminationData)); gMain.unk8B = 0;
     EnRftaDay2RoomHook(main);
     r0 = EnDsRoom(main->currentRoomId);
     cA = r0; cB = 0xE;
@@ -1075,7 +1109,7 @@ L_2096324: ;
     r0 = 0x20B15F0;
     r1 = 0x20CE888;
     r2 = 0x8C;
-    LOADEXAMDATA(gExaminationData_5_20b15f0);
+    EnLoadExamData(EXAM_gExaminationData_5_20b15f0);
     return;
 L_2096340: ;
     r0 = 0x0;
@@ -1118,7 +1152,7 @@ L_20963c8: ;
     r0 = 0x20B15B4;
     r1 = 0x20CE888;
     r2 = 0x3C;
-    LOADEXAMDATA(gExaminationData_5_20b15b4);
+    EnLoadExamData(EXAM_gExaminationData_5_20b15b4);
     return;
 L_20963e4: ;
     r0 = 0x0;
@@ -1157,7 +1191,7 @@ L_2096460: ;
     r0 = 0x20B1D40;
     r1 = 0x20CE888;
     r2 = 0x190;
-    LOADEXAMDATA(gExaminationData_5_20b1d40);
+    EnLoadExamData(EXAM_gExaminationData_5_20b1d40);
     return;
 L_209647c: ;
     r0 = 0x0;
@@ -1200,13 +1234,13 @@ L_2096504: ;
     r0 = 0x20B19F0;
     r1 = 0x20CE888;
     r2 = 0x104;
-    LOADEXAMDATA(gExaminationData_5_20b19f0);
+    EnLoadExamData(EXAM_gExaminationData_5_20b19f0);
     return;
 L_2096520: ;
     r0 = 0x20B15A0;
     r1 = 0x20CE888;
     r2 = 0x14;
-    LOADEXAMDATA(gExaminationData_5_20b15a0);
+    EnLoadExamData(EXAM_gExaminationData_5_20b15a0);
     return;
 L_209653c: ;
     r0 = 0x0;
@@ -1249,7 +1283,7 @@ L_20965c4: ;
     r0 = 0x20B167C;
     r1 = 0x20CE888;
     r2 = 0xB4;
-    LOADEXAMDATA(gExaminationData_5_20b167c);
+    EnLoadExamData(EXAM_gExaminationData_5_20b167c);
     return;
 L_20965e0: ;
     r0 = 0x0;
@@ -1311,13 +1345,13 @@ L_20966a4: ;
     r0 = 0x20B1900;
     r1 = 0x20CE888;
     r2 = 0xF0;
-    LOADEXAMDATA(gExaminationData_5_20b1900);
+    EnLoadExamData(EXAM_gExaminationData_5_20b1900);
     return;
 L_20966d0: ;
     r0 = 0x20B1810;
     r1 = 0x20CE888;
     r2 = 0xF0;
-    LOADEXAMDATA(gExaminationData_5_20b1810);
+    EnLoadExamData(EXAM_gExaminationData_5_20b1810);
     return;
 L_20966ec: ;
     r0 = 0x0;
@@ -1360,7 +1394,7 @@ L_2096774: ;
     r0 = 0x20B1ED0;
     r1 = 0x20CE888;
     r2 = 0x21C;
-    LOADEXAMDATA(gExaminationData_5_20b1ed0);
+    EnLoadExamData(EXAM_gExaminationData_5_20b1ed0);
     return;
 L_2096790: ;
     r0 = 0x0;
@@ -1393,7 +1427,7 @@ L_20967f4: ;
     r0 = 0x20B1AF4;
     r1 = 0x20CE888;
     r2 = 0x104;
-    LOADEXAMDATA(gExaminationData_5_20b1af4);
+    EnLoadExamData(EXAM_gExaminationData_5_20b1af4);
 L_2096804: ;
     return;
 }
@@ -1524,7 +1558,7 @@ void InvestigationRoomSetup_5_11(struct Main *main)
     r0 = sp0;
     r1 = 0x20CE888;
     r2 = 0x280;
-    DmaFill16(3, 0xFFFF, gExaminationData, sizeof(gExaminationData));
+    DmaFill16(3, 0xFFFF, gExaminationData, sizeof(gExaminationData)); gMain.unk8B = 0;
     EnRftaDay3RoomHook(main);
     r0 = EnDsRoom(main->currentRoomId);
     cA = r0; cB = 0xE;
@@ -1590,7 +1624,7 @@ L_2096ad0: ;
     r0 = 0x20B23D0;
     r1 = 0x20CE888;
     r2 = 0x8C;
-    LOADEXAMDATA(gExaminationData_5_20b23d0);
+    EnLoadExamData(EXAM_gExaminationData_5_20b23d0);
     return;
 L_2096aec: ;
     r0 = 0x0;
@@ -1657,7 +1691,7 @@ L_2096bcc: ;
     r0 = 0x20B2394;
     r1 = 0x20CE888;
     r2 = 0x3C;
-    LOADEXAMDATA(gExaminationData_5_20b2394);
+    EnLoadExamData(EXAM_gExaminationData_5_20b2394);
     return;
 L_2096be8: ;
     r0 = 0x0;
@@ -1701,7 +1735,7 @@ L_2096c74: ;
     r0 = 0x20B2A14;
     r1 = 0x20CE888;
     r2 = 0x190;
-    LOADEXAMDATA(gExaminationData_5_20b2a14);
+    EnLoadExamData(EXAM_gExaminationData_5_20b2a14);
     return;
 L_2096c90: ;
     r0 = 0x0;
@@ -1744,7 +1778,7 @@ L_2096d18: ;
     r0 = 0x20B27D0;
     r1 = 0x20CE888;
     r2 = 0x118;
-    LOADEXAMDATA(gExaminationData_5_20b27d0);
+    EnLoadExamData(EXAM_gExaminationData_5_20b27d0);
     return;
 L_2096d34: ;
     r0 = 0x0;
@@ -1821,7 +1855,7 @@ L_2096e40: ;
     r0 = 0x20B28E8;
     r1 = 0x20CE888;
     r2 = 0x12C;
-    LOADEXAMDATA(gExaminationData_5_20b28e8);
+    EnLoadExamData(EXAM_gExaminationData_5_20b28e8);
     return;
 L_2096e5c: ;
     r0 = 0x0;
@@ -1917,7 +1951,7 @@ L_2096fac: ;
     r0 = 0x20B245C;
     r1 = 0x20CE888;
     r2 = 0xB4;
-    LOADEXAMDATA(gExaminationData_5_20b245c);
+    EnLoadExamData(EXAM_gExaminationData_5_20b245c);
     return;
 L_2096fc8: ;
     r0 = 0x0;
@@ -1997,25 +2031,25 @@ L_20970d0: ;
     r0 = 0x20B25F0;
     r1 = 0x20CE888;
     r2 = 0xF0;
-    LOADEXAMDATA(gExaminationData_5_20b25f0);
+    EnLoadExamData(EXAM_gExaminationData_5_20b25f0);
     return;
 L_20970fc: ;
     r0 = 0x20B26E0;
     r1 = 0x20CE888;
     r2 = 0xF0;
-    LOADEXAMDATA(gExaminationData_5_20b26e0);
+    EnLoadExamData(EXAM_gExaminationData_5_20b26e0);
     return;
 L_2097118: ;
     r0 = 0x20B236C;
     r1 = 0x20CE888;
     r2 = 0x14;
-    LOADEXAMDATA(gExaminationData_5_20b236c);
+    EnLoadExamData(EXAM_gExaminationData_5_20b236c);
     return;
 L_2097134: ;
     r0 = 0x20B2380;
     r1 = 0x20CE888;
     r2 = 0x14;
-    LOADEXAMDATA(gExaminationData_5_20b2380);
+    EnLoadExamData(EXAM_gExaminationData_5_20b2380);
 L_2097144: ;
     return;
 }
