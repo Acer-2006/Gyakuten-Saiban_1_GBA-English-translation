@@ -566,6 +566,9 @@ const struct EvidenceProfileData gEvidenceProfileData[] = {
 		.evidenceImageId = 54,
 		.evidenceDetailId = 0,
 	},
+#if RFTA
+#include "data/en_rfta_evidence.h"
+#endif
 };
 
 const u8 sCourtRecordLeftArrowTileIndexes[] = {0, 4, 8, 4};

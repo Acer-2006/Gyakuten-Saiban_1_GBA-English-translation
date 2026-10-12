@@ -23,9 +23,9 @@ struct InvestigationPresentData
 extern const u8 gCaseStartProcess[];
 extern const u16 gCaseGameoverSections[];
 
-extern const u8 * gCourtRecordInitialItemLists[17];
-extern const struct CourtPresentData * gCourtPresentData[17];
-extern const struct InvestigationPresentData * gInvestigationPresentData[17];
+extern const u8 * gCourtRecordInitialItemLists[];
+extern const struct CourtPresentData * gCourtPresentData[];
+extern const struct InvestigationPresentData * gInvestigationPresentData[];
 extern void (*gInvestigationSegmentSetupFunctions[])(struct Main *);
 extern void (*gInvestigationRoomSetupFunctions[])(struct Main *);
 extern void (*gInvestigationRoomUpdateFunctions[])(struct Main *);

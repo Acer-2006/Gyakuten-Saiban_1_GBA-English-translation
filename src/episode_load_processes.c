@@ -11,6 +11,7 @@
 #include "constants/process.h"
 #include "constants/oam_allocations.h"
 #include "en_menu.h"
+#include "en_rfta.h"
 
 void EpisodeInit(struct Main * main)
 {
@@ -605,6 +606,11 @@ void SelectEpisodeProcess(struct Main * main)
                 case 3:
                     main->scenarioIdx = 11;
                     break;
+#if RFTA
+                case RFTA_EPISODE:
+                    main->scenarioIdx = RFTA_FIRST_CHAPTER;
+                    break;
+#endif
                 default:
                     main->scenarioIdx = 0;
             }
@@ -653,7 +659,7 @@ void ContinueSaveProcess(struct Main * main) {
                 main->advanceScriptContext = TRUE;
                 main->showTextboxCharacters = TRUE;
                 gScriptContext.currentSection = 0xFFFF;
-                ChangeScriptSection(main->scenarioIdx + 7);
+                ChangeScriptSection(CHAPTER_TITLE_SECTION(main->scenarioIdx));
                 EnMenuSetTextPos();
                 EnMenuShowButtons(12); // the DS flips them in while the title is typed
                 ++main->process[GAME_PROCESS_STATE];

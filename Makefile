@@ -11,6 +11,18 @@ MID := tools/mid2agb/mid2agb
 
 include config.mk
 
+# English patch: `make RFTA=1` builds the optional Rise from the Ashes ROM
+# (32 MB, pwaa1_rfta.gba): the fifth episode of the DS release
+# (docs/rise_from_the_ashes.md). Its code is under #if RFTA and its data in
+# data/rfta/ and the rfta_data section; the plain build doesn't change.
+RFTA ?= 0
+ifeq ($(RFTA),1)
+BUILD_NAME := $(BUILD_NAME)_rfta
+ROM_END := 0xA000000
+else
+ROM_END := 0x9000000
+endif
+
 
 TOOLDIRS := $(filter-out tools/ignore tools/agbcc tools/binutils tools/en,$(wildcard tools/*))
 TOOLBASE = $(TOOLDIRS:tools/%=%)
@@ -53,6 +65,9 @@ ASM_SRCS := $(wildcard $(ASM_SUBDIR)/*.s)
 ASM_OBJS := $(patsubst $(ASM_SUBDIR)/%.s,$(ASM_BUILDDIR)/%.o,$(ASM_SRCS))
 
 DATA_ASM_SRCS := $(wildcard $(DATA_ASM_SUBDIR)/*.s)
+ifeq ($(RFTA),1)
+DATA_ASM_SRCS += $(wildcard $(DATA_ASM_SUBDIR)/rfta/*.s)
+endif
 DATA_ASM_OBJS := $(patsubst $(DATA_ASM_SUBDIR)/%.s,$(DATA_ASM_BUILDDIR)/%.o,$(DATA_ASM_SRCS))
 
 RODATA_ASM_SRCS := $(wildcard $(RODATA_ASM_SUBDIR)/*.s)
@@ -74,6 +89,9 @@ CC1             := tools/agbcc/bin/old_agbcc
 override CFLAGS += -mthumb-interwork -Wimplicit -Wparentheses -Werror -O2 -fhex-asm
 
 CPPFLAGS := -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=$(GAME_REVISION) -nostdinc
+ifeq ($(RFTA),1)
+CPPFLAGS += -DRFTA=1
+endif
 
 ifeq ($(DINFO),1)
 CFLAGS += -g
@@ -138,7 +156,7 @@ include graphics.mk
 $(C_BUILDDIR)/agb_sram.o: CFLAGS := -O -mthumb-interwork
 
 $(ROM): $(ELF)
-	$(OBJCOPY) -O binary --gap-fill 0xff --pad-to 0x9000000 $< $@
+	$(OBJCOPY) -O binary --gap-fill 0xff --pad-to $(ROM_END) $< $@
 	$(GBAFIX) --silent -p $@
 
 $(OBJ_DIR)/sym_iwram.txt: sym_iwram.txt
@@ -147,8 +165,14 @@ $(OBJ_DIR)/sym_iwram.txt: sym_iwram.txt
 $(OBJ_DIR)/sym_ewram.txt: sym_ewram.txt
 	cp sym_ewram.txt $(OBJ_DIR)
 
+ifeq ($(RFTA),1)
+LD_RFTA := -e 's@/\*RFTA_TEXT\*/@src/en_rfta.o(.text); src/en_rfta_rooms.o(.text);@' \
+	-e 's@/\*RFTA_RODATA\*/@src/en_rfta.o(.rodata); src/en_rfta_rooms.o(.rodata); src/en_rfta_tables.o(.rodata);@' \
+	-e 's@/\*RFTA_SECTION\*/@. = 0x9000000; rfta_data : ALIGN(4) { src/en_rfta.o(rfta_data); data/rfta/graphics.o(rfta_data); data/rfta/backgrounds.o(rfta_data); } =0@'
+endif
+
 $(OBJ_DIR)/ld_script.ld: ld_script.txt $(OBJ_DIR)/sym_iwram.txt $(OBJ_DIR)/sym_ewram.txt
-	cd $(OBJ_DIR) && sed "s#tools/#../../tools/#g" ../../ld_script.txt > ld_script.ld
+	cd $(OBJ_DIR) && sed -e "s#tools/#../../tools/#g" $(LD_RFTA) ../../ld_script.txt > ld_script.ld
 
 $(ELF): %.elf: $(OBJS) $(OBJ_DIR)/ld_script.ld
 	cd $(OBJ_DIR) && ../../$(LD) -T ld_script.ld -Map ../../$*.map -o ../../$@ $(OBJS_REL) -L ../../tools/agbcc/lib -lgcc -lc

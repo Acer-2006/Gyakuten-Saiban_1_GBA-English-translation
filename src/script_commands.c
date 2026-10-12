@@ -4,6 +4,7 @@
 #include "animation.h"
 #include "script.h"
 #include "vwf.h"
+#include "en_rfta.h"
 #include "sound.h"
 #include "utils.h"
 #include "m4a.h"
@@ -18,6 +19,19 @@
 #include "constants/process.h"
 #include "constants/oam_allocations.h"
 
+#if RFTA
+// English patch: the DS's table (ARM9 0x020aa98c), with the fifth episode's
+// name tags: Ema and Lana, Angel Starr in the women's voice
+const u8 gSoundCueTable[] = {
+    0, 0, 0, 0, 1, 1, 1, 1,
+    0, 0, 0, 0, 0, 0, 0, 1,
+    1, 1, 0, 0, 0, 0, 1, 0,
+    0, 0, 0, 0, 0, 0, 0, 1,
+    0, 0, 0, 0, 0, 0, 1, 1,
+    1, 1, 0, 0, 1, 1, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0,
+};
+#else
 const u8 gSoundCueTable[] = {
     0, 0, 0, 0, 1, 1, 1, 1,
 	0, 0, 0, 0, 0, 0, 0, 1,
@@ -26,6 +40,7 @@ const u8 gSoundCueTable[] = {
     0, 0, 0, 0, 0, 0, 1, 1,
 	1, 1, 0, 0, 0, 0, 0, 0,
 };
+#endif
 
 // English patch: the pans of Gyakuten Saiban 3's courtroom (include/en_court.h)
 u8 * const gCourtScrollGfxPointers[] = {
@@ -613,7 +628,7 @@ bool32 Command16(struct ScriptContext * scriptCtx)
     // last: the save the DS offers after the credits is of that chapter
     // cleared, Continue then offers it from its start, and the prompt leads
     // to the title (SaveGame5), not to a chapter 17.
-    if (main->scenarioIdx < 16)
+    if (main->scenarioIdx < LAST_CHAPTER)
         main->scenarioIdx++;
     else
         main->gameStateFlags |= GAME_STATE_CREDITS_OVER;
