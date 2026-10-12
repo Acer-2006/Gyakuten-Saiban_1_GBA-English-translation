@@ -608,8 +608,12 @@ void InvestigationMove(struct Main * main, struct InvestigationStruct * investig
                 if(*moveLocations != 0xFF)
                 {
                     investigation->activeOptions[i] = TRUE;
+#if RFTA
+                    temp = (u32)EnLocationPlate(*moveLocations);
+#else
                     temp = (*moveLocations)*0x800;
                     temp += (u32)gGfxLocationChoices;
+#endif
                     DmaCopy16(3, temp, vram, 0x800);
                     for(j = 0; j < 2; j++)
                     {
@@ -817,8 +821,12 @@ void InvestigationMove(struct Main * main, struct InvestigationStruct * investig
                 if(*moveLocations != 0xFF)
                 {
                     investigation->activeOptions[i] = TRUE;
+#if RFTA
+                    temp = (u32)EnLocationPlate(*moveLocations);
+#else
                     temp = *moveLocations*0x800; //TODO: label vs value?
                     temp += (u32)gGfxLocationChoices;
+#endif
                     DmaCopy16(3, temp, vram, 0x800);
                     for(j = 0; j < 2; j++)
                     {
@@ -901,8 +909,12 @@ void InvestigationTalk(struct Main * main, struct InvestigationStruct * investig
                 if(*icons != 0xFF)
                 {
                     investigation->activeOptions[i] = TRUE;
+#if RFTA
+                    temp = (uintptr_t)EnTalkPlate(*icons);
+#else
                     temp = (*icons) * 0x800;
                     temp += (uintptr_t)gGfxTalkChoices;
+#endif
                     DmaCopy16(3, temp, vram, 0x800);
                     for(j = 0; j < 2; j++)
                     {
@@ -1217,8 +1229,12 @@ void InvestigationTalk(struct Main * main, struct InvestigationStruct * investig
                     if(*icons != 0xFF)
                     {
                         investigation->activeOptions[i] = TRUE;
+#if RFTA
+                        temp = (uintptr_t)EnTalkPlate(*icons);
+#else
                         temp = (*icons) * 0x800;
                         temp += (uintptr_t)gGfxTalkChoices;
+#endif
                         DmaCopy16(3, temp, vram, 0x800);
                         for(j = 0; j < 2; j++)
                         {
@@ -1285,8 +1301,12 @@ void InvestigationTalk(struct Main * main, struct InvestigationStruct * investig
                 if(*icons != 0xFF)
                 {
                     investigation->activeOptions[i] = TRUE;
+#if RFTA
+                    temp = (uintptr_t)EnTalkPlate(*icons);
+#else
                     temp = (*icons) * 0x800;
                     temp += (uintptr_t)gGfxTalkChoices;
+#endif
                     DmaCopy16(3, temp, vram, 0x800);
                     for(j = 0; j < 2; j++)
                     {
@@ -1550,7 +1570,11 @@ void LoadLocationChoiceGraphics(void)
         destination += i*0x800;
         if(*roomptr != 0xFF)
 	    {
+#if RFTA
+            src = (u8 *)EnLocationPlate(*roomptr);
+#else
             src = gGfxLocationChoices+*roomptr*0x800;
+#endif
             DmaCopy16(3, src, destination, 0x800);
         }
         roomptr++;
@@ -1581,7 +1605,11 @@ void LoadTalkChoiceGraphics(void)
         destination += i*0x800;
         if(*icons != 0xFF)
 	    {
+#if RFTA
+            src = (void *)EnTalkPlate(*icons);
+#else
             src = gGfxTalkChoices + *icons*0x800;
+#endif
             DmaCopy16(3, src, destination, 0x800);
         }
         icons++;

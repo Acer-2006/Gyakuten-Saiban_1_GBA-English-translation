@@ -390,7 +390,7 @@ def table_c(kind, addr, size, name):
             flags = struct.unpack_from('<4B', raw, i * TALK_SIZE + 8)
             secs = struct.unpack_from('<4H', raw, i * TALK_SIZE + 12)
             lines.append('    { .roomId = 0x%X, .personId = 0x%X, .unk2 = 0x%X, .enableFlag = 0x%X, .iconId = {%s}, .talkFlagId = {%s}, .talkSection = {%s} },' %
-                         (room(r), p, dm, en, ', '.join('0x%X' % v for v in icons), ', '.join('0x%X' % v for v in flags), ', '.join('0x%X' % v for v in secs)))
+                         (room(r), translate.stand_in(p), dm, en, ', '.join('0x%X' % v for v in icons), ', '.join('0x%X' % v for v in flags), ', '.join('0x%X' % v for v in secs)))
         lines.append('};')
     return lines
 

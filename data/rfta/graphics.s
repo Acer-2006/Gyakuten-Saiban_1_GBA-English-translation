@@ -7,6 +7,20 @@
 gGfx4bppNametagsRfta:
 	.incbin "graphics/en/rfta/nametags.4bpp"
 
+@ the Move menu's plates for GBA rooms 0x10-0x17 in the fifth episode (the DS's
+@ rooms 0x16-0x1D), the Talk menu's for topics 125-187, the episode select's
+@ fifth title (tools/en/rfta/plates.py)
+	.align 2
+	.global gRftaLocationChoices
+gRftaLocationChoices:
+	.incbin "graphics/en/rfta/location_choices.4bpp"
+	.global gRftaTalkChoices
+gRftaTalkChoices:
+	.incbin "graphics/en/rfta/talk_choices.4bpp"
+	.global gRftaEpisodeTitle
+gRftaEpisodeTitle:
+	.incbin "graphics/en/rfta/episode_title.4bpp"
+
 @ the Court Record pictures: the GBA's 0-63, then the DS's 64-146 (tools/en/rfta/evidence.py)
 	.align 2
 	.global gRftaEvidencePictures

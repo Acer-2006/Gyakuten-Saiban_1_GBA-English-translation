@@ -11,6 +11,7 @@
 #include "case_data.h"
 #include "sound.h"
 #include "utils.h"
+#include "graphics.h"
 
 #define RFTA_DATA __attribute__((section("rfta_data")))
 
@@ -81,6 +82,25 @@ u32 EnGbaRoom(u32 dsRoom)
     if (dsRoom >= DS_FIRST_NEW_ROOM && dsRoom < DS_FIRST_NEW_ROOM + NEW_ROOMS)
         return dsRoom - DS_FIRST_NEW_ROOM + GBA_FIRST_NEW_ROOM;
     return dsRoom;
+}
+
+// The Move menu's plate for a room: in the fifth episode rooms 0x10-0x17 are
+// the DS's 0x16-0x1D, whose plates follow the DS's English ones; the first
+// four episodes' rooms 0x10-0x14 (Gourd Lake...) keep theirs.
+const u8 * EnLocationPlate(u32 room)
+{
+    if (gMain.scenarioIdx >= RFTA_FIRST_CHAPTER && room >= GBA_FIRST_NEW_ROOM && room < GBA_FIRST_NEW_ROOM + NEW_ROOMS)
+        return gRftaLocationChoices + (room - GBA_FIRST_NEW_ROOM) * 0x800;
+    return gGfxLocationChoices + room * 0x800;
+}
+
+// The Talk menu's plate for a topic icon: the first four episodes have
+// 0-124, the fifth 125-187
+const u8 * EnTalkPlate(u32 icon)
+{
+    if (icon >= RFTA_FIRST_TOPIC)
+        return gRftaTalkChoices + (icon - RFTA_FIRST_TOPIC) * 0x800;
+    return gGfxTalkChoices + icon * 0x800;
 }
 
 // The DS's chapter load (ARM9 0x020237c4, the second argument 1): the

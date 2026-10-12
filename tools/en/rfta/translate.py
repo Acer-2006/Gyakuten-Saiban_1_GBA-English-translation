@@ -39,9 +39,15 @@ GAMEOVER_CHECK = 0x5F       # the GBA's command for the DS's 7A
 CONTINUE_CHAPTER = 0x60     # new GBA command: go on in chapter file n (the DS's 6A)
 MAX_MARKER = 0x0C           # map marker sprites the GBA has (sMapMarkerSprites)
 # people the GBA has, standing in for the fifth episode's until their sprites exist
-PLACEHOLDER = {0x2C: 0x04, 0x2D: 0x07, 0x2E: 0x14, 0x2F: 0x19, 0x31: 0x21, 0x32: 0x16}
-PLACEHOLDER_NAMES = {0x2C: 'Ema -> Maya', 0x2D: 'Lana -> Mia', 0x2E: 'Marshall -> Gumshoe',
+# (Gumshoe is in the fifth episode himself, in the same rooms as Marshall, so
+# Marshall's stand-in is Will Powers). The talk and present tables name the
+# stand-ins too (stand_in), as the game finds a room's topics by the person
+# on screen.
+PLACEHOLDER = {0x2C: 0x04, 0x2D: 0x07, 0x2E: 0x1B, 0x2F: 0x19, 0x31: 0x21, 0x32: 0x16}
+PLACEHOLDER_NAMES = {0x2C: 'Ema -> Maya', 0x2D: 'Lana -> Mia', 0x2E: 'Marshall -> Will Powers',
                      0x2F: 'Meekins -> Larry', 0x31: 'Gant -> von Karma', 0x32: 'Angel Starr -> April May'}
+def stand_in(person):
+    return PLACEHOLDER.get(person, person)
 # the DS's seven new songs (SDAT sequence numbers) -> GBA songs standing in
 PLACEHOLDER_BGM = {0x17C: 12, 0x17D: 25, 0x17E: 18, 0x17F: 22, 0x180: 2, 0x181: 4, 0x182: 15}
 GBA_SONGS = 42 + 70         # BGM000-041 and SE000-045 (plus SE04F/SE050 at 111/112): the GBA song table

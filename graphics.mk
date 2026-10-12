@@ -25,6 +25,14 @@ $(LOCATION_CHOICES)/%.4bpp: $(LOCATION_CHOICES)/%.png
 $(TALK_CHOICES)/%.4bpp: $(TALK_CHOICES)/%.png
 	$(GBAGFX) $< $@ -mwidth 8 -mheight 4
 
+# English patch: the Rise from the Ashes build's plates (tools/en/rfta/plates.py)
+graphics/en/rfta/location_choices.4bpp graphics/en/rfta/talk_choices.4bpp graphics/en/rfta/episode_title.4bpp: %.4bpp: %.png
+	$(GBAGFX) $< $@ -mwidth 8 -mheight 4
+graphics/en/rfta/descriptions/%.4bpp: graphics/en/rfta/descriptions/%.png
+	$(GBAGFX) $< $@ -mwidth 4 -mheight 4
+graphics/en/rfta/descriptions/%.4bpp.lz: graphics/en/rfta/descriptions/%.4bpp
+	$(GBAGFX) $< $@ -search 8
+
 graphics/title_screen.8bpp.lz: graphics/title_screen.8bpp
 	$(GBAGFX) $< $@ -search 8
 graphics/title_screen_demo.8bpp.lz: graphics/title_screen_demo.8bpp
