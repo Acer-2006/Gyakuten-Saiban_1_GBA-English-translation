@@ -13,6 +13,7 @@
 #include "constants/songs.h"
 #include "constants/process.h"
 #include "constants/oam_allocations.h"
+#include "en_rfta.h"
 
 struct MapMarkerSprite
 {
@@ -449,6 +450,9 @@ static const struct SpotSelectData gSpotSelectData[] = {
         .right = 222,
         .bottom = 102,
     },
+#if RFTA
+#include "data/en_rfta_spots.h" // English patch: the fifth episode's (tools/en/rfta/spots.py)
+#endif
 };
 
 u32 Command20(struct ScriptContext *scriptCtx)
@@ -1047,8 +1051,19 @@ bool32 Command3F(struct ScriptContext *scriptCtx)
             if (investigation->pointerY > DISPLAY_HEIGHT - 16)
                 investigation->pointerY = DISPLAY_HEIGHT - 16;
         }
+#if RFTA
+        // English patch: a spot under the text box (the fifth episode's
+        // pictures were the DS's touch screen): the box makes way while the
+        // pointer is low
+        if (spotselect->bottom > SPOTSELECT_BOTTOM)
+            EnSpotSelectTextbox(investigation->pointerY > SPOTSELECT_BOTTOM - 32);
+#endif
         if (gJoypad.pressedKeys & A_BUTTON)
         {
+#if RFTA
+            if (spotselect->bottom > SPOTSELECT_BOTTOM)
+                EnSpotSelectTextbox(FALSE);
+#endif
             scriptCtx->flags &= ~(SCRIPT_SPOTSELECT_INPUT | SCRIPT_LOOP);
             rect.x = gMain.Bg256_pos_x + investigation->pointerX + 12;
             rect.y = gMain.Bg256_pos_y + investigation->pointerY;

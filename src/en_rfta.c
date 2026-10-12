@@ -144,6 +144,21 @@ void EnScrollBackgroundEnd(u32 bg)
     CopyBGDataToVram(GbaBg(bg));
 }
 
+// The text box out of the way of a spot the pointer is over, or back
+void EnSpotSelectTextbox(bool32 hide)
+{
+    if (hide)
+    {
+        gMain.showTextboxCharacters = FALSE;
+        gIORegisters.lcd_dispcnt &= ~DISPCNT_BG1_ON;
+    }
+    else
+    {
+        gMain.showTextboxCharacters = TRUE;
+        gIORegisters.lcd_dispcnt |= DISPCNT_BG1_ON;
+    }
+}
+
 // Script command 60 (the DS's 6A): go on in chapter file n, at its first
 // section, as the DS does where a trial day is split in two files (no save
 // prompt in between). The DS clears the talk flags (its gMain+0x94, the
