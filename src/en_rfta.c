@@ -144,6 +144,31 @@ void EnScrollBackgroundEnd(u32 bg)
     CopyBGDataToVram(GbaBg(bg));
 }
 
+extern const struct ExaminationData * const gRftaExamTables[];
+extern const u8 gRftaExamCounts[];
+
+// The DS's examine table copy (its examine data holds 32 entries): the first
+// 16 into gExaminationData as the GBA keeps them (and saves them), the table's
+// number into gMain.unk8B (unused by the game) for the examining itself
+void EnLoadExamData(u32 table)
+{
+    u32 n = gRftaExamCounts[table];
+    DmaCopy16(3, gRftaExamTables[table], gExaminationData, (n < 16 ? n : 16) * sizeof(struct ExaminationData));
+    gMain.unk8B = table + 1;
+}
+
+// The examine areas in force: the fifth episode's table, or gExaminationData
+const struct ExaminationData * EnExamData(u32 * count)
+{
+    if (gMain.scenarioIdx >= RFTA_FIRST_CHAPTER && gMain.unk8B != 0)
+    {
+        *count = gRftaExamCounts[gMain.unk8B - 1];
+        return gRftaExamTables[gMain.unk8B - 1];
+    }
+    *count = 16;
+    return gExaminationData;
+}
+
 // The text box out of the way of a spot the pointer is over, or back
 void EnSpotSelectTextbox(bool32 hide)
 {
@@ -171,6 +196,37 @@ bool32 Command60(struct ScriptContext * scriptCtx)
     scriptCtx->scriptPtr++;
     DmaFill32(3, 0, gMain.talkEndFlags, sizeof(gMain.talkEndFlags));
     EnLoadChapter(chapter);
+    return 0;
+}
+
+// After the right evidence in a cross-examination the game leaves it for
+// the scene the answer starts; for these answers the DS stays in the
+// cross-examination instead (its 0x02031754: the scene ends by going back to
+// a statement, adding one). Chapter, section.
+static const u8 sReturnToQuestioning[][2] = {
+    { 19, 0x97 }, { 19, 0xAA }, { 20, 0xBC }, { 20, 0xBD }, { 21, 0xA9 }, { 25, 0x9B }, { 32, 0x90 },
+};
+
+bool32 EnPresentReturnsToQuestioning(u32 section)
+{
+    u32 i;
+    for (i = 0; i < ARRAY_COUNT(sReturnToQuestioning); i++)
+        if (sReturnToQuestioning[i][0] == gMain.scenarioIdx && sReturnToQuestioning[i][1] == section)
+            return TRUE;
+    return FALSE;
+}
+
+// Script command 61: go on in section n. Where the DS hands over to one of
+// its own systems (the evidence turned over in 3D, the luminol, the prints,
+// the footage) and that system starts the next section, the translator
+// (translate.py, BYPASS) goes on in that section straight away until the
+// system exists here.
+bool32 Command61(struct ScriptContext * scriptCtx)
+{
+    u32 section;
+    scriptCtx->scriptPtr++;
+    section = *scriptCtx->scriptPtr;
+    ChangeScriptSection(section);
     return 0;
 }
 #endif // RFTA

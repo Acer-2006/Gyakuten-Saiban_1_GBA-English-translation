@@ -43,6 +43,8 @@ void EnDecompressBackground(u32 bg);
 void EnShowBackground(u32 bg);
 void EnScrollBackgroundEnd(u32 bg);
 bool32 Command60(struct ScriptContext * scriptCtx);
+bool32 Command61(struct ScriptContext * scriptCtx);
+bool32 EnPresentReturnsToQuestioning(u32 section);
 
 void EnRftaDay1RoomHook(struct Main * main);
 void EnRftaDay2RoomHook(struct Main * main);
@@ -56,6 +58,13 @@ extern u8 gRftaTalkChoices[];
 extern u8 gRftaEpisodeTitle[];
 const u8 * EnLocationPlate(u32 room);
 const u8 * EnTalkPlate(u32 icon);
+
+// the examine areas: the fifth episode's tables are up to 32 entries, the
+// GBA's gExaminationData holds 16. The table in use is kept by its number
+// (gMain.unk8B, saved with gMain) and read from ROM
+struct ExaminationData;
+void EnLoadExamData(u32 table);
+const struct ExaminationData * EnExamData(u32 * count);
 
 // the "point at it" pictures: the GBA's lowest pointer row (above the text
 // box); the box makes way for a fifth-episode picture with a spot lower down

@@ -37,6 +37,20 @@ from arm9_tables import room
 ROOT = os.path.join(HERE, '..', '..', '..')
 GAMEOVER_CHECK = 0x5F       # the GBA's command for the DS's 7A
 CONTINUE_CHAPTER = 0x60     # new GBA command: go on in chapter file n (the DS's 6A)
+GOTO_SECTION = 0x61         # new GBA command: go on in section n
+# Where the DS hands over to a system of its own that the GBA does not have
+# yet (the evidence turned over in 3D, the luminol, the fingerprints, the
+# security footage) and that system then starts the section that follows, the
+# GBA goes on in that section straight away: (DS file, section) -> the
+# sections to go on in, in order. Each is entered where the source section
+# would have handed over (its last "1C 3 / 15": back to the menu), the
+# DS's tutorial sections for the system itself are left out.
+BYPASS = {
+    # Day 1: the wallet turned over (C0, C1: how to turn evidence over) -> the ID card inside, then it replaces the wallet
+    (18, 0xBF): 0xC2, (18, 0xC2): 0xC3,
+    # Day 1: Ms. Skye's phone looked over: the redial display, the call, the patrolman
+    (18, 0xF9): 0xFB, (18, 0xFB): 0xFC, (18, 0xFC): 0xFD,
+}
 MAX_MARKER = 0x0C           # map marker sprites the GBA has (sMapMarkerSprites)
 # people the GBA has, standing in for the fifth episode's until their sprites exist
 # (Gumshoe is in the fifth episode himself, in the same rooms as Marshall, so
@@ -65,7 +79,7 @@ def gba_anim(v):
     if 0x97 <= v <= 0xB0:
         return v - 0x73
     return None
-DROP = {0x4D, 0x55, 0x65, 0x68, 0x6B, 0x6F, 0x74, 0x75, 0x76, 0x78, 0x7B, 0x5F}
+DROP = {0x4D, 0x55, 0x65, 0x68, 0x6B, 0x6F, 0x74, 0x75, 0x76, 0x7B, 0x5F}
 
 def usual_poses():
     """each GBA person's most used (talk, idle) pair in the episode 1-4 ports"""
@@ -120,6 +134,7 @@ class Translator:
     def section(self, items, where):
         out = []
         pos_map = {}          # DS token position -> output token position
+        jumps = []            # (output index of a 35's offset, DS token it jumps to)
         for p, kind, op, a in items:
             pos_map[p] = len(out)
             if kind == 'text':
@@ -170,6 +185,12 @@ class Translator:
                     self.stats['animation %x left out' % a[0]] += 1
                 else:
                     out += [0x2F, g, a[1]]
+            elif op == 0x35 and not a[0] & 0x80:
+                # a flag test that jumps within the section: its offset is
+                # the DS's, the section's commands have moved
+                out += [0x35, a[0], 0]
+                jumps.append((len(out) - 1, a[1] // 2))
+                self.stats['jump within a section'] += 1
             elif op == 0x34:
                 out += [0x34, room(a[0])]
             elif op == 0x33:
@@ -182,6 +203,11 @@ class Translator:
                 self.stats['chapter continuation'] += 1
             elif op == 0x79:
                 out += [0x15]
+            elif op == 0x78:
+                # the DS's jump through a section-table record (its 0x02029474:
+                # the GBA's 36, with the DS's note of sections already read)
+                out += [0x36, a[0]]
+                self.stats['78 as jump'] += 1
             elif op == 0x77:
                 snd = a[0]
                 if snd < GBA_SONGS:
@@ -223,6 +249,12 @@ class Translator:
             else:
                 self.stats['unknown %02X left out' % op] += 1
         pos_map[len(items) and items[-1][0] + 1 + len(items[-1][3])] = len(out)
+        for idx, target in jumps:
+            to = pos_map.get(target)
+            if to is None:      # (a command left out: the next one kept)
+                to = pos_map[min(q for q in pos_map if q >= target)]
+                self.notes.append('%s: a jump to a command left out goes to the next' % where)
+            out[idx] = 2 * to
         return out, pos_map
 
     # -------------------------------------------------------------- one file
@@ -235,6 +267,12 @@ class Translator:
                 continue
             items, _ = parse(tokens(b, *bd), DS_ARGS)
             secs[si], maps[si] = self.section(items, 'file %d sec %d' % (k, si))
+            if (k, 0x80 + si) in BYPASS:
+                out = secs[si]
+                tail = max(i for i in range(len(out) - 2) if out[i:i + 3] == [0x1C, 3, 0x15])
+                # (as long as what it replaces: jumps within the section keep their places)
+                secs[si] = out[:tail] + [GOTO_SECTION, BYPASS[(k, 0x80 + si)], 0x15] + out[tail + 3:]
+                self.stats['bypass to a section'] += 1
         # lay out: header, then sections on 4-byte boundaries
         body = bytearray(); new_offs = [0] * n
         head = 4 + 4 * n

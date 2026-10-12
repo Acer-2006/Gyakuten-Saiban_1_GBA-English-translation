@@ -37,7 +37,7 @@ const u8 * const gScriptTable[] = {
     scenario_3_5_script,
 };
 
-bool32 (*gScriptCmdFuncs[0x60 + RFTA])(struct ScriptContext *) = {
+bool32 (*gScriptCmdFuncs[0x60 + 2 * RFTA])(struct ScriptContext *) = {
 	Command00,
 	Command01,
 	Command02,
@@ -136,6 +136,7 @@ bool32 (*gScriptCmdFuncs[0x60 + RFTA])(struct ScriptContext *) = {
 	Command5F,
 #if RFTA
 	Command60, // English patch: Rise from the Ashes, en_rfta.c
+	Command61,
 #endif
 };
 
