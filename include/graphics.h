@@ -166,7 +166,12 @@ extern u8 gGfxSeqAnimationChar08_en[];
 #define gUnusedAsciiCharSet ((u8*)(ROM_START + 0x185D20))
 #define gPalEvidenceProfileDesc ((u8*)(GFX_BASE_ADDR + 0x6520))
 #define gGfxSaveGameTiles ((u8*)gGfxSaveGameTiles_en)
+#if RFTA
+extern u8 gGfx4bppNametagsRfta[];
+#define gGfx4bppNametags ((u8*)gGfx4bppNametagsRfta)
+#else
 #define gGfx4bppNametags ((u8*)gGfx4bppNametags_en)
+#endif
 #define gGfx4bppTestimonyArrows ((u8*)(GFX_BASE_ADDR + 0xBD40))
 #define gGfx4bppTrialLife ((u8*)(GFX_BASE_ADDR + 0xC040))
 #define gGfx4bppInvestigationActions ((u8*)gGfx4bppInvestigationActions_en)
@@ -312,7 +317,12 @@ extern u8 gGfxSeqAnimationChar08_en[];
 #define gGfxEvidenceDl6Bullet_description ((u8*)gGfxEvidenceDl6Bullet_description_en)
 #define gGfxEvidenceMissileAngry_description ((u8*)gGfxEvidenceMissileAngry_description_en)
 
+#if RFTA
+extern u8 gRftaEvidencePictures[];
+#define gGfxEvidenceProfilePictures ((u8*)gRftaEvidencePictures)
+#else
 #define gGfxEvidenceProfilePictures ((u8*)(GFX_BASE_ADDR + 0x3290C))
+#endif
 
 //~ extern u8 gTextPal[0x20];
 #define gTextPal ((u8*)(ROM_START + 0x1d310c))

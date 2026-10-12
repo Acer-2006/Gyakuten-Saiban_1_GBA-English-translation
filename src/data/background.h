@@ -1,5 +1,8 @@
 #include "graphics.h"
 #include "en_court.h"
+#if RFTA
+#include "en_rfta_backgrounds.h"
+#endif
 
 const struct Background gBackgroundTable[] =
 {
@@ -451,4 +454,7 @@ const struct Background gBackgroundTable[] =
 		.bgData = gGfx_BG111_DemoComingSoon,
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
 	},
+#if RFTA
+#include "en_rfta_background.h"
+#endif
 };

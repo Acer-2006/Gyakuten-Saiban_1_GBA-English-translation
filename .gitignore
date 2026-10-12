@@ -85,3 +85,4 @@ build.log
 # English project: the agbcc checkout (see BUILDING.md) and local build logs
 /agbcc/
 *_build.log
+tools/en/rfta/__pycache__/

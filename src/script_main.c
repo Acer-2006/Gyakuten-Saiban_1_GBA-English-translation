@@ -9,6 +9,7 @@
 #include "constants/process.h"
 #include "constants/oam_allocations.h"
 #include "vwf.h"
+#include "en_rfta.h"
 
 static void AdvanceScriptContext(struct ScriptContext *);
 static void DrawTextAndMapMarkers(struct ScriptContext *);
@@ -36,7 +37,7 @@ const u8 * const gScriptTable[] = {
     scenario_3_5_script,
 };
 
-bool32 (*gScriptCmdFuncs[0x60])(struct ScriptContext *) = {
+bool32 (*gScriptCmdFuncs[0x60 + RFTA])(struct ScriptContext *) = {
 	Command00,
 	Command01,
 	Command02,
@@ -133,6 +134,9 @@ bool32 (*gScriptCmdFuncs[0x60])(struct ScriptContext *) = {
 	Command5D,
 	Command5E,
 	Command5F,
+#if RFTA
+	Command60, // English patch: Rise from the Ashes, en_rfta.c
+#endif
 };
 
 void LoadCurrentScriptIntoRam(void)
@@ -145,6 +149,11 @@ void LoadCurrentScriptIntoRam(void)
         gTextBoxCharacters[i].state &= ~0x8000;
     }
 
+#if RFTA
+    if (gMain.scenarioIdx >= RFTA_FIRST_CHAPTER)
+        gScriptBase = gRftaScriptTable[gMain.scenarioIdx - RFTA_FIRST_CHAPTER];
+    else
+#endif
     gScriptBase = gScriptTable[gMain.scenarioIdx]; // English patch: run from ROM
 }
 

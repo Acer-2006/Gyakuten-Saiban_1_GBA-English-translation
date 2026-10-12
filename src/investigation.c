@@ -11,6 +11,7 @@
 #include "court_record.h"
 #include "sound.h"
 #include "case_data.h"
+#include "en_rfta.h"
 #include "graphics.h"
 #include "constants/animation.h"
 #include "constants/script.h"
@@ -303,6 +304,13 @@ void InvestigationExit(struct Main * main, struct InvestigationStruct * investig
         if(!(main->caseEnabledFlags & 8))
             SET_PROCESS_PTR(EPISODE_CLEAR_PROCESS, 0, 0, 3, main);
     }
+#if RFTA
+    else if(main->scenarioIdx == RFTA_FIRST_CHAPTER)
+    {
+        if(!(main->caseEnabledFlags & (1 << RFTA_EPISODE)))
+            SET_PROCESS_PTR(EPISODE_CLEAR_PROCESS, 0, 0, RFTA_EPISODE, main);
+    }
+#endif
 }
 
 void InvestigationBgScrollWait(struct Main * main, struct InvestigationStruct * investigation) // tantei_bg_scroll_wait

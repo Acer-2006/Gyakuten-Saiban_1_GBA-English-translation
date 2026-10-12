@@ -7,6 +7,7 @@
 #include "agb_sram.h"
 #include "en_menu.h"
 #include "en_menu_gfx.h"
+#include "en_rfta.h"
 #include <stddef.h>
 
 // English VWF text renderer.
@@ -497,9 +498,15 @@ bool32 VwfFixSavedScriptPos(void)
     }
     else
     {
+#if RFTA
+        if (gMain.scenarioIdx > LAST_CHAPTER)
+            return FALSE;
+        size = EnScriptSize(gMain.scenarioIdx);
+#else
         if (gMain.scenarioIdx > 16)
             return FALSE;
         size = gScriptSizes[gMain.scenarioIdx];
+#endif
         sec = ctx->currentSection - 0x80;
     }
     // A save made at a choice, with the answers up (the tall text box): the

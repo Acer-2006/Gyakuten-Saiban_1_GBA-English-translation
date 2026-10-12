@@ -8,6 +8,11 @@
 #include "sound.h"
 #include "constants/process.h"
 #include "constants/oam_allocations.h"
+#include "en_rfta.h"
+#if RFTA
+#include "en_rfta_case_data.h"
+#include "en_rfta_rooms.h"
+#endif
 
 // Sce_init_proc_tbl
 const u8 gCaseStartProcess[] = {
@@ -28,6 +33,9 @@ const u8 gCaseStartProcess[] = {
     COURT_PROCESS,
     INVESTIGATION_PROCESS,
     COURT_PROCESS,
+#if RFTA
+    RFTA_CASE_START_PROCESS,
+#endif
 };
 
 // gameover_message_data_table
@@ -48,11 +56,14 @@ const u16 gCaseGameoverSections[] = {
     0x0,
     0xE4,
     0x0,
-    0xF7
+    0xF7,
+#if RFTA
+    RFTA_CASE_GAMEOVER_SECTIONS,
+#endif
 };
 
 // Note_init_data
-const u8 * gCourtRecordInitialItemLists[17] = {
+const u8 * gCourtRecordInitialItemLists[LAST_CHAPTER + 1] = {
 	gCourtRecordInitialItems_0_0,
 	gCourtRecordInitialItems_1_0,
 	gCourtRecordInitialItems_1_1,
@@ -70,10 +81,13 @@ const u8 * gCourtRecordInitialItemLists[17] = {
 	gCourtRecordInitialItems_3_3,
 	gCourtRecordInitialItems_3_4,
 	gCourtRecordInitialItems_3_5,
+#if RFTA
+	RFTA_COURT_RECORD_INITIAL_ITEMS,
+#endif
 };
 
 // Mujyun_ck_data_tbl
-const struct CourtPresentData * gCourtPresentData[17] = {
+const struct CourtPresentData * gCourtPresentData[LAST_CHAPTER + 1] = {
 	gCourtPresentData_0_0,
 	gCourtPresentData_1_1,
 	gCourtPresentData_1_1,
@@ -91,10 +105,13 @@ const struct CourtPresentData * gCourtPresentData[17] = {
 	gCourtPresentData_3_3,
 	gCourtPresentData_3_5,
 	gCourtPresentData_3_5,
+#if RFTA
+	RFTA_COURT_PRESENT_DATA,
+#endif
 };
 
 // Tantei_show_data_tbl
-const struct InvestigationPresentData * gInvestigationPresentData[17] = {
+const struct InvestigationPresentData * gInvestigationPresentData[LAST_CHAPTER + 1] = {
 	gInvestigationPresentData_1_0,
 	gInvestigationPresentData_1_0,
 	gInvestigationPresentData_1_0,
@@ -112,10 +129,13 @@ const struct InvestigationPresentData * gInvestigationPresentData[17] = {
 	gInvestigationPresentData_3_0,
 	gInvestigationPresentData_3_4,
 	gInvestigationPresentData_3_0,
+#if RFTA
+	RFTA_INVESTIGATION_PRESENT_DATA,
+#endif
 };
 
 // Sce_init_proc_tbl
-void (*gInvestigationSegmentSetupFunctions[17])(struct Main *) = {
+void (*gInvestigationSegmentSetupFunctions[LAST_CHAPTER + 1])(struct Main *) = {
 	InvestigationDummy,
 	InvestigationSegmentSetup_1_0,
 	InvestigationDummy,
@@ -133,10 +153,13 @@ void (*gInvestigationSegmentSetupFunctions[17])(struct Main *) = {
 	InvestigationDummy,
 	InvestigationSegmentSetup_3_4,
 	InvestigationDummy,
+#if RFTA
+	RFTA_SEGMENT_SETUP,
+#endif
 };
 
 // Sce_room_init_tbl
-void (*gInvestigationRoomSetupFunctions[17])(struct Main *) = {
+void (*gInvestigationRoomSetupFunctions[LAST_CHAPTER + 1])(struct Main *) = {
 	InvestigationDummy,
 	InvestigationRoomSetup_1_0,
 	InvestigationDummy,
@@ -154,10 +177,13 @@ void (*gInvestigationRoomSetupFunctions[17])(struct Main *) = {
 	InvestigationDummy,
 	InvestigationRoomSetup_3_4,
 	InvestigationDummy,
+#if RFTA
+	RFTA_ROOM_SETUP,
+#endif
 };
 
 // Sce_loop_proc_tbl
-void (*gInvestigationRoomUpdateFunctions[17])(struct Main *) = {
+void (*gInvestigationRoomUpdateFunctions[LAST_CHAPTER + 1])(struct Main *) = {
 	InvestigationDummy,
 	InvestigationRoomUpdate_1_0,
 	InvestigationDummy,
@@ -175,6 +201,9 @@ void (*gInvestigationRoomUpdateFunctions[17])(struct Main *) = {
 	InvestigationDummy,
 	InvestigationRoomUpdate_3_4,
 	InvestigationDummy,
+#if RFTA
+	RFTA_ROOM_UPDATE,
+#endif
 };
 
 void InvestigationSetPersonAnimation(u32 arg0, u32 arg1, u32 arg2) // Set_char

@@ -17,6 +17,7 @@
 #include "constants/process.h"
 #include "constants/oam_allocations.h"
 #include "en_menu.h"
+#include "en_rfta.h"
 
 const char gSaveVersion[0x30] = "2001 CAPCOM GBA GYAKUTEN-SAIBAN 06/15 Ver 1.000-";
 
@@ -66,8 +67,8 @@ u32 LoadSaveData()
     // build (v0.7.5 to v0.7.54) says chapter 17, one past the last: Continue
     // then showed "No clues here." for the chapter's name and could not start
     // it. The last chapter, as Command16 saves it now.
-    if(gSaveDataBuffer.main.scenarioIdx > 16)
-        gSaveDataBuffer.main.scenarioIdx = 16;
+    if(gSaveDataBuffer.main.scenarioIdx > LAST_CHAPTER)
+        gSaveDataBuffer.main.scenarioIdx = LAST_CHAPTER;
     gMain.saveContinueFlags = 0x10;
     return 0;
 }
@@ -407,6 +408,13 @@ void SaveGame5(struct Main *main)
         newEpisodeId = 3;
         showNewEpsiode = TRUE;
     }
+#if RFTA
+    else if(main->scenarioIdx == RFTA_FIRST_CHAPTER)
+    {
+        newEpisodeId = RFTA_EPISODE;
+        showNewEpsiode = TRUE;
+    }
+#endif
     else
         showNewEpsiode = FALSE;
 

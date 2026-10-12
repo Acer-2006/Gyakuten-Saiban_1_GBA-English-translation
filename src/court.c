@@ -2,6 +2,7 @@
 #include "en_court.h"
 #include "en_effects.h"
 #include "court.h"
+#include "en_rfta.h"
 #include "utils.h"
 #include "sound.h"
 #include "save.h"
@@ -43,6 +44,12 @@ void SetCurrentEpisodeBit()
         case 16:
             main->caseEnabledFlags |= 8;
             break;
+#if RFTA
+        case 17: case 18: case 19: case 20: case 21: case 22: case 23: case 24: case 25:
+        case 26: case 27: case 28: case 29: case 30: case 31: case 32: case 33: case 34:
+            main->caseEnabledFlags |= 1 << RFTA_EPISODE;
+            break;
+#endif
         case 0:
         default:
             main->caseEnabledFlags |= 1;
@@ -156,6 +163,13 @@ void CourtExit(struct Main * main)
         if(!(main->caseEnabledFlags & 8))
             SET_PROCESS_PTR(EPISODE_CLEAR_PROCESS, 0, 0, 3, main);
     }
+#if RFTA
+    else if(main->scenarioIdx == RFTA_FIRST_CHAPTER)
+    {
+        if(!(main->caseEnabledFlags & (1 << RFTA_EPISODE)))
+            SET_PROCESS_PTR(EPISODE_CLEAR_PROCESS, 0, 0, RFTA_EPISODE, main);
+    }
+#endif
 }
 
 // English patch: the banner's two halves and the whole banner share one OBJ

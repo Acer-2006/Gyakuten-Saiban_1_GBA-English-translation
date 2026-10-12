@@ -29,7 +29,7 @@ def handlers():
 def disasm(addr, n=200, stop=True):
     """(address, mnemonic, operands) up to the first return"""
     from capstone import Cs, CS_ARCH_ARM, CS_MODE_ARM
-    md = Cs(CS_ARCH_ARM, CS_MODE_ARM)
+    md = Cs(CS_ARCH_ARM, CS_MODE_ARM); md.skipdata = not stop
     d = data(); off = addr - BASE; out = []
     for ins in md.disasm(d[off:off + n * 4], addr):
         ops = ins.op_str
