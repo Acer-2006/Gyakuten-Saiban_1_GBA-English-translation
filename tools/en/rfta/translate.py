@@ -52,7 +52,35 @@ BYPASS = {
     (18, 0xF9): 0xFB, (18, 0xFB): 0xFC, (18, 0xFC): 0xFD,
     # Day 2: the luminol in the parking lot: how it is used, the stain it shows, what is odd about it
     (22, 0x92): 0x93, (22, 0x93): 0x95, (22, 0x95): 0x96,
+    # Day 2 trial: the knife opened in 3D (its switch) -> the knife added to the record
+    (21, 0x81): 0x82,
+    # Day 2: the jar pieces put together (135 is the DS's try-again)
+    (24, 0x134): 0x136,
+    # Day 2: the bloody handprint dusted (13B-13D: the DS's how-to): a glove print,
+    # then a clear print, then the print matched (140/141: point out the person) -> Gumshoe's
+    (24, 0x13A): 0x13E, (24, 0x13E): 0x13F, (24, 0x13F): 0x142,
+    # Day 2: the wiped stain dusted -> Jake Marshall's prints
+    (24, 0x145): 0x146,
+    # Day 3 trial: the security tape, the point in it (the DS's table at 0x020c09cc: the
+    # answer for each frame range): the locker light, the cloth falling out
+    (25, 0x9C): 0xA2, (25, 0xA3): 0xA6,
+    # Day 3 trial: the tape again: Marshall in the video, what Meekins did
+    (26, 0x9D): 0xA0, (26, 0xA7): 0xA9,
+    # Day 3: the locker's number (11D: the wrong one), the cloth dusted -> Ema's prints
+    # (12A: no match), the last piece of the jar (132: it does not fit)
+    (30, 0x11C): 0x11E, (30, 0x129): 0x12B, (30, 0x131): 0x133,
+    # Final day: the jar turned to the Badger's angle (BC: not yet), the dots
+    # joined into the name (C6: wrong, C8: the game over)
+    (31, 0xBB): 0xBD, (31, 0xC5): 0xC7,
+    # Final day: the picture found on the back of the list
+    (33, 0xAC): 0xAD,
+    # The end: after the staff roll, "The End" (86 the first time, 87 the replay)
+    (34, 0x85): 0x86, (34, 0x88): 0x87,
 }
+# The DS's "74 A n": the Court Record opened for a person's profile (the
+# question's answer in its table at 0x020b1324, arm9_tables.PROMPTS): the
+# GBA's 21, its answers in the court present data (arm9_tables.py)
+PROMPT_PRESENT = 0x21
 MAX_MARKER = 0x0C           # map marker sprites the GBA has (sMapMarkerSprites)
 # people the GBA has, standing in for the fifth episode's until their sprites exist
 # (Gumshoe is in the fifth episode himself, in the same rooms as Marshall, so
@@ -205,6 +233,9 @@ class Translator:
                 self.stats['chapter continuation'] += 1
             elif op == 0x79:
                 out += [0x15]
+            elif op == 0x74 and a[0] == 0xA:
+                out += [PROMPT_PRESENT]
+                self.stats['74 A as a present prompt'] += 1
             elif op == 0x78:
                 # the DS's jump through a section-table record (its 0x02029474:
                 # the GBA's 36, with the DS's note of sections already read)
