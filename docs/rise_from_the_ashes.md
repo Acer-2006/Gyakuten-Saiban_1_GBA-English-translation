@@ -283,7 +283,10 @@ area, moves everywhere, and tries each answer of a choice, a spot and a
 present from a savestate, keeping the one that costs no health and leads
 somewhere new. It saves at every save prompt, so a rebuilt ROM continues
 from the same point (the GBA's own save, loaded with Continue). That is
-how the stalls above were found and how the bypasses were checked.
+how the stalls above were found and how the bypasses were checked. On the
+current build it plays the episode from the Day 1 investigation through
+the final day's verdict and the epilogue to the title screen (about 3,000
+decisions), which is stage 2's milestone.
 
 ## Tools (`tools/en/rfta/`)
 
