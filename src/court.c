@@ -93,9 +93,19 @@ void CourtInit(struct Main * main)
     ioRegs->lcd_bg1vofs = ~80; // ??????
     ioRegs->lcd_dispcnt &= ~DISPCNT_BG1_ON; // what the fuck is this doing
     InitializeCourtRecordForScenario(main, &gCourtRecord);
+#if RFTA
+    // English patch: the fifth episode keeps flags 0-0x27 (en_rfta.c)
+    if(main->scenarioIdx >= RFTA_FIRST_CHAPTER)
+        EnRftaChapterFlags(main, TRUE);
+    else
+    {
+#endif
     DmaFill32(3, 0, main->scriptFlags, sizeof(main->scriptFlags));
     if(main->scenarioIdx > 1)
        ChangeFlag(0, 0x41, TRUE); 
+#if RFTA
+    }
+#endif
     main->gameStateFlags = 0;
     main->tilemapUpdateBits = 0xF;
     main->advanceScriptContext = TRUE;
