@@ -23,11 +23,12 @@ extern const u8 gCourtRecordInitialItems_5_14[];
 extern const u8 gCourtRecordInitialItems_5_15[];
 extern const u8 gCourtRecordInitialItems_5_16[];
 extern const u8 gCourtRecordInitialItems_5_17[];
-#define RFTA_COURT_PRESENT_DATA gCourtPresentData_5_00, gCourtPresentData_5_00, gCourtPresentData_5_00, gCourtPresentData_5_03, gCourtPresentData_5_04, gCourtPresentData_5_05, gCourtPresentData_5_05, gCourtPresentData_5_05, gCourtPresentData_5_05, gCourtPresentData_5_09, gCourtPresentData_5_10, gCourtPresentData_5_11, gCourtPresentData_5_12, gCourtPresentData_5_12, gCourtPresentData_5_12, gCourtPresentData_5_15, gCourtPresentData_5_16, gCourtPresentData_5_17
+#define RFTA_COURT_PRESENT_DATA gCourtPresentData_5_00, gCourtPresentData_5_00, gCourtPresentData_5_00, gCourtPresentData_5_03, gCourtPresentData_5_04, gCourtPresentData_5_05, gCourtPresentData_5_05, gCourtPresentData_5_05, gCourtPresentData_5_08, gCourtPresentData_5_09, gCourtPresentData_5_10, gCourtPresentData_5_11, gCourtPresentData_5_12, gCourtPresentData_5_12, gCourtPresentData_5_12, gCourtPresentData_5_15, gCourtPresentData_5_16, gCourtPresentData_5_17
 extern const struct CourtPresentData gCourtPresentData_5_00[];
 extern const struct CourtPresentData gCourtPresentData_5_03[];
 extern const struct CourtPresentData gCourtPresentData_5_04[];
 extern const struct CourtPresentData gCourtPresentData_5_05[];
+extern const struct CourtPresentData gCourtPresentData_5_08[];
 extern const struct CourtPresentData gCourtPresentData_5_09[];
 extern const struct CourtPresentData gCourtPresentData_5_10[];
 extern const struct CourtPresentData gCourtPresentData_5_11[];

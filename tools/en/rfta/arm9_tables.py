@@ -32,6 +32,33 @@ ROOMS = {0x16: 0x10, 0x17: 0x11, 0x18: 0x12, 0x19: 0x13, 0x1A: 0x14, 0x1B: 0x15,
 def room(r):
     return ROOMS.get(r, r)
 
+# The DS's "74 A n" questions (whose name is it?) are answered with a
+# profile, checked by its own code (0x02087c34) against a table of 12-byte
+# records: n, the person, the right answer's section, the wrong answer's. The
+# GBA asks them with its 21, the wrong answer being the next section (as the
+# DS has them) and the right one an entry of the court present data.
+PROMPTS, PROMPT_COUNT = 0x020b1324, 9
+# the DS's number for a person -> their profiles in the Court Record (the
+# fifth episode's two Emas, two Lanas)
+PROMPT_PEOPLE = {0: (0x74, 0xCF), 1: (0x75, 0x76), 2: (0x78,), 6: (0x7B,)}   # Ema, Lana, Jake Marshall, Damon Gant
+
+def prompt_answers(k):
+    """court present entries for chapter file k's 74 A questions"""
+    import ds_script
+    table = {}
+    for i in range(PROMPT_COUNT):
+        n, person, _, right, wrong = struct.unpack('<BBHII', bytes_at(PROMPTS + 12 * i, 12))
+        table[n] = (person, right, wrong)
+    out = []
+    for si, items in ds_script.sections(k):
+        for pos, kind, op, a in items:
+            if kind == 'cmd' and op == 0x74 and a[0] == 0xA:
+                person, right, wrong = table[a[1]]
+                assert wrong == 0x81 + si, (k, si, a)     # (the GBA's 21 takes the next section for a wrong answer)
+                for evid in PROMPT_PEOPLE[person]:
+                    out.append((0x80 + si, evid, right, 0xFF, 0xFF))
+    return out
+
 def bytes_at(addr, n):
     d = dsbin.data(); return d[addr - BASE:addr - BASE + n]
 
@@ -80,9 +107,11 @@ def main():
                                            ('court', COURT_PRESENT, court_present, 'struct CourtPresentData'),
                                            ('inv', INV_PRESENT, inv_present, 'struct InvestigationPresentData')):
             addr = u32(table + 4 * k)
-            if (kind, addr) in seen:
+            extra = prompt_answers(k) if kind == 'court' else []
+            if (kind, addr) in seen and not extra:
                 names[kind][k] = seen[(kind, addr)]; continue
             data = reader(addr)
+            data = data[:-1] + extra + data[-1:]        # (before the end marker)
             base = {'items': 'gCourtRecordInitialItems_', 'court': 'gCourtPresentData_', 'inv': 'gInvestigationPresentData_'}[kind]
             name = base + tag
             seen[(kind, addr)] = name; names[kind][k] = name
