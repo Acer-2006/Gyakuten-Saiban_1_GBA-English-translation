@@ -217,6 +217,66 @@ reworded for buttons — the only deliberate departure from the DS text.
 
 Each stage leaves something visible, and the work stays on `work-branch`.
 
+## 7. Stage 2: the episode on the GBA, without the DS's systems
+
+`make RFTA=1` builds `pwaa1_rfta.gba` next to the base ROM; the base build
+is untouched (its checksum is checked after every change). In it:
+
+- **Episode select.** A fifth row, *Rise from the Ashes*, with the DS's
+  English title plate; it starts chapter 17 (`en_rfta_episodes.c`).
+- **Script.** `translate.py` writes the 18 chapter files and the shared
+  evidence-examination file from the DS scripts alone. Two new GBA commands:
+  `60 n` (go on in chapter file n: the DS's `6A`) and `61 n` (go on in
+  section n). The DS's in-section jumps (`35`, 815 of them) are remapped to
+  the translated offsets, its `78` jumps go through the section table as
+  the GBA's `36`.
+- **Tables.** Court and investigation present data, initial Court Records,
+  start processes and game-over sections come out of the ARM9
+  (`arm9_tables.py`); the room, talk and examine tables and the room code
+  are decompiled from the DS's per-chapter functions (`rooms.py`). Examine
+  areas are moved from DS screen space (the DS pictures' margin) and are
+  kept in ROM by table number (`gMain.unk8B`), as some rooms have up to 27.
+- **Pictures and text.** The 68 new backgrounds, the Court Record pictures
+  and descriptions, the name tags, the Move/Talk plates, the "point at it"
+  pictures (`spots.py`; the text box makes way when the spot is low).
+- **People and songs.** Stand-ins until stage 3 and 5: Ema → Maya, Lana →
+  Mia, Jake Marshall → Will Powers, Meekins → Larry, Gant → von Karma, Angel
+  Starr → April May; the seven new songs play stand-ins.
+
+What the DS's own systems do is, for now, skipped: where the DS hands over
+to one of them and that system then starts a section, the GBA goes on in
+the section the DS starts on success (`translate.py`, `BYPASS`):
+
+| where | DS system | goes on in |
+|---|---|---|
+| Day 1 investigation | the wallet turned over in 3D, the phone's redial | the ID card, the call |
+| Day 2 trial | the knife opened in 3D | the knife added |
+| Day 2 investigation | luminol in the parking lot | the stain, what is odd about it |
+| Day 2 investigation | luminol in the evidence room (the three stains the day waits for) | the stains' lines, from the shared file, after the handprint on the locker |
+| Day 2 investigation | the jar pieces put together | the Unstable Jar |
+| Day 2 investigation | dusting the handprint, matching the print; dusting the wiped stain | the glove print, Gumshoe's prints; Marshall's prints |
+| Day 3 trial | pointing at the security tape (twice in each half) | the answer's section (the DS's frame table at 0x020c09cc) |
+| Day 3 investigation | the locker number, dusting the cloth, the jar's last piece | Gant's number, Ema's prints, the piece fits |
+| Final day | the jar turned to the Badger's angle, joining the dots | the Badger, "Ema" |
+| Final day | finding the picture on the back of the list | the picture |
+| The end | the staff roll | "The End", the title screen |
+
+The questions answered with a person's profile ("What is this person's
+name?", the DS's `74 A n`) stay questions: they become the GBA's present
+prompt `21`, with the answers from the DS's table at 0x020b1324 added to the
+court present data (a wrong answer goes to the next section, as on the DS).
+Movies, the partner portrait, the bottom-screen panels and the second fade
+system are left out (the dialogue around them stands).
+
+**Checking it.** An autoplayer (outside the repository: it drives the test
+harness) reads through the script and takes the decisions itself: it talks
+through the topics, presents what the present tables name, examines every
+area, moves everywhere, and tries each answer of a choice, a spot and a
+present from a savestate, keeping the one that costs no health and leads
+somewhere new. It saves at every save prompt, so a rebuilt ROM continues
+from the same point (the GBA's own save, loaded with Continue). That is
+how the stalls above were found and how the bypasses were checked.
+
 ## Tools (`tools/en/rfta/`)
 
 All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
@@ -234,3 +294,13 @@ All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
   DeSmuME, logs every command, photographs both screens at the watched ones.
 - `movies.py [ARCHIVE FRAME out.png]` — the four frame sequences.
 - `portraits.py out.png` — the partner portraits.
+
+Stage 2 (each writes into the build; their docstrings say what from):
+
+- `translate.py [OUT_DIR]` — the scripts (`script_rfta/`) and
+  `translate_report.txt`, what was translated and what left out, per file.
+- `std.py` — the common script with the 18 chapter titles.
+- `arm9_tables.py` — `src/en_rfta_tables.c`, `include/en_rfta_case_data.h`.
+- `rooms.py` — `src/en_rfta_rooms.c`: rooms, talks, examine areas, room code.
+- `backgrounds.py`, `evidence.py`, `descriptions.py`, `nametags.py`,
+  `plates.py`, `spots.py` — the pictures.
