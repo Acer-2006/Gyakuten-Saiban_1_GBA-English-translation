@@ -12,9 +12,10 @@ the Ashes has no GBA script, so every command is translated here:
     chapter continuation) or, for what the GBA does not have yet (the
     partner portrait, the movies, the bottom-screen panels, the second
     fade system), nothing, counted in the report;
-  * the six new people are stood in for by people the GBA has (PLACEHOLDER)
-    until their sprites are converted; the DS poses of the others are
-    mapped the way episodes 1-4 map them (anim_looks.json);
+  * the six new people are the DS's, converted (characters.py: their
+    animation numbers become offsets in their GBA files, as Edgeworth's two
+    new looks do); the DS poses of the others are mapped the way episodes 1-4
+    map them (anim_looks.json);
   * the seven new songs play stand-ins (PLACEHOLDER_BGM) until they are
     converted; the DS's new sound effects are left out until then.
 
@@ -101,14 +102,17 @@ BYPASS.update({(24, 0x11B): 0x15C, (24, 0x15C): 0x15D, (24, 0x15D): 0x15E})
 # their flags set -> the jump through descriptor D2 (to 10E)
 FINDINGS_CHECK = {(24, 0x15E): ((0x14, 0x16, 0x19, 0x53, 0x54, 0x55, 0x56, 0x58, 0x59), 0xD2)}
 MAX_MARKER = 0x0C           # map marker sprites the GBA has (sMapMarkerSprites)
-# people the GBA has, standing in for the fifth episode's until their sprites exist
-# (Gumshoe is in the fifth episode himself, in the same rooms as Marshall, so
-# Marshall's stand-in is Will Powers). The talk and present tables name the
-# stand-ins too (stand_in), as the game finds a room's topics by the person
-# on screen.
-PLACEHOLDER = {0x2C: 0x04, 0x2D: 0x07, 0x2E: 0x1B, 0x2F: 0x19, 0x31: 0x21, 0x32: 0x16}
-PLACEHOLDER_NAMES = {0x2C: 'Ema -> Maya', 0x2D: 'Lana -> Mia', 0x2E: 'Marshall -> Will Powers',
-                     0x2F: 'Meekins -> Larry', 0x31: 'Gant -> von Karma', 0x32: 'Angel Starr -> April May'}
+# The fifth episode's people (and Edgeworth's two new looks), converted from
+# the DS by characters.py: DS person -> DS animation number -> offset in the
+# person's GBA frame file. They keep their DS person numbers (0x2C-0x32).
+CHARACTERS = {int(p, 16): {int(n, 16): o for n, o in m.items()}
+              for p, m in json.load(open(os.path.join(HERE, 'characters.json'))).items()}
+def character_pose(person, v):
+    return CHARACTERS.get(person & 0xFF, {}).get(v)
+# people standing in for others whose sprites are missing (none left: stage 3
+# converted them); the talk and present tables would name the stand-ins too
+PLACEHOLDER = {}
+PLACEHOLDER_NAMES = {}
 def stand_in(person):
     return PLACEHOLDER.get(person, person)
 # the DS's seven new songs (SDAT sequence numbers) -> GBA songs standing in
@@ -170,6 +174,10 @@ class Translator:
             return [0x1E, (who & 0xFF00) | g, t, i]
         out = [0x1E, who]
         for v in (talk, idle):
+            gv = character_pose(p, v)
+            if gv is not None:
+                out.append(gv); self.stats['person converted from the DS'] += 1
+                continue
             m = ds_look(p, v)
             gv = m[0] if m else self.anim_any.get((p, v))
             if gv is None:
