@@ -338,16 +338,20 @@ class Translator:
             items, _ = parse(tokens(sb, *section_bounds(sb, soffs)[src_sec - 0x80]), DS_ARGS)
             out, _ = self.section(items, 'file %d sec %d (file %d sec %d)' % (k, n, src, src_sec - 0x80))
             end = self.end_15(out)
-            secs[n] = out[:end] + [0x10, 0x8000 | flag] + out[end:]      # (its flag, as the DS's code sets it)
+            # (its flag, as the DS's code sets it; and the text box away for the
+            # menu, as the chapter's own examine lines end: the DS's luminol
+            # screen did that itself)
+            secs[n] = out[:end] + [0x10, 0x8000 | flag] + ([0x1C, 3] if out[end - 2:end] != [0x1C, 3] else []) + out[end:]
             offs = list(offs) + [0]; n += 1
             self.stats['section brought in'] += 1
         for si in sorted(secs):
             if (k, 0x80 + si) in FINDINGS_CHECK:
                 flags, desc = FINDINGS_CHECK[(k, 0x80 + si)]
                 out = secs[si]; end = self.end_15(out)
-                # (each: "flag clear -> to the end"; then the jump; the end is the 15 after them)
-                to = end + 3 * len(flags) + 2
-                secs[si] = out[:end] + sum(([0x35, f << 8, 2 * to] for f in flags), []) + [0x36, desc] + out[end:]
+                at = end - 2 if out[end - 2:end] == [0x1C, 3] else end
+                # (each: "flag clear -> to the end"; then the jump; the end is the 1C 3 / 15 after them)
+                to = at + 3 * len(flags) + 2
+                secs[si] = out[:at] + sum(([0x35, f << 8, 2 * to] for f in flags), []) + [0x36, desc] + out[at:]
             if (k, 0x80 + si) in BYPASS:
                 # where the section ends (its last 15, with the 1C 3 that slides
                 # the text box away for the menu, if it has one), the GBA goes on

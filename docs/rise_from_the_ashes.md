@@ -242,6 +242,14 @@ is untouched (its checksum is checked after every change). In it:
 - **People and songs.** Stand-ins until stage 3 and 5: Ema → Maya, Lana →
   Mia, Jake Marshall → Will Powers, Meekins → Larry, Gant → von Karma, Angel
   Starr → April May; the seven new songs play stand-ins.
+- **The engine, where the DS's differs.** A fifth-episode chapter starts
+  the DS's way: script flags 0–0x27 belong to the episode and carry over
+  (a few are cleared on the day they belong to), 0x28 and up start clear
+  (the GBA cleared all of them and set 0x41, which is a story flag here;
+  the first episode's examine check on it is kept to episodes 1–4). The
+  third investigation ends in its first file, and the chapter after it is
+  the final day's (28 → 31, as the DS's `16`). In the record's present
+  mode, R turns to the profiles (the GBA never asks for a person).
 
 What the DS's own systems do is, for now, skipped: where the DS hands over
 to one of them and that system then starts a section, the GBA goes on in
