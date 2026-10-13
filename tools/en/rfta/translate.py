@@ -50,6 +50,8 @@ BYPASS = {
     (18, 0xBF): 0xC2, (18, 0xC2): 0xC3,
     # Day 1: Ms. Skye's phone looked over: the redial display, the call, the patrolman
     (18, 0xF9): 0xFB, (18, 0xFB): 0xFC, (18, 0xFC): 0xFD,
+    # Day 2: the luminol in the parking lot: how it is used, the stain it shows, what is odd about it
+    (22, 0x92): 0x93, (22, 0x93): 0x95, (22, 0x95): 0x96,
 }
 MAX_MARKER = 0x0C           # map marker sprites the GBA has (sMapMarkerSprites)
 # people the GBA has, standing in for the fifth episode's until their sprites exist
@@ -268,10 +270,17 @@ class Translator:
             items, _ = parse(tokens(b, *bd), DS_ARGS)
             secs[si], maps[si] = self.section(items, 'file %d sec %d' % (k, si))
             if (k, 0x80 + si) in BYPASS:
+                # where the section ends (its last 15, with the 1C 3 that slides
+                # the text box away for the menu, if it has one), the GBA goes on
+                # in the section the DS's system would have started
                 out = secs[si]
-                tail = max(i for i in range(len(out) - 2) if out[i:i + 3] == [0x1C, 3, 0x15])
-                # (as long as what it replaces: jumps within the section keep their places)
-                secs[si] = out[:tail] + [GOTO_SECTION, BYPASS[(k, 0x80 + si)], 0x15] + out[tail + 3:]
+                args = dict(GBA_ARGS); args.update({CONTINUE_CHAPTER: 1, GOTO_SECTION: 1})
+                cmds, _ = parse(out, args)
+                ends = [p for p, kind, op, a in cmds if kind == 'cmd' and op == 0x15]
+                end = ends[-1]
+                start = end - 2 if out[end - 2:end] == [0x1C, 3] else end
+                # (as long as what it replaces where it can: jumps within the section keep their places)
+                secs[si] = out[:start] + [GOTO_SECTION, BYPASS[(k, 0x80 + si)]] + [0x15] * (end + 1 - start - 2) + out[end + 1:]
                 self.stats['bypass to a section'] += 1
         # lay out: header, then sections on 4-byte boundaries
         body = bytearray(); new_offs = [0] * n
