@@ -81,6 +81,25 @@ BYPASS = {
 # question's answer in its table at 0x020b1324, arm9_tables.PROMPTS): the
 # GBA's 21, its answers in the court present data (arm9_tables.py)
 PROMPT_PRESENT = 0x21
+# The luminol in the evidence room (Day 2) is the one use of it the story
+# waits on: the three stains it shows there set flags 14, 16, 19, which
+# the room's other findings check before the day goes on (file 24's 11D,
+# 127-129, 131, 136: then section 10E). The DS's luminol code (0x02081400,
+# its scenes at 0x020c19ac: a stain's rectangle, its flag, the section)
+# runs the stain's lines from the shared file 35. Here the lines are copied
+# into the chapter as sections of its own, after the last, each setting the
+# stain's flag; the handprint on the locker (11B: "We should use her testing
+# fluid to check it out") goes on into them, and the last one checks the
+# room's findings as the others do. (DS file, new section) -> (file, section, flag)
+IMPORT = {
+    (24, 0x15C): (35, 0xC5, 0x14),      # by the door: someone touched it
+    (24, 0x15D): (35, 0xC6, 0x19),      # a right handprint on Gumshoe's locker
+    (24, 0x15E): (35, 0xC7, 0x16),      # the floor: a great deal of blood
+}
+BYPASS.update({(24, 0x11B): 0x15C, (24, 0x15C): 0x15D, (24, 0x15D): 0x15E})
+# the room's findings, checked after the last stain as after the others: all
+# their flags set -> the jump through descriptor D2 (to 10E)
+FINDINGS_CHECK = {(24, 0x15E): ((0x14, 0x16, 0x19, 0x53, 0x54, 0x55, 0x56, 0x58, 0x59), 0xD2)}
 MAX_MARKER = 0x0C           # map marker sprites the GBA has (sMapMarkerSprites)
 # people the GBA has, standing in for the fifth episode's until their sprites exist
 # (Gumshoe is in the fifth episode himself, in the same rooms as Marshall, so
@@ -291,6 +310,16 @@ class Translator:
         return out, pos_map
 
     # -------------------------------------------------------------- one file
+    @staticmethod
+    def end_15(out):
+        """where a translated section waits at its end: the first 15 after its
+        last text (the DS's systems take over there; a 1C 3 / 15 after it is
+        their way back to the menu)"""
+        args = dict(GBA_ARGS); args.update({CONTINUE_CHAPTER: 1, GOTO_SECTION: 1})
+        cmds, _ = parse(out, args)
+        last_text = max([p for p, kind, op, a in cmds if kind == 'text'] + [0])
+        return [p for p, kind, op, a in cmds if kind == 'cmd' and op == 0x15 and p > last_text][0]
+
     def file(self, k):
         b, n, offs = load(ds_script.chapter(k))
         bounds = section_bounds(b, offs)
@@ -300,15 +329,31 @@ class Translator:
                 continue
             items, _ = parse(tokens(b, *bd), DS_ARGS)
             secs[si], maps[si] = self.section(items, 'file %d sec %d' % (k, si))
+        # sections brought in from another file (IMPORT), after the file's own
+        for (kk, sec), (src, src_sec, flag) in sorted(IMPORT.items()):
+            if kk != k:
+                continue
+            assert sec == 0x80 + n, (k, hex(sec), hex(0x80 + n))
+            sb, sn, soffs = load(ds_script.chapter(src))
+            items, _ = parse(tokens(sb, *section_bounds(sb, soffs)[src_sec - 0x80]), DS_ARGS)
+            out, _ = self.section(items, 'file %d sec %d (file %d sec %d)' % (k, n, src, src_sec - 0x80))
+            end = self.end_15(out)
+            secs[n] = out[:end] + [0x10, 0x8000 | flag] + out[end:]      # (its flag, as the DS's code sets it)
+            offs = list(offs) + [0]; n += 1
+            self.stats['section brought in'] += 1
+        for si in sorted(secs):
+            if (k, 0x80 + si) in FINDINGS_CHECK:
+                flags, desc = FINDINGS_CHECK[(k, 0x80 + si)]
+                out = secs[si]; end = self.end_15(out)
+                # (each: "flag clear -> to the end"; then the jump; the end is the 15 after them)
+                to = end + 3 * len(flags) + 2
+                secs[si] = out[:end] + sum(([0x35, f << 8, 2 * to] for f in flags), []) + [0x36, desc] + out[end:]
             if (k, 0x80 + si) in BYPASS:
                 # where the section ends (its last 15, with the 1C 3 that slides
                 # the text box away for the menu, if it has one), the GBA goes on
                 # in the section the DS's system would have started
                 out = secs[si]
-                args = dict(GBA_ARGS); args.update({CONTINUE_CHAPTER: 1, GOTO_SECTION: 1})
-                cmds, _ = parse(out, args)
-                ends = [p for p, kind, op, a in cmds if kind == 'cmd' and op == 0x15]
-                end = ends[-1]
+                end = self.end_15(out)
                 start = end - 2 if out[end - 2:end] == [0x1C, 3] else end
                 # (as long as what it replaces where it can: jumps within the section keep their places)
                 secs[si] = out[:start] + [GOTO_SECTION, BYPASS[(k, 0x80 + si)]] + [0x15] * (end + 1 - start - 2) + out[end + 1:]
