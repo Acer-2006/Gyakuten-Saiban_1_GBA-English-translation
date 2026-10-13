@@ -367,13 +367,16 @@ background they belong to, which the GBA engine would end them with.
 
 **Checking it.** Every converted frame is drawn back from the GBA files as
 the GBA decodes them and compared with the DS's frame inside the GBA's
-screen (`characters.py --check`, with Marshall's second animation drawn in, and the lunch boxes'
-cells left out of Angel Starr's lunch versions): all 3,337 are the same
-pixel for pixel, but for 618 frames short of cells at the bottom, all of it
-behind the text box (screen rows 112 and below). In most of Marshall's and
-Gant's that is a few cells of the screen's last rows; Gant's three
-breakdown animations and Marshall's poncho flourish lose more, and Angel
-Starr's lunch versions lose the rows behind the lunch's own lower half.
+screen (`characters.py --check`, with Marshall's second animation drawn
+in, and the lunch boxes' cells left out of Angel Starr's lunch versions):
+all 3,337 are the same pixel for pixel, but for 618 frames short of cells
+at the bottom, all of it in the text box's rows (screen rows 112 and
+below). The text box is see-through, so with it up the cut shows dimmed as
+a hem cut straight across; in court the witness stand covers most of it.
+Gant loses rows from screen row 144 or 152 in 285 frames and from row 112
+to 128 in his three breakdown animations (56 frames); Marshall from row 136
+to 152 in 224 frames (209 of them his poses with the bandana) and from row
+112 in his poncho flourish (6); Angel Starr's lunch versions from row 144 (47).
 `graphics/en/rfta/characters/report.txt` lists them. In the emulator, the
 lunches, the wide shots with Ema and the witnesses, and Marshall with his
 bandana were photographed as the autoplayer reached them. The frame sound
