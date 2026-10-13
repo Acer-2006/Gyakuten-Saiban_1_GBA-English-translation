@@ -827,6 +827,18 @@ void CourtRecordMain(struct Main * main, struct CourtRecord * courtRecord) // st
                 main->process[GAME_PROCESS_STATE] = RECORD_EXIT;
             }
         }
+#if RFTA
+        // English patch: the fifth episode asks for people too ("What is
+        // this person's name?", en_rfta.h): R turns to the profiles while
+        // presenting, as on the DS
+        if(joypad->pressedKeys & R_BUTTON && main->scenarioIdx >= RFTA_FIRST_CHAPTER)
+        {
+            PlaySE(SE00A_SWITCH_RECORD);
+            SlideInBG2Window(0x3, 0xC);
+            courtRecord->nextState = RECORD_CHANGE_RECORD;
+            main->process[GAME_PROCESS_STATE] = RECORD_CHANGE_RECORD;
+        }
+#endif
         label:
         if(main->processCopy[GAME_PROCESS] != INVESTIGATION_PROCESS)
             UpdateQuestioningMenuSprites(main, &gTestimony, 0);
