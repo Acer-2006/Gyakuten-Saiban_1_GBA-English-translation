@@ -109,6 +109,12 @@ CHARACTERS = {int(p, 16): {int(n, 16): o for n, o in m.items()}
               for p, m in json.load(open(os.path.join(HERE, 'characters.json'))).items()}
 def character_pose(person, v):
     return CHARACTERS.get(person & 0xFF, {}).get(v)
+# the fifth episode's own animations (command 2F), converted by effects.py:
+# DS number -> GBA number (the wide shot's people, Angel Starr's box lunches)
+EFFECTS = {int(a, 16): g for a, g in json.load(open(os.path.join(HERE, 'effects.json'))).items()}
+LUNCHES = range(0x27, 0x3C)             # characters.LUNCHES
+LUNCH_POSES = {0x32: (0x1CA, 0x1CB)}     # characters.LUNCH_POSES: the poses a lunch is held out in
+LUNCH_VARIANT = 0x10000                 # characters.LUNCH_VARIANT: their versions that leave the lunch room
 # people standing in for others whose sprites are missing (none left: stage 3
 # converted them); the talk and present tables would name the stand-ins too
 PLACEHOLDER = {}
@@ -122,16 +128,18 @@ def gba_anim(v):
     """the GBA's number for a DS animation (command 2F), None where the GBA has
     none yet. Measured on episodes 1-4: the speech bubbles keep their numbers,
     the DS's 0x90-0x94 are the GBA's 0x1F-0x23 and 0x97-0xB0 its 0x24-0x3D
-    (the wide shots of the courtroom); 0x95, 0x96 and 0xB1 on are the DS's own
-    (the fifth episode's people seen from the gallery), as are the fifth
-    episode's opening pictures"""
+    (the wide shots of the courtroom). The DS's own: 0xB1-0xB7, the fifth
+    episode's people in the wide shot, and 0x27-0x3B, Angel Starr's box
+    lunches, are converted (effects.py); 0x95 and 0x96 (the gavel, which the
+    gavel commands draw the GBA's way), the fifth episode's opening pictures
+    and a few one-off pictures are not"""
     if v in (1, 2, 3, 4, 0xA, 0xB):
         return v
     if 0x90 <= v <= 0x94:
         return v - 0x71
     if 0x97 <= v <= 0xB0:
         return v - 0x73
-    return None
+    return EFFECTS.get(v)
 DROP = {0x4D, 0x55, 0x65, 0x68, 0x6B, 0x6F, 0x74, 0x75, 0x76, 0x7B, 0x5F}
 
 def usual_poses():
@@ -162,7 +170,8 @@ class Translator:
         self.notes = []
 
     # -------------------------------------------------------------- people
-    def person(self, args, where):
+    def person(self, args, where, lunch=False):
+        """lunch: a box lunch follows (its poses' versions that leave it room)"""
         who, talk, idle = args[0], args[1], args[2]
         p = who & 0xFF
         if p == 0:
@@ -174,7 +183,12 @@ class Translator:
             return [0x1E, (who & 0xFF00) | g, t, i]
         out = [0x1E, who]
         for v in (talk, idle):
-            gv = character_pose(p, v)
+            gv = None
+            if lunch and v in LUNCH_POSES.get(p, ()):
+                gv = character_pose(p, LUNCH_VARIANT | v)
+                assert gv is not None, 'no lunch version of %x' % v
+            if gv is None:
+                gv = character_pose(p, v)
             if gv is not None:
                 out.append(gv); self.stats['person converted from the DS'] += 1
                 continue
@@ -192,7 +206,12 @@ class Translator:
         out = []
         pos_map = {}          # DS token position -> output token position
         jumps = []            # (output index of a 35's offset, DS token it jumps to)
-        for p, kind, op, a in items:
+        cmds = [k for k, it in enumerate(items) if it[1] == 'cmd']
+        lunch_after = set()       # the 1Es a box lunch follows
+        for k, j in zip(cmds, cmds[1:]):
+            if items[k][2] == 0x1E and items[j][2] == 0x2F and items[j][3][0] in LUNCHES and items[j][3][1]:
+                lunch_after.add(k)
+        for k, (p, kind, op, a) in enumerate(items):
             pos_map[p] = len(out)
             if kind == 'text':
                 out.append(op); continue
@@ -215,7 +234,9 @@ class Translator:
                     self.stats['unknown song left out'] += 1; continue
                 out += [0x05, song, a[1]]
             elif op == 0x1E:
-                out += self.person(a, where)
+                out += self.person(a, where, k in lunch_after)
+                if k in lunch_after:
+                    self.stats['box lunch'] += 1
             elif op == 0x1A:
                 # a pan across the courtroom with a person on it: the person and
                 # the pose as for 1E

@@ -186,6 +186,7 @@ reworded for buttons — the only deliberate departure from the DS text.
   GBA script from the DS script alone, implementing or dropping every DS
   command and variant in section 1.
 - No decoder for the DS animation archive (or a recorder as fallback).
+  (Stage 3 found it is the GBA's own format: section 8.)
 - No SSEQ → m4a path.
 - No GBA code for: portrait plate, frame player, luminol, fingerprinting,
   3D views, close-ups, the fifth episode-select entry; and the eleven new
@@ -286,7 +287,9 @@ decisions), which is stage 2's milestone.
 
 Ema Skye, Lana Skye, Jake Marshall, Mike Meekins, Damon Gant and Angel
 Starr are the DS's own, and Edgeworth has the two looks the DS gave him
-(`characters.py`; 131 animations, 3,290 frames).
+(`characters.py`; 131 animations and two versions of Angel Starr's for her
+box lunches, 3,337 frames). So are the people in the courtroom's wide shot
+and Angel Starr's box lunches (`effects.py`).
 
 **What the DS has.** The fifth episode's animations are one data.bin
 archive (0x2202220) in the GBA's own animation format: a graphics block
@@ -320,13 +323,60 @@ Meekins's and Angel Starr's frames are over. So for each frame:
   Marshall's frames, up to 466), cells go from the bottom up, the outermost
   of the lowest row first.
 
-Every converted frame was drawn back from the GBA files as the GBA decodes
-them and compared with the DS's frame inside the GBA's screen: all are the
-same pixel for pixel, but for 440 frames short of cells at the bottom. In
-99 of Marshall's and most of Gant's that is a few cells of the screen's
-last row; Gant's three breakdown animations and Marshall's poncho flourish
-lose more, all of it behind the text box (screen rows 112 and below).
-`graphics/en/rfta/characters/report.txt` lists them. The frame sound
+**What the DS draws on top.** Two of the people are more than their own
+animations:
+
+- Jake Marshall's poses 0x1CF–0x1DB start a second animation with them
+  (the DS's 0x02022f18: animations 0x1C–0x26 of its effect table at
+  0x020a984c): his red bandana and what he has in his hand (the knife he
+  shaves with, the flask), at his origin, frame for frame with the pose or
+  held. It uses his own palettes, so `characters.py` draws it into those
+  poses, in front of him (217 frames).
+- Angel Starr's box lunches (effects 0x27–0x3B, one per lunch) are started
+  by the script right after her poses 0x1CA/0x1CB, laid over the box she
+  holds out, and end with the next pose (the DS's 0x02022338 ends them).
+  They have their own palette, so they stay animations of their own
+  (`effects.py`, the GBA's 0x45–0x59, palette 13, the speech bubbles': no
+  bubble comes while a lunch is out). Their tiles take the last 0xE80 bytes
+  of the person's VRAM, and the two poses have a second version for when a
+  lunch follows (`characters.json`: 0x10000 | pose) with that much less
+  room and without the 50 cells every lunch box covers; the translator
+  picks it when a lunch follows the `1E`. The engine moves a lunch with
+  Angel Starr (a courtroom pan takes it along), hides it with her and ends
+  it on her next pose or when she goes (`animation.c`, `EnRftaDropLunch`).
+
+**The wide shot.** The courtroom seen from the gallery (background 6, the
+gavel's lead-in) has its people as animations of their own: the GBA has the
+first four episodes' (the DS's 0x97–0xB0 are its 0x24–0x3D). The DS adds
+Ema beside Phoenix (0xB3) and the six witnesses on the stand seen from
+behind (0xB1, 0xB2, 0xB4–0xB7: Meekins, Ema, Lana, Marshall, Angel Starr,
+Gant). They are the GBA's 0x3E–0x44 (the DS's numbers less 0x73, like the
+rest), each in the place its kind has on the GBA: the witnesses (palette
+10) end in VRAM where the prosecutor starts (`OBJ_VRAM1+0x8C0`), Ema takes
+Mia's place by Phoenix (`OBJ_VRAM1+0x1C20`, palette 14), and they end with
+the background as the GBA's wide-shot people do. Their graphics and frames
+are the DS's as they are; the DS's positions are about (128, 96), the GBA's
+about (120, 80), and the backgrounds are cut at the same offset.
+
+Of the DS's own `2F` animations, the rest are not converted: 0x95 and 0x96
+are the gavel, which the gavel commands draw the GBA's way; 0x72–0x7B are
+the opening, part of its movie (stage 4); and five one-off pictures (0x40,
+0x41, 0x56, 0x7C, 0x7D: a boat and its wake in a flashback, a blood spray,
+a car's headlights on the map, a mark on a photograph) come after the
+background they belong to, which the GBA engine would end them with.
+
+**Checking it.** Every converted frame is drawn back from the GBA files as
+the GBA decodes them and compared with the DS's frame inside the GBA's
+screen (`characters.py --check`, with Marshall's second animation drawn in, and the lunch boxes'
+cells left out of Angel Starr's lunch versions): all 3,337 are the same
+pixel for pixel, but for 618 frames short of cells at the bottom, all of it
+behind the text box (screen rows 112 and below). In most of Marshall's and
+Gant's that is a few cells of the screen's last rows; Gant's three
+breakdown animations and Marshall's poncho flourish lose more, and Angel
+Starr's lunch versions lose the rows behind the lunch's own lower half.
+`graphics/en/rfta/characters/report.txt` lists them. In the emulator, the
+lunches, the wide shots with Ema and the witnesses, and Marshall with his
+bandana were photographed as the autoplayer reached them. The frame sound
 effects the GBA does not have yet (35 frames, 32 of them Gant's) are left
 out until stage 5.
 
@@ -360,6 +410,11 @@ Stage 2 (each writes into the build; their docstrings say what from):
 
 Stage 3:
 
-- `characters.py` — `graphics/en/rfta/characters/`, `data/rfta/characters.s`,
-  `include/en_rfta_characters.h`, `characters.json` (DS animation → GBA
-  offset, read by `translate.py` and `rooms.py`).
+- `characters.py [--check]` — `graphics/en/rfta/characters/`,
+  `data/rfta/characters.s`, `include/en_rfta_characters.h`,
+  `characters.json` (DS animation → GBA offset, read by `translate.py` and
+  `rooms.py`); `--check` compares every frame written with the DS's.
+- `effects.py` — the wide shot's people and the box lunches:
+  `graphics/en/rfta/effects/`, `data/rfta/effects.s`,
+  `include/en_rfta_effects.h` (the `gAnimationData` entries),
+  `effects.json` (DS `2F` number → GBA number, read by `translate.py`).
