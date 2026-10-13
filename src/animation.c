@@ -2173,7 +2173,10 @@ void UpdateAnimations(u32 arg0)
                 animation->animationInfo.xOrigin = person->animationInfo.xOrigin;
                 animation->animationInfo.yOrigin = person->animationInfo.yOrigin;
                 if((animation->flags & ANIM_ACTIVE) != (person->flags & ANIM_ACTIVE))
+                {
                     ChangeAnimationActivity(animation, (person->flags & ANIM_ACTIVE) != 0);
+                    animation->flags |= ANIM_QUEUED_TILE_UPLOAD | ANIM_QUEUED_PAL_UPLOAD; // (back: its tiles again)
+                }
             }
             else
 #endif
