@@ -12,6 +12,10 @@
 #include "constants/animation_offsets.h"
 #include "en_court_pan.h"
 #include "en_effects.h"
+#include "en_rfta.h"
+#if RFTA
+#include "en_rfta_characters.h"
+#endif
 
 #define DUMMYPERSON { .gfxData = 0, .frameData = 0, .spriteCount = 0, .unkA = 0 }
 #define DUMMYANIMATION { .gfxData = 0, .vramPtr = 0, .frameData = 0, .xOrigin = 0, .yOrigin = 0, .paletteSlot = 0, .spriteCount = 0, .priority = 0, .flags = 0x0, }
@@ -52,9 +56,16 @@ const struct PersonAnimationData gPersonAnimData[] = {
 		.unkA = 0x0,
 	},
 	[PERSON_ANIM_EDGEWORTH] = {
+#if RFTA
+		// English patch: with the two looks the fifth episode adds (en_rfta_characters.h)
+		.gfxData = gRftaPixEdgeworth,
+		.frameData = gRftaSeqEdgeworth,
+		.spriteCount = RFTA_SPRITES_EDGEWORTH,
+#else
 		.gfxData = gGfxPixAnimationChar06,
 		.frameData = gGfxSeqAnimationChar06,
 		.spriteCount = 38,
+#endif
 		.unkA = 0x0,
 	},
 	[PERSON_ANIM_WINSTON_PAYNE] = {
@@ -182,6 +193,10 @@ const struct PersonAnimationData gPersonAnimData[] = {
 		.spriteCount = 10,
 		.unkA = 0x0,
 	},
+#if RFTA
+	// English patch: the fifth episode's people, by their DS numbers (en_rfta_characters.h)
+	RFTA_PERSON_ANIM_DATA
+#endif
 };
 
 const struct AnimationData gAnimationData[] = {

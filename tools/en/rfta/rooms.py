@@ -46,7 +46,7 @@ FUNCS = {
 # DS gMain byte fields (the DS struct is the GBA's shifted by -0x24 here)
 MAIN_BYTES = {0x68: 'currentRoomId', 0x69: 'scenarioIdx', 0x6a: 'caseEnabledFlags', 0x6b: 'health', 0x25: 'unk25'}
 COND = {'eq': '==', 'ne': '!=', 'lt': '<', 'ge': '>=', 'gt': '>', 'le': '<=', 'ls': '<=', 'hi': '>', 'lo': '<', 'hs': '>=', 'cc': '<', 'cs': '>=', 'mi': '<', 'pl': '>='}
-# people of the fifth episode -> stand-ins (translate.PLACEHOLDER) while their sprites are missing
+# people standing in for others (translate.PLACEHOLDER: none since stage 3)
 import translate, port_script
 port_script.load_looks()
 PLACEHOLDER = translate.PLACEHOLDER
@@ -289,6 +289,9 @@ class Decompiler:
                         (g, (p & 0xFF00) | PLACEHOLDER[pp], gt, gi, translate.PLACEHOLDER_NAMES[pp], p, t1, t2)]
             res = []
             for v in (t1, t2):
+                gv = translate.character_pose(pp, v)
+                if gv is not None:
+                    res.append(gv); continue
                 m = port_script.ds_look(pp, v)
                 gv = m[0] if m else ANIM_ANY().get((pp, v))
                 if gv is None:

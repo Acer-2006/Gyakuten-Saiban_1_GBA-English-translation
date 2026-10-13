@@ -96,7 +96,7 @@ stood in the same place.
 ## 2. People, pictures, sound
 
 **Characters.** Six new sprite sets: persons 0x2c, 0x2d, 0x2e, 0x2f, 0x31,
-0x32 (Ema, Lana, Gant, Marshall, Angel Starr, Meekins), with 139 animation
+0x32 (Ema, Lana, Marshall, Meekins, Gant, Angel Starr), with 139 animation
 numbers between them (talk/idle pairs, so about 70 poses; Gant, Angel
 Starr and Meekins also appear as 0x4000/0x8000 variants of their person
 number, as Gumshoe does in episodes 1–4). Edgeworth and Gumshoe get a few
@@ -104,15 +104,10 @@ new poses (6 animation numbers). Ten new name tags
 (persons 0x2c–0x35; Goodman, Darke, Neil Marshall and the Blue Badger are
 names and stills only). 18 partner portraits (above).
 
-The DS appears to keep every character's animation data in one archive
-(data.bin 0x2202220: 562 entries, 3.25 MB, uncompressed, in pairs: a
-16-colour palette with tile data, then a frame table). The format has not been
-decoded; the first four episodes never needed it because their sprites are
-the GBA's own. Two ways to get the new characters out: decode the format
-(it is the GBA's lineage: 4bpp tiles, OAM-style frames), or record each
-animation in the emulator the way the pose comparison already does, and
-rebuild GBA animation tables from the recordings. Either way the result is
-converted into the GBA animation format the decomp documents.
+The DS keeps every animation of the episode in one archive (data.bin
+0x2202220: 562 entries, 3.25 MB, in pairs: a graphics block, then a frame
+block), in the GBA's own animation format; stage 3 (section 8) converted the
+new people from it.
 
 **Backgrounds.** 68 new (ids 0x71–0xf0 with gaps; 93 used in all). The DS
 backgrounds are 256×192; the port's existing tooling (`port_backgrounds.py`)
@@ -239,9 +234,8 @@ is untouched (its checksum is checked after every change). In it:
 - **Pictures and text.** The 68 new backgrounds, the Court Record pictures
   and descriptions, the name tags, the Move/Talk plates, the "point at it"
   pictures (`spots.py`; the text box makes way when the spot is low).
-- **People and songs.** Stand-ins until stage 3 and 5: Ema → Maya, Lana →
-  Mia, Jake Marshall → Will Powers, Meekins → Larry, Gant → von Karma, Angel
-  Starr → April May; the seven new songs play stand-ins.
+- **People and songs.** The six new people were played by stand-ins until
+  stage 3 (section 8); the seven new songs play stand-ins until stage 5.
 - **The engine, where the DS's differs.** A fifth-episode chapter starts
   the DS's way: script flags 0–0x27 belong to the episode and carry over
   (a few are cleared on the day they belong to), 0x28 and up start clear
@@ -288,6 +282,54 @@ current build it plays the episode from the Day 1 investigation through
 the final day's verdict and the epilogue to the title screen (about 3,000
 decisions), which is stage 2's milestone.
 
+## 8. Stage 3: the people
+
+Ema Skye, Lana Skye, Jake Marshall, Mike Meekins, Damon Gant and Angel
+Starr are the DS's own, and Edgeworth has the two looks the DS gave him
+(`characters.py`; 131 animations, 3,290 frames).
+
+**What the DS has.** The fifth episode's animations are one data.bin
+archive (0x2202220) in the GBA's own animation format: a graphics block
+(palettes, then RLE tiles behind an offset table) and a frame block holding
+several animations, for each pair of entries. The ARM9 table at 0x020a8d4c
+gives every animation number of the scripts (the `1E` arguments: Ema's are
+0x178–0x197, Lana's 0x198–0x1AC, Meekins's 0x1AD–0x1BC, Angel Starr's
+0x1BD–0x1CC, Marshall's 0x1CD–0x1E4, Gant's 0x1E5–0x1F8) its pair and its
+offset in the pair's frame block. A GBA person is one graphics file and one
+frame file, and an animation names its graphics block by an offset into the
+graphics file, so a person's pairs join up as they are. The people keep
+their DS person numbers (0x2C–0x32, added to `gPersonAnimData` in the RftA
+build); the translator turns their animation numbers into offsets in their
+files, the room code and the talk and present tables name them as the DS
+does. Their two palettes go to OBJ palettes 14 and 15.
+
+**What the GBA has no room for.** A person's tiles are copied to OBJ VRAM
+for every frame, into the 320 tiles above `OBJ_VRAM0+0x5800`; the rest of
+OBJ VRAM is the interface's, and the evidence plate, the speech bubbles and
+the testimony banners appear with the people. The DS had more, and drew its
+frames with large sprites: as the DS has them, most of Marshall's, Gant's,
+Meekins's and Angel Starr's frames are over. So for each frame:
+
+- the sprites wholly off the GBA's screen go (beyond the DS screen's width,
+  which the courtroom pans can bring in, or above or below);
+- a frame still over 320 tiles or 39 sprites is drawn again with sprites
+  fitted to its pixels (8-pixel cells, each palette apart, the tightest
+  cover that fits); the new sprites' tiles are new entries in the pair's
+  graphics block, identical ones stored once;
+- where even the pixels are more than 320 cells (some of Gant's and
+  Marshall's frames, up to 466), cells go from the bottom up, the outermost
+  of the lowest row first.
+
+Every converted frame was drawn back from the GBA files as the GBA decodes
+them and compared with the DS's frame inside the GBA's screen: all are the
+same pixel for pixel, but for 440 frames short of cells at the bottom. In
+99 of Marshall's and most of Gant's that is a few cells of the screen's
+last row; Gant's three breakdown animations and Marshall's poncho flourish
+lose more, all of it behind the text box (screen rows 112 and below).
+`graphics/en/rfta/characters/report.txt` lists them. The frame sound
+effects the GBA does not have yet (35 frames, 32 of them Gant's) are left
+out until stage 5.
+
 ## Tools (`tools/en/rfta/`)
 
 All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
@@ -315,3 +357,9 @@ Stage 2 (each writes into the build; their docstrings say what from):
 - `rooms.py` — `src/en_rfta_rooms.c`: rooms, talks, examine areas, room code.
 - `backgrounds.py`, `evidence.py`, `descriptions.py`, `nametags.py`,
   `plates.py`, `spots.py` — the pictures.
+
+Stage 3:
+
+- `characters.py` — `graphics/en/rfta/characters/`, `data/rfta/characters.s`,
+  `include/en_rfta_characters.h`, `characters.json` (DS animation → GBA
+  offset, read by `translate.py` and `rooms.py`).
