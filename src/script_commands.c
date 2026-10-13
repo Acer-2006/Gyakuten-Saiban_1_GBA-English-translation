@@ -628,6 +628,13 @@ bool32 Command16(struct ScriptContext * scriptCtx)
     // last: the save the DS offers after the credits is of that chapter
     // cleared, Continue then offers it from its start, and the prompt leads
     // to the title (SaveGame5), not to a chapter 17.
+#if RFTA
+    // English patch: the fifth episode's third investigation ends in its
+    // first file (en_rfta.c)
+    if (main->scenarioIdx >= RFTA_FIRST_CHAPTER && main->scenarioIdx < LAST_CHAPTER)
+        main->scenarioIdx = EnNextChapter(main->scenarioIdx);
+    else
+#endif
     if (main->scenarioIdx < LAST_CHAPTER)
         main->scenarioIdx++;
     else

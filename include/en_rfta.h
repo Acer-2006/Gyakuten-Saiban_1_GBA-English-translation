@@ -46,6 +46,14 @@ bool32 Command60(struct ScriptContext * scriptCtx);
 bool32 Command61(struct ScriptContext * scriptCtx);
 bool32 EnPresentReturnsToQuestioning(u32 section);
 
+// the flags a chapter starts with (the DS keeps flags 0-0x27 through the
+// episode), the chapter after one that ends (the third investigation's end
+// is in its first file: on to the final day)
+#define RFTA_DAY3_END 28
+#define RFTA_FINAL_DAY 31
+void EnRftaChapterFlags(struct Main * main, bool32 court);
+u32 EnNextChapter(u32 chapter);
+
 void EnRftaDay1RoomHook(struct Main * main);
 void EnRftaDay2RoomHook(struct Main * main);
 void EnRftaDay3RoomHook(struct Main * main);

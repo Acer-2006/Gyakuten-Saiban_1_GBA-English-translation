@@ -229,4 +229,63 @@ bool32 Command61(struct ScriptContext * scriptCtx)
     ChangeScriptSection(section);
     return 0;
 }
+
+// The script flags at the start of a chapter, as the DS sets them for the
+// fifth episode (its investigation and court openings, 0x02036058 and
+// 0x0202f7d8): flags 0x28 and up are the chapter's and start clear; those
+// below are the episode's (what the luminol has found, and the like) and
+// carry over, a few cleared again at the start of the day they belong to.
+// The GBA clears them all (and sets 0x41, which on the DS is a flag of the
+// fifth episode's story: the examine check that needs it is the first
+// four episodes' only, investigation.c).
+static void ClearFlags(u32 from, u32 to)
+{
+    for (; from <= to; from++)
+        ChangeFlag(0, from, FALSE);
+}
+
+void EnRftaChapterFlags(struct Main * main, bool32 court)
+{
+    switch (court ? main->scenarioIdx + 0x100 : main->scenarioIdx)
+    {
+    case 17:                // Day 1
+        ClearFlags(0, 1); ClearFlags(0x1E, 0x20);
+        break;
+    case 22:                // Day 2
+        ClearFlags(3, 0xE); ClearFlags(0x12, 0x17); ClearFlags(0x19, 0x1D);
+        ChangeFlag(0, 0x1F, TRUE);
+        break;
+    case 28:                // Day 3
+        if (!GetFlag(0, 0xD))
+        {
+            ChangeFlag(0, 0x13, FALSE);
+            ChangeFlag(0, 4, FALSE);
+        }
+        if (!GetFlag(0, 0xE))
+            ChangeFlag(0, 0x17, FALSE);
+        ChangeFlag(0, 0x18, FALSE);
+        ChangeFlag(0, 0x1F, TRUE);
+        break;
+    case 0x100 + 19:        // the first trial
+        ChangeFlag(0, 2, FALSE); ClearFlags(0x21, 0x22);
+        ChangeFlag(0, 0x1F, TRUE);
+        break;
+    case 0x100 + 25:        // the second
+        ClearFlags(0xF, 0x10); ClearFlags(0x23, 0x24);
+        ChangeFlag(0, 0x1F, TRUE);
+        break;
+    case 0x100 + 31:        // the last
+        ClearFlags(0x25, 0x27); ChangeFlag(0, 0x1F, FALSE);
+        break;
+    }
+    ClearFlags(0x28, 0xFE);
+}
+
+// The chapter after one that ends (script command 16): the next, but the
+// third investigation ends in its first file and goes on to the final day
+// (the DS's 16: 28 -> 31)
+u32 EnNextChapter(u32 chapter)
+{
+    return chapter == RFTA_DAY3_END ? RFTA_FINAL_DAY : chapter + 1;
+}
 #endif // RFTA

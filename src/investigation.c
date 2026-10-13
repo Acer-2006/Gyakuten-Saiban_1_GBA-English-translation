@@ -100,9 +100,19 @@ void InvestigationInit(struct Main * main, struct InvestigationStruct * investig
     ioRegs->lcd_bg1vofs = ~80;
     ioRegs->lcd_dispcnt &= ~DISPCNT_BG1_ON;
     InitializeCourtRecordForScenario(main, &gCourtRecord);
+#if RFTA
+    // English patch: the fifth episode keeps flags 0-0x27 (en_rfta.c)
+    if(main->scenarioIdx >= RFTA_FIRST_CHAPTER)
+        EnRftaChapterFlags(main, FALSE);
+    else
+    {
+#endif
     DmaFill32(3, 0, main->scriptFlags, sizeof(main->scriptFlags));
     if(main->scenarioIdx > 1)
        ChangeFlag(0, 0x41, TRUE); 
+#if RFTA
+    }
+#endif
     main->gameStateFlags = 0;
     main->tilemapUpdateBits = 0xF;
     main->advanceScriptContext = TRUE;
@@ -1540,7 +1550,13 @@ u32 GetExaminedAreaSection(struct InvestigationStruct * investigation) // finger
     rect.y = gMain.Bg256_pos_y + investigation->pointerY;
     rect.w = 4;
     rect.h = 16;
+#if RFTA
+    // English patch: the first episode's "nothing to examine yet" (flag 0x41
+    // is a story flag of the fifth's, en_rfta.c)
+    if(gMain.scenarioIdx < RFTA_FIRST_CHAPTER && GetFlag(0, 0x41) == FALSE)
+#else
     if(GetFlag(0, 0x41) == FALSE)
+#endif
         return 0x19;
     animId = CheckRectCollisionWithAnim(&rect);
 #if RFTA
