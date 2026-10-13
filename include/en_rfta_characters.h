@@ -22,7 +22,7 @@ extern u8 gRftaSeqEdgeworth[];
 #define RFTA_PERSON_ANIM_DATA \
     [0x2C] = { .gfxData = gRftaPixEma, .frameData = gRftaSeqEma, .spriteCount = 35, .unkA = 0 }, \
     [0x2D] = { .gfxData = gRftaPixLana, .frameData = gRftaSeqLana, .spriteCount = 36, .unkA = 0 }, \
-    [0x2E] = { .gfxData = gRftaPixMarshall, .frameData = gRftaSeqMarshall, .spriteCount = 37, .unkA = 0 }, \
+    [0x2E] = { .gfxData = gRftaPixMarshall, .frameData = gRftaSeqMarshall, .spriteCount = 39, .unkA = 0 }, \
     [0x2F] = { .gfxData = gRftaPixMeekins, .frameData = gRftaSeqMeekins, .spriteCount = 39, .unkA = 0 }, \
     [0x31] = { .gfxData = gRftaPixGant, .frameData = gRftaSeqGant, .spriteCount = 39, .unkA = 0 }, \
     [0x32] = { .gfxData = gRftaPixAngel, .frameData = gRftaSeqAngel, .spriteCount = 39, .unkA = 0 }, \

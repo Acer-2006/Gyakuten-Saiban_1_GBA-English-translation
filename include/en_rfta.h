@@ -54,6 +54,9 @@ bool32 EnPresentReturnsToQuestioning(u32 section);
 void EnRftaChapterFlags(struct Main * main, bool32 court);
 u32 EnNextChapter(u32 chapter);
 
+// Angel Starr's box lunch ends with her pose (animation.c)
+void EnRftaDropLunch(void);
+
 void EnRftaDay1RoomHook(struct Main * main);
 void EnRftaDay2RoomHook(struct Main * main);
 void EnRftaDay3RoomHook(struct Main * main);

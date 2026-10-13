@@ -31,10 +31,22 @@ sound effects the GBA does not have are left out (frame flag 2).
 Edgeworth's two looks the GBA lacks (DS 0x82, 0x83) are added after his own
 animations in a copy of his files (the plain build keeps the GBA's).
 
+Jake Marshall's poses 0x1cf-0x1db come with a second animation the DS starts
+with them (ARM9 0x02022f18; its table of animations at 0x020a984c, entries
+0x1c-0x26): his red bandana and what he has in his hand, at his origin, frame
+for frame with the pose or held. Its palettes are his, so it is drawn into
+the poses here, in front of him.
+
+Angel Starr's poses 0x1ca and 0x1cb get a second version for when one of her
+box lunches (effects.py) is laid over them: the lunch takes the end of the
+person's VRAM, so the version has that much less room and leaves out the
+cells every lunch box covers (characters.json: LUNCH_VARIANT | pose).
+
 Writes graphics/en/rfta/characters/<name>.{pix,seq}, data/rfta/characters.s,
 include/en_rfta_characters.h and tools/en/rfta/characters.json (DS person ->
 DS animation -> GBA offset, for translate.py and rooms.py).
-usage: characters.py [--sheets DIR]  (contact sheets of every frame, DS and GBA)"""
+usage: characters.py [--check]  (--check: draw every frame back from the files
+written, as the GBA decodes them, and compare it with the DS's)"""
 import os, sys, struct, json, hashlib, collections
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -63,6 +75,18 @@ PEOPLE = [
 ]
 # looks of a GBA person the GBA lacks: (DS person, name, GBA files, DS animations)
 EXTRA = [(0x09, 'edgeworth', 'graphics/animations/characters/animation06', (0x82, 0x83))]
+# DS person -> {pose: the animation the DS plays on top of it} (0x02022f18)
+POSE_OVERLAYS = {0x2E: {0x1CF: 0x1E, 0x1D0: 0x1C, 0x1D1: 0x1D, 0x1D4: 0x21, 0x1D5: 0x22, 0x1D6: 0x1F,
+                        0x1D7: 0x20, 0x1D8: 0x23, 0x1D9: 0x24, 0x1DA: 0x25, 0x1DB: 0x26}}
+EFFECT_TABLE = 0x020a984c          # the DS's gAnimationData: 0x18 bytes an entry, u16 0 its number in ANIM_TABLE
+# Angel Starr's box lunches: animations of their own (effects.py) that the
+# scripts start right after her poses 0x1ca/0x1cb. Their tiles go at the end
+# of the person's VRAM, so those poses get a second version (LUNCH_VARIANT |
+# pose in characters.json) with that much less room and without the cells
+# every lunch box covers.
+LUNCHES = range(0x27, 0x3C)
+LUNCH_POSES = {0x32: (0x1CA, 0x1CB)}
+LUNCH_VARIANT = 0x10000
 SIZE_INDEX = {wh: k for k, wh in animfmt.SIZES.items()}          # (w, h) -> size index
 CELL_SIZES = sorted({(w // 8, h // 8) for w, h in animfmt.SIZES.values()}, key=lambda s: -s[0] * s[1])
 
@@ -76,6 +100,20 @@ def entry(i):
 
 def anim_entry(n):
     return struct.unpack_from('<HH', dsbin.data(), ANIM_TABLE - dsbin.BASE + 4 * n)
+
+def effect_entry(a):
+    """the DS's animation a (command 2F's number): (ANIM_TABLE number, VRAM
+    offset, x, y, palette slot, sprites, priority)"""
+    n, _, vram, _, x, y, pal, spr, pri = struct.unpack_from('<HHHHhhBBH', dsbin.data(), EFFECT_TABLE - dsbin.BASE + 0x18 * a)
+    return n, vram, x, y, pal, spr, pri
+
+def ds_animation(n):
+    """(Graphics, frame block, frames) of ANIM_TABLE number n; the frames'
+    sprite offsets count from the start of the frame block"""
+    p, off = anim_entry(n)
+    seq = entry(2 * p + 1)
+    frames, end = parse_anim(seq, off)
+    return Graphics(entry(2 * p)), seq[off:end], frames
 
 # ------------------------------------------------------------------ blocks
 def parse_anim(seq, o):
@@ -202,7 +240,7 @@ def cover(filled, waste):
 
 WASTES = (4.0, 2.5, 1.6, 1.0, 0.6, 0.35)
 
-def fit(cells):
+def fit(cells, budget=BUDGET):
     """the tightest cover of the cells (per palette) within the sprite count,
     None if none fits the budget"""
     best = None
@@ -212,17 +250,19 @@ def fit(cells):
             if c.any():
                 out += [(pn,) + r for r in cover(c, waste)]
         size = sum(tw * th * 32 for _, _, _, tw, th in out)
-        if size <= BUDGET and len(out) <= MAX_SPRITES and (best is None or size < best[0]):
+        if size <= budget and len(out) <= MAX_SPRITES and (best is None or size < best[0]):
             best = (size, out)
     return best and best[1]
 
-def redraw(gfx, sprites):
+def redraw(gfx, sprites, budget=BUDGET, hidden=None):
     """sprites fitted to the frame's pixels within the budget. When even that
     does not fit, 8-pixel cells go from the bottom (behind the text box), the
     outermost of the lowest row first -> (sprites, cells left out, the highest
-    row of them)"""
+    row of them). hidden: cells something else covers, left out first"""
     idx, pal = draw(gfx, sprites)
     H, W = idx.shape
+    if hidden is not None:
+        idx = np.where(np.kron(hidden, np.ones((8, 8), bool)), 0, idx)
     cells = {}
     for pn in (0, 1):
         m = (idx > 0) & (pal == pn)
@@ -235,16 +275,16 @@ def redraw(gfx, sprites):
             for pn in cut:
                 cut[pn][r, c] = False
         return cut
-    out = fit(cells); k = 0
+    out = fit(cells, budget); k = 0
     if out is None:
         lo, hi = 0, len(order)          # (the fewest cells to leave out: a bisection)
         while hi - lo > 1:
             mid = (lo + hi) // 2
-            if fit(without(mid)) is None:
+            if fit(without(mid), budget) is None:
                 lo = mid
             else:
                 hi = mid
-        k = hi; out = fit(without(k))
+        k = hi; out = fit(without(k), budget)
         idx = idx.copy()
         for r, c in order[:k]:
             idx[r * 8:r * 8 + 8, c * 8:c * 8 + 8] = 0
@@ -260,15 +300,63 @@ def redraw(gfx, sprites):
     top = min((r for r, c in order[:k]), default=None)
     return res, k, (top * 8 + WIN_Y0 if top is not None else None)
 
+def frame_bytes(sprites):
+    return sum(animfmt.SIZES[d >> 12][0] * animfmt.SIZES[d >> 12][1] // 2 for _, _, d in sprites)
+
+_lunch = None
+def _lunches():
+    global _lunch
+    if _lunch is None:
+        size = 0; covered = None
+        for a in LUNCHES:
+            g, s, frames = ds_animation(effect_entry(a)[0])
+            for f in frames:
+                sp = animfmt.sprites(s, f[0])
+                size = max(size, frame_bytes(sp))
+                idx, _ = draw(g, sp)
+                H, W = idx.shape
+                full = (idx > 0).reshape(H // 8, 8, W // 8, 8).all(axis=(1, 3))
+                covered = full if covered is None else covered & full
+        _lunch = (size, covered)
+    return _lunch
+
+def lunch_vram():
+    """the VRAM the largest box lunch takes (bytes)"""
+    return _lunches()[0]
+
+def lunch_cover():
+    """the cells (of the window around the person's origin) every box lunch covers"""
+    return _lunches()[1]
+
 # ------------------------------------------------------------------ a person
-def convert(name, anims, base=None, report=None):
+def overlay_frames(gfx, a, nframes):
+    """the sprites of the DS's animation a for each of a pose's nframes frames,
+    their tiles added to the pose's graphics block gfx: frame for frame when
+    the two have as many, else its last frame held"""
+    ogfx, oseq, oframes = ds_animation(effect_entry(a)[0])
+    assert len(oframes) in (nframes, 2), 'animation %x: %d frames against %d' % (a, len(oframes), nframes)
+    if ogfx.pals != gfx.pals:
+        raise ValueError('animation %x: palettes not the pose\'s' % a)
+    out = []
+    for i in range(nframes):
+        sd = oframes[i if len(oframes) == nframes else -1][0]
+        sprites = []
+        for x, y, d in animfmt.sprites(oseq, sd):
+            w, h = animfmt.SIZES[d >> 12]
+            t = gfx.add(ogfx.tiles(d & 0x1FF, w * h // 2))
+            sprites.append((x, y, (d & ~0x1FF) | t))
+        out.append(sprites)
+    return out
+
+def convert(name, anims, base=None, report=None, overlays=None):
     """anims: DS animation numbers. base: the GBA files (pix, seq) to add to.
+    overlays: {DS animation: the DS animation drawn on top of it}.
     -> (pix, seq, {DS animation: GBA offset}, sprites used at most)"""
     pix = bytearray(base[0]) if base else bytearray()
     seq = bytearray(base[1]) if base else bytearray()
     pairs = collections.OrderedDict()
     for n in anims:
-        p, off = anim_entry(n)
+        p, off = anim_entry(n & 0xFFFF)
         pairs.setdefault(p, []).append((n, off))
     offsets = {}; most = 0; stats = collections.Counter()
     for p, members in pairs.items():
@@ -277,16 +365,24 @@ def convert(name, anims, base=None, report=None):
         for n, off in members:
             frames, end = parse_anim(ds_seq, off)
             new_frames = []
+            on_top = None; budget = BUDGET; hidden = None
+            if n & LUNCH_VARIANT:
+                budget = BUDGET - lunch_vram(); hidden = lunch_cover()
+            if overlays and n in overlays:
+                on_top = overlay_frames(gfx, overlays[n], len(frames))
+                stats['frames with a second animation drawn in'] += len(frames)
             for sd, dur, fl, song, act in frames:
                 sprites = animfmt.sprites(ds_seq[off:end], sd)
+                if on_top:
+                    sprites = on_top[len(new_frames)] + sprites
                 kept = [s for s in sprites if on_screen(*s)]
                 size = sum(animfmt.SIZES[d >> 12][0] * animfmt.SIZES[d >> 12][1] // 2 for _, _, d in kept)
-                if size <= BUDGET and len(kept) <= MAX_SPRITES:
+                if size <= budget and len(kept) <= MAX_SPRITES:
                     out = kept; stats['frames as the DS has them'] += 1
                 else:
-                    key = tuple(kept)
+                    key = (tuple(kept), budget)
                     if key not in redrawn:
-                        redrawn[key] = redraw(gfx, kept)
+                        redrawn[key] = redraw(gfx, kept, budget, hidden)
                     out, lost, top = redrawn[key]
                     stats['frames redrawn'] += 1
                     if lost:
@@ -336,13 +432,13 @@ def main():
     hdr = ['// generated by tools/en/rfta/characters.py: the fifth episode\'s people',
            '#ifndef GUARD_EN_RFTA_CHARACTERS_H', '#define GUARD_EN_RFTA_CHARACTERS_H', '']
     init = []; report = []
-    jobs = [(p, name, None, list(rng)) for p, name, rng in PEOPLE] + \
+    jobs = [(p, name, None, list(rng) + [LUNCH_VARIANT | n for n in LUNCH_POSES.get(p, ())]) for p, name, rng in PEOPLE] + \
            [(p, name, files, list(anims)) for p, name, files, anims in EXTRA]
     for person, name, files, anims in jobs:
         base = None
         if files:
             base = (open(os.path.join(ROOT, files + '.pix'), 'rb').read(), open(os.path.join(ROOT, files + '.seq'), 'rb').read())
-        pix, seq, offsets, most, stats = convert(name, anims, base, report)
+        pix, seq, offsets, most, stats = convert(name, anims, base, report, POSE_OVERLAYS.get(person))
         open(os.path.join(out_dir, name + '.pix'), 'wb').write(pix)
         open(os.path.join(out_dir, name + '.seq'), 'wb').write(seq)
         mapping['%x' % person] = {'%x' % n: o for n, o in sorted(offsets.items())}
@@ -368,5 +464,47 @@ def main():
     open(os.path.join(out_dir, 'report.txt'), 'w').write('\n'.join(report) + '\n')
     print('%d frames short of cells at the bottom (report.txt)' % len(report))
 
+def check():
+    """every frame of the files written, drawn as the GBA decodes them, against
+    the DS's (its second animation drawn in, the lunch cells left out of the
+    lunch versions): frames that differ, and those that differ above the text box"""
+    mapping = json.load(open(os.path.join(HERE, 'characters.json')))
+    out_dir = os.path.join(ROOT, 'graphics', 'en', 'rfta', 'characters')
+    tot = collections.Counter()
+    for person, name, rng in PEOPLE + [(p, name, anims) for p, name, files, anims in EXTRA]:
+        pix = open(os.path.join(out_dir, name + '.pix'), 'rb').read()
+        seq = open(os.path.join(out_dir, name + '.seq'), 'rb').read()
+        overlays = POSE_OVERLAYS.get(person, {})
+        for n in list(rng) + [LUNCH_VARIANT | v for v in LUNCH_POSES.get(person, ())]:
+            o = mapping['%x' % person]['%x' % n]
+            _, nf, go = struct.unpack_from('<HHI', seq, o)
+            gba = Graphics(pix[go:])
+            p, off = anim_entry(n & 0xFFFF)
+            ds_gfx = Graphics(entry(2 * p)); ds_seq = entry(2 * p + 1)
+            frames, end = parse_anim(ds_seq, off)
+            assert nf == len(frames)
+            on_top = overlay_frames(ds_gfx, overlays[n], nf) if n in overlays else None
+            hidden = np.kron(lunch_cover(), np.ones((8, 8), bool)) if n & LUNCH_VARIANT else None
+            for i, f in enumerate(frames):
+                sprites = animfmt.sprites(ds_seq[off:end], f[0])
+                if on_top:
+                    sprites = on_top[i] + sprites
+                di, dp = draw(ds_gfx, [s for s in sprites if on_screen(*s)])
+                if hidden is not None:
+                    di = np.where(hidden, 0, di)
+                gi, gp = draw(gba, animfmt.sprites(seq[o:], struct.unpack_from('<H', seq, o + 8 + 8 * i)[0]))
+                bad = (di != gi) | ((di > 0) & (dp != gp))
+                tot['frames'] += 1
+                if bad.any():
+                    tot['frames short of cells'] += 1
+                    top = np.nonzero(bad)[0].min() + WIN_Y0
+                    if top < TEXTBOX_TOP:
+                        tot['... differing above the text box'] += 1
+                        print('%s %x frame %d differs from row %d' % (name, n, i, top))
+    print(dict(tot))
+
 if __name__ == '__main__':
-    main()
+    if sys.argv[1:] == ['--check']:
+        check()
+    else:
+        main()

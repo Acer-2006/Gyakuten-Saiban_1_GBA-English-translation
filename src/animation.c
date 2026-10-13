@@ -15,6 +15,11 @@
 #include "en_rfta.h"
 #if RFTA
 #include "en_rfta_characters.h"
+#include "en_rfta_effects.h"
+// English patch: the wide shot's people end with the background as the GBA's do
+#define EN_LAST_WIDE_ANIM RFTA_ANIM_WIDE_LAST
+#else
+#define EN_LAST_WIDE_ANIM 61
 #endif
 
 #define DUMMYPERSON { .gfxData = 0, .frameData = 0, .spriteCount = 0, .unkA = 0 }
@@ -872,6 +877,10 @@ const struct AnimationData gAnimationData[] = {
 		.priority = 32,
 		.flags = 0x0,
 	},
+#if RFTA
+	// English patch: the fifth episode's wide-shot people and box lunches (en_rfta_effects.h)
+	RFTA_ANIMATION_DATA
+#endif
 };
 
 const struct SpriteSizeData gSpriteSizeTable[0xF] = {
@@ -1481,6 +1490,21 @@ static void DoAnimationAction(u32 action)
     }
 }
 
+#if RFTA
+// English patch: a box lunch Angel Starr holds out goes with her pose (the
+// script starts it after each); its tiles are at the end of the person's
+void EnRftaDropLunch(void)
+{
+    struct AnimationListEntry *animation;
+    for (animation = &gAnimation[2]; animation < &gAnimation[0x20]; animation++)
+    {
+        if ((animation->flags & ANIM_ALLOCATED) && animation->animationInfo.animId >= RFTA_ANIM_LUNCH_FIRST
+         && animation->animationInfo.animId <= RFTA_ANIM_LUNCH_LAST)
+            DestroyAnimation(animation);
+    }
+}
+
+#endif
 struct AnimationListEntry *PlayPersonAnimation(u32 arg0, u32 arg1, u32 talkingAnimOff, u32 arg3)
 {
     u32 xOrigin = 120;
@@ -1527,6 +1551,9 @@ struct AnimationListEntry *PlayPersonAnimationAtCustomOrigin(u32 arg0, u32 talki
         PutAnimationInAnimList(animation);
     }
     animation->bgId |= 0;
+#if RFTA
+    EnRftaDropLunch();
+#endif
     CreateAnimationFromAnimationInfo(&animationInfo, 0xFF, flags);
     animation->bgId = main->currentBG;
     if (animation->animationInfo.personId == 0x16 && main->process[GAME_PROCESS] == INVESTIGATION_PROCESS) // April May special case
@@ -2132,6 +2159,27 @@ void UpdateAnimations(u32 arg0)
         struct AnimationListEntry *animation;
         for (animation = animation2->next; animation != NULL; animation = animation->next)
         {
+#if RFTA
+            if(animation->animationInfo.animId >= RFTA_ANIM_LUNCH_FIRST && animation->animationInfo.animId <= RFTA_ANIM_LUNCH_LAST)
+            {
+                // English patch: Angel Starr's box lunch goes where she goes and
+                // ends with her (the DS's 0x02022ec8)
+                struct AnimationListEntry *person = &gAnimation[1];
+                if(!(person->flags & ANIM_ALLOCATED) || person->animationInfo.personId != RFTA_LUNCH_PERSON)
+                {
+                    DestroyAnimation(animation);
+                    continue;
+                }
+                animation->animationInfo.xOrigin = person->animationInfo.xOrigin;
+                animation->animationInfo.yOrigin = person->animationInfo.yOrigin;
+                if((animation->flags & ANIM_ACTIVE) != (person->flags & ANIM_ACTIVE))
+                {
+                    ChangeAnimationActivity(animation, (person->flags & ANIM_ACTIVE) != 0);
+                    animation->flags |= ANIM_QUEUED_TILE_UPLOAD | ANIM_QUEUED_PAL_UPLOAD; // (back: its tiles again)
+                }
+            }
+            else
+#endif
             if(animation->animationInfo.animId >= 12 && animation->animationInfo.animId <= 16)
             {
                 if(main->currentBG != animation->bgId)
@@ -2154,7 +2202,7 @@ void UpdateAnimations(u32 arg0)
                     }
                 }
             }
-            else if(animation->animationInfo.animId >= 31 && animation->animationInfo.animId <= 61)
+            else if(animation->animationInfo.animId >= 31 && animation->animationInfo.animId <= EN_LAST_WIDE_ANIM)
             {
                 if(arg0 != animation->bgId)
                 {
@@ -2162,7 +2210,7 @@ void UpdateAnimations(u32 arg0)
                     continue;
                 }
             }
-            else if(animation->animationInfo.animId >= 25 && animation->animationInfo.animId <= 61)
+            else if(animation->animationInfo.animId >= 25 && animation->animationInfo.animId <= EN_LAST_WIDE_ANIM)
             {
                 if(main->currentBG != animation->bgId)
                     DestroyAnimation(animation);
