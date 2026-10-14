@@ -46,9 +46,10 @@ game, running on the GBA's own engine with its own timing.
    releases of it, and the patch comes in a version for each:
    - the first release, CRC32 `c88f0952`,
      SHA-1 `15c0e3389709bb275c42e99ed25212d09e49e361`;
-   - "Rev 1", CRC32 `33f29c07`,
-     SHA-1 `d23b788c80732898c6cfe344a6811900eb060f23` (same game, laid out
+   - "Rev 1", CRC32 `a0f4801f`,
+     SHA-1 `ea7dabc4f5330c89a341ca38067fb025de73c835` (same game, laid out
      differently inside, so it needs its own patch: `..._rev1.bps`).
+     The Virtual Console copy of Rev 1 (CRC32 `257e49f9`) has no patch yet.
    Some copies of the first release have "DUMPED BY AAA" written at the
    very end of the file (CRC32 `0d9f9697`); the release includes a patch
    for those too (`..._tagged-dump.bps`). No ROMs are provided here.
