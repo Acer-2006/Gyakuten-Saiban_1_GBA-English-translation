@@ -14,11 +14,7 @@ tpl = Image.open(path + '.orig')
 a = np.zeros((32, 64), np.uint8)
 ROWS = 13                     # the labels' rows (no descenders): capitals from row 2
 for row, label in ((0, 'New Game'), (1, 'Continue')):
-    # the text box's spacing, or each letter one pixel after the last where
-    # that is too wide ("New Game")
-    for m in (render(label), render(label, 4, 0, True)):
-        if m.shape[1] + 2 <= 64:
-            break
+    m = render(label, space=3)          # (word spaces of 3, as the title has had)
     assert not m[ROWS:].any()
     m = m[:ROWS]
     # pad by one pixel for the outline

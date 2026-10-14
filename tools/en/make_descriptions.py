@@ -35,13 +35,12 @@ NAME_SHIFT = -1                  # name plate ink rows 2..14 -> 1..13
 # DS font's descenders reach the cell's row 14, so a fourth line's start one
 # row higher than the Japanese font allowed)
 LAYOUTS = {3: (16, 16), 4: (13, 12)}
-# The DS sets these texts in its dialogue font at its own spacing, three
-# lines across a 256-pixel panel; the GBA's panel is 149 pixels. Tried in
-# turn, the first that fits: the text box's spacing (dsfont: the DS's widths,
-# a pixel less) on three lines, then the letters one pixel apart (and word
-# spaces of 4, then 3) on three lines, then the same on four.
-# (space advance or None for the font's, added to every other advance, tight)
-SPACINGS = ((None, 0, False), (4, 0, True), (3, 0, True))
+# The DS sets these texts in its dialogue font, three lines across a
+# 256-pixel panel; the GBA's panel is 149 pixels. Set at the text box's
+# spacing (each letter a pixel after the last), with word spaces of 4, then
+# of 3, on three lines, then the same on four: the first that fits.
+# (space advance, added to every other advance)
+SPACINGS = ((4, 0), (3, 0))
 NBSP = ' '
 
 def name_order():
