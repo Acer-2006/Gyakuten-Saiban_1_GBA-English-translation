@@ -7,3 +7,7 @@ gVwfFontGlyphs:
 	.global gVwfFontWidths
 gVwfFontWidths:
 	.incbin "graphics/vwf/font_widths.bin"
+	.align 2
+	.global gVwfFontAdvance
+gVwfFontAdvance:
+	.incbin "graphics/vwf/font_advance.bin"

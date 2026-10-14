@@ -31,8 +31,17 @@ AREA_W = 152                     # columns 152-159 are transparent in the origin
 TEXT_X, TEXT_W = 2, 149
 NAME_SHIFT = -1                  # name plate ink rows 2..14 -> 1..13
 # glyph origin of the first line and line pitch: three lines use the original
-# 16-pixel rows; text that needs a fourth line is set on 12-pixel rows
-LAYOUTS = {3: (16, 16), 4: (14, 12)}
+# 16-pixel rows; text that needs a fourth line is set on 12-pixel rows (the
+# DS font's descenders reach the cell's row 14, so a fourth line's start one
+# row higher than the Japanese font allowed)
+LAYOUTS = {3: (16, 16), 4: (13, 12)}
+# The DS sets these texts in its dialogue font at its own spacing, three
+# lines across a 256-pixel panel; the GBA's panel is 149 pixels. Tried in
+# turn, the first that fits: the text box's spacing (dsfont: the DS's widths,
+# a pixel less) on three lines, then the letters one pixel apart (and word
+# spaces of 4, then 3) on three lines, then the same on four.
+# (space advance or None for the font's, added to every other advance, tight)
+SPACINGS = ((None, 0, False), (4, 0, True), (3, 0, True))
 NBSP = ' '
 
 def name_order():
@@ -84,28 +93,77 @@ def join(lines):
     s = s.replace('Photo #', 'Photo' + NBSP + '#')
     return re.sub(r'Exhibit ([A-Z])\b', 'Exhibit' + NBSP + r'\1', s)
 
-def width(s, space):
-    return dsfont.render(s.replace(NBSP, ' '), space=space).shape[1]
+def render_line(s, spacing):
+    return dsfont.render(s.replace(NBSP, ' '), *spacing)
 
-def wrap(text, space):
+def width(s, spacing):
+    return dsfont.width(s.replace(NBSP, ' '), *spacing)
+
+def wrap(text, spacing):
     out, cur = [], ''
     for w in text.split(' '):
         t = cur + ' ' + w if cur else w
-        if width(t, space) <= TEXT_W:
+        if width(t, spacing) <= TEXT_W:
             cur = t
         else:
             out.append(cur); cur = w
     out.append(cur)
     return out
 
+def touching(lines, spacing, y0, pitch):
+    """pixels two lines would share (a descender on the capital below)"""
+    a = np.zeros((y0 + pitch * len(lines) + dsfont.ROWS, AREA_W + 16), int)
+    for k, l in enumerate(lines):
+        ys, xs = np.nonzero(render_line(l, spacing))
+        a[ys + y0 + pitch * k, xs + TEXT_X] += 1
+    return int((a > 1).sum())
+
+def wraps(words, spacing, n):
+    """every way to set the words on at most n lines that fit, the fullest
+    first lines first"""
+    if not words:
+        yield []
+        return
+    if n == 0:
+        return
+    for k in range(len(words), 0, -1):
+        line = ' '.join(words[:k])
+        if width(line, spacing) <= TEXT_W:
+            for rest in wraps(words[k:], spacing, n - 1):
+                yield [line] + rest
+
 def layout(lines):
+    """-> (lines, spacing, (first line's row, pitch)): the fewest lines, then
+    the widest spacing, with no two lines touching (another line break where
+    the first one's would)"""
     text = join(lines)
-    for n in sorted(LAYOUTS):
-        for space in (4, 3):             # 4 = text box word spacing
-            out = wrap(text, space)
-            if len(out) <= n and all(width(l, space) <= TEXT_W for l in out):
-                return out, space, LAYOUTS[n]
+    for n in sorted(LAYOUTS):    # the plain line breaks first
+        for spacing in SPACINGS:
+            out = wrap(text, spacing)
+            if len(out) <= n and all(width(l, spacing) <= TEXT_W for l in out) \
+               and not touching(out, spacing, *LAYOUTS[n]):
+                return out, spacing, LAYOUTS[n]
+    def ragged(out, spacing):
+        return sum((TEXT_W - width(l, spacing)) ** 2 for l in out[:-1])
+    least = None                 # (pixels shared, layout): if every layout touches
+    for n in sorted(LAYOUTS):    # then the evenest other breaks
+        for spacing in SPACINGS:
+            good = []
+            for out in wraps(text.split(' '), spacing, n):
+                t = touching(out, spacing, *LAYOUTS[n])
+                if not t:
+                    good.append((ragged(out, spacing), out))
+                elif least is None or t < least[0]:
+                    least = (t, (out, spacing, LAYOUTS[n]))
+            if good:
+                return min(good)[1], spacing, LAYOUTS[n]
+    if least is not None and least[0] <= 2:
+        return least[1]          # (one: a comma's tail on the P below, "[Oct 15," / "2:00 PM, Photo #2]")
     raise ValueError('does not fit: ' + text)
+
+def draw_text(a, lines, spacing, y0, pitch):
+    for k, l in enumerate(lines):
+        put(a, render_line(l, spacing), TEXT_X, y0 + pitch * k, TEXT)
 
 def put(a, mask, x0, y0, color):
     ys, xs = np.nonzero(mask)
@@ -126,14 +184,13 @@ def build(i, name_idx, age):
         n = np.array(name_plate(name_idx)) == DS_NAME_TEXT
         cols = np.where(n.any(0))[0]
         n = n[:, cols[0]:cols[-1] + 1]
-        suffix = dsfont.render(' (%s)' % age) if age else np.zeros((13, 0), np.uint8)
+        suffix = dsfont.render(' (%s)' % age) if age else np.zeros((dsfont.ROWS, 0), np.uint8)
         w = n.shape[1] + suffix.shape[1]
         x0 = (AREA_W - w) // 2
         put(a, n, x0, NAME_SHIFT, NAME)
         put(a, suffix, x0 + n.shape[1], NAME_SHIFT, NAME)   # same baseline as the plate
-        lines, space, (y0, pitch) = layout(ds_text.description(i))
-        for k, l in enumerate(lines):
-            put(a, dsfont.render(l.replace(NBSP, ' '), space=space), TEXT_X, y0 + pitch * k, TEXT)
+        lines, spacing, (y0, pitch) = layout(ds_text.description(i))
+        draw_text(a, lines, spacing, y0, pitch)
     out = Image.fromarray(a, 'P'); out.putpalette(base.getpalette())
     out.save(path)
     return lines

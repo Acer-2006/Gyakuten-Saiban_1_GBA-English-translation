@@ -75,16 +75,15 @@ def build(f):
     cols = np.where(n.any(0))[0]
     n = n[:, cols[0]:cols[-1] + 1]
     ag = age(f[3]) if f[4] else None   # (no description: a placeholder entry, its panel is Mia's)
-    suffix = dsfont.render(' (%s)' % ag) if ag else np.zeros((13, 0), np.uint8)
+    suffix = dsfont.render(' (%s)' % ag) if ag else np.zeros((dsfont.ROWS, 0), np.uint8)
     w = n.shape[1] + suffix.shape[1]
     x0 = (md.AREA_W - w) // 2
     md.put(a, n, x0, md.NAME_SHIFT, md.NAME)
     md.put(a, suffix, x0 + n.shape[1], md.NAME_SHIFT, md.NAME)
     lines = []
     if f[4]:                         # (entries without a description of their own: the name only)
-        lines, space, (y0, pitch) = md.layout(description(f[4]))
-        for k, l in enumerate(lines):
-            md.put(a, dsfont.render(l.replace(md.NBSP, ' '), space=space), md.TEXT_X, y0 + pitch * k, md.TEXT)
+        lines, spacing, (y0, pitch) = md.layout(description(f[4]))
+        md.draw_text(a, lines, spacing, y0, pitch)
     im = Image.fromarray(a, 'P'); im.putpalette(base.getpalette())
     return im, ag, lines
 

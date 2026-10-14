@@ -39,6 +39,7 @@ struct VwfState
 
 extern const u8 gVwfFontGlyphs[];
 extern const u8 gVwfFontWidths[];
+extern const u8 gVwfFontAdvance[];
 
 static void VwfCopyBlocks(u32 line, u32 firstBlock, u32 lastBlock)
 {
@@ -84,17 +85,24 @@ static const u8 sCmdArgs[0x60] = {
 static u32 VwfCentredLineStart(void)
 {
     const u16 * p = gScriptContext.scriptPtr;
-    s32 w = 0, x;
+    s32 w = 0, x, tail = 0;
     for (;;)
     {
         u32 t = *p;
         if (t >= 0x80)
         {
             t -= 0x80;
-            if (t == 0xFF)
-                w += VWF_SPACE_WIDTH;
-            else if (t < VWF_GLYPH_COUNT)
-                w += gVwfFontWidths[t] + 1;
+            if (t < VWF_GLYPH_COUNT)
+            {
+                // the pen's moves, but for the last character only its pixels
+                w += tail;
+                tail = gVwfFontAdvance[t];
+                if (t != VWF_SPACE)
+                {
+                    w += gVwfFontWidths[t];
+                    tail -= gVwfFontWidths[t];
+                }
+            }
             p++;
             continue;
         }
@@ -104,8 +112,6 @@ static u32 VwfCentredLineStart(void)
             break;
         p += 1 + sCmdArgs[t];
     }
-    if (w > 0)
-        w--;    // no gap after the last letter
     x = (DISPLAY_WIDTH / 2 - gScriptContext.textXOffset) - w / 2;
     return x < 0 ? 0 : x;
 }
@@ -212,9 +218,9 @@ static void VwfDrawChar(u32 code, u32 line, u32 color, bool32 copy)
     u32 width, pen, x, y;
 
     pen = gVwf->pen[line];
-    if (code == 0xFF) // space
+    if (code == VWF_SPACE)
     {
-        gVwf->pen[line] = pen + VWF_SPACE_WIDTH;
+        gVwf->pen[line] = pen + gVwfFontAdvance[code];
         return;
     }
     width = gVwfFontWidths[code];
@@ -242,7 +248,7 @@ static void VwfDrawChar(u32 code, u32 line, u32 color, bool32 copy)
             }
         }
     }
-    gVwf->pen[line] = pen + width + 1;
+    gVwf->pen[line] = pen + gVwfFontAdvance[code];
     if (copy)
     {
         u32 first = pen >> 5;

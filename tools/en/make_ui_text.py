@@ -35,27 +35,44 @@ def load(rel):
 def save(path, a, pal):
     im = Image.fromarray(a.astype(np.uint8), 'P'); im.putpalette(pal); im.save(path)
 
-def text_mask(s, space=4):
-    return render(s, space=space)[:, :-1] if s else np.zeros((13, 0), np.uint8)  # drop trailing tracking
+LABEL_ROWS = 13                  # the labels' rows (no descenders): capitals from row 2
+
+def text_mask(s, tight=False, rows=LABEL_ROWS):
+    """s in the DS font: the text box's spacing, or tight (each letter one
+    pixel after the last, word spaces of 4) where that does not fit"""
+    if not s:
+        return np.zeros((rows, 0), np.uint8)
+    m = render(s, 4, 0, True) if tight else render(s)
+    assert not m[rows:].any(), 'a descender in %r' % s
+    return m[:rows]
+
+def fits(a, mask, x0, y0):
+    ys, xs = np.nonzero(mask)
+    return len(ys) == 0 or ((ys + y0).min() >= 0 and (ys + y0).max() < a.shape[0]
+                            and (xs + x0).min() >= 0 and (xs + x0).max() < a.shape[1])
 
 def stamp(a, mask, x0, y0, color):
+    assert fits(a, mask, x0, y0), 'text does not fit'
     ys, xs = np.nonzero(mask)
-    assert len(ys) == 0 or ((ys + y0).min() >= 0 and (ys + y0).max() < a.shape[0]
-                            and (xs + x0).min() >= 0 and (xs + x0).max() < a.shape[1]), 'text does not fit'
     a[ys + y0, xs + x0] = color
 
 def outlined(a, s, x0, y0, ink, edge, align='left', box=None):
     """draw s with a 1-pixel outline; (x0, y0) is the top-left of the outlined
     box, or with align='center' box=(left, right) centres it horizontally"""
-    m = text_mask(s)
-    p = np.zeros((m.shape[0] + 2, m.shape[1] + 2), np.uint8); p[1:-1, 1:-1] = m
-    if align == 'center':
-        x0 = box[0] + (box[1] - box[0] + 1 - p.shape[1]) // 2
-    stamp(a, outline(p), x0, y0, edge)
-    stamp(a, p, x0, y0, ink)
+    for tight in (False, True):
+        m = text_mask(s, tight)
+        p = np.zeros((m.shape[0] + 2, m.shape[1] + 2), np.uint8); p[1:-1, 1:-1] = m
+        x = box[0] + (box[1] - box[0] + 1 - p.shape[1]) // 2 if align == 'center' else x0
+        if fits(a, outline(p) | p, x, y0) and (box is None or p.shape[1] <= box[1] - box[0] + 1):
+            break
+    stamp(a, outline(p), x, y0, edge)
+    stamp(a, p, x, y0, ink)
 
-def plain(a, s, y0, ink, box):
-    m = text_mask(s)
+def plain(a, s, y0, ink, box, rows=LABEL_ROWS):
+    for tight in (False, True):
+        m = text_mask(s, tight, rows)
+        if m.shape[1] <= box[1] - box[0] + 1:
+            break
     x0 = box[0] + (box[1] - box[0] + 1 - m.shape[1]) // 2
     stamp(a, m, x0, y0, ink)
 
@@ -129,7 +146,7 @@ def plate_texts(rel, texts, first=0):
     for k, s in enumerate(texts):
         y = 32 * (first + k)
         a[y + 6:y + 26, 2:126] = 12
-        plain(a, s, y + 9, 13, (2, 125))
+        plain(a, s, y + 9, 13, (2, 125), rows=16)   # (descenders: the plate is 20 rows)
     save(path, a, pal)
 
 # The DS English Move / Talk plates (data.bin: 128x32 images, the same size as

@@ -45,9 +45,9 @@ CHOICES = {0x08: 2, 0x09: 3}           # answers' sections: the first 2 / 3 argu
 JUMPS = {0x0A: (0,), 0x2C: (0,), 0x20: (0,), 0x2A: (1, 2)}   # section arguments
 LINE_PIXELS = 224                      # vwf.h: 8 x 32 px blocks, 224 px used
 THIRD_LINE_PIXELS = 217                # the "next" arrow (bg.c TextboxNextArrow) starts 227 px in, the text 9 px in
-SPACE = 4
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
-WIDTHS = open(os.path.join(ROOT, 'graphics', 'vwf', 'font_widths.bin'), 'rb').read()
+WIDTHS = open(os.path.join(ROOT, 'graphics', 'vwf', 'font_widths.bin'), 'rb').read()     # columns with pixels
+ADVANCE = open(os.path.join(ROOT, 'graphics', 'vwf', 'font_advance.bin'), 'rb').read()   # the pen's move
 
 
 def starts_dark(items):
@@ -132,17 +132,21 @@ def branches(items):
 def wide_lines(items):
     """[(pixels, text, limit)] for lines wider than the text box, and third
     lines (of a page the arrow waits on) reaching the "next" arrow"""
-    res, w, s, y = [], 0, '', 0
+    res, pen, w, s, y = [], 0, 0, '', 0
     for p, k, op, a in items + [(None, 'cmd', 0x01, ())]:
         if k == 'text':
             c = op - 0x80
-            w += SPACE if c == 0xFF else (WIDTHS[c] + 1 if c < len(WIDTHS) else 99)
+            if c >= len(WIDTHS):
+                w = pen + 99
+            elif c != 0xFF:
+                w = max(w, pen + WIDTHS[c])     # where the line's pixels end
+            pen += ADVANCE[c] if c < len(ADVANCE) else 99
             s += ch(op)
         elif k == 'cmd' and op in (0x01, 0x02, 0x07, 0x08, 0x09, 0x0A, 0x0D, 0x2D, 0x2E):
             limit = THIRD_LINE_PIXELS if y == 2 and op in (0x02, 0x0A, 0x2D) else LINE_PIXELS
-            if w - 1 > limit:
-                res.append((w - 1, s, limit))
-            w, s = 0, ''
+            if w > limit:
+                res.append((w, s, limit))
+            pen, w, s = 0, 0, ''
             y = y + 1 if op == 0x01 else 0
     return res
 

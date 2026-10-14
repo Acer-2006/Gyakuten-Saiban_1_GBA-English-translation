@@ -36,9 +36,11 @@ def label(i):
     text = ANSWERS[i]
     if not text:
         return out
-    m = dsfont.render(text, space=4)
+    m = dsfont.render(text)                  # the text box's spacing
     if m.shape[1] > W:
         raise ValueError('answer %d too wide: %r' % (i, text))
+    assert not m[H - GLYPH_Y:].any()          # (the cell's last rows are empty)
+    m = m[:H - GLYPH_Y]
     out[GLYPH_Y:GLYPH_Y + m.shape[0], :m.shape[1]][m > 0] = 3
     return out
 
