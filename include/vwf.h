@@ -13,12 +13,16 @@
 // rows on top, so the first line's capitals start at 116, two rows in, as the
 // Japanese game's letters did (the DS has five); the third line's capitals are
 // at 144-153, where the DS's "next" arrow sits (rows 144-152, bg.c).
+// The font is the DS English release's (tools/en/make_vwf_font.py): each
+// character its 16x16 cell, drawn at the pen; gVwfFontWidths says how many of
+// its columns hold pixels, gVwfFontAdvance how far the pen moves (the DS's
+// widths, a pixel less).
 #define VWF_TEXT_X 9
 #define VWF_TEXT_Y 114
-#define VWF_GLYPH_ROWS 13
+#define VWF_GLYPH_ROWS 16
 #define VWF_GLYPH_BYTES (VWF_GLYPH_ROWS * 8)
 #define VWF_GLYPH_COUNT 1400
-#define VWF_SPACE_WIDTH 4
+#define VWF_SPACE 0xFF                 // the space's character (its advance is the font's)
 #define VWF_LINE_VRAM_STRIDE 0x800     // same per-line VRAM stride as the original text
 #define VWF_LOG_LEN 64
 

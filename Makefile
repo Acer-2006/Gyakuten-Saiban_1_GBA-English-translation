@@ -227,7 +227,7 @@ $(C_BUILDDIR)/%.o: $(C_SUBDIR)/%.s $$(c_asm_dep)
 # Skipped, with a warning, where python3 is not installed.
 SCRIPT_CHECK := $(OBJ_DIR)/script_check.ok
 
-$(SCRIPT_CHECK): tools/en/check_scripts.py tools/en/phscr.py tools/en/pdump.py graphics/vwf/font_widths.bin $(wildcard script/*.phscr) $(wildcard script_en/*.phscr)
+$(SCRIPT_CHECK): tools/en/check_scripts.py tools/en/phscr.py tools/en/pdump.py graphics/vwf/font_widths.bin graphics/vwf/font_advance.bin $(wildcard script/*.phscr) $(wildcard script_en/*.phscr)
 	@if command -v python3 >/dev/null 2>&1; then python3 tools/en/check_scripts.py; \
 	else echo "warning: python3 not found, English script check skipped"; fi
 	@touch $@

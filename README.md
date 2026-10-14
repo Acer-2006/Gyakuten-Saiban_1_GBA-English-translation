@@ -23,7 +23,8 @@ game, running on the GBA's own engine with its own timing.
   Cross-Examination banners, the *Objection!*, *Hold it!* and *Take that!*
   bubbles, the verdict, map markers, and the signs and writing in the
   backgrounds.
-- **A variable-width English font** made from the DS's.
+- **The DS release's own English font**: its letters pixel for pixel, at
+  its own letter widths less one pixel (the GBA's text box is narrower).
 - **The English voices** of the DS release (*Objection!*, *Hold it!*,
   *Take that!* and the others) and the two sounds its English script added.
   Every other sound effect is the GBA game's own, as in the original.

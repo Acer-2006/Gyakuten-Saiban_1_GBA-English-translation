@@ -12,8 +12,15 @@ if not os.path.exists(path + '.orig'):
     shutil.copy(path, path + '.orig')
 tpl = Image.open(path + '.orig')
 a = np.zeros((32, 64), np.uint8)
+ROWS = 13                     # the labels' rows (no descenders): capitals from row 2
 for row, label in ((0, 'New Game'), (1, 'Continue')):
-    m = render(label, space=3)
+    # the text box's spacing, or each letter one pixel after the last where
+    # that is too wide ("New Game")
+    for m in (render(label), render(label, 4, 0, True)):
+        if m.shape[1] + 2 <= 64:
+            break
+    assert not m[ROWS:].any()
+    m = m[:ROWS]
     # pad by one pixel for the outline
     p = np.zeros((m.shape[0] + 2, m.shape[1] + 2), np.uint8); p[1:-1, 1:-1] = m
     o = outline(p)

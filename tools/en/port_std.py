@@ -28,7 +28,9 @@ PAIRS.update({24: 43, 25: 44, 26: 45, 27: 46, 28: 47, 29: 48, 30: 49})
 # out of every section: the plates centre without it, and with it the
 # padded lines would be centred twice.
 WIDTHS = open(os.path.join(os.path.dirname(__file__), '..', '..', 'graphics/vwf/font_widths.bin'), 'rb').read()
-BOX_CENTRE, TEXT_X, SPACE = 121, 9, 4
+ADVANCE = open(os.path.join(os.path.dirname(__file__), '..', '..', 'graphics/vwf/font_advance.bin'), 'rb').read()
+BOX_CENTRE, TEXT_X = 121, 9
+SPACE = ADVANCE[0xFF]
 CENTRE = 0x5D                      # the DS's centre command (port_script.CENTRE)
 
 def centre(ds, sections):
@@ -42,7 +44,7 @@ def centre(ds, sections):
         toks = list(tokens(ds, *x)) if x else []
         if x and i in sections:
             items, _ = parse(toks, ds_args)
-            new, line_start, width = [], None, 0
+            new, line_start, width, pen = [], None, 0, 0
             def flush():
                 if line_start is not None and width:
                     # the line starts at its first character
@@ -54,11 +56,13 @@ def centre(ds, sections):
                     if line_start is None:
                         line_start = len(new)
                     c = op - 0x80
-                    width += SPACE if c == 0xFF else WIDTHS[c] + 1
+                    if c != 0xFF:
+                        width = max(width, pen + WIDTHS[c])
+                    pen += ADVANCE[c]
                     new.append(op)
                 else:
                     if op == 0x01:
-                        flush(); width = 0
+                        flush(); width = pen = 0
                         new.append(op); new.extend(args)
                         line_start = None
                         continue
