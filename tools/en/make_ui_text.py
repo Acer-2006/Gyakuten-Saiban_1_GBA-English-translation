@@ -37,12 +37,12 @@ def save(path, a, pal):
 
 LABEL_ROWS = 13                  # the labels' rows (no descenders): capitals from row 2
 
-def text_mask(s, tight=False, rows=LABEL_ROWS):
-    """s in the DS font: the text box's spacing, or tight (each letter one
-    pixel after the last, word spaces of 4) where that does not fit"""
+def text_mask(s, rows=LABEL_ROWS):
+    """s in the DS font at the text box's spacing (each letter a pixel after
+    the last, word spaces of 4)"""
     if not s:
         return np.zeros((rows, 0), np.uint8)
-    m = render(s, 4, 0, True) if tight else render(s)
+    m = render(s)
     assert not m[rows:].any(), 'a descender in %r' % s
     return m[:rows]
 
@@ -59,20 +59,17 @@ def stamp(a, mask, x0, y0, color):
 def outlined(a, s, x0, y0, ink, edge, align='left', box=None):
     """draw s with a 1-pixel outline; (x0, y0) is the top-left of the outlined
     box, or with align='center' box=(left, right) centres it horizontally"""
-    for tight in (False, True):
-        m = text_mask(s, tight)
-        p = np.zeros((m.shape[0] + 2, m.shape[1] + 2), np.uint8); p[1:-1, 1:-1] = m
-        x = box[0] + (box[1] - box[0] + 1 - p.shape[1]) // 2 if align == 'center' else x0
-        if fits(a, outline(p) | p, x, y0) and (box is None or p.shape[1] <= box[1] - box[0] + 1):
-            break
-    stamp(a, outline(p), x, y0, edge)
-    stamp(a, p, x, y0, ink)
+    m = text_mask(s)
+    p = np.zeros((m.shape[0] + 2, m.shape[1] + 2), np.uint8); p[1:-1, 1:-1] = m
+    if align == 'center':
+        assert p.shape[1] <= box[1] - box[0] + 1, '%r too wide' % s
+        x0 = box[0] + (box[1] - box[0] + 1 - p.shape[1]) // 2
+    stamp(a, outline(p), x0, y0, edge)
+    stamp(a, p, x0, y0, ink)
 
 def plain(a, s, y0, ink, box, rows=LABEL_ROWS):
-    for tight in (False, True):
-        m = text_mask(s, tight, rows)
-        if m.shape[1] <= box[1] - box[0] + 1:
-            break
+    m = text_mask(s, rows)
+    assert m.shape[1] <= box[1] - box[0] + 1, '%r too wide' % s
     x0 = box[0] + (box[1] - box[0] + 1 - m.shape[1]) // 2
     stamp(a, m, x0, y0, ink)
 
