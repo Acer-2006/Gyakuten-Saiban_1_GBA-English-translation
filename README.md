@@ -7,7 +7,7 @@ original Japanese release of *Phoenix Wright: Ace Attorney*. It brings the
 script and text graphics of the official English DS release (2005) to the GBA
 game, running on the GBA's own engine with its own timing.
 
-<img width="1488" height="676" alt="image" src="https://github.com/user-attachments/assets/d201b9c6-6e78-4001-a97c-2789ec49c61d" />
+
 
 
 
