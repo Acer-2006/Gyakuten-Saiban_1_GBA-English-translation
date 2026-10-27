@@ -23,6 +23,26 @@ else
 ROM_END := 0x9000000
 endif
 
+# English patch: two more options, for the optional patches (README,
+# "Optional patches"); each builds into a directory and a ROM of its own:
+#   `make COURT=GS1`   the first game's courtroom (pictures and pans) in place
+#                      of Gyakuten Saiban 3's (pwaa1_gs1court.gba)
+#   `make JPVOICES=1`  the Japanese voices (Igiari!, Matta!, Kurae!) in place
+#                      of the DS's English ones (pwaa1_jpvoices.gba)
+# Both together: pwaa1_gs1court_jpvoices.gba.
+COURT ?= GS3
+JPVOICES ?= 0
+ifeq ($(COURT),GS1)
+BUILD_NAME := $(BUILD_NAME)_gs1court
+else
+ifneq ($(COURT),GS3)
+$(error COURT is GS3 (the default) or GS1)
+endif
+endif
+ifeq ($(JPVOICES),1)
+BUILD_NAME := $(BUILD_NAME)_jpvoices
+endif
+
 
 TOOLDIRS := $(filter-out tools/ignore tools/agbcc tools/binutils tools/en,$(wildcard tools/*))
 TOOLBASE = $(TOOLDIRS:tools/%=%)
@@ -84,6 +104,9 @@ SUBDIRS  := $(sort $(dir $(OBJS)))
 $(shell mkdir -p $(SUBDIRS))
 
 ASFLAGS := -mcpu=arm7tdmi -mthumb-interwork
+ifeq ($(JPVOICES),1)
+ASFLAGS += --defsym EN_JP_VOICES=1
+endif
 
 CC1             := tools/agbcc/bin/old_agbcc
 override CFLAGS += -mthumb-interwork -Wimplicit -Wparentheses -Werror -O2 -fhex-asm
@@ -91,6 +114,9 @@ override CFLAGS += -mthumb-interwork -Wimplicit -Wparentheses -Werror -O2 -fhex-
 CPPFLAGS := -I tools/agbcc -I tools/agbcc/include -iquote include -DREVISION=$(GAME_REVISION) -nostdinc
 ifeq ($(RFTA),1)
 CPPFLAGS += -DRFTA=1
+endif
+ifeq ($(COURT),GS1)
+CPPFLAGS += -DEN_GS1_COURT=1
 endif
 
 ifeq ($(DINFO),1)

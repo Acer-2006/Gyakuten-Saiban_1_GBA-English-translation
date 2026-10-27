@@ -3615,9 +3615,21 @@ gSongTable:	@ 0x0804132C
 	song gEnSfx052, 1, 1 @ English patch: DS SE00A (was gUnknown_08088580)
 	song gEnSfx053, 1, 1 @ English patch: DS SE00B (was gUnknown_080885B4)
 	song gEnSfx054, 1, 1 @ English patch: DS SE00C (was gUnknown_080885D0)
+	.ifdef EN_JP_VOICES
+	song gUnknown_080885F0, 1, 1 @ English patch, JPVOICES=1: the Japanese voice
+	.else
 	song gEnSfx055, 1, 1 @ English patch: DS SE0B5 (was gUnknown_080885F0)
+	.endif
+	.ifdef EN_JP_VOICES
+	song gUnknown_08088610, 1, 1 @ English patch, JPVOICES=1: the Japanese voice
+	.else
 	song gEnSfx056, 1, 1 @ English patch: DS SE0B3 (was gUnknown_08088610)
+	.endif
+	.ifdef EN_JP_VOICES
+	song gUnknown_08088630, 1, 1 @ English patch, JPVOICES=1: the Japanese voice
+	.else
 	song gEnSfx057, 1, 1 @ English patch: DS SE0B2 (was gUnknown_08088630)
+	.endif
 	song gEnSfx058, 3, 3 @ English patch: DS SE010 (was gUnknown_08088654)
 	song gEnSfx059, 3, 3 @ English patch: DS SE011 (was gUnknown_08088680)
 	song gEnSfx060, 3, 3 @ English patch: DS SE012 (was gUnknown_080886A4)
@@ -3625,13 +3637,21 @@ gSongTable:	@ 0x0804132C
 	song gEnSfx062, 1, 1 @ English patch: DS SE014 (was gUnknown_080886E0)
 	song gEnSfx063, 1, 1 @ English patch: DS SE015 (was gUnknown_08088774)
 	song gEnSfx064, 1, 1 @ English patch: DS SE016 (was gUnknown_080887B0)
+	.ifdef EN_JP_VOICES
+	song gUnknown_080887D0, 1, 1 @ English patch, JPVOICES=1: the Japanese voice
+	.else
 	song gEnSfx065, 1, 1 @ English patch: DS SE0B4 (was gUnknown_080887D0)
+	.endif
 	song gEnSfx066, 1, 1 @ English patch: DS SE018 (was gUnknown_080887F0)
 	song gEnSfx067, 1, 1 @ English patch: DS SE019 (was gUnknown_0808880C)
 	song gEnSfx068, 1, 1 @ English patch: DS SE01A (was gUnknown_08088828)
 	song gEnSfx069, 1, 1 @ English patch: DS SE01B (was gUnknown_08088848)
 	song gEnSfx070, 1, 1 @ English patch: DS SE01C (was gUnknown_08088864)
+	.ifdef EN_JP_VOICES
+	song gUnknown_08088880, 1, 1 @ English patch, JPVOICES=1: the Japanese voice
+	.else
 	song gEnSfx071, 1, 1 @ English patch: DS SE0B1 (was gUnknown_08088880)
+	.endif
 	song gEnSfx072, 1, 1 @ English patch: DS SE01E (was gUnknown_0808889C)
 	song gEnSfx073, 1, 1 @ English patch: DS SE01F (was gUnknown_080888BC)
 	song gEnSfx074, 1, 1 @ English patch: DS SE020 (was gUnknown_080888D8)
@@ -3641,7 +3661,11 @@ gSongTable:	@ 0x0804132C
 	song gEnSfx078, 1, 1 @ English patch: DS SE024 (was gUnknown_0808894C)
 	song gEnSfx079, 1, 1 @ English patch: DS SE025 (was gUnknown_08088968)
 	song gEnSfx080, 1, 1 @ English patch: DS SE026 (was gUnknown_08088984)
+	.ifdef EN_JP_VOICES
+	song gUnknown_080889A4, 1, 1 @ English patch, JPVOICES=1: the Japanese voice
+	.else
 	song gEnSfx081, 1, 1 @ English patch: DS SE0B0 (was gUnknown_080889A4)
+	.endif
 	song gEnSfx082, 1, 1 @ English patch: DS SE028 (was gUnknown_080889C4)
 	song gEnSfx083, 1, 1 @ English patch: DS SE029 (was gUnknown_080889E4)
 	song gEnSfx084, 1, 1 @ English patch: DS SE02A (was gUnknown_08088A04)

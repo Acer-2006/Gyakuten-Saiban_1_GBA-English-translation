@@ -2300,6 +2300,10 @@ void ScrollMode1AnimationUpdate(struct AnimationListEntry * animation, struct Co
 // a returning one counter / 2 rounded up (a frame changes on even counts).
 static void UpdatePersonAnimationForCourtScroll(struct AnimationListEntry * animation)
 {
+#if EN_GS1_COURT
+    struct CourtScroll * courtScroll = &gCourtScroll;
+    gCourtScrollPersonAnimationUpdateFuncs[courtScroll->scrollMode](&gAnimation[1], courtScroll);
+#else
     struct CourtScroll * courtScroll = &gCourtScroll;
     struct AnimationListEntry * person = &gAnimation[1];
     u32 pan = courtScroll->scrollMode >> 1;
@@ -2332,6 +2336,7 @@ static void UpdatePersonAnimationForCourtScroll(struct AnimationListEntry * anim
         if(person->flags & ANIM_ACTIVE)
             ChangeAnimationActivity(person, FALSE);
     }
+#endif
 }
 
 void SetCourtScrollPersonAnim(u32 arg0, u32 arg1, u32 arg2, u32 arg3)
@@ -2341,9 +2346,11 @@ void SetCourtScrollPersonAnim(u32 arg0, u32 arg1, u32 arg2, u32 arg3)
         gCourtScroll.scrollMode++;
     gCourtScroll.scrollingPersonAnimId = arg2;
     gCourtScroll.animOffset = arg3;
+#if !EN_GS1_COURT
     // English patch: the courtroom pans (UpdatePersonAnimationForCourtScroll)
     gEnPanBias = gAnimation[1].animationInfo.xOrigin - 120;
     gEnPanSwapped = FALSE;
+#endif
 }
 
 void SpeechBubbleAnimationEffect(struct AnimationListEntry * animation)

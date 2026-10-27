@@ -56,8 +56,8 @@ Preview of the game:
    releases of it, and the patch comes in a version for each:
    - the first release, CRC32 `c88f0952`,
      SHA-1 `15c0e3389709bb275c42e99ed25212d09e49e361`;
-   - "Rev 1", CRC32 `33f29c07`,
-     SHA-1 `d23b788c80732898c6cfe344a6811900eb060f23` (same game, laid out
+   - "Rev 1", CRC32 `a0f4801f`,
+     SHA-1 `ea7dabc4f5330c89a341ca38067fb025de73c835` (same game, laid out
      differently inside, so it needs its own patch: `..._rev1.bps`).
    Some copies of the first release have "DUMPED BY AAA" written at the
    very end of the file (CRC32 `0d9f9697`); the release includes a patch
@@ -81,6 +81,24 @@ Preview of the game:
 In-game saves carry over from one version of the patch to the next.
 Emulator savestates don't, so load your in-game save after updating.
 
+## Optional patches
+
+Two things some players prefer the original game's way, as small add-on
+patches (`..._optional_patches.zip` on the [Releases](../../releases) page):
+
+- `..._addon_GS1-courtroom.bps`: the first game's own courtroom (its
+  benches, witness stand, judge's bench and pans) instead of Gyakuten
+  Saiban 3's.
+- `..._addon_Japanese-voices.bps`: the Japanese voices (*Igiari!*,
+  *Matta!*, *Kurae!*) instead of the English ones. The speech bubbles stay
+  English.
+- `..._addon_GS1-courtroom_and_Japanese-voices.bps`: both.
+
+Patch your ROM with the main patch first, then apply **one** add-on to the
+English ROM that made. An add-on fits only the English ROM of the same
+version (the zip's `readme.txt` gives its CRC32). Everything else is the
+same, and in-game saves work in all of them.
+
 ## Known issues
 
 None known at the moment. If something looks or plays wrong, please
@@ -100,6 +118,9 @@ make
 
 The result is the patched English ROM. The scripts that make the English
 version (script port, graphics, effects, courtroom) are in `tools/en`.
+`make COURT=GS1` builds it with the first game's courtroom, `make JPVOICES=1`
+with the Japanese voices (both at once works too); each goes to a ROM of its
+own (`pwaa1_gs1court.gba`, `pwaa1_jpvoices.gba`).
 
 ## Credits
 
