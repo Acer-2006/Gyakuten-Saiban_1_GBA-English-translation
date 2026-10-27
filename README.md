@@ -65,7 +65,11 @@ game, running on the GBA's own engine with its own timing.
    browser) or Floating IPS (Flips). The patcher checks your ROM first and
    tells you if it is not the right one.
 4. **Play** the patched ROM (16 MB) in a GBA emulator. mGBA is recommended.
-   On a flash cart, set the save type to SRAM.
+   On a flash cart, set the save type to SRAM. On a SuperCard running
+   SuperFW, let the firmware generate patches for the ROM (it asks the
+   first time you start it): the English ROM has a game code of its own
+   (`ASBE`), and the firmware's built-in patches for the Japanese game
+   don't fit it.
 
 In-game saves carry over from one version of the patch to the next.
 Emulator savestates don't, so load your in-game save after updating.
