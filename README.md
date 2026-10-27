@@ -32,9 +32,11 @@ Preview of the game:
   bubbles, the verdict, map markers, and the signs and writing in the
   backgrounds.
 - **A variable-width English font** made from the DS's.
-- **The English voices** of the DS release (*Objection!*, *Hold it!*,
-  *Take that!* and the others) and the two sounds its English script added.
-  Every other sound effect is the GBA game's own, as in the original.
+- **The sound effects of the DS release**: its English voices
+  (*Objection!*, *Hold it!*, *Take that!* and the others), the two sounds
+  its English script added, and every other sound effect (text blips, menu
+  sounds, the typewriter and the rest), at the DS's volumes and without the
+  Japanese game's echo.
 - **The courtroom of Gyakuten Saiban 3**: the benches, the witness stand, the
   judge's bench and the pans between them, in place of the first game's
   very bright courtroom.

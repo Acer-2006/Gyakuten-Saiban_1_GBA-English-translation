@@ -1,29 +1,36 @@
 #!/usr/bin/env python3
-"""The DS's sound effects on the GBA, where the GBA has none of its own.
+"""The DS's sound effects on the GBA.
 
-The sound effects the GBA game already has (the realization and evidence
-stings, the text blips, the menu sounds, the gavel and all the others) are the
-GBA's own, as in the Japanese game: the DS plays the same sounds (the same
-samples, measured), so the GBA's recordings stay. Which sound plays where
-follows the English DS script (tools/en/port_script.py). Rebuilt from the
-English DS release's sound archive are only the sounds the GBA can't supply:
+Every sound effect song the game plays (the realization and evidence stings,
+the text blips, the menu sounds, the typewriter, the gavel, the voices and all
+the others) is rebuilt from the English DS release's sound archive: the DS
+sequence (notes, timing, stereo, pitch bends), the DS samples and the DS's
+volumes. Which sound plays where follows the English DS script
+(tools/en/port_script.py).
 
-  - the English voices, which the DS plays in place of the Japanese ones (its
-    function at 0x02025900: 0x51 -> SE0B0, 0x47 -> SE0B1, 0x39 -> SE0B2,
-    0x38 -> SE0B3, 0x41 -> SE0B4, 0x37 -> SE0B5);
-  - songs 111 and 112, the two sounds the English DS script added (SE04F and
-    SE050).
+The DS numbers its sequences like the GBA numbers its songs (SE000 is song 42),
+so song N becomes DS sequence N. The voices are the English ones the DS plays in
+their place (its function at 0x02025900: 0x51 -> SE0B0, 0x47 -> SE0B1,
+0x39 -> SE0B2, 0x38 -> SE0B3, 0x41 -> SE0B4, 0x37 -> SE0B5), and songs 111 and
+112 are the two sounds the English DS script added (SE04F and SE050).
 
-Songs this tool built from the DS before and no longer does go back to the
-GBA's own in the song table (data/sound_data.s).
+(From October 10 to v0.7.56 only the voices and those two came from the DS,
+the others being the GBA's own on the reading that the DS plays the same
+samples. Most of them it does, but not all: the DS plays recordings where the
+GBA plays square-wave notes (the text blips, the menu and cursor sounds, the
+telephone), and its own takes of the typewriter, the Court Record, the siren
+and others. So all of them come from the DS again.)
 
-Each of these is rebuilt from the DS sequence (notes, timing, stereo, pitch
-bends), the DS samples and the DS's volumes. Samples are resampled to the GBA
-mixer's rate (15768 Hz) at the pitch the DS plays them and played one to one
-(no resampling by the engine), so they sound at the DS's pitch (the English
-voices, 16364 Hz recordings, had played 3.6% slow); looped samples keep their
-loops. Release rates follow the DS's (measured in the DS game). Every song
-sets the reverb to none (the DS has no reverb).
+Samples are resampled to the GBA mixer's rate (15768 Hz) at the pitch the DS
+plays them and played one to one (no resampling by the engine), so they sound
+at the DS's pitch (the English voices, 16364 Hz recordings, had played 3.6%
+slow); looped samples keep their loops. A sample the DS plays slower than that
+(the crowd, at 6258 Hz) is held from step to step, as the DS's sound hardware
+does. Release rates follow the DS's (measured in the DS game). The DS's PSG
+notes become GBA square-wave notes at the DS's pitches. A DS sequence with more
+tracks than the GBA music player has (SE015, four) has them paired by side.
+Every song sets the reverb to none (the DS has no reverb; some Japanese sound
+effects turned it up for the music until the next line).
 
 Volumes: tools/en/sfx_levels.json holds, for each song, the DS's level (the DS
 game playing the sound on its own) and this build's level at track volume
@@ -45,9 +52,11 @@ MIX_RATE = 15768                      # SOUND_MODE_FREQ_15768 (m4aSoundInit)
 REF_VOL = 100                         # track volume of the reference build in sfx_levels.json
 PLAYER_TRACKS = {0: 7, 1: 2, 2: 1, 3: 1}   # gMPlayTrack_BGM/SE1/SE2/SE3
 
-# GBA song -> DS sequence: only what the GBA has no sound of its own for
-SONGS = {0x51: 400, 0x47: 401, 0x39: 402, 0x38: 403, 0x41: 404, 0x37: 405}   # English voices
-SONGS.update({111: 121, 112: 122})                                           # English-only sounds
+# GBA song -> DS sequence
+SONGS = {14: 14, 15: 15, 17: 17, 32: 32, 33: 33}
+SONGS.update({n: n for n in range(42, 106) if n != 50})
+SONGS.update({0x51: 400, 0x47: 401, 0x39: 402, 0x38: 403, 0x41: 404, 0x37: 405})   # English voices
+SONGS.update({111: 121, 112: 122})                                                # English-only sounds
 
 # ---------------------------------------------------------------- DS sequences
 ONE = {0xC0: 'pan', 0xC1: 'vol', 0xC2: 'mastervol', 0xC3: 'transpose', 0xC4: 'bend', 0xC5: 'bendrange',
