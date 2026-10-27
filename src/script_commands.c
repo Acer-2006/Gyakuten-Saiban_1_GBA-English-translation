@@ -42,11 +42,18 @@ const u8 gSoundCueTable[] = {
 };
 #endif
 
-// English patch: the pans of Gyakuten Saiban 3's courtroom (include/en_court.h)
+// English patch: the pans of Gyakuten Saiban 3's courtroom (include/en_court.h);
+// the first game's with `make COURT=GS1`
 u8 * const gCourtScrollGfxPointers[] = {
+#if EN_GS1_COURT
+    gGfxCourtscroll01,
+    gGfxCourtscroll02,
+    gGfxCourtscroll03,
+#else
     EN_COURT_PAN(0),
     EN_COURT_PAN(1),
     EN_COURT_PAN(2),
+#endif
 };
 
 // English patch: the "next" arrow is the DS's (TextboxNextArrow, bg.c): at

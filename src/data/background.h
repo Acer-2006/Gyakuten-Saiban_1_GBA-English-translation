@@ -18,30 +18,72 @@ const struct Background gBackgroundTable[] =
 		.bgData = gGfx_BG002_CourtDefendantLobby,
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
 	},
+#if EN_GS1_COURT
+	{
+		.bgData = gGfx_BG003_CourtDefenseBench,
+		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP,
+	},
+#else
 	{
 		.bgData = gEnCourtDefenseBench, // English patch: Gyakuten Saiban 3
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
 	},
+#endif
+#if EN_GS1_COURT
+	{
+		.bgData = gGfx_BG004_CourtProsecutionBench,
+		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP,
+	},
+#else
 	{
 		.bgData = gEnCourtProsecutionBench, // English patch: Gyakuten Saiban 3
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
 	},
+#endif
+#if EN_GS1_COURT
+	{
+		.bgData = gGfx_BG005_CourtWitnessStand,
+		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP,
+	},
+#else
 	{
 		.bgData = gEnCourtWitnessStand, // English patch: Gyakuten Saiban 3
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
 	},
+#endif
+#if EN_GS1_COURT
+	{
+		.bgData = gGfx_BG006_CourtRoom,
+		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
+	},
+#else
 	{
 		.bgData = gEnCourtCourtRoom, // English patch: Gyakuten Saiban 3
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
 	},
+#endif
+#if EN_GS1_COURT
+	{
+		.bgData = gGfx_BG007_CourtCoCounsel,
+		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
+	},
+#else
 	{
 		.bgData = gEnCourtCoCounsel, // English patch: Gyakuten Saiban 3
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
 	},
+#endif
+#if EN_GS1_COURT
+	{
+		.bgData = gGfx_BG008_CourtJudgeSeat,
+		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
+	},
+#else
 	{
 		.bgData = gEnCourtJudgeSeat, // English patch: Gyakuten Saiban 3
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,
 	},
+#endif
 	{
 		.bgData = gGfx_BG009_FeyCoEntranceNight,
 		.controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP,

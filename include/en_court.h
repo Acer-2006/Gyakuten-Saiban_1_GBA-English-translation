@@ -19,4 +19,12 @@ extern u8 gEnCourtPan[];
 #define EN_PAN_FRAME_BYTES 0x9800
 #define EN_COURT_PAN(n) (gEnCourtPan + (n) * 16 * EN_PAN_FRAME_BYTES)
 
+// `make COURT=GS1` builds the optional ROM with the first game's courtroom
+// (EN_GS1_COURT): its pictures and pans, as in the Japanese game
+#if EN_GS1_COURT
+#define EN_COURT_PAN_DEFENSE_WITNESS gGfxCourtscroll01
+#else
+#define EN_COURT_PAN_DEFENSE_WITNESS EN_COURT_PAN(0)
+#endif
+
 #endif // GUARD_EN_COURT_H
