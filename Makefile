@@ -101,7 +101,13 @@ NAME := pwaa1
 ELF = $(ROM:.gba=.elf)
 MAP = $(ROM:.gba=.map)
 TITLE := GYAKUTEN_SAI
-GAMECODE := ASBJ
+# English patch: a game code of its own (E: the English version). Tools that
+# recognize a ROM by its code alone took this one for the Japanese game: the
+# SuperCard's SuperFW firmware applied its patches for the Japanese ROM (wait
+# state and save fixes at that ROM's code offsets), which land in the middle
+# of other code here, and the game hung on a white screen. Under a code of
+# its own the firmware generates patches for this ROM with its patch engine.
+GAMECODE := ASBE
 
 all: rom
 
