@@ -46,6 +46,10 @@ PORTRAIT_SHOW = 0x62        # new GBA command: the partner's portrait on the pla
 PORTRAIT_HIDE = 0x63        # new GBA command: the portrait away (the DS's 76 2 0)
 GREY = 0x64                 # new GBA command: the monochrome filter (the DS's 5F mode step level)
 GREY_MODES = (3, 4, 7)      # (its mode 0x15 shows nothing on the DS's screen: left out)
+MOVIE = 0x65                # new GBA command: the movies (the DS's 75 sub x y z: 65 sub value flags; src/en_movie.c)
+# the DS's 69 405 starts the opening's frames (its effect 0x02068b7c, case 5): sequence 1,
+# kept on screen at the end (0x4000)
+MOVIE_OPENING = (0x405, 0x100)
 # Where the DS hands over to a system of its own that the GBA does not have
 # yet (the evidence turned over in 3D, the luminol, the fingerprints, the
 # security footage) and that system then starts the section that follows, the
@@ -147,7 +151,7 @@ def gba_anim(v):
     if 0x97 <= v <= 0xB0:
         return v - 0x73
     return EFFECTS.get(v)
-DROP = {0x4D, 0x55, 0x65, 0x68, 0x6B, 0x6F, 0x74, 0x75, 0x7B}
+DROP = {0x4D, 0x55, 0x65, 0x68, 0x6B, 0x6F, 0x74, 0x7B}
 
 def usual_poses():
     """each GBA person's most used (talk, idle) pair in the episode 1-4 ports"""
@@ -324,6 +328,17 @@ class Translator:
                 mode, step, level = a
                 out += [0x12, (mode << 8) | 0x04, max(step, 1), 0x1F, 0x0C, 16 * max(step, 1)]
                 self.stats['5C fade as blend'] += 1
+            elif op == 0x75:
+                # 0 set up (y: the sequence, z: the flags), 1 state and flags, 2 to a frame,
+                # 3 speed, 4 start, 5 end, 6 wait for the end
+                if a[0] == 0:
+                    out += [MOVIE, 0, a[2], a[3]]
+                else:
+                    out += [MOVIE, a[0], a[1], 0]
+                self.stats['movie command'] += 1
+            elif op == 0x69 and tuple(a[:2]) == MOVIE_OPENING:
+                out += [MOVIE, 0, 1, 0x4001]
+                self.stats['movie command'] += 1
             elif op == 0x69:
                 if tuple(a) == DS_PLATE_HIDE:
                     out += [0x14]

@@ -118,10 +118,14 @@ void AgbMain()
         }
 #if RFTA
         EnRftaGreyUpdate(TRUE); // the DS's monochrome flashbacks (en_rfta.c)
+        EnMovieVBlank(); // the movies' frames (en_movie.c)
 #endif
         if (gMain.currentBgStripe > 10)
         {
             gMain.currentBgStripe = 0;
+#if RFTA
+            if (!EnMovieDefersBg()) // (a movie on screen: the picture waits for its close)
+#endif
             CopyBGDataToVram(gMain.currentBG);
         }
 
@@ -172,6 +176,10 @@ void AgbMain()
                     DecompressCurrentBGStripe(gMain.currentBG);
             }
         }
+#if RFTA
+        EnMovieFrame();
+        EnMovieWork(); // (in the time the frame has left before the sound)
+#endif
         UpdateBGMFade();
 #if RFTA
         EnRftaGreyUpdate(FALSE); // (palettes the frame's work wrote: grey before they show)

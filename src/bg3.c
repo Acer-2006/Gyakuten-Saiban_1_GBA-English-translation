@@ -1,4 +1,5 @@
 #include "global.h"
+#include "en_rfta.h"
 #include "background.h"
 #include "ewram.h"
 #include "animation.h"
@@ -700,6 +701,10 @@ void CopyBGDataToVram(u32 bgId)
     u32 tempSize;
     u32 i, j;
 
+#if RFTA
+    if(EnMovieTakesBg(bgId)) // English patch: a movie is up (en_movie.c)
+        return;
+#endif
     if(bgId >= 74 && bgId <= 75)
     {
         LoadCase3IntroBackgrounds();
