@@ -51,7 +51,7 @@ command landing inside text.
 | `76` | side, portrait / `2 0` | 281 | partner portrait plate: a 64×64 picture of Ema (12 expressions) or Gumshoe (6) at the side of the text box while the partner talks during investigations; `76 2 0` takes it down. Same machinery as the evidence plate (`13`), a second picture table at data.bin 0x1bb3074. | the evidence plate code with a second picture table |
 | `5F` | mode, step, level | 246 | the DS's second fade system, a 23-mode software palette effect. Its modes 3, 4 and 7 are a monochrome filter (0x0201c088 mixes each colour with its grey): `5F 3 1 1f` turns the background and the person grey at once for a flashback (199 uses), `5F 4 1 1` brings the colour back (73), `5F 4 3 20` over 96 frames (section 9). | command `64`, the same filter on the GBA's palettes |
 | `5C` | mode, step, level | 22 | the same fade, holding the script until it is over | same, waiting |
-| `75` | kind, value, 0, 0 | 137 | movie player: plays a frame sequence from data.bin — the opening cinematic, the Blue Badger's dance, the security-camera footage (section 3). `75 5 n` picks a sequence, `75 1 f` sets flags, `75 6` starts, `75 0 0 n 1` clears, `75 2/4 n` set positions (the video scrubber). | a GBA frame player (streamed from ROM) |
+| `75` | kind, value, 0, 0 | 137 | movie player (the DS's 0x0206b0dc, section 10): `75 0 0 n f` sets up sequence n with flags f, `75 1 f` sets the state (1 forwards, 3 held, 4 backwards, 2 closed) and flags (0x8000 go round, 0x4000 stay at the end), `75 2 n` jumps to frame n, `75 4 n` / `75 5 n` the first and last frame, `75 6` waits for the end | GBA command `65` (`en_movie.c`) |
 | `74` | kind, value | 241 (208 in variants episodes 1–4 never use) | bottom-screen UI: `74 5 0` puts the normal panel back (77 uses, after a portrait or a prompt), `74 8 n` shows panel n (17 panels, ids 0x2e–0x49; they follow "Court Record!" lines and evidence being added, and the tutorial), `74 d n` (18 values, in the touch tutorial), `74 a n` after questions that want an answer presented (profiles, prints), `74 9 n` / `74 6 n` / `74 c` / `74 b` around the luminol and fingerprint scenes — these readings are from the dialogue around them and still to be watched in the emulator. | most become nothing (one screen); the prompts become GBA prompts; the tutorial panels become text boxes |
 | `55` | background, 9 | 21 | shows background n over the scene for a moment and puts the previous one back (flashes and cut-ins) — the handler swaps `gMain.currentBG`, waits for the background system, restores it | a short background swap; to confirm in the emulator |
 | `68` | — | 23 | sets flag 0x400 in the DS's game flags: the plate on screen fades together with the scene | part of the fade mapping |
@@ -188,9 +188,8 @@ reworded for buttons — the only deliberate departure from the DS text.
 - No decoder for the DS animation archive (or a recorder as fallback).
   (Stage 3 found it is the GBA's own format: section 8.)
 - No SSEQ → m4a path. (Stage 5: `music.py`, `sfx.py`.)
-- No GBA code for: portrait plate, frame player, luminol, fingerprinting,
-  3D views, close-ups, the fifth episode-select entry; and the eleven new
-  script commands.
+- No GBA code for: luminol, fingerprinting, 3D views, close-ups (the
+  portrait plate, the frame player and the tape: sections 9 and 10).
 - The 3D model data has not been found in data.bin (no Nitro BMD0 headers;
   a Capcom format), and `55`, `68`, `77` and the `74`/`75` variants are
   read from the code and script contexts, not yet watched in the emulator.
@@ -205,8 +204,8 @@ reworded for buttons — the only deliberate departure from the DS text.
    end on the GBA with placeholder sprites and without the mechanics.
 3. **Characters** — the animation data decoded or recorded, six sprite
    sets converted.
-4. **Mechanics** — frame player (and the footage decision), luminol,
-   fingerprints, 3D views, close-ups, prompts. The partner portrait and the
+4. **Mechanics** — the frame player and the tape (done: section 10),
+   luminol, fingerprints, 3D views, close-ups, prompts. The partner portrait and the
    grey flashbacks (`5F`): done (section 9).
 5. **Sound** — seven tracks and the effects. Done (section 9).
 6. **Playthrough and release** — the sweep and audit tools extended to
@@ -456,6 +455,71 @@ priority the DS gives them; the opening's stereo pairs on players 2 and 3
 get those players a second track. Their volumes come from recordings of
 each in both games (`sfx_levels.json`).
 
+## 10. Stage 4: the movies and the tape
+
+**The movies, every frame.** The DS's four frame sequences (its table at
+0x020c096c) play at 30 frames a second: the Blue Badger's dance (450
+frames), the opening's silhouettes (329), the security footage (1420) and
+the ending (270). All are kept frame by frame. `movies.py` cuts them as the
+backgrounds are (240×160 at x 8, y 16) and stores each frame as the change
+from the one before: a bitmap of the 600 8×8 slots that change, then their
+tiles as they are or XORed with what the slot held (the smaller; an XOR
+change undoes itself, so a movie of them plays backwards too). The changes
+are packed with LZ77 (`movlz.c`, optimally parsed) in bytes (the BIOS's
+format, unpacked into EWRAM) or in whole words (unpacked straight into the
+VRAM after the slots, about three times as fast; used where a change is so
+large that bytes would not unpack in time: most of the ending). Keyframes
+(every 128 frames, and the frames the scripts jump to) are whole pictures.
+Sizes: the dance 0.71 MB, the opening 0.27, the footage 5.05, the ending
+1.90 (7.95 MB in all).
+
+The security footage pans to and fro the whole time, and its time stamp
+stays put on the screen. It is stored as a scene 678 pixels wide, the
+camera's place in each frame found by matching each frame to the one before
+(whole pixels); 32 columns of slots hold the part on screen and BG3's
+scroll follows the camera, a column coming into view written over the one
+that went out of it. Its grain would change every tile every frame, so a
+tile is written again only where the picture (blurred 3×3) differs from the
+slot by more than 4/3 of a grey on average, or a few pixels by 6 (thin
+edges), or, after 8 frames, a line of three pixels by 3.5 (bits of an edge
+left behind); in 16 fixed greys. The time stamp is taken out of the picture
+(each second's, from the pixels white in nearly every frame of it: the
+DS's font is proportional) and drawn over it: the slots under it in its two
+rows are copied to tiles of their own with its pixels drawn in.
+
+`en_movie.c` follows the DS's player: a position that moves a frame every
+other frame between a first and a last frame, forwards, backwards or held,
+going round or staying at the end. On the frame the position moves the
+changes to the frame are unpacked, in the time the frame has left before the
+sound (`EN_BG_FRAME_END`, as the background stripes) by ARM code in IWRAM
+(`en_movie_lz.s`, 0x03006A00); they go into the slots in the next vertical
+blank once the DS has shown the frame (top first; the footage's frame with
+its time stamp takes about 42 lines). In the emulator the ending (its
+heaviest frames) and the footage keep pace with the DS, frame for frame.
+The movie takes BG3 in 16 colours (palette 2, its colour 0 the backdrop)
+when its first frame is ready and gives the background back when it closes;
+a background the script changes meanwhile waits for the close. A screen that
+draws over BG3 (the save screen, a Court Record picture) makes the movie
+unpack its frame again from the nearest keyframe (black until it is there)
+when it comes back. A save made while a movie is up keeps its place (SRAM
+0x2C00, after the text box log) and loading it opens the movie there.
+
+The opening: the DS's `69 405 100` starts the silhouettes 60 frames after
+an effect of the opening (the knife's flash) that the GBA does not have;
+here they start at once.
+
+**The tape in court.** On Day 3 the DS shows the footage on the touch
+screen four times for a moment to be pointed out (its 0x02077c28): the
+locker light, the cloth falling out, Marshall in the video, what Meekins
+did. The answer depends on the frame and the place (0x0206a294: four spots,
+each a run of frames with a mask a frame, and the section each question goes
+to when the 16×16 box round the touch meets the mask; `movies.py` keeps the
+masks' rectangles). On the GBA it is command `66 q` where the DS hands over
+(`74 8 35`, `79`): the footage plays, the examine hand points (the + pad),
+A points out the moment; L rewinds while held, R fast-forwards, START pauses,
+a tap of L or R while paused steps a frame. A line in the text box says so
+(it makes way for the hand when the hand is low).
+
 ## Tools (`tools/en/rfta/`)
 
 All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
@@ -471,7 +535,7 @@ All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
   are new.
 - `dsrun.py STATE CHAPTER SEC OUT FRAMES [ops…]` — runs a section in
   DeSmuME, logs every command, photographs both screens at the watched ones.
-- `movies.py [ARCHIVE FRAME out.png]` — the four frame sequences.
+- `movies.py list | ARCHIVE FRAME out.png` — the four frame sequences.
 - `portraits.py out.png` — the partner portraits.
 
 Stage 2 (each writes into the build; their docstrings say what from):
@@ -504,3 +568,7 @@ Stages 4 and 5:
 - `sfx.py SDAT` — `data/rfta/sfx.s`, `sound/direct_sound_samples/rfta_sfx/`
   and the song table's rows; `sfx.py --measure DS_DIR GBA_DIR` —
   `sfx_levels.json`.
+- `movies.py` — `graphics/en/rfta/movies/*.bin` (each movie: its changes,
+  keyframes, palettes, the footage's scroll and time stamp) and
+  `data/rfta/movies.s` (with the tape's spots); compiles `movlz.c`, the
+  LZ77 packer, with `cc`.
