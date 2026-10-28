@@ -277,6 +277,7 @@ bool32 Command64(struct ScriptContext * scriptCtx)
     g->step = a & 0xFF;
     g->counter = 0;
     g->person = g->mode != 7;
+    g->tint = FALSE;
     g->active = 1;
     return 0;
 }
@@ -285,6 +286,16 @@ static u16 EnGreyMix(u32 c, u32 level)
 {
     u32 r = c & 0x1F, gr = (c >> 5) & 0x1F, b = (c >> 10) & 0x1F;
     u32 y = (r * 306 + gr * 601 + b * 117) >> 10;
+    if (gEnGrey.tint)
+    {
+        // the luminol's red (en_luminol.c): the luma in red alone, as the DS
+        // tints the room (measured: 0.307 R + 0.552 G + 0.113 B, less half a step)
+        y = (r * 314 + gr * 565 + b * 116) >> 10;
+        r = (r * (32 - level) + y * level) >> 5;
+        gr = (gr * (32 - level)) >> 5;
+        b = (b * (32 - level)) >> 5;
+        return r | (gr << 5) | (b << 10);
+    }
     r = (r * (32 - level) + y * level) >> 5;
     gr = (gr * (32 - level) + y * level) >> 5;
     b = (b * (32 - level) + y * level) >> 5;
@@ -340,6 +351,36 @@ void EnRftaGreyUpdate(bool32 advance)
         g->active = 0;
 }
 
+// The luminol's red room (en_luminol.c): the background's colours as the
+// filter's red, at once (on), or the game's own again (off). The colours on
+// screen now are taken as the game's.
+void EnLuminolTint(bool32 on)
+{
+    struct EnGrey * g = &gEnGrey;
+    u32 i, bgLast = (REG_BG3CNT & BGCNT_256COLOR) ? 256 : 48;
+    if (on)
+    {
+        for (i = 0; i < EN_GREY_COLORS; i++)
+            g->written[i] = 0x8000;     // (no colour the game writes)
+        g->tint = TRUE;
+        g->mode = 7;
+        g->person = FALSE;
+        g->step = 1;
+        g->counter = 0;
+        g->level = 32;
+        g->active = TRUE;
+        EnGreyRange((vu16 *)BG_PLTT + EN_GREY_BG_FIRST, g->orig, g->written, bgLast - EN_GREY_BG_FIRST, 32, TRUE);
+    }
+    else if (g->tint)
+    {
+        if (g->active)
+            EnGreyRange((vu16 *)BG_PLTT + EN_GREY_BG_FIRST, g->orig, g->written, bgLast - EN_GREY_BG_FIRST, 0, TRUE);
+        g->active = FALSE;
+        g->tint = FALSE;
+        g->level = 0;
+    }
+}
+
 // The script flags at the start of a chapter, as the DS sets them for the
 // fifth episode (its investigation and court openings, 0x02036058 and
 // 0x0202f7d8): flags 0x28 and up are the chapter's and start clear; those
@@ -358,6 +399,7 @@ void EnRftaChapterFlags(struct Main * main, bool32 court)
 {
     gEnGrey.active = 0;     // (a chapter starts in colour)
     gEnGrey.level = 0;
+    gEnGrey.tint = 0;
     switch (court ? main->scenarioIdx + 0x100 : main->scenarioIdx)
     {
     case 17:                // Day 1

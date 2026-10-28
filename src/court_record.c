@@ -893,6 +893,17 @@ void CourtRecordMain(struct Main * main, struct CourtRecord * courtRecord) // st
     }
     else // Normal court record
     {
+#if RFTA
+        // English patch: the luminol's "Spray", as the DS's button (en_luminol.c)
+        if(joypad->pressedKeys & A_BUTTON && EnRecordSprayable(courtRecord))
+        {
+            PlaySE(SE001_MENU_CONFIRM);
+            EnLuminolFromRecord();
+            SlideInBG2Window(0x3, 0xC);
+            main->process[GAME_PROCESS_STATE] = RECORD_EXIT;
+        }
+        else
+#endif
         if(joypad->pressedKeys & R_BUTTON)
         {
             PlaySE(SE00A_SWITCH_RECORD);
@@ -1488,6 +1499,9 @@ void UpdateRecordSprites(struct CourtRecord * courtRecord)
             UpdateRecordInfoActionSprites(1);
         else
             UpdateRecordPresentActionSprites(1);
+#if RFTA
+        EnRecordSprayPrompt(courtRecord, TRUE);
+#endif
         return;
     }
     else
@@ -1500,6 +1514,9 @@ void UpdateRecordSprites(struct CourtRecord * courtRecord)
             UpdateRecordInfoActionSprites(0);
         else
             UpdateRecordPresentActionSprites(0);
+#if RFTA
+        EnRecordSprayPrompt(courtRecord, FALSE);
+#endif
     }
 }
 

@@ -89,8 +89,9 @@ BYPASS = {
     (18, 0xBF): 0xC2, (18, 0xC2): 0xC3,
     # Day 1: Ms. Skye's phone looked over: the redial display, the call, the patrolman
     (18, 0xF9): 0xFB, (18, 0xFB): 0xFC, (18, 0xFC): 0xFD,
-    # Day 2: the luminol in the parking lot: how it is used, the stain it shows, what is odd about it
-    (22, 0x92): 0x93, (22, 0x93): 0x95, (22, 0x95): 0x96,
+    # Day 2: the luminol in the parking lot (its luminol screen: src/en_luminol.c): the
+    # tutorial after Ema's lines, the stain's question after its lines
+    (22, 0x92): 0x93, (22, 0x95): 0x96,
     # Day 2 trial: the knife opened in 3D (its switch) -> the knife added to the record
     (21, 0x81): 0x82,
     # Day 2: the jar pieces put together (135 is the DS's try-again)
@@ -115,25 +116,26 @@ BYPASS = {
 # question's answer in its table at 0x020b1324, arm9_tables.PROMPTS): the
 # GBA's 21, its answers in the court present data (arm9_tables.py)
 PROMPT_PRESENT = 0x21
-# The luminol in the evidence room (Day 2) is the one use of it the story
-# waits on: the three stains it shows there set flags 14, 16, 19, which
-# the room's other findings check before the day goes on (file 24's 11D,
-# 127-129, 131, 136: then section 10E). The DS's luminol code (0x02081400,
-# its scenes at 0x020c19ac: a stain's rectangle, its flag, the section)
-# runs the stain's lines from the shared file 35. Here the lines are copied
-# into the chapter as sections of its own, after the last, each setting the
-# stain's flag; the handprint on the locker (11B: "We should use her testing
-# fluid to check it out") goes on into them, and the last one checks the
-# room's findings as the others do. (DS file, new section) -> (file, section, flag)
-IMPORT = {
-    (24, 0x15C): (35, 0xC5, 0x14),      # by the door: someone touched it
-    (24, 0x15D): (35, 0xC6, 0x19),      # a right handprint on Gumshoe's locker
-    (24, 0x15E): (35, 0xC7, 0x16),      # the floor: a great deal of blood
-}
-BYPASS.update({(24, 0x11B): 0x15C, (24, 0x15C): 0x15D, (24, 0x15D): 0x15E})
-# the room's findings, checked after the last stain as after the others: all
-# their flags set -> the jump through descriptor D2 (to 10E)
-FINDINGS_CHECK = {(24, 0x15E): ((0x14, 0x16, 0x19, 0x53, 0x54, 0x55, 0x56, 0x58, 0x59), 0xD2)}
+# The luminol (src/en_luminol.c, tools/en/rfta/luminol.py): a stain it finds
+# runs its lines from the shared file 35 (C2-C8), which every chapter it can
+# be used in carries as sections of its own after its last (the luminol's
+# table, LUMINOL_SECTIONS_H, gives the first); the flag is the luminol's to
+# set, when the stain is found. Its tutorial (chapter 22) hands over to the
+# player (the DS's 74 5 0 there), and leaves after the stain's question.
+LUMINOL = 0x67              # new GBA command: the luminol (0 start, 1 Ema's spray, 2 the player's turn, 3 back to the red room, 4 leave)
+LUMINOL_CHAPTERS = (22, 23, 24, 28, 29, 30)
+LUMINOL_SHARED = range(0xC2, 0xC9)
+LUMINOL_SECTIONS_H = os.path.join(ROOT, 'src', 'data', 'en_rfta_luminol_sections.h')
+# the DS's 74 in the luminol's sections: (file, section or None for the shared
+# ones, sub, value) -> GBA tokens (the DS's 74 6 0 / 74 6 1 everywhere)
+LUMINOL_74 = {(22, 0x93, 5, 0): [LUMINOL, 2], (22, 0x95, 5, 0): [], (22, 0x97, 5, 0): [LUMINOL, 4],
+              (22, 0x98, 5, 0): [LUMINOL, 4], (35, None, 5, 0): [LUMINOL, 3]}
+# the evidence room's findings, all of them (the DS's 74 8 3f in C5-C7): the
+# luminol leaves and the day goes on (the jump through descriptor D2, as the
+# room's other findings take it: file 24's 11D, 127-129, 131, 136 -> 10E)
+LUMINOL_ALL_FOUND = {24: [LUMINOL, 4, 0x36, 0xD2]}
+# the tutorial's "Touch the screen to spray it on." for the GBA's buttons
+LUMINOL_TEXT = {(22, 0x93): ('Touch the screen to spray\nit on.', 'Press the A Button to\nspray it on.')}
 MAX_MARKER = 0x0C           # map marker sprites the GBA has (sMapMarkerSprites)
 # The fifth episode's people (and Edgeworth's two new looks), converted from
 # the DS by characters.py: DS person -> DS animation number -> offset in the
@@ -235,6 +237,14 @@ class Translator:
         return out
 
     # -------------------------------------------------------------- one section
+    luminol_base = {}
+
+    def luminol_74(self, a):
+        k, sec, src = self.cur
+        if src is not None:
+            return LUMINOL_74.get((src[0], None, a[0], a[1]))
+        return LUMINOL_74.get((k, sec, a[0], a[1]))
+
     def section(self, items, where):
         out = []
         pos_map = {}          # DS token position -> output token position
@@ -333,6 +343,15 @@ class Translator:
             elif op == 0x74 and a[0] == 0xA:
                 out += [PROMPT_PRESENT]
                 self.stats['74 A as a present prompt'] += 1
+            elif op == 0x74 and a[0] == 6 and a[1] in (0, 1):
+                out += [LUMINOL, a[1]]
+                self.stats['luminol'] += 1
+            elif op == 0x74 and a[0] == 5 and self.luminol_74(a) is not None:
+                out += self.luminol_74(a)
+                self.stats['luminol'] += 1
+            elif op == 0x74 and a[0] == 8 and a[1] == 0x3F and self.cur[2] is not None:
+                out += LUMINOL_ALL_FOUND.get(self.cur[0], [LUMINOL, 4])
+                self.stats['luminol: all found'] += 1
             elif op == 0x78:
                 # the DS's jump through a section-table record (its 0x02029474:
                 # the GBA's 36, with the DS's note of sections already read)
@@ -417,30 +436,27 @@ class Translator:
             if not bd:
                 continue
             items, _ = parse(tokens(b, *bd), DS_ARGS)
+            self.cur = (k, 0x80 + si, None)
             secs[si], maps[si] = self.section(items, 'file %d sec %d' % (k, si))
-        # sections brought in from another file (IMPORT), after the file's own
-        for (kk, sec), (src, src_sec, flag) in sorted(IMPORT.items()):
-            if kk != k:
-                continue
-            assert sec == 0x80 + n, (k, hex(sec), hex(0x80 + n))
-            sb, sn, soffs = load(ds_script.chapter(src))
-            items, _ = parse(tokens(sb, *section_bounds(sb, soffs)[src_sec - 0x80]), DS_ARGS)
-            out, _ = self.section(items, 'file %d sec %d (file %d sec %d)' % (k, n, src, src_sec - 0x80))
-            end = self.end_15(out)
-            # (its flag, as the DS's code sets it; and the text box away for the
-            # menu, as the chapter's own examine lines end: the DS's luminol
-            # screen did that itself)
-            secs[n] = out[:end] + [0x10, 0x8000 | flag] + ([0x1C, 3] if out[end - 2:end] != [0x1C, 3] else []) + out[end:]
-            offs = list(offs) + [0]; n += 1
-            self.stats['section brought in'] += 1
+        # the luminol's stains' lines (file 35's C2-C8), after the file's own
+        if k in LUMINOL_CHAPTERS:
+            self.luminol_base[k] = 0x80 + n
+            sb, sn, soffs = load(ds_script.chapter(35))
+            for src_sec in LUMINOL_SHARED:
+                items, _ = parse(tokens(sb, *section_bounds(sb, soffs)[src_sec - 0x80]), DS_ARGS)
+                self.cur = (k, 0x80 + n, (35, src_sec))
+                secs[n], _ = self.section(items, 'file %d sec %d (file 35 sec %d)' % (k, n, src_sec - 0x80))
+                offs = list(offs) + [0]; n += 1
+                self.stats['luminol: section brought in'] += 1
         for si in sorted(secs):
-            if (k, 0x80 + si) in FINDINGS_CHECK:
-                flags, desc = FINDINGS_CHECK[(k, 0x80 + si)]
-                out = secs[si]; end = self.end_15(out)
-                at = end - 2 if out[end - 2:end] == [0x1C, 3] else end
-                # (each: "flag clear -> to the end"; then the jump; the end is the 1C 3 / 15 after them)
-                to = at + 3 * len(flags) + 2
-                secs[si] = out[:at] + sum(([0x35, f << 8, 2 * to] for f in flags), []) + [0x36, desc] + out[at:]
+            if (k, 0x80 + si) in LUMINOL_TEXT:
+                old, new = (gba_text(t) for t in LUMINOL_TEXT[(k, 0x80 + si)])
+                out = secs[si]
+                at = [i for i in range(len(out) - len(old) + 1) if out[i:i + len(old)] == old]
+                assert len(at) == 1, (k, hex(0x80 + si), 'text to replace')
+                assert len(new) == len(old) or not [1 for p, kind, op, a in parse(out, dict(GBA_ARGS))[0] if kind == 'cmd' and op == 0x35]
+                secs[si] = out[:at[0]] + new + out[at[0] + len(old):]
+                self.stats['luminol: text for the buttons'] += 1
             if (k, 0x80 + si) in TAPE_QUESTIONS:
                 # the tape: the last line read (a page), then what the keys do while it
                 # is shown (the DS's "Select area via Touch Screen"); the tape command
@@ -500,6 +516,12 @@ def main():
         delta = {key: v - before[key] for key, v in t.stats.items() if v - before[key]}
         rep.append('file %d (%s) -> %s: %d bytes %s' % (k, ds_script.TITLES.get(k, ''), os.path.basename(f), len(data), dict(sorted(delta.items()))))
         print(rep[-1])
+    # the first of each luminol chapter's sections with the stains' lines (src/en_luminol.c)
+    h = ['// generated by tools/en/rfta/translate.py: each chapter\'s first section with the',
+         '// luminol\'s stains\' lines (file 35\'s C2-C8, in order), 0 where it has none',
+         'static const u16 sEnLuminolShared[%d] = { %s };' % (LAST_RFTA_FILE - FIRST_RFTA_FILE,
+         ', '.join('0x%X' % t.luminol_base.get(k, 0) for k in range(FIRST_RFTA_FILE, LAST_RFTA_FILE)))]
+    open(LUMINOL_SECTIONS_H, 'w').write('\n'.join(h) + '\n')
     with open(os.path.join(out_dir, 'translate_report.txt'), 'w') as o:
         o.write('\n'.join(rep) + '\n\ntotals: %s\n\n' % dict(sorted(t.stats.items())))
         o.write('stand-ins: %s\nsongs: %s\n\n' % (PLACEHOLDER_NAMES, NEW_SONGS))

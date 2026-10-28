@@ -40,7 +40,10 @@ void (*gInvestigationProcessStates[])(struct Main *, struct InvestigationStruct 
 	InvestigationInspect, // RNO1_TANTEI_INSPECT
 	InvestigationMove, // RNO1_TANTEI_MOVE
 	InvestigationTalk, // RNO1_TANTEI_TALK
-	InvestigationPresent  // RNO1_TANTEI_SHOW
+	InvestigationPresent, // RNO1_TANTEI_SHOW
+#if RFTA
+	EnLuminolProcess, // English patch: the fifth episode's luminol (en_luminol.c)
+#endif
 };
 
 void InvestigationProcess(struct Main * main) // Tantei_part
@@ -101,6 +104,7 @@ void InvestigationInit(struct Main * main, struct InvestigationStruct * investig
     ioRegs->lcd_dispcnt &= ~DISPCNT_BG1_ON;
     InitializeCourtRecordForScenario(main, &gCourtRecord);
 #if RFTA
+    EnLuminolReset(); // (a chapter starts without the luminol: en_luminol.c)
     // English patch: the fifth episode keeps flags 0-0x27 (en_rfta.c)
     if(main->scenarioIdx >= RFTA_FIRST_CHAPTER)
         EnRftaChapterFlags(main, FALSE);

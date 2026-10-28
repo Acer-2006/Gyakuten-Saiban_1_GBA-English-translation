@@ -49,6 +49,20 @@ bool32 Command63(struct ScriptContext * scriptCtx);
 bool32 Command64(struct ScriptContext * scriptCtx);
 bool32 Command65(struct ScriptContext * scriptCtx);
 bool32 Command66(struct ScriptContext * scriptCtx);
+bool32 Command67(struct ScriptContext * scriptCtx);
+
+// the luminol (en_luminol.c): its own state of the investigation, the
+// Court Record's "Spray" on the luminol (the DS's evidence 0x90)
+#define RFTA_LUMINOL_EVIDENCE 0x90
+struct InvestigationStruct;
+void EnLuminolProcess(struct Main * main, struct InvestigationStruct * inv);
+void EnLuminolFromRecord(void);
+bool32 EnLuminolAvailable(void);
+bool32 EnLuminolActive(void);
+void EnLuminolReset(void);
+struct CourtRecord;
+bool32 EnRecordSprayable(struct CourtRecord * courtRecord);
+void EnRecordSprayPrompt(struct CourtRecord * courtRecord, bool32 show);
 
 // the movies (en_movie.c): the DS's command 75 and its frame sequences
 void EnMovieFrame(void);
@@ -76,12 +90,14 @@ struct EnGrey
     u8 counter;
     u8 active;
     u8 person;      // the person's palettes too
-    u16 pad;
+    u8 tint;        // red, not grey: the luminol's (EnLuminolTint)
+    u8 pad;
     u16 orig[EN_GREY_COLORS];
     u16 written[EN_GREY_COLORS];
 };
 extern struct EnGrey gEnGrey;
 void EnRftaGreyUpdate(bool32 advance);
+void EnLuminolTint(bool32 on);
 // the partner portraits' evidence entries (tools/en/rfta/evidence.py)
 #define RFTA_FIRST_PORTRAIT 0xD1
 bool32 EnPresentReturnsToQuestioning(u32 section);
