@@ -36,6 +36,7 @@ enum InvestigationProcessStates {
     INVESTIGATION_MOVE,
     INVESTIGATION_TALK,
     INVESTIGATION_PRESENT,
+    INVESTIGATION_LUMINOL, // English patch: the RFTA build's (en_luminol.c)
 };
 
 enum TestimonyProcessStates {

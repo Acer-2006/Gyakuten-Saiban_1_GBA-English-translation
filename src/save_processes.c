@@ -52,6 +52,7 @@ u32 LoadSaveData()
     VwfLoadLog(); // English patch
 #if RFTA
     EnMovieLoadState();
+    EnLuminolReset();
 #endif
     sramVer = gSaveDataBuffer.saveDataVer;
     for(i = 0; i < 0x30; i++)

@@ -141,7 +141,7 @@ is an arrangement rather than a copy.
 |---|---|---|---|
 | partner portrait | every investigation line Ema (or Gumshoe) says | 64×64 face by the text box | the plate code; cheap |
 | movies | opening (329 frames), Blue Badger dance (450 frames, 256×160), ending montage (270 frames), security footage (1,420 frames, scrubbed by the player in the Day 3 trial) | 4bpp 256-wide frames, RLE or LZ: 0.85 + 1.8 + 2.4 + 22.6 MB compressed | a frame player streaming from ROM; the three short ones fit as they are (≈4.5 MB after re-encoding); the footage needs a decision: at 240×160 and 10 fps it is ≈8 MB, at full rate it does not fit |
-| luminol | Day 2 investigation (the evidence room, the parking lot) | spray by touch, reaction appears where sprayed | cursor + button spraying over the same picture |
+| luminol | Day 2 investigation (the evidence room, the parking lot) | spray by touch, reaction appears where sprayed | cursor + button spraying over the same picture (done: section 11) |
 | fingerprinting | Day 2–3 investigation (the lockers, the jar) | pick a powder, dust by touch, blow into the mic | cursor + button dusting, a button to blow |
 | 3D evidence | the Court Record's Check on the badge, the pieces with the bloodstain, the sketch and others; lines in the shared file | rotate a model, hotspots trigger the shared sections, `7B` close-ups | pre-rendered views (one axis, 24–36 angles each; the hotspots become angle ranges); the model data is a custom format not yet located in data.bin |
 | bottom-screen panels | tutorial, prompts (`74`) | second screen | text boxes and prompts on the one screen |
@@ -520,6 +520,38 @@ A points out the moment; L rewinds while held, R fast-forwards, START pauses,
 a tap of L or R while paused steps a frame. A line in the text box says so
 (it makes way for the hand when the hand is low).
 
+## 11. Stage 4: the luminol
+
+The DS sprays luminol on the touch screen: the room turns red, each touch is
+a puff of mist, and a stain the mist reaches glows; three sprays, each after
+the glow of the last has settled, bring it out (corner marks, three close-up
+pictures with a flash before each, then the stain's lines). `luminol.py` has
+the details it was read off (the scenes, the stains' records and masks, the
+glow's state machine and colours, the red as measured).
+
+On the GBA (`en_luminol.c`, the investigation's own state
+`INVESTIGATION_LUMINOL`) the room is the GBA's background, tinted red through
+the grey filter's palette code (`EnLuminolTint`); a nozzle moves with the
++ pad and A sprays (SE0C4, the DS's); B goes back to the investigation and L
+to the other half of a wide room, as the DS's "Back" and arrows. The mist is
+a 64×64 sprite added to the room (the hardware blend), the stains' glows
+sprites with their own colours. The Court Record has "A Spray" on the
+luminol where it can be used (between an investigation's scenes), as the
+DS's button. The parking lot's tutorial (chapter 22) runs from the script:
+command `67 n` (0 start, 1 Ema's spray, 2 the player's turn when the script
+stops, 3 back to the red room after a stain's lines, 4 leave), which
+`translate.py` writes for the DS's `74 6 n` and the `74 5 0` of the luminol's
+sections; its "Touch the screen to spray it on." reads "Press the A Button
+to spray it on.". File 35's stain lines (C2-C8) are copied into every chapter
+the luminol is used in, after its last section (`en_rfta_luminol_sections.h`
+gives where); finding all three of the evidence room's stains leaves the
+luminol and takes the room's jump D2, as the DS's `74 8 3f`.
+
+Played through by `fullplay.py` from Day 2's start: the parking lot's
+tutorial and its stains, the payphone, Edgeworth's office, the Chief's
+office, the evidence room's three (and the jump that follows them), on
+through the Day 3 trial into Day 3's investigation (Edgeworth's office again).
+
 ## Tools (`tools/en/rfta/`)
 
 All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
@@ -572,3 +604,7 @@ Stages 4 and 5:
   keyframes, palettes, the footage's scroll and time stamp) and
   `data/rfta/movies.s` (with the tape's spots); compiles `movlz.c`, the
   LZ77 packer, with `cc`.
+- `luminol.py` — `graphics/en/rfta/luminol.bin` (the stains' masks, the
+  mist, the nozzle, the marks), `data/rfta/luminol.s`,
+  `src/data/en_rfta_luminol.h`; its `entries()` gives the stains as the GBA
+  has them (`fullplay.py` sprays them).

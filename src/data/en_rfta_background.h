@@ -20,12 +20,12 @@
 	{ .bgData = gGfxRftaBg81, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0x81
 	{ .bgData = gGfxRftaBg82, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0x82
 	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0x83 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0x84 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0x85 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0x86 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0x87 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0x88 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0x89 unused
+	{ .bgData = gGfxRftaBg84, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0x84
+	{ .bgData = gGfxRftaBg85, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0x85
+	{ .bgData = gGfxRftaBg86, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0x86
+	{ .bgData = gGfxRftaBg87, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0x87
+	{ .bgData = gGfxRftaBg88, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0x88
+	{ .bgData = gGfxRftaBg89, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0x89
 	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0x8A unused
 	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0x8B unused
 	{ .bgData = gGfxRftaBg8C, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0x8C
@@ -56,19 +56,19 @@
 	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xA5 unused
 	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xA6 unused
 	{ .bgData = gGfxRftaBgA7, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xA7
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xA8 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xA9 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xAA unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xAB unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xAC unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xAD unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xAE unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xAF unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xB0 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xB1 unused
+	{ .bgData = gGfxRftaBgA8, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xA8
+	{ .bgData = gGfxRftaBgA9, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xA9
+	{ .bgData = gGfxRftaBgAA, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xAA (English variant)
+	{ .bgData = gGfxRftaBgAB, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xAB (English variant)
+	{ .bgData = gGfxRftaBgAC, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xAC
+	{ .bgData = gGfxRftaBgAD, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xAD
+	{ .bgData = gGfxRftaBgAE, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xAE
+	{ .bgData = gGfxRftaBgAF, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xAF
+	{ .bgData = gGfxRftaBgB0, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xB0
+	{ .bgData = gGfxRftaBgB1, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xB1
 	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xB2 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xB3 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xB4 unused
+	{ .bgData = gGfxRftaBgB3, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xB3
+	{ .bgData = gGfxRftaBgB4, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xB4 (English variant)
 	{ .bgData = gGfxRftaBgB5, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xB5
 	{ .bgData = gGfxRftaBgB6, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xB6
 	{ .bgData = gGfxRftaBgB7, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xB7
@@ -82,9 +82,9 @@
 	{ .bgData = gGfxRftaBgBF, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xBF
 	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xC0 unused
 	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xC1 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xC2 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xC3 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xC4 unused
+	{ .bgData = gGfxRftaBgC2, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xC2 (English variant)
+	{ .bgData = gGfxRftaBgC3, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xC3
+	{ .bgData = gGfxRftaBgC4, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xC4
 	{ .bgData = gGfxRftaBgC5, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xC5 (English variant)
 	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xC6 unused
 	{ .bgData = gGfxRftaBgC7, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xC7
