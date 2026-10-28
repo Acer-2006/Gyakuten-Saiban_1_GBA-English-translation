@@ -50,6 +50,7 @@ bool32 Command64(struct ScriptContext * scriptCtx);
 bool32 Command65(struct ScriptContext * scriptCtx);
 bool32 Command66(struct ScriptContext * scriptCtx);
 bool32 Command67(struct ScriptContext * scriptCtx);
+bool32 Command68(struct ScriptContext * scriptCtx);
 
 // the luminol (en_luminol.c): its own state of the investigation, the
 // Court Record's "Spray" on the luminol (the DS's evidence 0x90)
@@ -63,6 +64,10 @@ void EnLuminolReset(void);
 struct CourtRecord;
 bool32 EnRecordSprayable(struct CourtRecord * courtRecord);
 void EnRecordSprayPrompt(struct CourtRecord * courtRecord, bool32 show);
+// the fingerprints (en_fingerprint.c): their own state of the investigation
+void EnFingerprintProcess(struct Main * main, struct InvestigationStruct * inv);
+bool32 EnFingerprintActive(void);
+void EnFingerprintReset(void);
 
 // the movies (en_movie.c): the DS's command 75 and its frame sequences
 void EnMovieFrame(void);

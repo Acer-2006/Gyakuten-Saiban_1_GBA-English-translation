@@ -43,6 +43,7 @@ void (*gInvestigationProcessStates[])(struct Main *, struct InvestigationStruct 
 	InvestigationPresent, // RNO1_TANTEI_SHOW
 #if RFTA
 	EnLuminolProcess, // English patch: the fifth episode's luminol (en_luminol.c)
+	EnFingerprintProcess, // and its fingerprints (en_fingerprint.c)
 #endif
 };
 
@@ -105,6 +106,7 @@ void InvestigationInit(struct Main * main, struct InvestigationStruct * investig
     InitializeCourtRecordForScenario(main, &gCourtRecord);
 #if RFTA
     EnLuminolReset(); // (a chapter starts without the luminol: en_luminol.c)
+    EnFingerprintReset();
     // English patch: the fifth episode keeps flags 0-0x27 (en_rfta.c)
     if(main->scenarioIdx >= RFTA_FIRST_CHAPTER)
         EnRftaChapterFlags(main, FALSE);
