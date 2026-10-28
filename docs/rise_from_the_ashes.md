@@ -49,7 +49,7 @@ command landing inside text.
 | op | args | uses | what it does | GBA plan |
 |---|---|---|---|---|
 | `76` | side, portrait / `2 0` | 281 | partner portrait plate: a 64×64 picture of Ema (12 expressions) or Gumshoe (6) at the side of the text box while the partner talks during investigations; `76 2 0` takes it down. Same machinery as the evidence plate (`13`), a second picture table at data.bin 0x1bb3074. | the evidence plate code with a second picture table |
-| `5F` | mode, step, level | 246 | the DS's second fade system, a 23-mode software palette fade (`5F 3 1 1f` fades in from white, 171 uses; `5F 4 1 1` fades to black, 71). Used for the flashback stills and scene changes the first four episodes did with hardware blends (`12`). | map onto `12` hardware blends with the same timing |
+| `5F` | mode, step, level | 246 | the DS's second fade system, a 23-mode software palette effect. Its modes 3, 4 and 7 are a monochrome filter (0x0201c088 mixes each colour with its grey): `5F 3 1 1f` turns the background and the person grey at once for a flashback (199 uses), `5F 4 1 1` brings the colour back (73), `5F 4 3 20` over 96 frames (section 9). | command `64`, the same filter on the GBA's palettes |
 | `5C` | mode, step, level | 22 | the same fade, holding the script until it is over | same, waiting |
 | `75` | kind, value, 0, 0 | 137 | movie player: plays a frame sequence from data.bin — the opening cinematic, the Blue Badger's dance, the security-camera footage (section 3). `75 5 n` picks a sequence, `75 1 f` sets flags, `75 6` starts, `75 0 0 n 1` clears, `75 2/4 n` set positions (the video scrubber). | a GBA frame player (streamed from ROM) |
 | `74` | kind, value | 241 (208 in variants episodes 1–4 never use) | bottom-screen UI: `74 5 0` puts the normal panel back (77 uses, after a portrait or a prompt), `74 8 n` shows panel n (17 panels, ids 0x2e–0x49; they follow "Court Record!" lines and evidence being added, and the tutorial), `74 d n` (18 values, in the touch tutorial), `74 a n` after questions that want an answer presented (profiles, prints), `74 9 n` / `74 6 n` / `74 c` / `74 b` around the luminol and fingerprint scenes — these readings are from the dialogue around them and still to be watched in the emulator. | most become nothing (one screen); the prompts become GBA prompts; the tutorial panels become text boxes |
@@ -206,8 +206,8 @@ reworded for buttons — the only deliberate departure from the DS text.
 3. **Characters** — the animation data decoded or recorded, six sprite
    sets converted.
 4. **Mechanics** — frame player (and the footage decision), luminol,
-   fingerprints, 3D views, close-ups, prompts. The partner portrait: done
-   (section 9).
+   fingerprints, 3D views, close-ups, prompts. The partner portrait and the
+   grey flashbacks (`5F`): done (section 9).
 5. **Sound** — seven tracks and the effects. Done (section 9).
 6. **Playthrough and release** — the sweep and audit tools extended to
    chapters 17–34, a fourth BPS for the 32 MB ROM.
@@ -270,7 +270,8 @@ name?", the DS's `74 A n`) stay questions: they become the GBA's present
 prompt `21`, with the answers from the DS's table at 0x020b1324 added to the
 court present data (a wrong answer goes to the next section, as on the DS).
 Movies, the partner portrait, the bottom-screen panels and the second fade
-system are left out (the dialogue around them stands).
+system were left out (the dialogue around them stands); the portrait and the
+fade system (the grey flashbacks) came in later (section 9).
 
 **Checking it.** An autoplayer (outside the repository: it drives the test
 harness) reads through the script and takes the decisions itself: it talks
@@ -384,7 +385,7 @@ bandana were photographed as the autoplayer reached them. The frame sound
 effects the GBA did not have (35 frames, 32 of them Gant's: SE0C3–SE0C8)
 play the fifth episode's own sounds since stage 5 (section 9).
 
-## 9. Stages 4 and 5 so far: the partner portrait, the music, the sounds
+## 9. Stages 4 and 5 so far: the partner portrait, the grey flashbacks, the music, the sounds
 
 **The partner portrait.** The DS's `76 0 n` / `76 1 n` (281 uses) put Ema's
 or Gumshoe's 64×64 face at the left or right of the text box while they talk
@@ -430,6 +431,22 @@ it took over the last frames) still end in time (`gEnSoundLines`).
 Levels (`music_levels.py`): recorded on their own in both games, each new
 song stands to the GBA's music as on the DS to the DS's (the DS plays its
 music 4.9 dB louder: median of nine songs); the seven are within 0.4 dB.
+
+**The flashbacks in grey.** The DS's second fade system, `5F`, turned out
+to be a monochrome filter: its modes 3 and 4 move a level from colour to grey
+and back (the colour mixed with its grey, luma 0.299/0.587/0.114, by
+level/32), mode 7 for the background alone. The fifth episode greys the
+background and the person for its flashbacks (`5F 3 1 1f`, 199 times) and
+brings the colour back after them (`5F 4 1 1`, 73); once the colour comes
+back slowly, over 96 frames, as Phoenix remembers Lana Skye's red scarf. In
+DeSmuME its mode 0x15 (the person alone back to colour, 3 uses) changes
+nothing on the screen; it is left out. On the GBA it is command `64 (mode <<
+8 | step) level` (`en_rfta.c`): each frame the background's colours (32–255,
+or 32–47 for a 16-colour background) and the person's palettes (14 and 15) are
+mixed with their grey at the level; the game's own colours are kept as it
+writes them (a colour in palette RAM that is not the filter's last is a new
+one), so backgrounds and poses that change during a flashback come up grey.
+Checked against the DS on the red-scarf scene.
 
 **The sounds.** The script plays 25 sounds the first four episodes lack
 (SE073, SE0B6–SE0BE, SE0C2 and the opening's SE0D4–SE0E2) and the people's

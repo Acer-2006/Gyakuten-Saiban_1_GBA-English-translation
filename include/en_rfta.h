@@ -46,6 +46,30 @@ bool32 Command60(struct ScriptContext * scriptCtx);
 bool32 Command61(struct ScriptContext * scriptCtx);
 bool32 Command62(struct ScriptContext * scriptCtx);
 bool32 Command63(struct ScriptContext * scriptCtx);
+bool32 Command64(struct ScriptContext * scriptCtx);
+
+// The DS's monochrome filter (its command 5F): the background and the person
+// in shades of grey, at a level from 0 (colour) to 32 (grey), for flashbacks.
+// The colours the game writes to palette RAM are kept (orig) and replaced by
+// their mix with grey; what was written last (written) tells a new palette
+// from the filter's own. In IWRAM after the mixer (Makefile: RFTA_IWRAM).
+#define EN_GREY_BG_FIRST 32                 // background colours 32-255 (0-31: the text box)
+#define EN_GREY_OBJ_FIRST (14 * 16)         // the person's palettes, 14 and 15
+#define EN_GREY_COLORS (256 - EN_GREY_BG_FIRST + 32)
+struct EnGrey
+{
+    u8 level;
+    u8 mode;        // the DS's: 3 to grey, 4 to colour (both), 7 to grey (the background only)
+    u8 step;        // frames a level
+    u8 counter;
+    u8 active;
+    u8 person;      // the person's palettes too
+    u16 pad;
+    u16 orig[EN_GREY_COLORS];
+    u16 written[EN_GREY_COLORS];
+};
+extern struct EnGrey gEnGrey;
+void EnRftaGreyUpdate(bool32 advance);
 // the partner portraits' evidence entries (tools/en/rfta/evidence.py)
 #define RFTA_FIRST_PORTRAIT 0xD1
 bool32 EnPresentReturnsToQuestioning(u32 section);
