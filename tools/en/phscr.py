@@ -13,6 +13,7 @@ GBA_ARGS = {
  0x61:1,  # Rise from the Ashes build: go on in section n
  0x62:1,  # Rise from the Ashes build: the partner's portrait on the plate (side << 8 | portrait)
  0x63:0,  # Rise from the Ashes build: the portrait away
+ 0x64:2,  # Rise from the Ashes build: the monochrome filter (mode << 8 | step, level)
 }
 def load(path_or_bytes):
     b = path_or_bytes if isinstance(path_or_bytes,(bytes,bytearray)) else open(path_or_bytes,'rb').read()

@@ -12,7 +12,8 @@ the Ashes has no GBA script, so every command is translated here:
     chapter continuation) or, for what the GBA does not have yet (the
     movies, the bottom-screen panels, the second fade system), nothing,
     counted in the report; the partner portrait (76) is the evidence plate
-    with the portrait's picture (commands 62 and 63);
+    with the portrait's picture (commands 62 and 63); the DS's 5F, its
+    monochrome filter for flashbacks, is command 64;
   * the six new people are the DS's, converted (characters.py: their
     animation numbers become offsets in their GBA files, as Edgeworth's two
     new looks do); the DS poses of the others are mapped the way episodes 1-4
@@ -43,6 +44,8 @@ CONTINUE_CHAPTER = 0x60     # new GBA command: go on in chapter file n (the DS's
 GOTO_SECTION = 0x61         # new GBA command: go on in section n
 PORTRAIT_SHOW = 0x62        # new GBA command: the partner's portrait on the plate (the DS's 76 0/1 n)
 PORTRAIT_HIDE = 0x63        # new GBA command: the portrait away (the DS's 76 2 0)
+GREY = 0x64                 # new GBA command: the monochrome filter (the DS's 5F mode step level)
+GREY_MODES = (3, 4, 7)      # (its mode 0x15 shows nothing on the DS's screen: left out)
 # Where the DS hands over to a system of its own that the GBA does not have
 # yet (the evidence turned over in 3D, the luminol, the fingerprints, the
 # security footage) and that system then starts the section that follows, the
@@ -144,7 +147,7 @@ def gba_anim(v):
     if 0x97 <= v <= 0xB0:
         return v - 0x73
     return EFFECTS.get(v)
-DROP = {0x4D, 0x55, 0x65, 0x68, 0x6B, 0x6F, 0x74, 0x75, 0x7B, 0x5F}
+DROP = {0x4D, 0x55, 0x65, 0x68, 0x6B, 0x6F, 0x74, 0x75, 0x7B}
 
 def usual_poses():
     """each GBA person's most used (talk, idle) pair in the episode 1-4 ports"""
@@ -288,6 +291,12 @@ class Translator:
                 self.stats['chapter continuation'] += 1
             elif op == 0x79:
                 out += [0x15]
+            elif op == 0x5F:
+                # the DS's monochrome filter (flashbacks in grey): en_rfta.c, Command64
+                if a[0] in GREY_MODES:
+                    out += [GREY, (a[0] << 8) | a[1], a[2]]; self.stats['5F as the grey filter'] += 1
+                else:
+                    self.stats['5F %x left out' % a[0]] += 1
             elif op == 0x76:
                 # the partner portrait: side (0 left, 1 right) and picture, or 2: away
                 if a[0] in (0, 1):
@@ -304,8 +313,8 @@ class Translator:
                 out += [0x36, a[0]]
                 self.stats['78 as jump'] += 1
             elif op == 0x77:
-                snd = a[0]
-                if snd < GBA_SONGS:
+                snd = NEW_SES.get(a[0], a[0])
+                if snd < GBA_SONGS or a[0] in NEW_SES:
                     out += [0x06, (snd << 8) | 1]
                 else:
                     self.stats['new sound effect left out'] += 1

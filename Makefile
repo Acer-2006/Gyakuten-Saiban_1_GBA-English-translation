@@ -209,7 +209,7 @@ LD_RFTA := -e 's@/\*RFTA_TEXT\*/@src/en_rfta.o(.text); src/en_rfta_rooms.o(.text
 	-e 's@/\*RFTA_RODATA\*/@src/en_rfta.o(.rodata); src/en_rfta_rooms.o(.rodata); src/en_rfta_tables.o(.rodata); src/en_rfta_episodes.o(.rodata);@' \
 	-e 's@/\*RFTA_SECTION\*/@. = 0x9000000; rfta_data : ALIGN(4) { src/en_rfta.o(rfta_data); data/rfta/graphics.o(rfta_data); data/rfta/backgrounds.o(rfta_data); data/rfta/descriptions.o(rfta_data); data/rfta/characters.o(rfta_data); data/rfta/effects.o(rfta_data); data/rfta/music.o(rfta_data); data/rfta/sfx.o(rfta_data); } =0@' \
 	-e 's@^gMaxLines = 80;@gMaxLines = 100;@' \
-	-e 's@/\*RFTA_IWRAM\*/@. = 0x59D0; gMPlayTrack_BGM16 = .; . = 0x5ED0; gMPlayTrack_SE2x2 = .; . = 0x5F70; gMPlayTrack_SE3x2 = .; . = 0x6010; gEnSoundLines = .; . = 0x6020; gSoundMainRAM_BufferRfta = .;@'
+	-e 's@/\*RFTA_IWRAM\*/@. = 0x59D0; gMPlayTrack_BGM16 = .; . = 0x5ED0; gMPlayTrack_SE2x2 = .; . = 0x5F70; gMPlayTrack_SE3x2 = .; . = 0x6010; gEnSoundLines = .; . = 0x6020; gSoundMainRAM_BufferRfta = .; . = 0x64C0; gEnGrey = .;@'
 endif
 
 $(OBJ_DIR)/ld_script.ld: ld_script.txt $(OBJ_DIR)/sym_iwram.txt $(OBJ_DIR)/sym_ewram.txt

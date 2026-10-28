@@ -116,6 +116,9 @@ void AgbMain()
             SetLCDIORegs();
             EnMenuVBlank(); // English patch: palette fades on the menu screens
         }
+#if RFTA
+        EnRftaGreyUpdate(TRUE); // the DS's monochrome flashbacks (en_rfta.c)
+#endif
         if (gMain.currentBgStripe > 10)
         {
             gMain.currentBgStripe = 0;
@@ -171,6 +174,7 @@ void AgbMain()
         }
         UpdateBGMFade();
 #if RFTA
+        EnRftaGreyUpdate(FALSE); // (palettes the frame's work wrote: grey before they show)
         {
             // RFTA build: how long the sound took (the most of the last frames, less a
             // line a frame) for the background stripes' budget above

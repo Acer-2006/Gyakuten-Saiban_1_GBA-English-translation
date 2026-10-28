@@ -256,6 +256,90 @@ bool32 Command63(struct ScriptContext * scriptCtx)
     return 0;
 }
 
+// Script command 64 (the DS's 5F mode step level): the monochrome filter of
+// the DS's flashbacks (its 0x02016e90, run each frame by 0x02016f04). Mode 3
+// takes the level up by one every `step` frames to 32 (grey), mode 4 down to 0
+// (colour), mode 7 as 3 for the background alone; the DS's colour for a level
+// is the colour mixed with its grey (0x0201c088: luma 0.299/0.587/0.114) by
+// level/32. The fifth episode uses 5F 3 1 1f (grey at once: 199 times),
+// 5F 4 1 1 (colour at once: 73), 5F 4 3 20 (the red scarf coming back into a
+// remembered Lana, over 96 frames) and 5F 7 1 1f; its 5F 15 (the person alone
+// back to colour) changes nothing on the DS's screen and is left out
+// (tools/en/rfta/translate.py).
+bool32 Command64(struct ScriptContext * scriptCtx)
+{
+    struct EnGrey * g = &gEnGrey;
+    u32 a;
+    scriptCtx->scriptPtr++;
+    a = *scriptCtx->scriptPtr++;
+    g->level = *scriptCtx->scriptPtr++;
+    g->mode = a >> 8;
+    g->step = a & 0xFF;
+    g->counter = 0;
+    g->person = g->mode != 7;
+    g->active = 1;
+    return 0;
+}
+
+static u16 EnGreyMix(u32 c, u32 level)
+{
+    u32 r = c & 0x1F, gr = (c >> 5) & 0x1F, b = (c >> 10) & 0x1F;
+    u32 y = (r * 306 + gr * 601 + b * 117) >> 10;
+    r = (r * (32 - level) + y * level) >> 5;
+    gr = (gr * (32 - level) + y * level) >> 5;
+    b = (b * (32 - level) + y * level) >> 5;
+    return r | (gr << 5) | (b << 10);
+}
+
+static void EnGreyRange(vu16 * pltt, u16 * orig, u16 * written, u32 n, u32 level, bool32 force)
+{
+    u32 i;
+    for (i = 0; i < n; i++)
+    {
+        u32 c = pltt[i];
+        if (c != written[i])        // a colour the game wrote: the original
+            orig[i] = c;
+        else if (!force)
+            continue;
+        c = EnGreyMix(orig[i], level);
+        pltt[i] = c;
+        written[i] = c;
+    }
+}
+
+// Each frame, twice: after the vertical blank's uploads (advance: the level
+// moves as the mode says) and before the sound (for palettes the frame's work
+// wrote). The background's and the person's colours follow the level, new
+// palettes included; at level 0 the colours are the game's own again and the
+// filter stops.
+void EnRftaGreyUpdate(bool32 advance)
+{
+    struct EnGrey * g = &gEnGrey;
+    u32 bgLast, old;
+    if (!g->active)
+        return;
+    old = g->level;
+    if (advance && ++g->counter >= g->step)
+    {
+        g->counter = 0;
+        if (g->mode == 4)
+        {
+            if (g->level > 0)
+                g->level--;
+        }
+        else if (g->level < 32)
+            g->level++;
+    }
+    // a 16-colour background has its colours at 32-47, a 256-colour one at 32-255
+    bgLast = (REG_BG3CNT & BGCNT_256COLOR) ? 256 : 48;
+    EnGreyRange((vu16 *)BG_PLTT + EN_GREY_BG_FIRST, g->orig, g->written, bgLast - EN_GREY_BG_FIRST, g->level, g->level != old);
+    if (g->person)
+        EnGreyRange((vu16 *)OBJ_PLTT + EN_GREY_OBJ_FIRST, g->orig + 256 - EN_GREY_BG_FIRST,
+                    g->written + 256 - EN_GREY_BG_FIRST, 32, g->level, g->level != old);
+    if (g->level == 0 && g->mode == 4)
+        g->active = 0;
+}
+
 // The script flags at the start of a chapter, as the DS sets them for the
 // fifth episode (its investigation and court openings, 0x02036058 and
 // 0x0202f7d8): flags 0x28 and up are the chapter's and start clear; those
@@ -272,6 +356,8 @@ static void ClearFlags(u32 from, u32 to)
 
 void EnRftaChapterFlags(struct Main * main, bool32 court)
 {
+    gEnGrey.active = 0;     // (a chapter starts in colour)
+    gEnGrey.level = 0;
     switch (court ? main->scenarioIdx + 0x100 : main->scenarioIdx)
     {
     case 17:                // Day 1
