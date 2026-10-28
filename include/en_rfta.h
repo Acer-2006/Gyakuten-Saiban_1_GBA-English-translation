@@ -48,6 +48,7 @@ bool32 Command62(struct ScriptContext * scriptCtx);
 bool32 Command63(struct ScriptContext * scriptCtx);
 bool32 Command64(struct ScriptContext * scriptCtx);
 bool32 Command65(struct ScriptContext * scriptCtx);
+bool32 Command66(struct ScriptContext * scriptCtx);
 
 // the movies (en_movie.c): the DS's command 75 and its frame sequences
 void EnMovieFrame(void);
@@ -56,6 +57,8 @@ void EnMovieVBlank(void);
 bool32 EnMovieDefersBg(void);
 bool32 EnMovieTakesBg(u32 bg);
 void EnMovieReset(void);
+void EnMovieSaveState(void);
+void EnMovieLoadState(void);
 
 // The DS's monochrome filter (its command 5F): the background and the person
 // in shades of grey, at a level from 0 (colour) to 32 (grey), for flashbacks.

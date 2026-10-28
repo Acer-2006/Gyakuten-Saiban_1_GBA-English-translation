@@ -55,6 +55,7 @@ import os, sys, struct, subprocess, tempfile, shutil
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, '..'))
 from dsdata import data, lz10, tiles_to_array          # noqa: E402
 ROOT = os.path.join(HERE, '..', '..', '..')
@@ -424,6 +425,40 @@ def blob(m, packer):
                             key_bytes=sum(len(best[('key', k)][1]) for k in m['keys']))
 
 
+# ---------------------------------------------------------------- the tape in court
+# Day 3: the security footage is shown to point out a moment (four questions,
+# the DS's 0x020ced54); the DS's 0x0206a294 checks the frame and the touch:
+# its table at 0x020c09bc holds four spots, each a run of frames with a mask
+# a frame (data.bin, RLE, 256x192 1bpp) and the section each question goes
+# to when the 16x16 box round the touch meets the mask; then the sections
+# for no spot (0x020c0a18). The masks are small blobs: here their rectangles.
+TAPE_SPOTS, TAPE_DEFAULTS = 0x020c09bc, 0x020c0a18
+
+
+def tape_spots():
+    import dsbin
+    d = data(); ar = dsbin.data()
+    asm = ['\t.align 2', '\t.global gRftaTapeSpots',
+           'gRftaTapeSpots: @ the sections with no spot pointed out, by question; the four spots (en_movie.c)',
+           '\t.2byte ' + ', '.join('0x%X' % v for v in struct.unpack_from('<4H', ar, TAPE_DEFAULTS - dsbin.BASE))]
+    boxes = []
+    for i in range(4):
+        f0, f1, ptr = struct.unpack_from('<HHI', ar, TAPE_SPOTS - dsbin.BASE + 20 * i)
+        secs = struct.unpack_from('<4H', ar, TAPE_SPOTS - dsbin.BASE + 20 * i + 12)
+        n = struct.unpack_from('<I', d, ptr)[0]
+        assert n == f1 - f0 + 1
+        bx = []
+        for k in range(n):
+            o, sz = struct.unpack_from('<II', d, ptr + 4 + 8 * k)
+            a = np.unpackbits(np.frombuffer(rle(d[ptr + o:ptr + o + sz + 4]), np.uint8), bitorder='little').reshape(192, 256)
+            ys, xs = np.where(a)
+            bx.append((xs.min(), ys.min(), xs.max(), ys.max()) if len(xs) else (255, 255, 0, 0))
+        asm += ['\t.2byte %d, %d, %s' % (f0, f1, ', '.join('0x%X' % v for v in secs)), '\t.word gRftaTapeBoxes%d' % i]
+        boxes += ['gRftaTapeBoxes%d: @ frames %d-%d: x0, y0, x1, y1 (the DS\'s pixels; 255: none)' % (i, f0, f1)]
+        boxes += ['\t.byte ' + ', '.join('%d, %d, %d, %d' % b for b in bx[j:j + 8]) for j in range(0, n, 8)]
+    return asm + boxes + ['']
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     packer = Packer()
@@ -450,6 +485,7 @@ def main():
         packer.close()
     asm += ['\t.align 2', '\t.global gRftaMovies', 'gRftaMovies: @ by the DS\'s sequence number']
     asm += ['\t.word gRftaMovie_%s' % s['name'] for s in SEQS]
+    asm += [''] + tape_spots()
     open(os.path.join(ROOT, 'data', 'rfta', 'movies.s'), 'w').write('\n'.join(asm) + '\n')
     print('%d bytes (%.2f MB) in all' % (total, total / 2**20))
 
