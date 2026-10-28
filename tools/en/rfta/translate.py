@@ -10,14 +10,15 @@ the Ashes has no GBA script, so every command is translated here:
   * the DS's own commands become what the GBA has for them (waits, the
     plate hide, the gavel, the centring command, the game-over check, a
     chapter continuation) or, for what the GBA does not have yet (the
-    partner portrait, the movies, the bottom-screen panels, the second
-    fade system), nothing, counted in the report;
+    movies, the bottom-screen panels, the second fade system), nothing,
+    counted in the report; the partner portrait (76) is the evidence plate
+    with the portrait's picture (commands 62 and 63);
   * the six new people are the DS's, converted (characters.py: their
     animation numbers become offsets in their GBA files, as Edgeworth's two
     new looks do); the DS poses of the others are mapped the way episodes 1-4
     map them (anim_looks.json);
-  * the seven new songs play stand-ins (PLACEHOLDER_BGM) until they are
-    converted; the DS's new sound effects are left out until then.
+  * the seven new songs are the GBA songs 113-119 (NEW_SONGS; converted by
+    music.py), its 25 new sound effects songs 120-144 (NEW_SES, sfx.py).
 
 Section numbers are the DS's, so choices, jumps and testimony records keep
 their targets; the jump descriptors in the section table are rewritten to
@@ -32,6 +33,7 @@ import ds_script
 from ds_script import DS_ARGS, FIRST_RFTA_FILE, LAST_RFTA_FILE
 from phscr import GBA_ARGS, load, section_bounds, tokens, parse
 import port_script
+from sfx import NEW_SES
 from port_script import ds_text_speed, SE_MAP, GAVEL_GBA, DS_GAVELS, DS_PLATE_HIDE, load_looks, ds_look
 from arm9_tables import room
 
@@ -39,6 +41,8 @@ ROOT = os.path.join(HERE, '..', '..', '..')
 GAMEOVER_CHECK = 0x5F       # the GBA's command for the DS's 7A
 CONTINUE_CHAPTER = 0x60     # new GBA command: go on in chapter file n (the DS's 6A)
 GOTO_SECTION = 0x61         # new GBA command: go on in section n
+PORTRAIT_SHOW = 0x62        # new GBA command: the partner's portrait on the plate (the DS's 76 0/1 n)
+PORTRAIT_HIDE = 0x63        # new GBA command: the portrait away (the DS's 76 2 0)
 # Where the DS hands over to a system of its own that the GBA does not have
 # yet (the evidence turned over in 3D, the luminol, the fingerprints, the
 # security footage) and that system then starts the section that follows, the
@@ -121,8 +125,8 @@ PLACEHOLDER = {}
 PLACEHOLDER_NAMES = {}
 def stand_in(person):
     return PLACEHOLDER.get(person, person)
-# the DS's seven new songs (SDAT sequence numbers) -> GBA songs standing in
-PLACEHOLDER_BGM = {0x17C: 12, 0x17D: 25, 0x17E: 18, 0x17F: 22, 0x180: 2, 0x181: 4, 0x182: 15}
+# the DS's seven new songs (SDAT sequence numbers, BGM150-156) -> their GBA songs (music.py)
+NEW_SONGS = {0x17C + i: 113 + i for i in range(7)}
 GBA_SONGS = 42 + 70         # BGM000-041 and SE000-045 (plus SE04F/SE050 at 111/112): the GBA song table
 def gba_anim(v):
     """the GBA's number for a DS animation (command 2F), None where the GBA has
@@ -140,7 +144,7 @@ def gba_anim(v):
     if 0x97 <= v <= 0xB0:
         return v - 0x73
     return EFFECTS.get(v)
-DROP = {0x4D, 0x55, 0x65, 0x68, 0x6B, 0x6F, 0x74, 0x75, 0x76, 0x7B, 0x5F}
+DROP = {0x4D, 0x55, 0x65, 0x68, 0x6B, 0x6F, 0x74, 0x75, 0x7B, 0x5F}
 
 def usual_poses():
     """each GBA person's most used (talk, idle) pair in the episode 1-4 ports"""
@@ -221,6 +225,9 @@ class Translator:
                 out += [0x0B, ds_text_speed(a[0])]
             elif op == 0x06:
                 snd, flag = a[0], a[1] & 1
+                if snd in NEW_SES:
+                    out += [0x06, (NEW_SES[snd] << 8) | flag]; self.stats['new sound effect'] += 1
+                    continue
                 snd = SE_MAP.get(snd, snd)
                 if snd >= GBA_SONGS and snd not in SE_MAP.values():
                     self.stats['new sound effect left out'] += 1
@@ -228,8 +235,8 @@ class Translator:
                     out += [0x06, (snd << 8) | flag]
             elif op == 0x05:
                 song = a[0]
-                if song in PLACEHOLDER_BGM:
-                    song = PLACEHOLDER_BGM[song]; self.stats['placeholder song'] += 1
+                if song in NEW_SONGS:
+                    song = NEW_SONGS[song]; self.stats['new song'] += 1
                 elif song >= GBA_SONGS and song != 0xFF:     # 0xFF: the song that was playing
                     self.stats['unknown song left out'] += 1; continue
                 out += [0x05, song, a[1]]
@@ -281,6 +288,13 @@ class Translator:
                 self.stats['chapter continuation'] += 1
             elif op == 0x79:
                 out += [0x15]
+            elif op == 0x76:
+                # the partner portrait: side (0 left, 1 right) and picture, or 2: away
+                if a[0] in (0, 1):
+                    out += [PORTRAIT_SHOW, (a[0] << 8) | a[1]]
+                else:
+                    out += [PORTRAIT_HIDE]
+                self.stats['portrait'] += 1
             elif op == 0x74 and a[0] == 0xA:
                 out += [PROMPT_PRESENT]
                 self.stats['74 A as a present prompt'] += 1
@@ -344,7 +358,7 @@ class Translator:
         """where a translated section waits at its end: the first 15 after its
         last text (the DS's systems take over there; a 1C 3 / 15 after it is
         their way back to the menu)"""
-        args = dict(GBA_ARGS); args.update({CONTINUE_CHAPTER: 1, GOTO_SECTION: 1})
+        args = dict(GBA_ARGS); args.update({CONTINUE_CHAPTER: 1, GOTO_SECTION: 1, PORTRAIT_SHOW: 1, PORTRAIT_HIDE: 0})
         cmds, _ = parse(out, args)
         last_text = max([p for p, kind, op, a in cmds if kind == 'text'] + [0])
         return [p for p, kind, op, a in cmds if kind == 'cmd' and op == 0x15 and p > last_text][0]
@@ -429,7 +443,7 @@ def main():
         print(rep[-1])
     with open(os.path.join(out_dir, 'translate_report.txt'), 'w') as o:
         o.write('\n'.join(rep) + '\n\ntotals: %s\n\n' % dict(sorted(t.stats.items())))
-        o.write('stand-ins: %s\nsongs: %s\n\n' % (PLACEHOLDER_NAMES, PLACEHOLDER_BGM))
+        o.write('stand-ins: %s\nsongs: %s\n\n' % (PLACEHOLDER_NAMES, NEW_SONGS))
         o.write('\n'.join(t.notes[:400]) + '\n')
     print('totals', dict(sorted(t.stats.items())))
 

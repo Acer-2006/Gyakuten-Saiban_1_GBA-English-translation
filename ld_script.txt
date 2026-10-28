@@ -12,6 +12,7 @@ SECTIONS {
     ALIGN(4)
     {
         INCLUDE "sym_iwram.txt"
+        /*RFTA_IWRAM*/
     }
     . = 0x8000000;
     .text :

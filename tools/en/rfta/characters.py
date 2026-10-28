@@ -26,7 +26,7 @@ Meekins have frames of up to 466 tiles. For each frame:
     rows behind the text box going first from the bottom until it fits.
 The redrawn sprites' tiles go into the pair's graphics block as new entries
 (identical ones once); the frames that fit keep the DS's sprites. The frame
-sound effects the GBA does not have are left out (frame flag 2).
+sound effects of the fifth episode are its new songs (sfx.py).
 
 Edgeworth's two looks the GBA lacks (DS 0x82, 0x83) are added after his own
 animations in a copy of his files (the plain build keeps the GBA's).
@@ -64,6 +64,7 @@ WIN_X0, WIN_X1, WIN_Y0, WIN_Y1 = -128, 128, -80, 80
 TEXTBOX_TOP = 32                   # the first row behind the text box (screen row 112)
 GBA_SOUNDS = 112                   # the GBA's song table (SE ids below this play the same sound)
 SE_MAP = {121: 111, 122: 112}      # port_script.SE_MAP
+from sfx import NEW_SES, FRAME_SE  # noqa: E402  the fifth episode's sounds (songs 120 and up)
 # DS person: (name, GBA person id, DS animation numbers)
 PEOPLE = [
     (0x2C, 'ema', range(0x178, 0x198)),
@@ -392,8 +393,10 @@ def convert(name, anims, base=None, report=None, overlays=None):
                         if report is not None:
                             report.append('%s %x frame %d: %d cells left out, from row %d' % (name, n, len(new_frames), lost, top))
                 if fl & 2:
+                    if song + FRAME_SE in NEW_SES:          # the fifth episode's own (sfx.py)
+                        song = NEW_SES[song + FRAME_SE]; stats['frame sounds of the fifth episode'] += 1
                     song = SE_MAP.get(song, song)
-                    if song >= GBA_SOUNDS and song not in SE_MAP.values():
+                    if song >= GBA_SOUNDS and song not in SE_MAP.values() and song not in NEW_SES.values():
                         fl &= ~2; song = 0; stats['frame sounds left out'] += 1
                 most = max(most, len(out))
                 new_frames.append((out, dur, fl, song, act))

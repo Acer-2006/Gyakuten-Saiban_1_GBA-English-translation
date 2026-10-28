@@ -161,12 +161,32 @@ void AgbMain()
             if(gMain.currentBgStripe == 3 || gMain.currentBgStripe == 5 || gMain.currentBgStripe == 7)
             {
                 u32 now = EnLinesSinceVBlank();
+#if RFTA
+                if(now + EnBgNextStripeLines(now - start) + gEnSoundLines <= EN_BG_FRAME_END)
+#else
                 if(now + EnBgNextStripeLines(now - start) <= EN_BG_TWO_STRIPES_END)
+#endif
                     DecompressCurrentBGStripe(gMain.currentBG);
             }
         }
         UpdateBGMFade();
+#if RFTA
+        {
+            // RFTA build: how long the sound took (the most of the last frames, less a
+            // line a frame) for the background stripes' budget above
+            u32 start = EnLinesSinceVBlank(), lines;
+            m4aSoundMain();
+            lines = EnLinesSinceVBlank() - start;
+            if (lines > 120)
+                lines = 120;
+            if (lines >= gEnSoundLines)
+                gEnSoundLines = lines;
+            else
+                gEnSoundLines--;
+        }
+#else
         m4aSoundMain();
+#endif
     }
 }
 

@@ -80,7 +80,12 @@ SoundMain_5:
 	.align 2, 0
 lt_SOUND_INFO_PTR:        .word SOUND_INFO_PTR
 lt_ID_NUMBER:             .word ID_NUMBER
+	.ifdef RFTA
+	@ English patch, RFTA build: the mixer in a bigger IWRAM buffer (its nearest-sample loop added)
+lt_SoundMainRAM_Buffer:   .word gSoundMainRAM_BufferRfta + 1
+	.else
 lt_SoundMainRAM_Buffer:   .word SoundMainRAM_Buffer + 1
+	.endif
 lt_REG_VCOUNT:            .word REG_VCOUNT
 lt_o_SoundInfo_pcmBuffer: .word o_SoundInfo_pcmBuffer
 lt_PCM_DMA_BUF_SIZE:      .word PCM_DMA_BUF_SIZE
@@ -301,6 +306,10 @@ _081DD044:
 	mov r10, r10, lsl 16
 	mov r11, r11, lsl 16
 	ldrb r0, [r4, o_SoundChannel_type]
+	.ifdef RFTA
+	tst r0, 0x10
+	bne _RftaNearest
+	.endif
 	tst r0, 0x8
 	beq _081DD19C
 _081DD07C:
@@ -386,6 +395,58 @@ _081DD174:
 	str r7, [r5, 0x630]
 	str r6, [r5], 0x4
 	b _081DD234
+	.ifdef RFTA
+	@ English patch, RFTA build: voices of type 0x10 (Rise from the Ashes' songs,
+	@ tools/en/rfta/music.py) are resampled without interpolation, each output
+	@ sample the nearest source sample, as the DS's sound hardware plays them. It
+	@ mixes in less time than the interpolating loop (about 5.5 scanlines a
+	@ channel a frame against 7), for their 12 channels (m4a.c).
+	@ (The interpolating loop below, but the source pointer at the current sample.)
+_RftaNearest:
+	push {r4,r12}
+	ldr lr, [r4, o_SoundChannel_fw]
+	ldr r1, [r4, o_SoundChannel_freq]
+	mul r4, r12, r1
+	ldrsb r0, [r3]
+_RftaNearest_Word:
+	ldr r6, [r5]
+	ldr r7, [r5, 0x630]
+_RftaNearest_Sample:
+	mul r12, r10, r0
+	bic r12, r12, 0xFF0000
+	add r6, r12, r6, ror 8
+	mul r12, r11, r0
+	bic r12, r12, 0xFF0000
+	add r7, r12, r7, ror 8
+	add lr, lr, r4
+	movs r9, lr, lsr 23
+	beq _RftaNearest_Next
+	bic lr, lr, 0x3F800000
+	subs r2, r2, r9
+	ble _RftaNearest_End
+_RftaNearest_Load:
+	ldrsb r0, [r3, r9]!
+_RftaNearest_Next:
+	adds r5, r5, 0x40000000
+	bcc _RftaNearest_Sample
+	str r7, [r5, 0x630]
+	str r6, [r5], 0x4
+	subs r8, r8, 0x4
+	bgt _RftaNearest_Word
+	pop {r4,r12}
+	b _081DD228
+_RftaNearest_End:
+	ldr r0, [sp, 0x18]
+	cmp r0, 0
+	beq _081DD158
+	ldr r3, [sp, 0x14]
+	rsb r9, r2, 0
+_RftaNearest_Wrap:
+	adds r2, r0, r2
+	bgt _RftaNearest_Load
+	sub r9, r9, r0
+	b _RftaNearest_Wrap
+	.endif
 _081DD19C:
 	push {r4,r12}
 	ldr lr, [r4, o_SoundChannel_fw]

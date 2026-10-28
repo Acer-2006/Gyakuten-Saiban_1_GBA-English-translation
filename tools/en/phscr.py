@@ -11,6 +11,8 @@ GBA_ARGS = {
  0x5F:1,  # English patch: the DS's 7A, game over check (the DS's argument)
  0x60:1,  # Rise from the Ashes build: go on in chapter file n
  0x61:1,  # Rise from the Ashes build: go on in section n
+ 0x62:1,  # Rise from the Ashes build: the partner's portrait on the plate (side << 8 | portrait)
+ 0x63:0,  # Rise from the Ashes build: the portrait away
 }
 def load(path_or_bytes):
     b = path_or_bytes if isinstance(path_or_bytes,(bytes,bytearray)) else open(path_or_bytes,'rb').read()

@@ -107,6 +107,9 @@ ASFLAGS := -mcpu=arm7tdmi -mthumb-interwork
 ifeq ($(JPVOICES),1)
 ASFLAGS += --defsym EN_JP_VOICES=1
 endif
+ifeq ($(RFTA),1)
+ASFLAGS += --defsym RFTA=1
+endif
 
 CC1             := tools/agbcc/bin/old_agbcc
 override CFLAGS += -mthumb-interwork -Wimplicit -Wparentheses -Werror -O2 -fhex-asm
@@ -198,9 +201,15 @@ $(OBJ_DIR)/sym_ewram.txt: sym_ewram.txt
 	cp sym_ewram.txt $(OBJ_DIR)
 
 ifeq ($(RFTA),1)
+# (the RFTA build: the music's 16 tracks, two tracks for sound players 2 and 3,
+# the sound time for the background stripes and the bigger mixer in IWRAM; the
+# mixer may take 100 scanlines, not 80: Rise from the Ashes' songs keep 12
+# channels busy, and notes starting all at once take the sequencer up to 20)
 LD_RFTA := -e 's@/\*RFTA_TEXT\*/@src/en_rfta.o(.text); src/en_rfta_rooms.o(.text); src/en_rfta_episodes.o(.text);@' \
 	-e 's@/\*RFTA_RODATA\*/@src/en_rfta.o(.rodata); src/en_rfta_rooms.o(.rodata); src/en_rfta_tables.o(.rodata); src/en_rfta_episodes.o(.rodata);@' \
-	-e 's@/\*RFTA_SECTION\*/@. = 0x9000000; rfta_data : ALIGN(4) { src/en_rfta.o(rfta_data); data/rfta/graphics.o(rfta_data); data/rfta/backgrounds.o(rfta_data); data/rfta/descriptions.o(rfta_data); data/rfta/characters.o(rfta_data); data/rfta/effects.o(rfta_data); } =0@'
+	-e 's@/\*RFTA_SECTION\*/@. = 0x9000000; rfta_data : ALIGN(4) { src/en_rfta.o(rfta_data); data/rfta/graphics.o(rfta_data); data/rfta/backgrounds.o(rfta_data); data/rfta/descriptions.o(rfta_data); data/rfta/characters.o(rfta_data); data/rfta/effects.o(rfta_data); data/rfta/music.o(rfta_data); data/rfta/sfx.o(rfta_data); } =0@' \
+	-e 's@^gMaxLines = 80;@gMaxLines = 100;@' \
+	-e 's@/\*RFTA_IWRAM\*/@. = 0x59D0; gMPlayTrack_BGM16 = .; . = 0x5ED0; gMPlayTrack_SE2x2 = .; . = 0x5F70; gMPlayTrack_SE3x2 = .; . = 0x6010; gEnSoundLines = .; . = 0x6020; gSoundMainRAM_BufferRfta = .;@'
 endif
 
 $(OBJ_DIR)/ld_script.ld: ld_script.txt $(OBJ_DIR)/sym_iwram.txt $(OBJ_DIR)/sym_ewram.txt
