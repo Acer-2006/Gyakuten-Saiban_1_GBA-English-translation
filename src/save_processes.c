@@ -38,6 +38,9 @@ u32 SaveGameData()
     DmaCopy16(3, gSaveVersion, gSaveDataBuffer.saveDataVer, sizeof(gSaveVersion));
     CalculateSaveChecksum();
     VwfSaveLog(); // English patch: text box contents, stored after the save data
+#if RFTA
+    EnMovieSaveState(); // (a movie on screen: its place)
+#endif
     return WriteSramEx((void*)&gSaveDataBuffer, SRAM_START, sizeof(gSaveDataBuffer));
 }
 
@@ -47,6 +50,9 @@ u32 LoadSaveData()
     char * sramVer;
     ReadSram(SRAM_START, (void*)&gSaveDataBuffer, 0x29D0);
     VwfLoadLog(); // English patch
+#if RFTA
+    EnMovieLoadState();
+#endif
     sramVer = gSaveDataBuffer.saveDataVer;
     for(i = 0; i < 0x30; i++)
     {

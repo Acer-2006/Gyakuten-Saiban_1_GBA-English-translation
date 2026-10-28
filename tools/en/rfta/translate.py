@@ -50,6 +50,33 @@ MOVIE = 0x65                # new GBA command: the movies (the DS's 75 sub x y z
 # the DS's 69 405 starts the opening's frames (its effect 0x02068b7c, case 5): sequence 1,
 # kept on screen at the end (0x4000)
 MOVIE_OPENING = (0x405, 0x100)
+TAPE = 0x66                 # new GBA command: the security tape shown to point out a moment (src/en_movie.c)
+# Day 3 trial: where the DS hands over to its tape viewer (74 8 35, 79), the
+# question it asks (its 0x020ced54; tools/en/rfta/movies.py: the spots): the
+# locker light, the cloth falling out; Marshall in the video, what Meekins did
+TAPE_QUESTIONS = {(25, 0x9C): 0, (25, 0xA3): 1, (26, 0x9D): 2, (26, 0xA7): 3}
+TAPE_HINT = 'Hold L/R: rewind/fast-forward\nSTART: pause  A: point it out'
+
+
+def gba_text(s):
+    """text tokens (the DS's and the GBA's: ds_script.letter)"""
+    import ds_script
+    inv = {'/': 0x171}      # ("2/21 SL-9")
+    for code, ch in sorted(ds_script.SPECIAL.items(), reverse=True):
+        inv[ch] = code
+    out = []
+    for ch in s:
+        if ch == '\n':
+            out.append(0x01)
+        elif '0' <= ch <= '9':
+            out.append(0x80 + ord(ch) - 48)
+        elif 'A' <= ch <= 'Z':
+            out.append(0x8A + ord(ch) - 65)
+        elif 'a' <= ch <= 'z':
+            out.append(0xA4 + ord(ch) - 97)
+        else:
+            out.append(inv[ch])
+    return out
 # Where the DS hands over to a system of its own that the GBA does not have
 # yet (the evidence turned over in 3D, the luminol, the fingerprints, the
 # security footage) and that system then starts the section that follows, the
@@ -73,11 +100,6 @@ BYPASS = {
     (24, 0x13A): 0x13E, (24, 0x13E): 0x13F, (24, 0x13F): 0x142,
     # Day 2: the wiped stain dusted -> Jake Marshall's prints
     (24, 0x145): 0x146,
-    # Day 3 trial: the security tape, the point in it (the DS's table at 0x020c09cc: the
-    # answer for each frame range): the locker light, the cloth falling out
-    (25, 0x9C): 0xA2, (25, 0xA3): 0xA6,
-    # Day 3 trial: the tape again: Marshall in the video, what Meekins did
-    (26, 0x9D): 0xA0, (26, 0xA7): 0xA9,
     # Day 3: the locker's number (11D: the wrong one), the cloth dusted -> Ema's prints
     # (12A: no match), the last piece of the jar (132: it does not fit)
     (30, 0x11C): 0x11E, (30, 0x129): 0x12B, (30, 0x131): 0x133,
@@ -419,6 +441,19 @@ class Translator:
                 # (each: "flag clear -> to the end"; then the jump; the end is the 1C 3 / 15 after them)
                 to = at + 3 * len(flags) + 2
                 secs[si] = out[:at] + sum(([0x35, f << 8, 2 * to] for f in flags), []) + [0x36, desc] + out[at:]
+            if (k, 0x80 + si) in TAPE_QUESTIONS:
+                # the tape: the last line read (a page), then what the keys do while it
+                # is shown (the DS's "Select area via Touch Screen"); the tape command
+                # goes on in the section the answer leads to
+                out = secs[si]
+                end = self.end_15(out)
+                start = end - 2 if out[end - 2:end] == [0x1C, 3] else end
+                ins = [0x02, 0x0E, 0] + gba_text(TAPE_HINT) + [TAPE, TAPE_QUESTIONS[(k, 0x80 + si)]]
+                args = dict(GBA_ARGS); args.update({GOTO_SECTION: 1, TAPE: 1})
+                assert not [a for p, kind, op, a in parse(out, args)[0] if kind == 'cmd' and op == 0x35 and a[-1] >= 2 * start], \
+                    'a jump past the tape'
+                secs[si] = out[:start] + ins + out[start:]
+                self.stats['tape'] += 1
             if (k, 0x80 + si) in BYPASS:
                 # where the section ends (its last 15, with the 1C 3 that slides
                 # the text box away for the menu, if it has one), the GBA goes on

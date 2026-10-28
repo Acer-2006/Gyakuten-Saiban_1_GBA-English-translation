@@ -18,6 +18,13 @@
 #include "script.h"
 #include "ewram.h"
 #include "constants/process.h"
+#include "constants/oam_allocations.h"
+#include "investigation.h"
+#include "sound.h"
+#include "graphics.h"
+#include "constants/songs.h"
+#include "save.h"
+#include "agb_sram.h"
 #include "en_rfta.h"
 
 #if RFTA
@@ -80,13 +87,20 @@ struct EnMovie
     s16 shown;          // the frame in the slots (-1: none)
     s16 goal;           // the frame to show
     s16 next;           // the frame the unpacked change leads to
+    s16 dueFrame;       // the frame the DS has shown
     u16 slots;
     u16 bg;             // the background under the movie
     u16 saveBg3cnt;
     u16 saveBackdrop;
     u8 saveScrolling;
-    u8 pad;
+    u8 speed;           // frames a step (2: the tape fast-forwarded)
     u16 scroll;         // the panning movie's: the screen's left edge in the scene
+    // the tape in court (Command66)
+    u8 tape;
+    u8 question;
+    u8 tapeKey;         // L or R held: how long
+    u8 tapePaused;      // what it was doing before
+
     struct EnLz lz;
     const struct EnMovieBlob * blob;
 };
@@ -389,7 +403,10 @@ void EnMovieVBlank(void)
         return;
     if (m->taken && IsPan())        // (every frame: the registers are written every frame without it)
         REG_BG3HOFS = gIORegisters.lcd_bg3hofs + m->scroll;
-    if (m->state != MV_READY || !Playing() || !(m->due || m->hidden || m->mode == APPLY_KEY))
+    // (shown when the DS has shown it, or a frame past it: or at once, the way
+    // to the frame wanted being long)
+    if (m->state != MV_READY || !Playing()
+        || !(m->hidden || (m->due && (m->next - m->shown) * (m->dueFrame - m->next) >= 0)))
         return;
     TakeBg3();
     if (m->mode != APPLY_NONE)
@@ -402,10 +419,9 @@ void EnMovieVBlank(void)
     frame = m->shown = m->next;
     m->state = MV_IDLE;
     if (m->shown == m->goal)
-    {
         m->hidden = FALSE;
+    if (m->shown == m->dueFrame)
         m->due = FALSE;
-    }
     SetColours(frame);
     if (IsPan())
     {
@@ -425,12 +441,18 @@ static void Close(void)
 }
 
 
+static void Restore(void);
+
 // once a frame (the DS's 0x0206b0dc)
 void EnMovieFrame(void)
 {
     struct EnMovie * m = &gEnMovie;
     u32 state;
-    if (!m->open || !Playing())
+    if (!Playing())
+        return;
+    if (!m->open)
+        Restore();
+    if (!m->open)
         return;
     state = m->flags & 0xF;
     if (state == 2)
@@ -444,9 +466,9 @@ void EnMovieFrame(void)
         {
             m->phase = 0;
             if (state == 1)
-                m->pos++;
+                m->pos += m->speed;
             else if (state == 4)
-                m->pos--;
+                m->pos -= m->speed;
             if ((state == 1 && m->pos > m->end) || (state == 4 && m->pos < m->start)
                 || (state == 3 && m->pos < m->start))
             {
@@ -484,7 +506,10 @@ void EnMovieFrame(void)
         m->goal = m->pos;
     }
     else if (m->phase == 1)
+    {
         m->due = TRUE;
+        m->dueFrame = m->pos;
+    }
 }
 
 // the wait (75 6, the DS's 0x0206a6d4): the end (or the start, backwards) reached
@@ -515,6 +540,7 @@ static void Open(u32 seq, u32 flags)
     m->goal = 0;
     m->slots = IsPan() ? 640 : 600;
     m->bg = gMain.currentBG;
+    m->speed = 1;
 }
 
 // GBA command 65 sub a b: the DS's 75 (tools/en/rfta/translate.py)
@@ -553,6 +579,167 @@ bool32 Command65(struct ScriptContext * scriptCtx)
     }
     scriptCtx->scriptPtr += 4;
     return 0;
+}
+
+// ---------------------------------------------------------------- the tape in court
+// Day 3 (the DS's tape viewer, its 0x02077c28): the security footage plays
+// and the player points out a moment in it, the frame and the place deciding
+// the answer (the DS's 0x0206a294: tools/en/rfta/movies.py). The DS's touch
+// screen buttons are keys here: L rewinds while held, R fast-forwards (a tap
+// of either while it is paused: a frame), START pauses and plays; the pointer
+// (the GBA's examine hand) moves with the + pad and A points the moment out.
+struct EnTapeSpot
+{
+    u16 first, last;
+    u16 sections[4];        // by question
+    const u8 * boxes;       // a frame: x0, y0, x1, y1 (the DS's pixels; x0 255: none)
+};
+
+struct EnTapeSpots
+{
+    u16 none[4];            // the sections with no spot pointed out
+    struct EnTapeSpot spots[4];
+};
+
+extern const struct EnTapeSpots gRftaTapeSpots;
+
+#define TAPE_STEP_HOLD 10   // frames L or R held before it plays on
+
+static u32 TapeAnswer(void)
+{
+    struct EnMovie * m = &gEnMovie;
+    struct InvestigationStruct * inv = &gInvestigation;
+    s32 frame = m->shown >= 0 ? m->shown : m->pos;
+    // the fingertip, in the DS's frame (the picture is cut 8 and 16 from its left and top)
+    s32 x = inv->pointerX + 12 + 8, y = inv->pointerY + 16;
+    u32 i;
+    for (i = 0; i < 4; i++)
+    {
+        const struct EnTapeSpot * sp = &gRftaTapeSpots.spots[i];
+        const u8 * b;
+        if (frame < sp->first || frame > sp->last)
+            continue;
+        b = sp->boxes + (frame - sp->first) * 4;
+        // (the DS: a pixel of the mask in the 16x16 box round the touch)
+        if (b[0] != 255 && x + 7 >= b[0] && x - 8 <= b[2] && y + 7 >= b[1] && y - 8 <= b[3])
+            return sp->sections[m->question];
+    }
+    return gRftaTapeSpots.none[m->question];
+}
+
+static void TapeKeys(void)
+{
+    struct EnMovie * m = &gEnMovie;
+    u32 held = gJoypad.heldKeys, pressed = gJoypad.pressedKeys, state = m->flags & 0xF;
+    u32 key = held & (L_BUTTON | R_BUTTON);
+    if (pressed & START_BUTTON)
+    {
+        if (state == 3 || state == 5)
+        {
+            if (m->pos < m->end)
+                m->flags = (m->flags & ~0xF) | 1;
+        }
+        else
+            m->flags = (m->flags & ~0xF) | 3;
+        m->speed = 1;
+        m->tick = 0;
+        return;
+    }
+    if (pressed & (L_BUTTON | R_BUTTON))
+    {
+        m->tapePaused = state == 3 || state == 5;
+        m->tapeKey = 0;
+        if (m->tapePaused)              // a frame back or on
+        {
+            s32 p = m->pos + ((pressed & L_BUTTON) ? -1 : 1);
+            if (p >= m->start && p <= m->end)
+                m->pos = m->goal = p;
+            m->flags = (m->flags & ~0xF) | 3;
+            return;
+        }
+    }
+    if (key == L_BUTTON || key == R_BUTTON)
+    {
+        if (m->tapeKey < 255)
+            m->tapeKey++;
+        if (!m->tapePaused || m->tapeKey > TAPE_STEP_HOLD)
+        {
+            u32 want = key == L_BUTTON ? 4 : 1;
+            m->speed = key == L_BUTTON ? 1 : 2;
+            if (state != want && !(state == 5 && ((want == 4 && m->pos == m->start) || (want == 1 && m->pos == m->end))))
+            {
+                m->flags = (m->flags & ~0xF) | want;
+                m->tick = 0;
+            }
+        }
+    }
+    else if (m->tapeKey)
+    {
+        // let go: paused if it was, playing on (at the speed of play) if not
+        m->tapeKey = 0;
+        m->speed = 1;
+        if (m->tapePaused || state == 4)
+            m->flags = (m->flags & ~0xF) | (m->tapePaused ? 3 : 1);
+        m->tick = 0;
+    }
+}
+
+// GBA command 66 q: the tape, question q (tools/en/rfta/translate.py: TAPE_QUESTIONS)
+bool32 Command66(struct ScriptContext * scriptCtx)
+{
+    struct EnMovie * m = &gEnMovie;
+    struct InvestigationStruct * inv = &gInvestigation;
+    if (!m->tape)
+    {
+        Open(2, 0x4001);
+        m->tape = TRUE;
+        m->question = scriptCtx->scriptPtr[1];
+        DmaCopy16(3, gGfxInvestigationExamineCursor, OBJ_VRAM0 + 0x1F80, 0x80);
+        DmaCopy16(3, gPalInvestigationExamineCursors, OBJ_PLTT + 0x100, 0x20);
+        inv->pointerX = 120 - 12;
+        inv->pointerY = 70;
+        inv->pointerColor = 8;
+        inv->pointerColorCounter = 0;
+        PlaySE(SE007_MENU_OPEN_SUBMENU);
+        return 1;
+    }
+    if (!m->open)       // (closed by something else: start it again)
+    {
+        m->tape = FALSE;
+        return 1;
+    }
+    TapeKeys();
+    if (gJoypad.heldKeys & DPAD_LEFT)
+        inv->pointerX = inv->pointerX < 3 + 0 ? 0 : inv->pointerX - 3;
+    if (gJoypad.heldKeys & DPAD_RIGHT)
+        inv->pointerX = inv->pointerX + 3 > DISPLAY_WIDTH - 16 ? DISPLAY_WIDTH - 16 : inv->pointerX + 3;
+    if (gJoypad.heldKeys & DPAD_UP)
+        inv->pointerY = inv->pointerY < 3 ? 0 : inv->pointerY - 3;
+    if (gJoypad.heldKeys & DPAD_DOWN)
+        inv->pointerY = inv->pointerY + 3 > DISPLAY_HEIGHT - 16 ? DISPLAY_HEIGHT - 16 : inv->pointerY + 3;
+    // the text box (what the keys do) out of the way of the pointer
+    EnSpotSelectTextbox(inv->pointerY > SPOTSELECT_BOTTOM - 32);
+    if (gJoypad.pressedKeys & A_BUTTON)
+    {
+        u32 section = TapeAnswer();
+        PlaySE(SE001_MENU_CONFIRM);
+        EnSpotSelectTextbox(FALSE);
+        gOamObjects[OAM_IDX_POINTER].attr0 = SPRITE_ATTR0_CLEAR;
+        m->tape = FALSE;
+        m->flags = (m->flags & ~0xF) | 2;    // (closed by the next frame's EnMovieFrame)
+        ChangeScriptSection(section);
+        return 0;
+    }
+    if (++inv->pointerColorCounter > 1)
+    {
+        inv->pointerColorCounter = 0;
+        inv->pointerColor = (inv->pointerColor + 1) & 0xF;
+        DmaCopy16(3, &gPalInvestigationExamineCursors[inv->pointerColor * 0x20], OBJ_PLTT + 0x100, 0x20);
+    }
+    gOamObjects[OAM_IDX_POINTER].attr0 = SPRITE_ATTR0(inv->pointerY, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
+    gOamObjects[OAM_IDX_POINTER].attr1 = SPRITE_ATTR1_NONAFFINE(inv->pointerX, FALSE, FALSE, 1);
+    gOamObjects[OAM_IDX_POINTER].attr2 = SPRITE_ATTR2(0xFC, 1, 8);
+    return 1;
 }
 
 // a background change while the movie is up waits for its close
@@ -596,6 +783,71 @@ bool32 EnMovieTakesBg(u32 bg)
 void EnMovieReset(void)
 {
     DmaFill32(3, 0, &gEnMovie, sizeof(gEnMovie));
+}
+
+// ---------------------------------------------------------------- saves
+// A save made while a movie is up (its text over the ending, a wait in the
+// footage) keeps the movie's place after the save data and the text box log
+// (SRAM 0x2C00), with the save's place in the script to know it by; loading
+// the save opens the movie there again (unpacked from the nearest keyframe,
+// black until it is there). The tape in court starts over by itself.
+#define MOVIE_SRAM_OFFSET 0x2C00
+#define MOVIE_SAVE_MAGIC 0x31564F4D     // "MOV1"
+struct EnMovieSave
+{
+    u32 magic;
+    const u16 * scriptPtr;
+    u16 section;
+    u8 open, seq;
+    u16 flags;
+    s16 pos, start, end;
+};
+#define sMovieRestore (*(struct EnMovieSave *)(EWRAM_START + 0x11FC0 + 0xF800))
+
+void EnMovieSaveState(void)
+{
+    struct EnMovie * m = &gEnMovie;
+    struct EnMovieSave sv;
+    DmaFill32(3, 0, &sv, sizeof(sv));
+    sv.magic = MOVIE_SAVE_MAGIC;
+    sv.scriptPtr = gSaveDataBuffer.scriptCtx.scriptPtr;
+    sv.section = gSaveDataBuffer.scriptCtx.currentSection;
+    if (m->open && !m->tape && (m->flags & 0xF) != 2)
+    {
+        sv.open = TRUE;
+        sv.seq = m->seq;
+        sv.flags = m->flags;
+        sv.pos = m->pos;
+        sv.start = m->start;
+        sv.end = m->end;
+    }
+    WriteSramEx((const u8 *)&sv, (u8 *)SRAM_START + MOVIE_SRAM_OFFSET, sizeof(sv));
+}
+
+// (straight after the save is read, before its place in the script is looked over)
+void EnMovieLoadState(void)
+{
+    struct EnMovieSave * sv = &sMovieRestore;
+    EnMovieReset();
+    ReadSram((const u8 *)SRAM_START + MOVIE_SRAM_OFFSET, (u8 *)sv, sizeof(*sv));
+    if (sv->magic != MOVIE_SAVE_MAGIC || sv->scriptPtr != gSaveDataBuffer.scriptCtx.scriptPtr
+        || sv->section != gSaveDataBuffer.scriptCtx.currentSection)
+        sv->open = FALSE;
+}
+
+static void Restore(void)
+{
+    struct EnMovieSave * sv = &sMovieRestore;
+    struct EnMovie * m = &gEnMovie;
+    if (!sv->open)
+        return;
+    sv->open = FALSE;
+    if (sv->seq > 3)
+        return;
+    Open(sv->seq, sv->flags);
+    m->pos = m->goal = sv->pos;
+    m->start = sv->start;
+    m->end = sv->end;
 }
 
 #endif // RFTA

@@ -37,7 +37,7 @@ const u8 * const gScriptTable[] = {
     scenario_3_5_script,
 };
 
-bool32 (*gScriptCmdFuncs[0x60 + 6 * RFTA])(struct ScriptContext *) = {
+bool32 (*gScriptCmdFuncs[0x60 + 7 * RFTA])(struct ScriptContext *) = {
 	Command00,
 	Command01,
 	Command02,
@@ -141,6 +141,7 @@ bool32 (*gScriptCmdFuncs[0x60 + 6 * RFTA])(struct ScriptContext *) = {
 	Command63,
 	Command64,
 	Command65, // en_movie.c
+	Command66,
 #endif
 };
 
