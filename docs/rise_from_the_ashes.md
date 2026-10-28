@@ -142,7 +142,7 @@ is an arrangement rather than a copy.
 | partner portrait | every investigation line Ema (or Gumshoe) says | 64×64 face by the text box | the plate code; cheap |
 | movies | opening (329 frames), Blue Badger dance (450 frames, 256×160), ending montage (270 frames), security footage (1,420 frames, scrubbed by the player in the Day 3 trial) | 4bpp 256-wide frames, RLE or LZ: 0.85 + 1.8 + 2.4 + 22.6 MB compressed | a frame player streaming from ROM; the three short ones fit as they are (≈4.5 MB after re-encoding); the footage needs a decision: at 240×160 and 10 fps it is ≈8 MB, at full rate it does not fit |
 | luminol | Day 2 investigation (the evidence room, the parking lot) | spray by touch, reaction appears where sprayed | cursor + button spraying over the same picture (done: section 11) |
-| fingerprinting | Day 2–3 investigation (the lockers, the jar) | pick a powder, dust by touch, blow into the mic | cursor + button dusting, a button to blow |
+| fingerprinting | Day 2–3 investigation (the locker, the wiped stain, the cloth) | pick a finger, dust by touch, blow into the mic, compare the prints | cursor + button dusting, a button to blow (done: section 12) |
 | 3D evidence | the Court Record's Check on the badge, the pieces with the bloodstain, the sketch and others; lines in the shared file | rotate a model, hotspots trigger the shared sections, `7B` close-ups | pre-rendered views (one axis, 24–36 angles each; the hotspots become angle ranges); the model data is a custom format not yet located in data.bin |
 | bottom-screen panels | tutorial, prompts (`74`) | second screen | text boxes and prompts on the one screen |
 | second fade system | 268 fades | software palette fades | hardware blends |
@@ -257,9 +257,8 @@ the section the DS starts on success (`translate.py`, `BYPASS`):
 | Day 2 investigation | luminol in the parking lot | the stain, what is odd about it |
 | Day 2 investigation | luminol in the evidence room (the three stains the day waits for) | the stains' lines, from the shared file, after the handprint on the locker |
 | Day 2 investigation | the jar pieces put together | the Unstable Jar |
-| Day 2 investigation | dusting the handprint, matching the print; dusting the wiped stain | the glove print, Gumshoe's prints; Marshall's prints |
 | Day 3 trial | pointing at the security tape (twice in each half) | the answer's section (the DS's frame table at 0x020c09cc) |
-| Day 3 investigation | the locker number, dusting the cloth, the jar's last piece | Gant's number, Ema's prints, the piece fits |
+| Day 3 investigation | the locker number, the jar's last piece | Gant's number, the piece fits |
 | Final day | the jar turned to the Badger's angle, joining the dots | the Badger, "Ema" |
 | Final day | finding the picture on the back of the list | the picture |
 | The end | the staff roll | "The End", the title screen |
@@ -552,6 +551,52 @@ tutorial and its stains, the payphone, Edgeworth's office, the Chief's
 office, the evidence room's three (and the jump that follows them), on
 through the Day 3 trial into Day 3's investigation (Edgeworth's office again).
 
+## 12. Stage 4: the fingerprints
+
+The DS's fingerprinting has three cases (`74 9 n`): the bloody handprint
+on Gumshoe's locker (Day 2: five fingers in the blood, then the print
+beside them), the wiped stain in the evidence room (Day 2: two fingers)
+and the cloth from the Chief's safe (Day 3: five). The player picks a
+finger on its picture, drops powder on it with the stylus and blows into
+the microphone until the print stands out; a clear print is then compared
+with the eight people's prints Edgeworth gave, card by card, in three
+sweeps with the matching points counted up, until "Match found.".
+`fingerprint.py` has the details it was read off (the cases' and masks'
+records, the powder's stamps, the blowing and the test for a print found,
+the prints, the cards, the points).
+
+On the GBA (`en_fingerprint.c`, the investigation's own state
+`INVESTIGATION_FINGERPRINT`, with its inner loops in ARM code copied to
+IWRAM, `en_fingerprint_arm.s`) the screens are BG3 with 256 colours:
+
+- the fingers' picture with the DS's cross-hairs: the + pad moves them, a
+  box shows round the finger they are on, A examines it, B goes back to
+  the investigation (not on the first case, as the DS);
+- the dusting screen, the DS's touch screen scaled by 10/11 on its green
+  grid: A drops powder where the brush is (held, a drop every 8 frames), R
+  blows (the DS's microphone, at a fixed level); the powder is a byte a
+  pixel in EWRAM and only the tiles it changed are drawn again each frame;
+  the test for a print found is the DS's;
+- the comparison: the DS's top screen's panels (the found print, the
+  meter, the counter, the person's print) above its touch screen's card,
+  ←/→ to change the card, A to compare; the sweeps, the crosses and the
+  count, "Match found." with SE0C0 and the meter alight, or "No matches
+  found." with BGM032.
+
+The script drives it as on the DS: command `68` (sub << 8 | n) is the DS's
+`74 9 n` (0: start case n), `74 5 0` in the fingerprints' sections (1: the
+player's turn once the script stops) and `74 8 37`–`3D` (2–7: Ema's powder
+and blowing in the tutorial, the fingers' picture again, the comparison
+screen, the evidence room's picture, the comparison back); the sections
+(13B–142, 145, 146, 129–12B, file 35's C9 and CA) run over the screens,
+with the comparison's card blank under the text box. A section that
+leaves its text box up at the player's turn (file 35's C9) has it slid
+away, as the DS's `74 5 0` does. The tutorial's touch and microphone
+lines are reworded for the buttons. Leaving puts the investigation back as
+the `68 0` found it (the menu, examining or talking, and its buttons): a
+match goes on in its section (142, 146, 12B), Back ends the section as its
+`1C 3` would have.
+
 ## Tools (`tools/en/rfta/`)
 
 All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
@@ -608,3 +653,9 @@ Stages 4 and 5:
   mist, the nozzle, the marks), `data/rfta/luminol.s`,
   `src/data/en_rfta_luminol.h`; its `entries()` gives the stains as the GBA
   has them (`fullplay.py` sprays them).
+- `fingerprint.py [--preview DIR]` — `graphics/en/rfta/fingerprint.bin`
+  (the masks as bit planes, the stamps, the prints, the faces, the cards,
+  the comparison screen, the sprites), `data/rfta/fingerprint.s`,
+  `src/data/en_rfta_fingerprint.h`; `--preview` draws the screens as
+  pictures; its `cases()` and `masks()` give the fingers as the GBA has
+  them (`fullplay.py` dusts them).

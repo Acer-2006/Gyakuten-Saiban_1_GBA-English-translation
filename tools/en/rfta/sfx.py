@@ -32,8 +32,10 @@ sys.path.insert(0, os.path.join(HERE, '..'))
 import port_sfx                                   # noqa: E402
 
 # the DS's sequence numbers, in order: GBA songs FIRST_SONG and up
+# (then SE0C3-SE0C8: Gant's and others' animation frames; SE0C0: the
+# fingerprints' "Match found.", fingerprint.py)
 SES = [0x9D] + list(range(0x196, 0x19F)) + [0x1A2] + [0x1B4, 0x1B5, 0x1B6] + list(range(0x1B8, 0x1C3)) + \
-      list(range(0x1A3, 0x1A9))         # SE0C3-SE0C8: Gant's (and others') animation frames
+      list(range(0x1A3, 0x1A9)) + [0x1A0]
 FRAME_SE = 0xE0                                   # an animation frame's sound n is SE0nn: the sequence n + 0xE0
 FIRST_SONG = 120                                  # after the seven songs (113-119, music.py)
 NEW_SES = {d: FIRST_SONG + i for i, d in enumerate(SES)}

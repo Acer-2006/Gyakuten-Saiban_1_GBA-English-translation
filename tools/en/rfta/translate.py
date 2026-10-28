@@ -96,14 +96,9 @@ BYPASS = {
     (21, 0x81): 0x82,
     # Day 2: the jar pieces put together (135 is the DS's try-again)
     (24, 0x134): 0x136,
-    # Day 2: the bloody handprint dusted (13B-13D: the DS's how-to): a glove print,
-    # then a clear print, then the print matched (140/141: point out the person) -> Gumshoe's
-    (24, 0x13A): 0x13E, (24, 0x13E): 0x13F, (24, 0x13F): 0x142,
-    # Day 2: the wiped stain dusted -> Jake Marshall's prints
-    (24, 0x145): 0x146,
-    # Day 3: the locker's number (11D: the wrong one), the cloth dusted -> Ema's prints
-    # (12A: no match), the last piece of the jar (132: it does not fit)
-    (30, 0x11C): 0x11E, (30, 0x129): 0x12B, (30, 0x131): 0x133,
+    # Day 3: the locker's number (11D: the wrong one), the last piece of the jar
+    # (132: it does not fit)
+    (30, 0x11C): 0x11E, (30, 0x131): 0x133,
     # Final day: the jar turned to the Badger's angle (BC: not yet), the dots
     # joined into the name (C6: wrong, C8: the game over)
     (31, 0xBB): 0xBD, (31, 0xC5): 0xC7,
@@ -124,7 +119,7 @@ PROMPT_PRESENT = 0x21
 # player (the DS's 74 5 0 there), and leaves after the stain's question.
 LUMINOL = 0x67              # new GBA command: the luminol (0 start, 1 Ema's spray, 2 the player's turn, 3 back to the red room, 4 leave)
 LUMINOL_CHAPTERS = (22, 23, 24, 28, 29, 30)
-LUMINOL_SHARED = range(0xC2, 0xC9)
+LUMINOL_SHARED = range(0xC2, 0xCB)      # (C9, CA: the fingerprints', below)
 LUMINOL_SECTIONS_H = os.path.join(ROOT, 'src', 'data', 'en_rfta_luminol_sections.h')
 # the DS's 74 in the luminol's sections: (file, section or None for the shared
 # ones, sub, value) -> GBA tokens (the DS's 74 6 0 / 74 6 1 everywhere)
@@ -134,8 +129,22 @@ LUMINOL_74 = {(22, 0x93, 5, 0): [LUMINOL, 2], (22, 0x95, 5, 0): [], (22, 0x97, 5
 # luminol leaves and the day goes on (the jump through descriptor D2, as the
 # room's other findings take it: file 24's 11D, 127-129, 131, 136 -> 10E)
 LUMINOL_ALL_FOUND = {24: [LUMINOL, 4, 0x36, 0xD2]}
-# the tutorial's "Touch the screen to spray it on." for the GBA's buttons
-LUMINOL_TEXT = {(22, 0x93): ('Touch the screen to spray\nit on.', 'Press the A Button to\nspray it on.')}
+# The fingerprints (src/en_fingerprint.c, tools/en/rfta/fingerprint.py): the
+# DS hands over with 74 9 n (n the case), and in the fingerprints' sections
+# (they run from its screens) 74 5 0 gives the player the screen back and
+# 74 8 37-3D are the screens' own steps: the GBA's 68 (sub << 8 | n). File
+# 35's C9 and CA (back from the dusting, a print that cannot be compared)
+# come in with the luminol's stain lines, in the chapters that have both.
+FINGERPRINT = 0x68
+FP_SECTIONS = {24: range(0x13A, 0x146), 30: (0x129, 0x12A), 35: (0xC9, 0xCA)}
+FP_74_8 = {0x37: 2 << 8, 0x38: 3 << 8, 0x39: 4 << 8, 0x3A: 5 << 8, 0x3B: (5 << 8) | 1,
+           0x3C: (6 << 8) | 0xBA, 0x3D: 7 << 8}
+# the touch screen and the microphone in the lines, for the GBA's buttons
+TEXT_FOR_BUTTONS = {
+    (22, 0x93): [('Touch the screen to spray\nit on.', 'Press the A Button to\nspray it on.')],
+    (24, 0x13C): [('touch the screen...', 'press the A Button...'),
+                  ('You just blow.', 'Just hold the R Button.'),
+                  ('With your breath.', 'Like blowing with your breath.')]}
 MAX_MARKER = 0x0C           # map marker sprites the GBA has (sMapMarkerSprites)
 # The fifth episode's people (and Edgeworth's two new looks), converted from
 # the DS by characters.py: DS person -> DS animation number -> offset in the
@@ -245,6 +254,11 @@ class Translator:
             return LUMINOL_74.get((src[0], None, a[0], a[1]))
         return LUMINOL_74.get((k, sec, a[0], a[1]))
 
+    def fingerprint_section(self):
+        k, sec, src = self.cur
+        f, s = src if src is not None else (k, sec)
+        return s in FP_SECTIONS.get(f, ())
+
     def section(self, items, where):
         out = []
         pos_map = {}          # DS token position -> output token position
@@ -346,6 +360,15 @@ class Translator:
             elif op == 0x74 and a[0] == 6 and a[1] in (0, 1):
                 out += [LUMINOL, a[1]]
                 self.stats['luminol'] += 1
+            elif op == 0x74 and a[0] == 9:
+                out += [FINGERPRINT, a[1]]
+                self.stats['fingerprints'] += 1
+            elif op == 0x74 and a[0] == 5 and a[1] == 0 and self.fingerprint_section():
+                out += [FINGERPRINT, 1 << 8]
+                self.stats['fingerprints'] += 1
+            elif op == 0x74 and a[0] == 8 and a[1] in FP_74_8:
+                out += [FINGERPRINT, FP_74_8[a[1]]]
+                self.stats['fingerprints'] += 1
             elif op == 0x74 and a[0] == 5 and self.luminol_74(a) is not None:
                 out += self.luminol_74(a)
                 self.stats['luminol'] += 1
@@ -449,14 +472,14 @@ class Translator:
                 offs = list(offs) + [0]; n += 1
                 self.stats['luminol: section brought in'] += 1
         for si in sorted(secs):
-            if (k, 0x80 + si) in LUMINOL_TEXT:
-                old, new = (gba_text(t) for t in LUMINOL_TEXT[(k, 0x80 + si)])
+            for old, new in TEXT_FOR_BUTTONS.get((k, 0x80 + si), ()):
+                old, new = gba_text(old), gba_text(new)
                 out = secs[si]
                 at = [i for i in range(len(out) - len(old) + 1) if out[i:i + len(old)] == old]
                 assert len(at) == 1, (k, hex(0x80 + si), 'text to replace')
                 assert len(new) == len(old) or not [1 for p, kind, op, a in parse(out, dict(GBA_ARGS))[0] if kind == 'cmd' and op == 0x35]
                 secs[si] = out[:at[0]] + new + out[at[0] + len(old):]
-                self.stats['luminol: text for the buttons'] += 1
+                self.stats['text for the buttons'] += 1
             if (k, 0x80 + si) in TAPE_QUESTIONS:
                 # the tape: the last line read (a page), then what the keys do while it
                 # is shown (the DS's "Select area via Touch Screen"); the tape command
