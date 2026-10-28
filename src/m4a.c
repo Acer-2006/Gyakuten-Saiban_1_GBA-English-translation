@@ -3,6 +3,9 @@
 extern const u8 gCgb3Vol[];
 
 extern ALIGNED(4) char SoundMainRAM_Buffer[0x400];
+#if RFTA
+extern ALIGNED(4) char gSoundMainRAM_BufferRfta[0x480];
+#endif
 extern struct SoundInfo gSoundInfo;
 
 u32 MidiKeyToFreq(struct WaveData *wav, u8 key, u8 fineAdjust)
@@ -56,17 +59,30 @@ void m4aSoundInit(void)
 {
     s32 i;
 
+#if RFTA
+    // RFTA build: the mixer is longer (its nearest-sample loop, m4a_1.s): a bigger buffer
+    CpuCopy32((void *)((s32)SoundMainRAM & ~1), gSoundMainRAM_BufferRfta, sizeof(gSoundMainRAM_BufferRfta));
+#else
     CpuCopy32((void *)((s32)SoundMainRAM & ~1), SoundMainRAM_Buffer, sizeof(SoundMainRAM_Buffer));
+#endif
 
     SoundInit(&gSoundInfo);
     MPlayExtender(gCgbChans);
     // English patch: 8 sample channels, not 6. The DS's sound effects (sampled text
     // blips and menu sounds, stereo pairs) and the music no longer take notes from
     // each other: the music and the effects of the busiest scenes want at most 8
+    // RFTA build: 12, the most m4a has. Rise from the Ashes' songs play up to 14 sampled
+    // notes at once (their squares go to the GBA's square and wave channels); mixed
+    // without interpolation (m4a_1.s) a channel takes about 5.5 scanlines a frame, so 12
+    // and the sequencer stay within the 100 the RFTA build gives the mixer (gMaxLines)
     m4aSoundMode(SOUND_MODE_DA_BIT_8
                | SOUND_MODE_FREQ_15768
                | (14 << SOUND_MODE_MASVOL_SHIFT)
+#if RFTA
+               | (12 << SOUND_MODE_MAXCHN_SHIFT));
+#else
                | (8 << SOUND_MODE_MAXCHN_SHIFT));
+#endif
 
     for (i = 0; i < NUM_MUSIC_PLAYERS; i++)
     {

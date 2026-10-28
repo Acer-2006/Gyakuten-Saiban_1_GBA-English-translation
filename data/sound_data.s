@@ -3552,10 +3552,21 @@ gUnknown_080412EC:
 	.align 2
 	.global gMPlayTable
 gMPlayTable: @ 80412FC
+    .ifdef RFTA
+    @ English patch, RFTA build: 16 tracks for the music (Rise from the Ashes' songs
+    @ have up to 16; tools/en/rfta/music.py); in IWRAM after the other players
+    music_player gMPlayInfo_BGM, gMPlayTrack_BGM16, 16, 0
+    music_player gMPlayInfo_SE1, gMPlayTrack_SE1, 2, 0
+    @ (and two tracks for players 2 and 3: the fifth episode's opening plays
+    @ stereo pairs on them; tools/en/rfta/sfx.py)
+    music_player gMPlayInfo_SE2, gMPlayTrack_SE2x2, 2, 0
+    music_player gMPlayInfo_SE3, gMPlayTrack_SE3x2, 2, 0
+    .else
     music_player gMPlayInfo_BGM, gMPlayTrack_BGM, 7, 0
     music_player gMPlayInfo_SE1, gMPlayTrack_SE1, 2, 0
     music_player gMPlayInfo_SE2, gMPlayTrack_SE2, 1, 0
     music_player gMPlayInfo_SE3, gMPlayTrack_SE3, 1, 0
+    .endif
 
 	.align 2
     .global gSongTable
@@ -3697,6 +3708,50 @@ gSongTable:	@ 0x0804132C
 	song gUnknown_08088D74, 1, 1
 	song gEnSfx111, 1, 1 @ English patch: DS SE04F (was gEnSongSE04F)
 	song gEnSfx112, 1, 1 @ English patch: DS SE050 (was gEnSongSE050)
+	.ifdef RFTA
+	@ English patch, RFTA build: the songs Rise from the Ashes added (DS BGM150-156,
+	@ songs 113-119; data/rfta/music.s, tools/en/rfta/music.py)
+	song gRftaSong150, 0, 0
+	song gRftaSong151, 0, 0
+	song gRftaSong152, 0, 0
+	song gRftaSong153, 0, 0
+	song gRftaSong154, 0, 0
+	song gRftaSong155, 0, 0
+	song gRftaSong156, 0, 0
+	@ RFTA sound effects (tools/en/rfta/sfx.py)
+	song gRftaSfx120, 1, 1 @ DS SE073
+	song gRftaSfx121, 1, 1 @ DS SE0B6
+	song gRftaSfx122, 1, 1 @ DS SE0B7
+	song gRftaSfx123, 1, 1 @ DS SE0B8
+	song gRftaSfx124, 1, 1 @ DS SE0B9
+	song gRftaSfx125, 1, 1 @ DS SE0BA
+	song gRftaSfx126, 0, 0 @ DS SE0BB
+	song gRftaSfx127, 1, 1 @ DS SE0BC
+	song gRftaSfx128, 1, 1 @ DS SE0BD
+	song gRftaSfx129, 1, 1 @ DS SE0BE
+	song gRftaSfx130, 1, 1 @ DS SE0C2
+	song gRftaSfx131, 2, 2 @ DS SE0D4
+	song gRftaSfx132, 3, 3 @ DS SE0D5
+	song gRftaSfx133, 1, 1 @ DS SE0D6
+	song gRftaSfx134, 1, 1 @ DS SE0D8
+	song gRftaSfx135, 1, 1 @ DS SE0D9
+	song gRftaSfx136, 3, 3 @ DS SE0DA
+	song gRftaSfx137, 2, 2 @ DS SE0DB
+	song gRftaSfx138, 3, 3 @ DS SE0DC
+	song gRftaSfx139, 1, 1 @ DS SE0DD
+	song gRftaSfx140, 2, 2 @ DS SE0DE
+	song gRftaSfx141, 1, 1 @ DS SE0DF
+	song gRftaSfx142, 2, 2 @ DS SE0E0
+	song gRftaSfx143, 1, 1 @ DS SE0E1
+	song gRftaSfx144, 2, 2 @ DS SE0E2
+	song gRftaSfx145, 1, 1 @ DS SE0C3
+	song gRftaSfx146, 1, 1 @ DS SE0C4
+	song gRftaSfx147, 1, 1 @ DS SE0C5
+	song gRftaSfx148, 3, 3 @ DS SE0C6
+	song gRftaSfx149, 1, 1 @ DS SE0C7
+	song gRftaSfx150, 1, 1 @ DS SE0C8
+	@ end of the RFTA sound effects
+	.endif
 dmy_song:
 	.byte 0,0,0,0
 

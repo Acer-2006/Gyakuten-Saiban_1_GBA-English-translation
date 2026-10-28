@@ -44,6 +44,10 @@ void EnShowBackground(u32 bg);
 void EnScrollBackgroundEnd(u32 bg);
 bool32 Command60(struct ScriptContext * scriptCtx);
 bool32 Command61(struct ScriptContext * scriptCtx);
+bool32 Command62(struct ScriptContext * scriptCtx);
+bool32 Command63(struct ScriptContext * scriptCtx);
+// the partner portraits' evidence entries (tools/en/rfta/evidence.py)
+#define RFTA_FIRST_PORTRAIT 0xD1
 bool32 EnPresentReturnsToQuestioning(u32 section);
 
 // the flags a chapter starts with (the DS keeps flags 0-0x27 through the

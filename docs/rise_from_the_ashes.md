@@ -187,7 +187,7 @@ reworded for buttons — the only deliberate departure from the DS text.
   command and variant in section 1.
 - No decoder for the DS animation archive (or a recorder as fallback).
   (Stage 3 found it is the GBA's own format: section 8.)
-- No SSEQ → m4a path.
+- No SSEQ → m4a path. (Stage 5: `music.py`, `sfx.py`.)
 - No GBA code for: portrait plate, frame player, luminol, fingerprinting,
   3D views, close-ups, the fifth episode-select entry; and the eleven new
   script commands.
@@ -206,8 +206,9 @@ reworded for buttons — the only deliberate departure from the DS text.
 3. **Characters** — the animation data decoded or recorded, six sprite
    sets converted.
 4. **Mechanics** — frame player (and the footage decision), luminol,
-   fingerprints, 3D views, close-ups, prompts.
-5. **Sound** — seven tracks and the effects.
+   fingerprints, 3D views, close-ups, prompts. The partner portrait: done
+   (section 9).
+5. **Sound** — seven tracks and the effects. Done (section 9).
 6. **Playthrough and release** — the sweep and audit tools extended to
    chapters 17–34, a fourth BPS for the 32 MB ROM.
 
@@ -236,7 +237,7 @@ is untouched (its checksum is checked after every change). In it:
   and descriptions, the name tags, the Move/Talk plates, the "point at it"
   pictures (`spots.py`; the text box makes way when the spot is low).
 - **People and songs.** The six new people were played by stand-ins until
-  stage 3 (section 8); the seven new songs play stand-ins until stage 5.
+  stage 3 (section 8), the seven new songs until stage 5 (section 9).
 - **The engine, where the DS's differs.** A fifth-episode chapter starts
   the DS's way: script flags 0–0x27 belong to the episode and carry over
   (a few are cleared on the day they belong to), 0x28 and up start clear
@@ -380,8 +381,63 @@ to 152 in 224 frames (209 of them his poses with the bandana) and from row
 `graphics/en/rfta/characters/report.txt` lists them. In the emulator, the
 lunches, the wide shots with Ema and the witnesses, and Marshall with his
 bandana were photographed as the autoplayer reached them. The frame sound
-effects the GBA does not have yet (35 frames, 32 of them Gant's) are left
-out until stage 5.
+effects the GBA did not have (35 frames, 32 of them Gant's: SE0C3–SE0C8)
+play the fifth episode's own sounds since stage 5 (section 9).
+
+## 9. Stages 4 and 5 so far: the partner portrait, the music, the sounds
+
+**The partner portrait.** The DS's `76 0 n` / `76 1 n` (281 uses) put Ema's
+or Gumshoe's 64×64 face at the left or right of the text box while they talk
+during investigations; `76 2 0` takes it away. On the GBA they are two new
+commands, `62 (side << 8) | n` and `63`, on the evidence plate's code: the
+18 portraits (data.bin 0x1bb3074, 0x820 bytes each) are Court Record
+pictures 147–164 (`evidence.py`), entries 0xD1–0xE2 of the evidence table,
+shown and put away the way a presented piece of evidence is. In the
+emulator Ema's expressions change on the plate line by line as on the DS
+(checked on the Day 2 crime scene, where she sprays the luminol).
+
+**The music.** The seven new songs (BGM150–BGM156) are DS sequences in the
+GBA game's style: the GBA's samples and square waves for programs 0–30 and
+the drums, new recordings for programs 31 and up (IMA-ADPCM at 30–64 kHz).
+`music.py` converts them to m4a songs 113–119 of the RFTA build: the
+sequences followed through their calls and jumps (the jump back that loops
+becomes the GOTO), ticks one to one (the tempo byte is the DS's bpm),
+volumes and velocities squared as the DS's decibel tables square them, the
+envelopes the tracks set converted to m4a's (decay and release fitted to its
+integer envelope), vibrato and tremolo converted for the tempo. Samples
+whose notes play them faster than the mixer carries are filtered down, in
+copies of half an octave each (a key split). The DS's squares (up to six
+tracks of them) play on the GBA's two square channels and its wave channel,
+each track on the one where its notes fall least on another's (most songs:
+none), at a level measured against the samples.
+
+The mixer is where the GBA runs short: the songs play up to 14 sampled
+notes at once and m4a's interpolating mixer takes about 7 scanlines a
+frame for each, where the GBA's own music seldom has more than four. In the
+RFTA build the music player has 16 tracks (IWRAM after the other players),
+the mixer 12 channels, and the new songs' voices (type 0x10) are mixed
+without interpolation, the nearest source sample for each output sample, as
+the DS's own sound hardware plays them (`m4a_1.s`; the mixer moved to a
+larger IWRAM buffer): about 5.5 lines a channel, and the mixer may take 100
+lines a frame instead of 80 (with 12 channels busy and a bar's notes all
+starting at once it takes up to 97). When the channels are taken,
+a note takes one from a quieter track (track priorities by loudness).
+Simulating m4a's channel allocation over the songs, the part of the notes
+lost that way is 1–5% of their sound. A frame with a background change
+decompresses a second stripe only when the stripe and the sound (as long as
+it took over the last frames) still end in time (`gEnSoundLines`).
+
+Levels (`music_levels.py`): recorded on their own in both games, each new
+song stands to the GBA's music as on the DS to the DS's (the DS plays its
+music 4.9 dB louder: median of nine songs); the seven are within 0.4 dB.
+
+**The sounds.** The script plays 25 sounds the first four episodes lack
+(SE073, SE0B6–SE0BE, SE0C2 and the opening's SE0D4–SE0E2) and the people's
+animation frames six (SE0C3–SE0C8). `sfx.py` converts them as `port_sfx.py`
+converts the DS's other sounds, to songs 120–150, on the player and with the
+priority the DS gives them; the opening's stereo pairs on players 2 and 3
+get those players a second track. Their volumes come from recordings of
+each in both games (`sfx_levels.json`).
 
 ## Tools (`tools/en/rfta/`)
 
@@ -421,3 +477,13 @@ Stage 3:
   `graphics/en/rfta/effects/`, `data/rfta/effects.s`,
   `include/en_rfta_effects.h` (the `gAnimationData` entries),
   `effects.json` (DS `2F` number → GBA number, read by `translate.py`).
+
+Stages 4 and 5:
+
+- `portraits.py` (above) and `evidence.py` — the partner portraits as Court
+  Record pictures 147–164.
+- `music.py SDAT` — `data/rfta/music.s`, `sound/direct_sound_samples/rfta/`;
+  `music_levels.py DS_DIR GBA_DIR` — `music_levels.json` from recordings.
+- `sfx.py SDAT` — `data/rfta/sfx.s`, `sound/direct_sound_samples/rfta_sfx/`
+  and the song table's rows; `sfx.py --measure DS_DIR GBA_DIR` —
+  `sfx_levels.json`.

@@ -177,6 +177,14 @@ u32 EnLinesSinceVBlank(void);
 // when it should be done by this scanline of the frame's 228 (the sound
 // mixing and the rest of the frame take about 35 more)
 #define EN_BG_TWO_STRIPES_END 150
+#if RFTA
+// RFTA build: the fifth episode's music can take up to about 80 lines to mix (10
+// channels): a second stripe only when the frame's work, the stripe and the sound
+// as long as it took lately (gEnSoundLines, in IWRAM after the music's tracks) end
+// by this line
+#define EN_BG_FRAME_END 190
+extern u8 gEnSoundLines;
+#endif
 // English patch: frames held after the frame of a background change that
 // keeps the same background (the DS goes on 6 frames after the change)
 #define EN_SAME_BG_HOLD 5

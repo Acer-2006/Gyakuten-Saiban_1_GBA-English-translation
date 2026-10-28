@@ -230,6 +230,32 @@ bool32 Command61(struct ScriptContext * scriptCtx)
     return 0;
 }
 
+// Script command 62 (the DS's 76 0/1 n): the partner's portrait (Ema's or
+// Gumshoe's face, 64x64) on the evidence plate, left (0) or right (1), as the
+// DS shows it while the partner speaks in an investigation. The pictures are
+// evidence entries of their own (tools/en/rfta/evidence.py: 0xD1 + n). The
+// DS's plate comes in without the evidence plate's sound.
+bool32 Command62(struct ScriptContext * scriptCtx)
+{
+    u32 arg;
+    scriptCtx->scriptPtr++;
+    arg = *scriptCtx->scriptPtr;
+    scriptCtx->scriptPtr++;
+    gMain.itemPlateState = 3;
+    gMain.itemPlateEvidenceId = RFTA_FIRST_PORTRAIT + (arg & 0xFF);
+    gMain.itemPlateSide = arg >> 8;
+    return 0;
+}
+
+// Script command 63 (the DS's 76 2 0): the portrait away, without a sound
+bool32 Command63(struct ScriptContext * scriptCtx)
+{
+    scriptCtx->scriptPtr++;
+    if (gMain.itemPlateState != 0)
+        gMain.itemPlateState = 1;
+    return 0;
+}
+
 // The script flags at the start of a chapter, as the DS sets them for the
 // fifth episode (its investigation and court openings, 0x02036058 and
 // 0x0202f7d8): flags 0x28 and up are the chapter's and start clear; those

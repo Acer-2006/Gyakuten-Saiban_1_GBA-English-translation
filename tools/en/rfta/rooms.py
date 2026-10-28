@@ -271,8 +271,8 @@ class Decompiler:
         if name == 'EnScriptContextPtr': return ['%sr0 = 0; /* the DS script context */' % g]
         if name == 'PlayBGM':
             s = c('r0')
-            if s in translate.PLACEHOLDER_BGM:
-                return ['%sPlayBGM(%d); /* stand-in for the DS song 0x%x */' % (g, translate.PLACEHOLDER_BGM[s], s)]
+            if s in translate.NEW_SONGS:
+                return ['%sPlayBGM(%d); /* the DS song 0x%x */' % (g, translate.NEW_SONGS[s], s)]
             return ['%sPlayBGM(r0);' % g]
         if name == 'PlayAnimation':
             self.todo += 1

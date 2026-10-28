@@ -670,7 +670,7 @@ L_2067fec: ;
     r0 = 0x2C;
     InvestigationSetPersonAnimation(0x2C, 0x0, 0x0); /* DS poses 0x178 0x178 */
     r0 = 0x17C;
-    PlayBGM(12); /* stand-in for the DS song 0x17c */
+    PlayBGM(113); /* the DS song 0x17c */
     goto L_2068090;
 L_206801c: ;
     r0 = 0x0;
@@ -702,7 +702,7 @@ L_2068064: ;
     r0 = 0x2C;
     InvestigationSetPersonAnimation(0x2C, 0x0, 0x0); /* DS poses 0x178 0x178 */
     r0 = 0x17C;
-    PlayBGM(12); /* stand-in for the DS song 0x17c */
+    PlayBGM(113); /* the DS song 0x17c */
 L_2068090: ;
     r0 = 0x20B0598;
     r1 = 0x20CE888;
@@ -753,7 +753,7 @@ L_206812c: ;
     r2 = r1;
     InvestigationSetPersonAnimation(0x2E, 0x0, 0x0); /* DS poses 0x1cd 0x1cd */
     r0 = 0x17D;
-    PlayBGM(25); /* stand-in for the DS song 0x17d */
+    PlayBGM(114); /* the DS song 0x17d */
     goto L_2068204;
 L_206815c: ;
     r0 = 0x0;
@@ -1104,7 +1104,7 @@ L_20962f8: ;
     r0 = 0x2C;
     InvestigationSetPersonAnimation(0x2C, 0x0, 0x0); /* DS poses 0x178 0x178 */
     r0 = 0x17C;
-    PlayBGM(12); /* stand-in for the DS song 0x17c */
+    PlayBGM(113); /* the DS song 0x17c */
 L_2096324: ;
     r0 = 0x20B15F0;
     r1 = 0x20CE888;
@@ -1278,7 +1278,7 @@ L_2096598: ;
     r2 = r1;
     InvestigationSetPersonAnimation(0x31, 0x0, 0x0); /* DS poses 0x1e5 0x1e5 */
     r0 = 0x17F;
-    PlayBGM(22); /* stand-in for the DS song 0x17f */
+    PlayBGM(116); /* the DS song 0x17f */
 L_20965c4: ;
     r0 = 0x20B167C;
     r1 = 0x20CE888;
@@ -1422,7 +1422,7 @@ L_20967c8: ;
     r2 = r1;
     InvestigationSetPersonAnimation(0x2E, 0x0, 0x0); /* DS poses 0x1cd 0x1cd */
     r0 = 0x17D;
-    PlayBGM(25); /* stand-in for the DS song 0x17d */
+    PlayBGM(114); /* the DS song 0x17d */
 L_20967f4: ;
     r0 = 0x20B1AF4;
     r1 = 0x20CE888;
@@ -1720,7 +1720,7 @@ L_2096c24: ;
     r2 = r1;
     InvestigationSetPersonAnimation(0x32, 0x0, 0x0); /* DS poses 0x1bd 0x1bd */
     r0 = 0x17E;
-    PlayBGM(18); /* stand-in for the DS song 0x17e */
+    PlayBGM(115); /* the DS song 0x17e */
     goto L_2096c74;
 L_2096c54: ;
     r0 = 0x0;
@@ -1837,7 +1837,7 @@ L_2096dcc: ;
     r2 = r1;
     InvestigationSetPersonAnimation(0x4014, 0x0, 0x0); /* DS poses 0x8c 0x8c */
     r0 = 0x17F;
-    PlayBGM(22); /* stand-in for the DS song 0x17f */
+    PlayBGM(116); /* the DS song 0x17f */
     goto L_2096e40;
 L_2096e14: ;
     r0 = 0x0;
@@ -2012,7 +2012,7 @@ L_209706c: ;
     r2 = r1;
     InvestigationSetPersonAnimation(0x2E, 0x0, 0x0); /* DS poses 0x1cd 0x1cd */
     r0 = 0x17D;
-    PlayBGM(25); /* stand-in for the DS song 0x17d */
+    PlayBGM(114); /* the DS song 0x17d */
     goto L_20970d0;
 L_20970b0: ;
     r0 = 0x0;

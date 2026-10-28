@@ -8,9 +8,15 @@ the Court Record picture, numbered as the GBA's pictures (the GBA has
 0-63; the DS's are 64x64, 16 colours, 0x820 bytes each, the GBA's format,
 at data.bin 0x01b68614), field 5 the "Check" page.
 
-Writes graphics/en/rfta/evidence_pictures.bin (the DS's pictures 64-146,
-appended to the GBA's in the Rise from the Ashes build) and
-src/data/en_rfta_evidence.h (gEvidenceProfileData entries 0x6C-0xD0).
+The partner portraits of the DS's command 76 (Ema's twelve, Gumshoe's six:
+portraits.py, the same format) follow the Court Record pictures as pictures
+147-164, and entries 0xD1-0xE2 of gEvidenceProfileData name them, so the
+evidence plate shows them (the DS's 76 uses its evidence plate too; the
+translator's command 62).
+
+Writes graphics/en/rfta/evidence_pictures.bin (the DS's pictures 64-146 and
+the portraits, appended to the GBA's in the Rise from the Ashes build) and
+src/data/en_rfta_evidence.h (gEvidenceProfileData entries 0x6C-0xE2).
 The descriptions are tools/en/rfta/descriptions.py's (until it has run, a
 blank one). usage: evidence.py"""
 import os, sys, struct
@@ -23,6 +29,8 @@ TABLE, ENTRIES = 0x020ab048, 209
 PICTURES, PICTURE_SIZE = 0x01b68614, 0x820
 GBA_PICTURES = 64
 FIRST = 0x6C
+PORTRAITS, PORTRAIT_COUNT = 0x01bb3074, 18      # portraits.py
+FIRST_PORTRAIT = ENTRIES                        # gEvidenceProfileData 0xD1-0xE2
 
 def entries():
     d = dsbin.data(); o = TABLE - dsbin.BASE
@@ -33,6 +41,7 @@ def main():
     last_pic = max(e[0] for e in ents)
     d = data()
     blob = d[PICTURES + PICTURE_SIZE * GBA_PICTURES:PICTURES + PICTURE_SIZE * (last_pic + 1)]
+    blob += d[PORTRAITS:PORTRAITS + PICTURE_SIZE * PORTRAIT_COUNT]
     os.makedirs(os.path.join(ROOT, 'graphics', 'en', 'rfta'), exist_ok=True)
     open(os.path.join(ROOT, 'graphics', 'en', 'rfta', 'evidence_pictures.bin'), 'wb').write(blob)
     desc_dir = os.path.join(ROOT, 'graphics', 'en', 'rfta', 'descriptions')
@@ -45,8 +54,12 @@ def main():
         unused = i < 0x74 or e[0] == 0 and not any(e[1:5])
         lines.append('\t{ .descriptionTiles = %s, .evidenceImageId = %d, .evidenceDetailId = 0 }, // 0x%02X%s' %
                      (desc, e[0], i, ' unused' if unused else ' (DS check page %d)' % e[5] if e[5] else ''))
+    for n in range(PORTRAIT_COUNT):
+        lines.append('\t{ .descriptionTiles = gGfxEvidenceMissileAngry_description, .evidenceImageId = %d, .evidenceDetailId = 0 }, '
+                     '// 0x%02X: partner portrait %d (%s)' % (last_pic + 1 + n, FIRST_PORTRAIT + n, n, 'Ema' if n < 12 else 'Gumshoe'))
     open(os.path.join(ROOT, 'src', 'data', 'en_rfta_evidence.h'), 'w').write('\n'.join(lines) + '\n')
-    print('pictures 64-%d (%d bytes), %d entries' % (last_pic, len(blob), ENTRIES - FIRST))
+    print('pictures 64-%d and portraits %d-%d (%d bytes), %d entries' % (
+        last_pic, last_pic + 1, last_pic + PORTRAIT_COUNT, len(blob), ENTRIES - FIRST + PORTRAIT_COUNT))
 
 if __name__ == '__main__':
     main()
