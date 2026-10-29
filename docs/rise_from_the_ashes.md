@@ -148,6 +148,7 @@ is an arrangement rather than a copy.
 | safe's keypad | Day 3 investigation (Gant's safe) | the device's display on the top screen, its keys on the touch screen; seven digits checked one by one | the device on one screen, a cursor over the keys (done: section 15) |
 | the Badger's angle | Final day trial (the Unstable Jar as the Blue Badger) | the jar in 3D in a circle on the touch screen, turned by dragging drums and the circle, Present | the jar drawn by the 3D renderer in the DS's circle, the + pad and L and R (done: section 16) |
 | joining the dots | Final day trial (the victim's blood traces, the murderer's name) | the picture on the touch screen, lines dragged from trace to trace, Back, Present, the Court Record | the picture with the lines and traces drawn into its tiles, the examine pointer and A held, B, L, R (done: section 17) |
+| staff roll | the ending, between and under the epilogue's scenes | the credits dusted onto the touch screen by themselves and blown away; sketches of the people for the player to dust | the credits pages on the one screen between the scenes, the DS's powder (done: section 18) |
 | bottom-screen panels | tutorial, prompts (`74`) | second screen | text boxes and prompts on the one screen |
 | second fade system | 268 fades | software palette fades | hardware blends |
 
@@ -214,7 +215,8 @@ reworded for buttons — the only deliberate departure from the DS text.
 4. **Mechanics** — the frame player and the tape (done: section 10),
    luminol, fingerprints, 3D views, close-ups (done: sections 11 to 13),
    the jar puzzle (done: section 14), the safe's keypad (done: section 15),
-   the jar's angle (done: section 16), the dots (done: section 17), the staff roll, prompts. The partner portrait and the
+   the jar's angle (done: section 16), the dots (done: section 17), the staff
+   roll (done: section 18), prompts. The partner portrait and the
    grey flashbacks (`5F`): done (section 9).
 5. **Sound** — seven tracks and the effects. Done (section 9).
 6. **Playthrough and release** — the sweep and audit tools extended to
@@ -262,7 +264,7 @@ the section the DS starts on success (`translate.py`, `BYPASS`):
 | where | DS system | goes on in |
 |---|---|---|
 | Day 2 investigation | the luminol's tutorial in the parking lot | the player's turn with the spray, the stain's question |
-| The end | the staff roll | "The End", the title screen |
+| The end | the staff roll's end (its process starts the next section) | "The End", the title screen |
 
 (The luminol in the evidence room and the security tape in the Day 3 trial
 were bypassed the same way until their systems came (sections 10 and 11),
@@ -271,7 +273,8 @@ picture in the book on the final day until the 3D viewer came (section 13),
 the jar's pieces on Day 2 and its last piece on Day 3 until the jar puzzle
 came (section 14), Gant's safe until its keypad came (section 15), the
 jar's angle on the final day until it came (section 16), the dots after it
-until they came (section 17).)
+until they came (section 17); the staff roll was skipped whole until it
+came (section 18).)
 
 The questions answered with a person's profile ("What is this person's
 name?", the DS's `74 A n`) stay questions: they become the GBA's present
@@ -896,6 +899,58 @@ chapter; by hand, wrong lines (the judge's penalty with the marks, and the
 traces again from C4), Back on a line drawn too many, and the Court Record
 opened and closed in the middle of the name.
 
+## 18. Stage 4: the staff roll
+
+The ending (file 34's section 85; 88 when it is replayed, Ema's scene only)
+plays the epilogue's scenes on the DS's top screen and dusts the staff roll
+on its touch screen between and under them (`74 c 0`, `74 d n` a page,
+`74 8 40` shown, `74 8 41` blown away, `74 8 2e` the end). `credits.py`
+has what was read off the DS (process 26: 0x02072494, its frames at
+0x02071d14, the brush at 0x0207b6fc; the powder's code is the
+fingerprints'):
+
+- 0x36 pages (a table at 0x020c2e88: the Japanese build's credits 0-0x14,
+  sketches of the people whose scene is up 0x15-0x1e, the US build's
+  credits 0x1f-0x35), each a 256 × 192 picture that becomes the mask;
+- a credits page is dusted by itself: a brush crosses the screen three
+  times (rows 64, 96 and 128, right, left, right; a step of 32 every four
+  frames from 32 to 224, the row jittered), dropping one of the
+  fingerprints' four stamps a frame; 30 frames on, the powder is blown off
+  but where the page's words are (46 frames, a quarter of the rows a
+  frame), sparks flying up off it as it goes; the next page is dusted over
+  the last;
+- `74 8 41` blows it all away (61 frames, the sparks flying less far the
+  first 12); a sketch waits for the player's touch while its scene plays.
+
+On the GBA (`en_credits.c`, `en_credits_arm.s`, script command `6A`) a
+credits page takes the screen while the epilogue's is black (its scene
+faded out, before the next one's background comes): the fingerprints'
+green grid on BG3 (256 colours: the powder's 15 at 48, the grid's at 64),
+the page cut as the backgrounds are (x − 8, y − 16: all the US build's
+credits are inside), the brush, the blowing and the sparks as the DS has
+them, the powder a byte a pixel in EWRAM; each step (the DS's frame) a
+quarter of the rows is blown and drawn into the tiles by ARM code in IWRAM.
+A sketch's `74 8 40` (its scene coming) and `74 8 2e` fade the screen out
+and give it back (the background decompressed again: the sparks had its
+buffer), and the script waits for that. The sketches, and Ema's, which the
+DS dusts by itself under her last scene, are left out: the scenes keep the
+screen. As the DS's process starts section 86 ("The End") after its last
+fade, the GBA still goes on there from the section's end (`BYPASS`).
+
+Where the powder covers the screen (the first passes of its blowing) a
+step is more work than a frame has room for: it is done four rows at a
+time while the frame has time before the sound (`EN_BG_FRAME_END`, as the
+background stripes), so such a step takes two frames and the sound is
+never late; while the pages are up the script's waits (`0C`) count
+vertical blanks, so the epilogue keeps the DS's time under its music. The
+sparks are thrown at random: one pixel in 8, one in 16 of the page's (the
+DS's fixed patterns: one in 10, one in 20).
+
+Played by `fullplay.py` from the final day's last save to the ending, then
+through it: every page dusted and its words shown before the next, blown
+away before the next scene, no frame lost while the pages are up, each
+scene back on its own background, then "The End".
+
 ## Tools (`tools/en/rfta/`)
 
 All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
@@ -977,6 +1032,11 @@ Stages 4 and 5:
   `src/data/en_rfta_dots.h` (the traces' middles, boxes and masks' places,
   the lines the check takes, the brush and the round end, the colours, the
   layout); with `--preview`, a picture of the screen with lines drawn.
+- `credits.py [--preview FILE]` — `graphics/en/rfta/credits.bin` (the US
+  build's credits pages as bit planes, cut to the GBA's screen; the
+  stamps' dots), `data/rfta/credits.s` and `src/data/en_rfta_credits.h`
+  (the brush's rows and steps, the timings, the powder's and the grid's
+  colours); with `--preview`, the pages on the grid.
 - `keypad.py [--preview FILE]` — `graphics/en/rfta/keypad.bin` (the
   device's screen as 8bpp tiles, the display's first, and its map; the
   display's pictures, bars and messages in the screen's colours; the keys,

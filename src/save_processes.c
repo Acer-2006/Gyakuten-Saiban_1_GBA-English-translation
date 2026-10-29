@@ -55,6 +55,7 @@ u32 LoadSaveData()
     EnLuminolReset();
     EnFingerprintReset();
     En3dReset();
+    EnCreditsReset();
 #endif
     sramVer = gSaveDataBuffer.saveDataVer;
     for(i = 0; i < 0x30; i++)

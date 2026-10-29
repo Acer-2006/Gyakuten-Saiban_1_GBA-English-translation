@@ -104,6 +104,10 @@ void EnDotsVBlank(void);
 void EnDotsSprites(void);
 u32 EnDotsFrame(void);
 bool32 EnDotsRight(void);
+// the staff roll (en_credits.c): the script's 6A, its frames
+bool32 Command6A(struct ScriptContext * scriptCtx);
+void EnCreditsFrame(void);
+void EnCreditsReset(void);
 
 // the movies (en_movie.c): the DS's command 75 and its frame sequences
 void EnMovieFrame(void);

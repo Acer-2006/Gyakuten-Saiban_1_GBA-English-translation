@@ -179,6 +179,7 @@ void AgbMain()
         }
 #if RFTA
         EnMovieFrame();
+        EnCreditsFrame();
         EnMovieWork(); // (in the time the frame has left before the sound)
 #endif
         UpdateBGMFade();

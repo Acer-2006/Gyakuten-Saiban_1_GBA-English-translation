@@ -77,8 +77,8 @@ def gba_text(s):
         else:
             out.append(inv[ch])
     return out
-# Where the DS hands over to a system of its own that the GBA does not have
-# yet (the staff roll) and that
+# Where the DS hands over to a system of its own (or to a step the GBA's
+# version of it leaves out: the staff roll's end) and that
 # system then starts the section that follows, the
 # GBA goes on in that section straight away: (DS file, section) -> the
 # sections to go on in, in order. Each is entered where the source section
@@ -130,6 +130,12 @@ EVIDENCE3D_SCENES = {(18, 0xBF): 0, (18, 0xF9): 1, (21, 0x81): 2, (33, 0xAC): 3}
 # 3's last piece in Gant's office) -> 69 4<<8 | n; it goes on in the section
 # the DS's would (jarpuzzle.EXITS)
 JAR_PUZZLE = {24: 0, 30: 1}
+# The staff roll (src/en_credits.c, tools/en/rfta/credits.py): in the
+# ending's file the DS's 74 c 0 (no page), 74 d n (page n), 74 8 40 (shown),
+# 74 8 41 (blown away), 74 8 2e (away) -> 6A sub << 8 | n, sub 0-4
+CREDITS = 0x6A
+CREDITS_FILE = 34
+CREDITS_74_8 = {0x40: 2, 0x41: 3, 0x2E: 4}
 # the safe's keypad (the DS's 74 8 34 in Gant's office on Day 3) -> 69 5<<8;
 # it goes on in 11E (the right code) or 11D (src/en_keypad.c)
 KEYPAD = (30, 0x11C)
@@ -373,6 +379,9 @@ class Translator:
                 else:
                     out += [PORTRAIT_HIDE]
                 self.stats['portrait'] += 1
+            elif op == 0x74 and self.cur[0] == CREDITS_FILE and (a[0] in (0xC, 0xD) or (a[0] == 8 and a[1] in CREDITS_74_8)):
+                out += [CREDITS, (0 if a[0] == 0xC else 1 << 8 | a[1]) if a[0] != 8 else CREDITS_74_8[a[1]] << 8]
+                self.stats['the staff roll'] += 1
             elif op == 0x74 and self.cur[:2] in EVIDENCE3D_SCENES and ((a[0] == 8 and a[1] == 0x2E) or (a[0] == 0xB and a[1] == 0)):
                 out += [EVIDENCE3D, EVIDENCE3D_SCENES[self.cur[:2]]]
                 self.stats['evidence in 3D: a scene'] += 1
