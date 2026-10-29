@@ -147,6 +147,7 @@ is an arrangement rather than a copy.
 | jar puzzle | Day 2 investigation (the pieces of the Unstable Jar), Day 3 (the Chief's piece) | the jar in 3D on the top screen, the pieces turned and sent from a circle on the touch screen | the jar drawn by the 3D renderer beside a circle of the pieces (done: section 14) |
 | safe's keypad | Day 3 investigation (Gant's safe) | the device's display on the top screen, its keys on the touch screen; seven digits checked one by one | the device on one screen, a cursor over the keys (done: section 15) |
 | the Badger's angle | Final day trial (the Unstable Jar as the Blue Badger) | the jar in 3D in a circle on the touch screen, turned by dragging drums and the circle, Present | the jar drawn by the 3D renderer in the DS's circle, the + pad and L and R (done: section 16) |
+| joining the dots | Final day trial (the victim's blood traces, the murderer's name) | the picture on the touch screen, lines dragged from trace to trace, Back, Present, the Court Record | the picture with the lines and traces drawn into its tiles, the examine pointer and A held, B, L, R (done: section 17) |
 | bottom-screen panels | tutorial, prompts (`74`) | second screen | text boxes and prompts on the one screen |
 | second fade system | 268 fades | software palette fades | hardware blends |
 
@@ -213,7 +214,7 @@ reworded for buttons — the only deliberate departure from the DS text.
 4. **Mechanics** — the frame player and the tape (done: section 10),
    luminol, fingerprints, 3D views, close-ups (done: sections 11 to 13),
    the jar puzzle (done: section 14), the safe's keypad (done: section 15),
-   the jar's angle (done: section 16), the dots, the staff roll, prompts. The partner portrait and the
+   the jar's angle (done: section 16), the dots (done: section 17), the staff roll, prompts. The partner portrait and the
    grey flashbacks (`5F`): done (section 9).
 5. **Sound** — seven tracks and the effects. Done (section 9).
 6. **Playthrough and release** — the sweep and audit tools extended to
@@ -261,7 +262,6 @@ the section the DS starts on success (`translate.py`, `BYPASS`):
 | where | DS system | goes on in |
 |---|---|---|
 | Day 2 investigation | the luminol's tutorial in the parking lot | the player's turn with the spray, the stain's question |
-| Final day | joining the dots | "Ema" |
 | The end | the staff roll | "The End", the title screen |
 
 (The luminol in the evidence room and the security tape in the Day 3 trial
@@ -270,7 +270,8 @@ the wallet and the phone on Day 1, the knife in the Day 2 trial and the
 picture in the book on the final day until the 3D viewer came (section 13),
 the jar's pieces on Day 2 and its last piece on Day 3 until the jar puzzle
 came (section 14), Gant's safe until its keypad came (section 15), the
-jar's angle on the final day until it came (section 16).)
+jar's angle on the final day until it came (section 16), the dots after it
+until they came (section 17).)
 
 The questions answered with a person's profile ("What is this person's
 name?", the DS's `74 A n`) stay questions: they become the GBA's present
@@ -827,6 +828,74 @@ cross-examinations, the Badger turned to its angle (L 186 frames, up 26,
 right 3) and presented, on through the trial into the next chapter; the
 wrong angle's "Take that!", BC's lines and the panel again by hand.
 
+## 17. Stage 4: joining the dots
+
+Later in the final day's trial Phoenix joins the blood traces the victim
+left into the murderer's name (the DS's `74 8 3e`). The DS's touch screen
+shows the picture (background 0x8e) with the twelve traces over it in a
+dark red, under a bar ("Connect the blood traces") with Present and Court
+Record, Back at the bottom. `dots.py` has what was read off the DS
+(process 18, its code at 0x020763c4-0x02077238 and the traces' at
+0x0206d294-0x0206e5dc):
+
+- the traces (the US build's twelve: a table at 0x020c231c, their places,
+  sizes, masks in data.bin and middles; their boxes at 0x020c17d4; the
+  Japanese build has fifteen, for its katakana) are sprites in one colour,
+  dark, or bright red when lit;
+- a touch in a trace's box, with a pixel of any trace's mask under the
+  touch's 8 × 8 brush, starts a line from that trace's middle (the brush
+  is a disc, but the DS reads it 256 bytes a row, so all but its first row
+  are the bytes after it: kept as the DS has it); the line follows the
+  touch, blue with its shades running (a step every 15 frames), white
+  while the touch is on another trace; both traces are lit; let go there,
+  the two are joined (SE 0x34), unless they already are;
+- a line is a rectangle 8 wide from middle to middle with an 8 × 8 round
+  end at each (0x0203f290: 8.0 / 2 either side, then the texture 0x94 at
+  both ends); the joined ones are dark red under the traces, the one being
+  drawn over them and under the lit ones;
+- Back (B, the button) takes the last line away: white for a frame, then
+  gone (SE 0x33); not while a line is drawn, nor are the other buttons;
+- R (Court Record) opens the record (SE 0x31) and comes back to the lines
+  as they were; X (Present) checks them (0x0206d294, the US build's): every
+  line must be one of the name's, 0-1, 0-5 and 5-6 (the E: its middle
+  stroke the picture's own), 2-3 and 2-9 (the M, with the picture's
+  strokes) and 7-8 (the A's bar) must all be there, and the A's legs whole:
+  4-10 (or 4-7 and 7-10) and 4-11 (or 4-8 and 8-11); then both screens
+  white, "Take that!" as after the Blue Badger's angle, and section C7 (the
+  name) or C6 (not: the judge, a penalty, and the traces again from C4,
+  the lines gone).
+
+On the GBA (`en_dots.c`, script command `69 7<<8`, on the 3D viewer's
+machinery as the keypad) the screen is the picture as the GBA has it (its
+16 colours at 32-47 of BG3's 256, the lines' and the traces' after them):
+the traces and the joined lines are drawn into a copy of its tiles (in the
+movies' buffer while the dots are up), and each frame the tiles that
+changed are put together again from it, with the line being drawn and the
+lit traces over them; the line's shades and white are its colour's, set in
+the vertical blank. The examine pointer (its finger's tip) is the touch:
+the + pad moves it 3 pixels a frame (as the investigation's), A held is the
+stylus down, let go is the stylus lifted, so a line is drawn by holding A
+on a trace and letting go on another; B is Back, L Present and R the Court
+Record, as tabs (the fingerprints') under the DS's bar, the shoulder
+buttons' as the jar puzzle's; Back at the bottom left as the DS's. The
+Court Record is the GBA's own, over the court's screen given back (the
+script's text box with it); as it closes the dots come back with their
+lines. Presenting is the Blue Badger's way: the white, the GBA's "Take
+that!" (two more sections after file 31's own, `translate.py`), C7 or C6
+(which gets its text box and a fade in).
+
+The marks (the DS's `43 1`, then a penalty) come up in C6 outside a
+cross-examination; their tiles may have been taken by what came before
+(here the spot to point at, earlier in the trial), so `43 1` loads them
+again in the RFTA build, as the start of a cross-examination does.
+
+Played through by `fullplay.py` from the final day's start: the Badger's
+angle, the record's answer, the name drawn (the pointer moved to each
+trace, A held from one to the next) and presented, on into the next
+chapter; by hand, wrong lines (the judge's penalty with the marks, and the
+traces again from C4), Back on a line drawn too many, and the Court Record
+opened and closed in the middle of the name.
+
 ## Tools (`tools/en/rfta/`)
 
 All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
@@ -903,6 +972,11 @@ Stages 4 and 5:
   the viewer's records): the panel (its tiles and map, the ring's masks,
   the grid), the ring's and the drums' ticks, the DS's steps, angles and
   bows, into the same files; with a file name, a picture of the panel.
+- `dots.py [--preview FILE]` — `graphics/en/rfta/dots.bin` (the traces'
+  masks, the bar and the tabs), `data/rfta/dots.s` and
+  `src/data/en_rfta_dots.h` (the traces' middles, boxes and masks' places,
+  the lines the check takes, the brush and the round end, the colours, the
+  layout); with `--preview`, a picture of the screen with lines drawn.
 - `keypad.py [--preview FILE]` — `graphics/en/rfta/keypad.bin` (the
   device's screen as 8bpp tiles, the display's first, and its map; the
   display's pictures, bars and messages in the screen's colours; the keys,

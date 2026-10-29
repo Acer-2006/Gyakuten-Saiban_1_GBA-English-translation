@@ -70,6 +70,14 @@ bool32 Command43(struct ScriptContext * scriptCtx)
     {
         gTestimony.healthPointX = 0xF0;
         gMain.gameStateFlags |= 0x400;
+#if RFTA
+        // English patch: the fifth episode shows the marks outside the
+        // cross-examinations too (the DS's 43 1), where what came before
+        // (a spot to point at, the evidence in 3D) may have taken their
+        // tiles: as the cross-examinations' start loads them (court.c)
+        DmaCopy16(3, gGfx4bppTrialLife, OBJ_VRAM0+0x3780, 0x80);
+        DmaCopy16(3, gPalCrossExaminationUI, OBJ_PLTT+0x60, 0x20);
+#endif
     }
     else
     {

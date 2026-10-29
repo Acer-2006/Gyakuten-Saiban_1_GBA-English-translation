@@ -17,7 +17,9 @@
 // off until the scene ends), 69 2<<8 | n shows close-up n in the viewer (the
 // DS's 7B 0 n), 69 3<<8 takes it away, 69 4<<8 | n starts the jar puzzle
 // (the DS's 74 8 32: the Unstable Jar's pieces put together, with the
-// viewer's renderer and screen; jarpuzzle.py).
+// viewer's renderer and screen; jarpuzzle.py), 69 5<<8 the safe's keypad
+// (en_keypad.c), 69 6<<8 the Blue Badger's angle, 69 7<<8 joining the dots
+// (en_dots.c).
 // The viewer is the Court Record's state 8: it saves what the screen, the
 // text box and the script had (gSaveDataBuffer, as the evidence details do)
 // and puts it all back as it leaves.
@@ -142,6 +144,9 @@ struct En3d
     s16 badgerRoll, badgerDrumH, badgerDrumV, badgerSpare2;
     s32 bm[9];                              // the jar's turn as the DS keeps it (row vectors: v' = v M), 1.14
     u32 badgerVBlank;                       // (the vertical blanks counted when its keys were last read)
+    // joining the dots: up (en_dots.c: the viewer's screen and script kept, its own frames), the
+    // lines presented right, the Court Record opened from them (they come back as it closes)
+    u8 dots, dotsRight, dotsRecord, dotsSpare;
 };
 // in the old script heap's free space (+0x9000-0xF000: after the menu's,
 // before the movie's), the picture and its depth in the background's buffer
@@ -174,6 +179,7 @@ static const u32 * R31(void) { return (const u32 *)D(EN3D_R31); }
 
 void UpdateItemPlate(struct Main *);
 static void KeypadProcess(struct Main * main);
+static void DotsProcess(struct Main * main);
 static void BadgerMatrix(void);
 static void BadgerMask(void);
 static void BadgerScreen(void);
@@ -193,6 +199,7 @@ void En3dReset(void)
     gEn3d.mode = V_OFF;
     gEn3d.jar = 0;
     gEn3d.keypad = 0;
+    gEn3d.dots = gEn3d.dotsRecord = 0;
     gEn3d.badger = 0;
     gEn3d.scene = 0;
     gEn3d.sceneEnding = FALSE;
@@ -236,7 +243,7 @@ bool32 En3dHoldsRecord(void)
 // the portrait plate shown over the viewer (as the DS's face box)
 bool32 En3dShowsPlate(void)
 {
-    return gEn3d.mode >= V_FIRST && gEn3d.mode <= V_SCRIPT && !gEn3d.jar && !gEn3d.keypad && !gEn3d.badger;
+    return gEn3d.mode >= V_FIRST && gEn3d.mode <= V_SCRIPT && !gEn3d.jar && !gEn3d.keypad && !gEn3d.badger && !gEn3d.dots;
 }
 
 // ---------------------------------------------------------------- maths
@@ -320,6 +327,11 @@ static s32 Sin16(s32 a)
 static s32 Cos16(s32 a)
 {
     return Sin16(a + 90 * 16);
+}
+
+u32 EnISqrt(u32 v)
+{
+    return ISqrt(v);
 }
 
 s32 EnSin16(s32 a)
@@ -931,6 +943,12 @@ void En3dVBlank(void)
     {
         if (v->mode == V_VIEW)
             EnKeypadVBlank();
+        return;
+    }
+    if (v->dots)
+    {
+        if (v->mode == V_VIEW)
+            EnDotsVBlank();
         return;
     }
     if (v->mode < V_FIRST || v->mode == V_LEAVE || v->mode == V_SHOW_RECORD)
@@ -1987,6 +2005,11 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
         KeypadProcess(main);
         return;
     }
+    if (v->dots)
+    {
+        DotsProcess(main);
+        return;
+    }
     switch (v->mode)
     {
     case V_FADE_OUT:
@@ -2156,9 +2179,16 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
 }
 
 // the record away after a scene's end: its section (court_record.c)
+static void DotsResume(void);
+
 void En3dRecordClosed(void)
 {
     struct En3d * v = &gEn3d;
+    if (v->dotsRecord)
+    {
+        DotsResume();
+        return;
+    }
     if (!v->sceneEnding)
         return;
     v->sceneEnding = FALSE;
@@ -2202,7 +2232,7 @@ void En3dRecordPrompt(struct CourtRecord * courtRecord, bool32 show)
 // does), L and R 1 about the line of sight (the ring's ticks turn with
 // it); A presents it: the DS's angles read off the matrix, then the white,
 // and the Take that! section (translate.py) on to BD or BC.
-#include "data/en_rfta_badger_sections.h"
+#include "data/en_rfta_take_that.h"
 #define B_OAM 90                        // (the screen's own: nothing else draws while it is up)
 #define B_OAM_LAST 121
 #define B_AFFINE 30
@@ -2643,11 +2673,122 @@ static void KeypadProcess(struct Main * main)
     }
 }
 
+// ---------------------------------------------------------------- joining the dots
+// The DS's 74 8 3e (script command 69 7<<8): the blood traces joined into
+// the murderer's name, its frames en_dots.c's; here its screen taken and
+// given back (the viewer's way), the Court Record opened from it (the
+// court's screen given back under it, the dots taken again as it closes),
+// and as the Blue Badger's angle the white and the "Take that!" section
+// (translate.py) on to C7 or C6
+static void DotsTake(void)
+{
+    struct En3d * v = &gEn3d;
+    v->dots = TRUE;
+    v->jar = 0;
+    v->keypad = 0;
+    v->badger = 0;
+    v->scene = 0;
+    v->render = R_IDLE;
+    v->uploadReady = FALSE;
+    v->closeup = v->closeupShown = 0;
+    v->coloursRec = 0xFF;
+    v->dirty = FALSE;
+    BACKUP_PROCESS();
+    SET_PROCESS(COURT_RECORD_PROCESS, RECORD_3D, 0, 0);
+    StartHardwareBlend(2, 1, 1, FADE_ALL);
+    SetMode(V_FADE_OUT);
+}
+
+static void DotsStart(void)
+{
+    gEn3d.dotsRecord = FALSE;
+    EnDotsStart();
+    DotsTake();
+}
+
+// (the Court Record away: the court's process given back, the dots again as they were)
+static void DotsResume(void)
+{
+    gEn3d.dotsRecord = FALSE;
+    DotsTake();
+}
+
+static void DotsProcess(struct Main * main)
+{
+    struct En3d * v = &gEn3d;
+    u32 r;
+    switch (v->mode)
+    {
+    case V_FADE_OUT:
+        if (main->blendMode != 0)
+            return;
+        EnMovieClose();             // (its buffer is the picture's while the dots are up)
+        SaveScreen();
+        EnDotsScreen();
+        EnDotsSprites();
+        StartHardwareBlend(1, 1, 1, FADE_ALL);
+        SetMode(V_VIEW);
+        return;
+    case V_VIEW:
+        // (the sprites each frame, the fades' too: the room's map markers share their entries)
+        if (main->blendMode != 0)
+        {
+            EnDotsSprites();
+            return;
+        }
+        r = EnDotsFrame();
+        EnDotsSprites();
+        if (r == DOTS_PRESENT)
+        {
+            // the white (the DS's both screens), then the Take that!
+            v->dotsRight = EnDotsRight();
+            StartHardwareBlend(4, 1, 4, FADE_ALL);
+            SetMode(B_FLASH);
+        }
+        else if (r == DOTS_RECORD)
+        {
+            PlaySE(SE007_MENU_OPEN_SUBMENU);    // (the DS's 0x31)
+            StartHardwareBlend(2, 1, 1, FADE_ALL);
+            SetMode(V_SHOW_RECORD);
+        }
+        return;
+    case V_SHOW_RECORD:
+        if (main->blendMode != 0)
+        {
+            EnDotsSprites();
+            return;
+        }
+        // the court's screen back, the record opened over it (its exit gives
+        // the court's process back: En3dRecordClosed, then the dots again)
+        GiveBackScreen();
+        v->dots = FALSE;
+        v->dotsRecord = TRUE;
+        SetMode(V_OFF);
+        SET_PROCESS(COURT_RECORD_PROCESS, RECORD_INIT, 0, 0);
+        StartHardwareBlend(1, 1, 1, FADE_ALL);
+        return;
+    case B_FLASH:
+        if (main->blendMode != 0)
+        {
+            EnDotsSprites();
+            return;
+        }
+        GiveBackScreen();
+        v->dots = FALSE;
+        SetMode(V_OFF);
+        RESTORE_PROCESS_PTR(main);
+        gIORegisters.lcd_bldcnt = FADE_ALL | BLDCNT_EFFECT_LIGHTEN;
+        gIORegisters.lcd_bldy = 16;
+        ChangeScriptSection(v->dotsRight ? EN3D_DOTS_SECTION_RIGHT : EN3D_DOTS_SECTION_WRONG);
+        return;
+    }
+}
+
 // ---------------------------------------------------------------- the script
 // Script command 69: 69 0 n the record opened for scene n, 69 2<<8 | n
 // close-up n shown in the viewer, 69 3<<8 taken away, 69 4<<8 | n the jar
 // puzzle (n 0 Day 2's, 1 Day 3's), 69 5<<8 the safe's keypad, 69 6<<8 the
-// Blue Badger's angle
+// Blue Badger's angle, 69 7<<8 joining the dots
 bool32 Command69(struct ScriptContext * scriptCtx)
 {
     struct En3d * v = &gEn3d;
@@ -2683,6 +2824,9 @@ bool32 Command69(struct ScriptContext * scriptCtx)
         break;
     case 6:
         BadgerStart();
+        break;
+    case 7:
+        DotsStart();
         break;
     }
     return 0;
