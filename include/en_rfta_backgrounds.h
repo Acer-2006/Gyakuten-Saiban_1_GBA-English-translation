@@ -87,6 +87,8 @@ extern u8 gGfxRftaBgB0[];
 extern u8 gGfxRftaBgB1[];
 extern u8 gGfxRftaBgB3[];
 extern u8 gGfxRftaBgB4[];
+extern u8 gGfxRftaBgC0[];
+extern u8 gGfxRftaBgC1[];
 extern u8 gGfxRftaBgC2[];
 extern u8 gGfxRftaBgC3[];
 extern u8 gGfxRftaBgC4[];

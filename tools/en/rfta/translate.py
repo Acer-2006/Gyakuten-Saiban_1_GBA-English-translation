@@ -78,7 +78,7 @@ def gba_text(s):
             out.append(inv[ch])
     return out
 # Where the DS hands over to a system of its own that the GBA does not have
-# yet (the jar's pieces, the locker's keypad, the dots to join) and that
+# yet (the locker's keypad, the jar's angle, the dots to join) and that
 # system then starts the section that follows, the
 # GBA goes on in that section straight away: (DS file, section) -> the
 # sections to go on in, in order. Each is entered where the source section
@@ -88,11 +88,8 @@ BYPASS = {
     # Day 2: the luminol in the parking lot (its luminol screen: src/en_luminol.c): the
     # tutorial after Ema's lines, the stain's question after its lines
     (22, 0x92): 0x93, (22, 0x95): 0x96,
-    # Day 2: the jar pieces put together (135 is the DS's try-again)
-    (24, 0x134): 0x136,
-    # Day 3: the locker's number (11D: the wrong one), the last piece of the jar
-    # (132: it does not fit)
-    (30, 0x11C): 0x11E, (30, 0x131): 0x133,
+    # Day 3: the locker's number (11D: the wrong one)
+    (30, 0x11C): 0x11E,
     # Final day: the jar turned to the Badger's angle (BC: not yet), the dots
     # joined into the name (C6: wrong, C8: the game over)
     (31, 0xBB): 0xBD, (31, 0xC5): 0xC7,
@@ -134,6 +131,14 @@ FINGERPRINT = 0x68
 # the viewer (the DS's 7B 0 n, 7B 1 0) -> 69 2<<8 | n, 69 3<<8
 EVIDENCE3D = 0x69
 EVIDENCE3D_SCENES = {(18, 0xBF): 0, (18, 0xF9): 1, (21, 0x81): 2, (33, 0xAC): 3}
+# the jar puzzle (the DS's 74 8 32: Day 2's pieces in the evidence room, Day
+# 3's last piece in Gant's office) -> 69 4<<8 | n; it goes on in the section
+# the DS's would (jarpuzzle.EXITS)
+JAR_PUZZLE = {24: 0, 30: 1}
+# Sections whose lines come with the text box away and no 1C 0 before them:
+# the DS shows its box as the text comes, the GBA's needs the 1C 0 (Day 3's
+# try-again after the jar puzzle: the puzzle left the box away)
+TEXTBOX_ON = {(30, 0x132)}
 FP_SECTIONS = {24: range(0x13A, 0x146), 30: (0x129, 0x12A), 35: (0xC9, 0xCA)}
 FP_74_8 = {0x37: 2 << 8, 0x38: 3 << 8, 0x39: 4 << 8, 0x3A: 5 << 8, 0x3B: (5 << 8) | 1,
            0x3C: (6 << 8) | 0xBA, 0x3D: 7 << 8}
@@ -355,6 +360,9 @@ class Translator:
             elif op == 0x74 and self.cur[:2] in EVIDENCE3D_SCENES and ((a[0] == 8 and a[1] == 0x2E) or (a[0] == 0xB and a[1] == 0)):
                 out += [EVIDENCE3D, EVIDENCE3D_SCENES[self.cur[:2]]]
                 self.stats['evidence in 3D: a scene'] += 1
+            elif op == 0x74 and a[0] == 8 and a[1] == 0x32 and self.cur[0] in JAR_PUZZLE:
+                out += [EVIDENCE3D, (4 << 8) | JAR_PUZZLE[self.cur[0]]]
+                self.stats['the jar puzzle'] += 1
             elif op == 0x7B:
                 out += [EVIDENCE3D, (2 << 8) | a[1] if a[0] == 0 else 3 << 8]
                 self.stats['evidence in 3D: a close-up'] += 1
@@ -476,6 +484,13 @@ class Translator:
                 offs = list(offs) + [0]; n += 1
                 self.stats['luminol: section brought in'] += 1
         for si in sorted(secs):
+            if (k, 0x80 + si) in TEXTBOX_ON:
+                out = secs[si]
+                items = parse(out, dict(GBA_ARGS))[0]
+                first = next(p for p, kind, op, a in items if kind == 'text')
+                assert not [1 for p, kind, op, a in items if kind == 'cmd' and op == 0x35], 'a jump past the text box'
+                secs[si] = out[:first] + [0x1C, 0] + out[first:]
+                self.stats['text box shown'] += 1
             for old, new in TEXT_FOR_BUTTONS.get((k, 0x80 + si), ()):
                 old, new = gba_text(old), gba_text(new)
                 out = secs[si]

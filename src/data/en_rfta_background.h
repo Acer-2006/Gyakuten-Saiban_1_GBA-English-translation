@@ -80,8 +80,8 @@
 	{ .bgData = gGfxRftaBgBD, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xBD
 	{ .bgData = gGfxRftaBgBE, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xBE
 	{ .bgData = gGfxRftaBgBF, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xBF
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xC0 unused
-	{ .bgData = gGfx_BG001_WrightCoOfficeDay, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xC1 unused
+	{ .bgData = gGfxRftaBgC0, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xC0 (English variant)
+	{ .bgData = gGfxRftaBgC1, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xC1 (English variant)
 	{ .bgData = gGfxRftaBgC2, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xC2 (English variant)
 	{ .bgData = gGfxRftaBgC3, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_4BPP }, // 0xC3
 	{ .bgData = gGfxRftaBgC4, .controlBits = BG_MODE_SIZE_240x160 | BG_MODE_NO_SCROLL | BG_MODE_8BPP }, // 0xC4

@@ -17,7 +17,8 @@
 @
 @ struct En3dXf { const s16 *verts; u32 count; s32 *out;
 @                 s32 cx[4], cy[4], cz[4];   (the matrix's columns, 1.14, and the offset, 1.19.12)
-@                 const u32 *r31; u32 maxW; }
+@                 const u32 *r31; u32 maxW;
+@                 s32 fx, fy, ox, oy; }      (the focal lengths, 1/16 pixel a unit; the middle, 1/16 pixel)
 @ struct En3dDraw { const u8 *tris; u32 count; const s32 *xv; const u8 *tex;
 @                   u32 wlog, hlog, pal, zshift; u8 *fb; u16 *zb; const u32 *r31;
 @                   u8 *frame; u32 limit, resume; }
@@ -37,12 +38,14 @@
 	.equ VIEW_H, 128
 	.equ DIST, (20 << 12)
 	.equ NEAR, 2048
-	.equ FX4, 1943			@ the DS's focal lengths in 1/16 pixel a unit
-	.equ FY4, 1922
 	.equ CLAMP, 0x8000		@ screen coordinates kept within +-2048 pixels
 
 	.equ X_R31, 60			@ struct En3dXf
 	.equ X_MAXW, 64
+	.equ X_FX, 68
+	.equ X_FY, 72
+	.equ X_OX, 76
+	.equ X_OY, 80
 	.equ D_XV, 8			@ struct En3dDraw
 	.equ D_TEX, 12
 	.equ D_FB, 32
@@ -125,17 +128,19 @@ Transform:
 	mov	r6, r6, lsr #11		@ W
 	cmp	r6, r14
 	movhi	r14, r6
-	@ x16 = 96 * 16 + (X W FX4) >> 26, y16 = 64 * 16 - (Y W FY4) >> 26
+	@ x16 = ox + (X W fx) >> 26, y16 = oy - (Y W fy) >> 26
 	ldr	r4, [r2]		@ X
 	ldr	r5, [r2, #4]		@ Y
-	ldr	r9, =FX4
+	ldr	r9, [r12, #X_FX]
 	mul	r9, r6, r9
 	MULHI	r7, r4, r9, 26, r10
-	add	r7, r7, #(VIEW_W / 2 * 16)
-	ldr	r9, =FY4
+	ldr	r9, [r12, #X_OX]
+	add	r7, r7, r9
+	ldr	r9, [r12, #X_FY]
 	mul	r9, r6, r9
 	MULHI	r8, r5, r9, 26, r10
-	rsb	r8, r8, #(VIEW_H / 2 * 16)
+	ldr	r9, [r12, #X_OY]
+	rsb	r8, r8, r9
 	mov	r9, #CLAMP		@ (clamped)
 	cmp	r7, r9
 	movgt	r7, r9

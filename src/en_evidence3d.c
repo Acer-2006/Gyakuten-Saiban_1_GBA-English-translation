@@ -15,7 +15,9 @@
 // Script command 69 (translate.py): 69 0 n opens the Court Record for scene
 // n (the DS's 74 8 2e, 74 b 0: the evidence to be checked there; B is held
 // off until the scene ends), 69 2<<8 | n shows close-up n in the viewer (the
-// DS's 7B 0 n), 69 3<<8 takes it away.
+// DS's 7B 0 n), 69 3<<8 takes it away, 69 4<<8 | n starts the jar puzzle
+// (the DS's 74 8 32: the Unstable Jar's pieces put together, with the
+// viewer's renderer and screen; jarpuzzle.py).
 // The viewer is the Court Record's state 8: it saves what the screen, the
 // text box and the script had (gSaveDataBuffer, as the evidence details do)
 // and puts it all back as it leaves.
@@ -47,11 +49,13 @@ struct En3dId { u16 section; u8 chapter, flag, to; s16 q[4]; s32 t[3]; u8 anim[4
 struct En3dScene { u8 ev; u16 open, hover; u8 final; u16 after, back; };
 struct En3dCloseup { u32 off; u16 pal[16]; };
 struct En3dPiece { s16 dx, dy; u8 shape, size; u16 tile; u8 last; };
+struct En3dJarStep { s16 yaw; u8 crossX, crossY; s32 ty, tz; u16 guide, nguide; u8 box[4], cache[4]; };
 #include "data/en_rfta_evidence3d.h"
 extern const u8 gEn3dData[];
 
 // the renderer (en_evidence3d_arm.s), copied to IWRAM
-struct En3dXf { const s16 * verts; u32 count; s32 * out; s32 cx[4], cy[4], cz[4]; const u32 * r31; u32 maxW; };
+struct En3dXf { const s16 * verts; u32 count; s32 * out; s32 cx[4], cy[4], cz[4]; const u32 * r31; u32 maxW;
+                s32 fx, fy, ox, oy; };
 struct En3dDraw { const u8 * tris; u32 count; const s32 * xv; const u8 * tex; u32 wlog, hlog, pal, zshift;
                   u8 * fb; u16 * zb; const u32 * r31; u8 * frame; u32 limit, resume; };
 extern const u8 gEn3dCodeStart[];
@@ -60,7 +64,9 @@ extern u32 gEnMovieCode[];
 #define Transform ((void (*)(struct En3dXf *))((u8 *)gEnMovieCode + 0))
 #define DrawPart ((u32 (*)(struct En3dDraw *))((u8 *)gEnMovieCode + 4))
 
-enum { V_OFF, V_FADE_OUT, V_SETUP, V_FIRST, V_FADE_IN, V_VIEW, V_TURN, V_ANIM, V_SCRIPT, V_FADE_LEAVE, V_LEAVE, V_SHOW_RECORD };
+enum { V_OFF, V_FADE_OUT, V_SETUP, V_FIRST, V_FADE_IN, V_VIEW, V_TURN, V_ANIM, V_SCRIPT, V_FADE_LEAVE, V_LEAVE, V_SHOW_RECORD,
+       // the jar puzzle's (after V_FIRST's picture: V_FADE_IN, then these)
+       J_RISE, J_SPIN, J_PLAY, J_ROTATE, J_SEND, J_FIT, J_FLASH, J_HOLD, J_TURN, J_MISS, J_RETURN, J_END };
 enum { R_IDLE, R_CLEAR, R_XFORM, R_DRAW, R_READY };
 enum { AFTER_NONE, AFTER_RESTORE, AFTER_STAY, AFTER_END, AFTER_BACK };
 enum { THEN_EXAMINE, THEN_VIEW };
@@ -70,6 +76,13 @@ enum { THEN_EXAMINE, THEN_VIEW };
 #define OAM_LAST 87
 #define TILE_BASE 0x1A0                 // OBJ tiles 0x1A0-0x27F: the viewer's sprites
 #define PAL_UI 8
+// the jar puzzle's sprites: its own set, the fragment (64 x 64, affine) and
+// the crosshair after it; the fragment's colours, the crosshair's (pulsing)
+#define JAR_TILE_FRAGMENT EN3D_JAR_SPRITE_TILES
+#define JAR_TILE_CROSS (EN3D_JAR_SPRITE_TILES + 64)
+#define PAL_FRAGMENT 10
+#define PAL_CROSS 11
+#define JAR_AFFINE 31                   // (the last affine group: the plate's and the people's are the first)
 #define TURN_STEP_COS 16380             // 2.5 degrees a frame (half angles, 1.14)
 #define TURN_STEP_SIN 357
 #define ZOOM_MAX (12 << 12)             // toward the camera, 1.19.12 (the DS's poses go to 12)
@@ -78,6 +91,7 @@ enum { THEN_EXAMINE, THEN_VIEW };
 #define TURN_FRAMES 20
 #define ANIM_FRAMES 8
 #define TEXTBOX_TOP 112                 // (the text box's top: the tabs under it while it talks)
+#define FADE_ALL 0x3F                   // the fades' targets: the backdrop too (the grid's grey, under the picture)
 
 struct En3d
 {
@@ -103,6 +117,23 @@ struct En3d
     s32 m[9];                               // the rotation, 1.14, row by row
     s32 rm[9], rt[3];                       // the picture being drawn's
     struct ScriptContext savedCtx;          // the script while file 35's section runs
+    // the picture's meshes (the record's, or the jar's) and their transforms
+    u8 nitems, spare, interleave, guideDrawn;
+    u8 itemMesh[12], itemXf[12];
+    s32 rm2[9], rt2[3];                     // the second (the jar's piece in flight)
+    // the jar puzzle (jar: 0 the viewer; 1 Day 2's, 2 Day 3's)
+    u8 jar, jarStep, jarEnd, jarSel;        // the step, the one it ends at, the fragment picked (its place in the list)
+    u8 jarCount, jarFly, jarFlying, jarFit; // the list's length; the piece's flight: its frame, on; a fit (else it comes back)
+    u8 jarGuide, jarFlash, jarColours, jarPulse;    // the guide and the crosshair shown; the jar white; (its colours); the pulse's frame
+    u8 jarFragShown, jarSpriteShown, jarDone, jarCircle;    // (the fragment in VRAM); its sprite shown; the leave's kind; in the circle
+    u8 jarList[9], jarPlaced[9];
+    s16 jarAngle[9];                        // each fragment's angle (degrees)
+    s16 jarShown, jarShown0, jarShown1;     // the picked one's as shown (degrees x 16), a turn's
+    s16 jarYaw, jarYaw0, jarYaw1;           // the jar's turn about y (degrees x 16)
+    s32 jarTy, jarTz, jarTy0, jarTz0, jarTy1, jarTz1;   // its place (1.19.12)
+    s16 jarSprX, jarSprY, jarSprX0, jarSprY0, jarSprX1, jarSprY1;   // the fragment's sprite's middle (pixels)
+    u8 jarSub, jarCached, jarKeep, jarSaveAt;   // an animation's step (paced by the pictures); the jar kept for the flight: saved, still in the picture beyond its box, saved after this item
+    u8 jarFlyDrawn, jarSaveRow, cacheBox[4];    // (the flight's frame drawn; the save's next row; the kept box)
 };
 // in the old script heap's free space (+0x9000-0xF000: after the menu's,
 // before the movie's), the picture and its depth in the background's buffer
@@ -114,6 +145,7 @@ struct En3d
 #define sBgPalBackup ((u16 *)(HEAP + 0x9A00))           // 0x200
 #define sMapBackup ((u16 *)(HEAP + 0x9C00))             // BG3's map, 0x800
 #define sObjBackup ((u8 *)(HEAP + 0xA400))              // OBJ tiles 0x1A0-0x2BF (the record's, the plate's): 0x2400
+#define sJarCache ((u8 *)(HEAP + 0x10000))              // the jar as a piece flies: the kept box's tiles, then its depth (the movies' buffer, the fingerprints': free while the puzzle is up), up to 0x9600
 #define sVerts ((s32 *)(HEAP + 0xC800))                 // 12 bytes a vertex: 0x1950
 #define sCorners ((s16 *)(HEAP + 0xE200))               // a quad's corners
 #define sCornersOut ((s32 *)(HEAP + 0xE240))
@@ -121,6 +153,7 @@ struct En3d
 #define sFb ((u8 *)(EWRAM_START + 0x2CFC0))             // 24 x 16 tiles, 8bpp (0: the grid under it)
 #define sZb ((u16 *)(EWRAM_START + 0x2CFC0 + 0x6000))   // 192 x 128
 #define MAX_VERTS 540
+typedef char sEn3dFits[sizeof(struct En3d) <= 0x800 ? 1 : -1];   // (before the backups)
 // the grid (BG2, under BG3: its tiles and map where nothing else is while
 // the viewer is up, its colour in BG palette 14)
 #define GRID_CHAR 3
@@ -142,6 +175,7 @@ bool32 En3dActive(void)
 void En3dReset(void)
 {
     gEn3d.mode = V_OFF;
+    gEn3d.jar = 0;
     gEn3d.scene = 0;
     gEn3d.sceneEnding = FALSE;
     gEn3d.afterSection = 0;
@@ -152,6 +186,7 @@ static void SetMode(u32 mode)
     gEn3d.mode = mode;
     gEn3d.phase = 0;
     gEn3d.timer = 0;
+    gEn3d.jarSub = 0;
 }
 
 static const struct En3dRecord * Record(void)
@@ -183,7 +218,7 @@ bool32 En3dHoldsRecord(void)
 // the portrait plate shown over the viewer (as the DS's face box)
 bool32 En3dShowsPlate(void)
 {
-    return gEn3d.mode >= V_FIRST && gEn3d.mode <= V_SCRIPT;
+    return gEn3d.mode >= V_FIRST && gEn3d.mode <= V_SCRIPT && !gEn3d.jar;
 }
 
 // ---------------------------------------------------------------- maths
@@ -237,6 +272,38 @@ static void Matrix(s32 * m, const s16 * q)
     m[6] = (x * z - w * y) >> 13; m[7] = (y * z + w * x) >> 13; m[8] = 16384 - ((x * x + y * y) >> 13);
 }
 
+// a mod n, 0 to n - 1 (the library's % is not linked)
+static s32 Wrap(s32 a, s32 n)
+{
+    a -= (a / n) * n;
+    return a < 0 ? a + n : a;
+}
+
+// sine and cosine of a (degrees x 16), 1.14
+static s32 Sin16(s32 a)
+{
+    s32 sign = 1, i, f, s;
+    a = Wrap(a, 360 * 16);
+    if (a >= 180 * 16)
+    {
+        a -= 180 * 16;
+        sign = -1;
+    }
+    if (a > 90 * 16)
+        a = 180 * 16 - a;
+    i = a >> 4;
+    f = a & 15;
+    s = sEn3dSin[i];
+    if (f)
+        s += ((sEn3dSin[i + 1] - s) * f) >> 4;
+    return sign * s;
+}
+
+static s32 Cos16(s32 a)
+{
+    return Sin16(a + 90 * 16);
+}
+
 static void SetXf(struct En3dXf * xf, const s32 * m, const s32 * t)
 {
     u32 k;
@@ -246,6 +313,16 @@ static void SetXf(struct En3dXf * xf, const s32 * m, const s32 * t)
     }
     xf->cx[3] = t[0]; xf->cy[3] = t[1]; xf->cz[3] = t[2];
     xf->r31 = R31();
+    // the projection: the viewer's (the DS's touch screen's), or the jar's
+    // (its top screen's at 2/3, its middle at the shown columns' middle)
+    if (gEn3d.jar)
+    {
+        xf->fx = EN3D_JAR_FX; xf->fy = EN3D_JAR_FY; xf->ox = EN3D_JAR_OX; xf->oy = EN3D_JAR_OY;
+    }
+    else
+    {
+        xf->fx = EN3D_FX; xf->fy = EN3D_FY; xf->ox = EN3D_VIEW_W / 2 * 16; xf->oy = EN3D_VIEW_H / 2 * 16;
+    }
 }
 
 // the model turned in the view: about the screen's y (right) or x (down)
@@ -326,6 +403,33 @@ static void LoadColours(const struct En3dRecord * r)
         }
 }
 
+// the jar's textures, each in its slot (sEn3dJarTextures' order)
+static u32 JarSlot(u32 tex)
+{
+    u32 s;
+    for (s = 0; s < EN3D_JAR_TEXTURES; s++)
+        if (sEn3dJarTextures[s] == tex)
+            return s;
+    return 0;
+}
+
+// (white: the DS's flash as a piece fits)
+static void JarColours(bool32 white)
+{
+    u32 s;
+    for (s = 0; s < EN3D_JAR_TEXTURES; s++)
+    {
+        if (white)
+        {
+            DmaFill16(3, 0x7FFF, BG_PLTT + (EN3D_PAL_TEXTURES + 16 * s) * 2, 32);
+        }
+        else
+        {
+            DmaCopy16(3, sEn3dTextures[sEn3dJarTextures[s]].pal, BG_PLTT + (EN3D_PAL_TEXTURES + 16 * s) * 2, 32);
+        }
+    }
+}
+
 // ---------------------------------------------------------------- drawing
 static u32 Lines(void)
 {
@@ -373,13 +477,152 @@ static void ClearAll(void)
     ClearRows(FALSE);
 }
 
+// the jar kept as a piece flies: the kept box's tiles (row by row) and its
+// depth (row by row) in sJarCache
+static u16 * JarCacheDepth(void)
+{
+    struct En3d * v = &gEn3d;
+    return (u16 *)(sJarCache + (v->cacheBox[2] - v->cacheBox[0]) * (v->cacheBox[3] - v->cacheBox[1]) * 64);
+}
+
+static bool32 JarSave(void)
+{
+    struct En3d * v = &gEn3d;
+    const u8 * c = v->cacheBox;
+    u32 w = c[2] - c[0], ty, y;
+    u16 * zc = JarCacheDepth();
+    for (ty = c[1] + v->jarSaveRow; ty < c[3]; ty++)
+    {
+        if (!TimeLeft(4))
+        {
+            v->jarSaveRow = ty - c[1];
+            return FALSE;
+        }
+        DmaCopy32(3, sFb + 64 * (ty * 24 + c[0]), sJarCache + 64 * w * (ty - c[1]), w * 64);
+        for (y = ty * 8; y < ty * 8 + 8; y++)
+            DmaCopy32(3, sZb + y * EN3D_VIEW_W + c[0] * 8, zc + (y - c[1] * 8) * w * 8, w * 16);
+    }
+    return TRUE;
+}
+
+// the last picture's box put back as the jar was kept (the piece's last
+// place gone; within the kept box, which holds the piece's whole flight)
+static bool32 JarRestore(void)
+{
+    struct En3d * v = &gEn3d;
+    const u8 * c = v->cacheBox;
+    u8 * b = v->drawnBox;
+    u32 w = c[2] - c[0], ty, y, x0, x1;
+    u16 * zc = JarCacheDepth();
+    if (b[0] < c[0]) b[0] = c[0];
+    if (b[1] < c[1]) b[1] = c[1];
+    if (b[2] > c[2]) b[2] = c[2];
+    if (b[3] > c[3]) b[3] = c[3];
+    if (b[2] <= b[0] || b[3] <= b[1])
+    {
+        b[2] = b[0];
+        return TRUE;
+    }
+    x0 = b[0];
+    x1 = b[2];
+    for (ty = b[1]; ty < b[3]; ty++)
+    {
+        if (!TimeLeft(4))
+        {
+            b[1] = ty;
+            return FALSE;
+        }
+        DmaCopy32(3, sJarCache + 64 * (w * (ty - c[1]) + x0 - c[0]), sFb + 64 * (ty * 24 + x0), (x1 - x0) * 64);
+        for (y = ty * 8; y < ty * 8 + 8; y++)
+            DmaCopy32(3, zc + (y - c[1] * 8) * w * 8 + (x0 - c[0]) * 8, sZb + y * EN3D_VIEW_W + x0 * 8, (x1 - x0) * 16);
+    }
+    b[2] = b[0];
+    return TRUE;
+}
+
+// the box to clear after a flight: the last one's and the kept jar's
+static void JarKeptBox(void)
+{
+    struct En3d * v = &gEn3d;
+    u8 * b = v->drawnBox;
+    const u8 * c = v->cacheBox;
+    if (b[2] <= b[0] || b[3] <= b[1])
+    {
+        b[0] = c[0]; b[1] = c[1]; b[2] = c[2]; b[3] = c[3];
+        return;
+    }
+    if (c[0] < b[0]) b[0] = c[0];
+    if (c[1] < b[1]) b[1] = c[1];
+    if (c[2] > b[2]) b[2] = c[2];
+    if (c[3] > b[3]) b[3] = c[3];
+}
+
+// the jar as the DS draws it: the base and the pieces in place (the step's
+// records) turned about y and moved up and forward (the DS's row vectors:
+// x' = x c + z s, z' = z c - x s), and the piece in its flight
+static void JarPicture(void)
+{
+    struct En3d * v = &gEn3d;
+    s32 c = Cos16(v->jarYaw), s = Sin16(v->jarYaw);
+    u32 k, n = 0;
+    v->rm[0] = c; v->rm[1] = 0; v->rm[2] = s;
+    v->rm[3] = 0; v->rm[4] = 1 << 14; v->rm[5] = 0;
+    v->rm[6] = -s; v->rm[7] = 0; v->rm[8] = c;
+    v->rt[0] = 0; v->rt[1] = v->jarTy; v->rt[2] = v->jarTz;
+    // (as a piece flies, the jar is drawn once and kept: then the piece alone)
+    if (!(v->jarFlying && v->jarCached))
+        for (k = 0; k <= v->jarStep; k++, n++)
+        {
+            v->itemMesh[n] = sEn3dJarMeshes[k];
+            v->itemXf[n] = 0;
+        }
+    v->jarSaveAt = 0xFF;
+    if (v->jarFlying)
+    {
+        if (!v->jarCached)
+        {
+            const u8 * b = sEn3dJarSteps[v->jarStep].cache;
+            v->jarSaveAt = n;
+            v->jarSaveRow = 0;
+            v->cacheBox[0] = b[0]; v->cacheBox[1] = b[1]; v->cacheBox[2] = b[2]; v->cacheBox[3] = b[3];
+        }
+        v->jarFlyDrawn = v->jarFly;
+        for (k = 0; k < 9; k++)
+            v->rm2[k] = v->rm[k];
+        v->rt2[0] = 0;
+        v->rt2[1] = v->jarTy + sEn3dJarFlight[v->jarFly][0];
+        v->rt2[2] = v->jarTz + sEn3dJarFlight[v->jarFly][1];
+        v->itemMesh[n] = sEn3dJarMeshes[v->jarStep + 1];
+        v->itemXf[n] = 1;
+        n++;
+    }
+    v->nitems = n;
+    v->interleave = TRUE;
+    v->guideDrawn = v->jarGuide;
+}
+
 static void StartPicture(void)
 {
     struct En3d * v = &gEn3d;
     v->dirty = FALSE;
-    Matrix(v->rm, v->q);
-    v->rt[0] = v->t[0]; v->rt[1] = v->t[1]; v->rt[2] = v->t[2];
-    v->drawRec = ShownIndex();
+    if (v->jar)
+        JarPicture();
+    else
+    {
+        const struct En3dRecord * r;
+        u32 k;
+        Matrix(v->rm, v->q);
+        v->rt[0] = v->t[0]; v->rt[1] = v->t[1]; v->rt[2] = v->t[2];
+        v->drawRec = ShownIndex();
+        r = &sEn3dRecords[v->drawRec];
+        for (k = 0; k < 3 && r->meshes[k] != 0xFF; k++)
+        {
+            v->itemMesh[k] = r->meshes[k];
+            v->itemXf[k] = 0;
+        }
+        v->nitems = k;
+        v->interleave = FALSE;
+    }
     v->render = R_CLEAR;
     v->mesh = 0;
     v->part = 0;
@@ -425,11 +668,72 @@ static u32 ZShift(u32 maxW)
     return zs;
 }
 
+// the picture whole: up when the next vertical blank comes (the rows of the
+// old picture and the new); the jar's guide (the red where the next piece
+// goes) put in it first
+static void PictureDone(void)
+{
+    struct En3d * v = &gEn3d;
+    u32 y0, y1;
+    if (v->jar && v->guideDrawn && v->jarStep < EN3D_JAR_STEPS)
+    {
+        const struct En3dJarStep * st = &sEn3dJarSteps[v->jarStep];
+        const u16 * o = &sEn3dJarGuides[st->guide];
+        u32 k;
+        for (k = 0; k < st->nguide; k++)
+            sFb[o[k]] = EN3D_JAR_GUIDE_INDEX;
+        if (st->nguide)
+        {
+            if (st->box[0] < v->box[0]) v->box[0] = st->box[0];
+            if (st->box[1] < v->box[1]) v->box[1] = st->box[1];
+            if (st->box[2] > v->box[2]) v->box[2] = st->box[2];
+            if (st->box[3] > v->box[3]) v->box[3] = st->box[3];
+        }
+    }
+    y0 = v->box[1]; y1 = v->box[3];
+    if (v->drawnBox[3] > v->drawnBox[1] || v->uploadAll)
+    {
+        if (v->drawnBox[1] < y0 || y1 <= y0) y0 = v->drawnBox[1];
+        if (v->drawnBox[3] > y1) y1 = v->drawnBox[3];
+    }
+    if (v->uploadAll)
+    {
+        y0 = 0; y1 = 16;
+        v->uploadAll = FALSE;
+    }
+    v->upload0 = y0;
+    v->upload1 = y1;
+    v->drawnBox[0] = v->box[0]; v->drawnBox[1] = v->box[1];
+    v->drawnBox[2] = v->box[2]; v->drawnBox[3] = v->box[3];
+    v->uploadReady = y1 > y0;
+    v->coloursRec = v->jar ? 0xFF : v->drawRec;       // (the jar's are its own: JarVBlank)
+    v->render = R_IDLE;
+}
+
+// item k's vertices: transformed into sVerts (after the earlier items' when
+// they are all done first; the jar's one at a time, each then drawn)
+static void TransformItem(u32 k, u32 off)
+{
+    struct En3d * v = &gEn3d;
+    u32 mesh = v->itemMesh[k];
+    v->vertsOf[v->interleave ? 0 : k] = off;
+    if (v->itemXf[k])
+        SetXf(&v->xf, v->rm2, v->rt2);
+    else
+        SetXf(&v->xf, v->rm, v->rt);
+    v->xf.verts = MeshVertices(mesh);
+    v->xf.count = MeshVerts(mesh);
+    v->xf.out = sVerts + 3 * off;
+    Transform(&v->xf);
+    if (v->xf.maxW > v->maxW)
+        v->maxW = v->xf.maxW;
+    Grow(v->xf.out, v->xf.count);
+}
+
 // the picture, as far as the frame's time goes
 static void RenderWork(void)
 {
     struct En3d * v = &gEn3d;
-    const struct En3dRecord * r = &sEn3dRecords[v->drawRec];
     for (;;)
     {
         switch (v->render)
@@ -438,17 +742,55 @@ static void RenderWork(void)
             if (!v->dirty || v->uploadReady)
                 return;
             StartPicture();
-            r = &sEn3dRecords[v->drawRec];
             break;
         case R_CLEAR:
-            if (!ClearRows(TRUE))
-                return;
+            if (v->jar && v->jarFlying && v->jarCached)
+            {
+                if (!JarRestore())
+                    return;
+            }
+            else
+            {
+                if (v->jarKeep)
+                {
+                    // (the jar kept for a flight is in the picture beyond its last box)
+                    JarKeptBox();
+                    v->jarKeep = FALSE;
+                }
+                if (!ClearRows(TRUE))
+                    return;
+            }
             v->render = R_XFORM;
             break;
         case R_XFORM:
         {
-            u32 mesh, off = 0, k;
-            if (v->mesh >= 3 || r->meshes[v->mesh] == 0xFF)
+            u32 off = 0, k;
+            if (v->interleave)
+            {
+                // the jar: an item, then its parts
+                if (v->mesh >= v->nitems)
+                {
+                    PictureDone();
+                    return;
+                }
+                if (v->mesh == v->jarSaveAt)
+                {
+                    // the jar whole: kept for the piece's flight
+                    if (!JarSave())
+                        return;
+                    v->jarSaveAt = 0xFF;
+                    v->jarCached = v->jarKeep = TRUE;
+                }
+                if (!TimeLeft(24))
+                    return;
+                TransformItem(v->mesh, 0);
+                v->zshift = EN3D_JAR_ZSHIFT;
+                v->part = 0;
+                v->draw.resume = 0;
+                v->render = R_DRAW;
+                break;
+            }
+            if (v->mesh >= v->nitems)
             {
                 v->zshift = ZShift(v->maxW);
                 v->mesh = 0;
@@ -460,17 +802,8 @@ static void RenderWork(void)
             if (!TimeLeft(24))
                 return;
             for (k = 0; k < v->mesh; k++)
-                off += MeshVerts(r->meshes[k]);
-            mesh = r->meshes[v->mesh];
-            v->vertsOf[v->mesh] = off;
-            SetXf(&v->xf, v->rm, v->rt);
-            v->xf.verts = MeshVertices(mesh);
-            v->xf.count = MeshVerts(mesh);
-            v->xf.out = sVerts + 3 * off;
-            Transform(&v->xf);
-            if (v->xf.maxW > v->maxW)
-                v->maxW = v->xf.maxW;
-            Grow(v->xf.out, v->xf.count);
+                off += MeshVerts(v->itemMesh[k]);
+            TransformItem(v->mesh, off);
             v->mesh++;
             break;
         }
@@ -478,35 +811,18 @@ static void RenderWork(void)
         {
             struct En3dDraw * d = &v->draw;
             u32 mesh;
-            if (v->mesh >= 3 || r->meshes[v->mesh] == 0xFF)
+            if (v->mesh >= v->nitems)
             {
-                // whole: up when the next vertical blank comes (the rows of
-                // the old picture and the new)
-                u32 y0 = v->box[1], y1 = v->box[3];
-                if (v->drawnBox[3] > v->drawnBox[1] || v->uploadAll)
-                {
-                    if (v->drawnBox[1] < y0 || y1 <= y0) y0 = v->drawnBox[1];
-                    if (v->drawnBox[3] > y1) y1 = v->drawnBox[3];
-                }
-                if (v->uploadAll)
-                {
-                    y0 = 0; y1 = 16;
-                    v->uploadAll = FALSE;
-                }
-                v->upload0 = y0;
-                v->upload1 = y1;
-                v->drawnBox[0] = v->box[0]; v->drawnBox[1] = v->box[1];
-                v->drawnBox[2] = v->box[2]; v->drawnBox[3] = v->box[3];
-                v->uploadReady = y1 > y0;
-                v->coloursRec = v->drawRec;
-                v->render = R_IDLE;
+                PictureDone();
                 return;
             }
-            mesh = r->meshes[v->mesh];
+            mesh = v->itemMesh[v->mesh];
             if (v->part >= MeshParts(mesh))
             {
                 v->mesh++;
                 v->part = 0;
+                if (v->interleave)
+                    v->render = R_XFORM;
                 break;
             }
             if (!TimeLeft(6))
@@ -517,11 +833,11 @@ static void RenderWork(void)
                 const struct En3dTexture * t = &sEn3dTextures[p[2]];
                 d->tris = D(sEn3dMeshes[mesh].tris) + 18 * p[0];
                 d->count = p[1];
-                d->xv = sVerts + 3 * v->vertsOf[v->mesh];
+                d->xv = sVerts + 3 * v->vertsOf[v->interleave ? 0 : v->mesh];
                 d->tex = D(t->off);
                 d->wlog = t->wlog;
                 d->hlog = t->hlog;
-                d->pal = EN3D_PAL_TEXTURES + 16 * TextureSlot(r, p[2]);
+                d->pal = EN3D_PAL_TEXTURES + 16 * (v->jar ? JarSlot(p[2]) : TextureSlot(&sEn3dRecords[v->drawRec], p[2]));
                 d->zshift = v->zshift;
                 d->fb = sFb;
                 d->zb = sZb;
@@ -530,7 +846,10 @@ static void RenderWork(void)
             }
             d->limit = Limit();
             if (DrawPart(d) == 0)
+            {
                 v->part++;
+                d->resume = 0;
+            }
             else
                 return;
             break;
@@ -541,12 +860,42 @@ static void RenderWork(void)
     }
 }
 
+// the jar's fragment the circle shows (0xFF: none left)
+static u32 JarPiece(void)
+{
+    struct En3d * v = &gEn3d;
+    return v->jarSel < v->jarCount && !v->jarPlaced[v->jarSel] ? v->jarList[v->jarSel] : 0xFF;
+}
+
+// the jar's in the vertical blank: the pulse's colours (the guide's red,
+// the crosshair's), the white of the flash, the fragment shown
+static void JarVBlank(void)
+{
+    struct En3d * v = &gEn3d;
+    u32 p = sEn3dJarPulse[v->jarPulse / EN3D_JAR_PULSE_FRAMES], piece = JarPiece();
+    ((u16 *)BG_PLTT)[EN3D_JAR_GUIDE_INDEX] = sEn3dJarGuideRed[p];
+    DmaCopy16(3, sEn3dJarCrossPal[p], OBJ_PLTT + PAL_CROSS * 32, 32);
+    if (v->jarColours != v->jarFlash)
+    {
+        JarColours(v->jarFlash);
+        v->jarColours = v->jarFlash;
+    }
+    if (piece != 0xFF && piece != v->jarFragShown)
+    {
+        DmaCopy32(3, D(EN3D_JAR_GFX_FRAGMENTS) + 2048 * piece, OBJ_VRAM0 + (TILE_BASE + JAR_TILE_FRAGMENT) * 32, 2048);
+        DmaCopy16(3, sEn3dJarFragmentPal[piece], OBJ_PLTT + PAL_FRAGMENT * 32, 32);
+        v->jarFragShown = piece;
+    }
+}
+
 // the vertical blank's: the picture (its rows) or the close-up to VRAM
 void En3dVBlank(void)
 {
     struct En3d * v = &gEn3d;
-    if (v->mode < V_FIRST || v->mode > V_FADE_LEAVE)
+    if (v->mode < V_FIRST || v->mode == V_LEAVE || v->mode == V_SHOW_RECORD)
         return;
+    if (v->jar)
+        JarVBlank();
     if (v->coloursRec != 0xFF && (v->uploadReady || v->closeup != v->closeupShown))
     {
         LoadColours(&sEn3dRecords[v->coloursRec]);
@@ -637,9 +986,8 @@ static u32 HitTest(void)
 // ---------------------------------------------------------------- sprites
 #define sOam (gEn3d.oam)
 
-static void Sprite(u32 first, s32 x, s32 y)
+static void SpriteOf(const struct En3dPiece * p, s32 x, s32 y, u32 pal)
 {
-    const struct En3dPiece * p = &sEn3dPieces[first];
     for (;; p++)
     {
         struct OamAttrs * oam;
@@ -648,10 +996,15 @@ static void Sprite(u32 first, s32 x, s32 y)
         oam = &gOamObjects[sOam++];
         oam->attr0 = SPRITE_ATTR0((y + p->dy) & 0xFF, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, p->shape);
         oam->attr1 = SPRITE_ATTR1_NONAFFINE((x + p->dx) & 0x1FF, FALSE, FALSE, p->size);
-        oam->attr2 = SPRITE_ATTR2(TILE_BASE + p->tile, 2, PAL_UI);
+        oam->attr2 = SPRITE_ATTR2(TILE_BASE + p->tile, 2, pal);
         if (p->last)
             return;
     }
+}
+
+static void Sprite(u32 first, s32 x, s32 y)
+{
+    SpriteOf(&sEn3dPieces[first], x, y, PAL_UI);
 }
 
 static void EndSprites(void)
@@ -681,6 +1034,75 @@ static void DrawSprites(void)
     }
     // the knob: zoomed out at the bottom of its track
     Sprite(EN3D_SPRITE_KNOB, 4, EN3D_ZOOM_BOTTOM - (v->zoom * (EN3D_ZOOM_BOTTOM - EN3D_ZOOM_TOP)) / ZOOM_MAX);
+    EndSprites();
+}
+
+static void JarSprite(u32 first, s32 x, s32 y, u32 pal)
+{
+    SpriteOf(&sEn3dJarPieces[first], x, y, pal);
+}
+
+// the next fragment left in the list that way (-1: none)
+static s32 JarNext(s32 dir)
+{
+    struct En3d * v = &gEn3d;
+    s32 k;
+    for (k = v->jarSel + dir; k >= 0 && k < v->jarCount; k += dir)
+        if (!v->jarPlaced[k])
+            return k;
+    return -1;
+}
+
+// the jar's: the tabs, the fragment's number, the arrows and the red cross
+// by the circle, the fragment (turned: affine, its colours its own) and the
+// crosshair over where it goes (the cross over the circle and the
+// crosshair in the pulse's colours)
+static void DrawJarSprites(void)
+{
+    struct En3d * v = &gEn3d;
+    const struct En3dJarStep * st = &sEn3dJarSteps[v->jarStep];
+    u32 piece = JarPiece(), k;
+    struct OamAttrs * oam;
+    s32 c, s;
+    sOam = OAM_FIRST;
+    JarSprite(EN3D_JAR_SPRITE_BACK, 0, EN3D_TAB_Y, PAL_UI);
+    if (piece != 0xFF)
+        JarSprite(EN3D_JAR_SPRITE_COMBINE, EN3D_JAR_COMBINE_X, EN3D_TAB_Y, PAL_UI);
+    if (v->jarSpriteShown && piece != 0xFF)
+        JarSprite(EN3D_JAR_SPRITE_DIGIT1 + v->jarSel, EN3D_JAR_DIGIT_X, EN3D_JAR_DIGIT_Y, PAL_UI);
+    if (v->jarCircle && piece != 0xFF)
+    {
+        if (JarNext(-1) >= 0)
+            JarSprite(EN3D_JAR_SPRITE_LEFT, EN3D_JAR_LEFT_X, EN3D_JAR_ARROW_Y, PAL_UI);
+        if (JarNext(1) >= 0)
+            JarSprite(EN3D_JAR_SPRITE_RIGHT, EN3D_JAR_RIGHT_X, EN3D_JAR_ARROW_Y, PAL_UI);
+        for (k = 0; k < 2; k++)
+        {
+            JarSprite(EN3D_JAR_SPRITE_HLINE, EN3D_JAR_CIRCLE_X - EN3D_JAR_CROSS_R + 16 * k, EN3D_JAR_CIRCLE_Y, PAL_CROSS);
+            JarSprite(EN3D_JAR_SPRITE_VLINE, EN3D_JAR_CIRCLE_X, EN3D_JAR_CIRCLE_Y - EN3D_JAR_CROSS_R + 16 * k, PAL_CROSS);
+        }
+    }
+    if (v->jarSpriteShown && piece != 0xFF && sOam <= OAM_LAST)
+    {
+        // (double size: its middle 64 pixels in)
+        oam = &gOamObjects[sOam++];
+        oam->attr0 = SPRITE_ATTR0((v->jarSprY - 64) & 0xFF, ST_OAM_AFFINE_DOUBLE, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
+        oam->attr1 = SPRITE_ATTR1_AFFINE((v->jarSprX - 64) & 0x1FF, JAR_AFFINE, 3);
+        oam->attr2 = SPRITE_ATTR2(TILE_BASE + JAR_TILE_FRAGMENT, 2, PAL_FRAGMENT);
+        c = Cos16(v->jarShown) >> 6;
+        s = Sin16(v->jarShown) >> 6;
+        gOamObjects[JAR_AFFINE * 4 + 0].attr3 = c;
+        gOamObjects[JAR_AFFINE * 4 + 1].attr3 = s;
+        gOamObjects[JAR_AFFINE * 4 + 2].attr3 = -s;
+        gOamObjects[JAR_AFFINE * 4 + 3].attr3 = c;
+    }
+    if (v->jarGuide && v->jarStep < v->jarEnd && sOam <= OAM_LAST)
+    {
+        oam = &gOamObjects[sOam++];
+        oam->attr0 = SPRITE_ATTR0((st->crossY - 32) & 0xFF, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
+        oam->attr1 = SPRITE_ATTR1_NONAFFINE((st->crossX - 32) & 0x1FF, FALSE, FALSE, 3);
+        oam->attr2 = SPRITE_ATTR2(TILE_BASE + JAR_TILE_CROSS, 2, PAL_CROSS);
+    }
     EndSprites();
 }
 
@@ -720,12 +1142,16 @@ static void SaveScreen(void)
 }
 
 // the viewer's screen: BG3 the frame and the picture (256 colours), the
-// rest off but the text box's
+// rest off but the text box's (the jar's: its own frame, the picture in its
+// left 144 columns, its sprites)
 static void TakeScreen(void)
 {
     struct IORegisters * io = &gIORegisters;
+    struct En3d * v = &gEn3d;
     u32 r, c;
-    const u16 * map = (const u16 *)D(EN3D_GFX_MAP);
+    const u16 * map = (const u16 *)D(v->jar ? EN3D_JAR_GFX_MAP : EN3D_GFX_MAP);
+    s32 viewX = v->jar ? EN3D_JAR_VIEW_X : EN3D_VIEW_X, viewY = v->jar ? EN3D_JAR_VIEW_Y : EN3D_VIEW_Y;
+    s32 viewW = v->jar ? EN3D_JAR_VIS_W : EN3D_VIEW_W;
     CpuCopy32(gEn3dCodeStart, gEnMovieCode, gEn3dCodeEnd - gEn3dCodeStart);
     io->lcd_dispcnt &= ~(DISPCNT_BG0_ON | DISPCNT_BG1_ON);
     io->lcd_dispcnt |= DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON;
@@ -738,8 +1164,8 @@ static void TakeScreen(void)
     for (r = 0; r < 32; r++)
         for (c = 0; c < 32; c++)
         {
-            s32 vx = c - 1 - EN3D_VIEW_X / 8, vy = r - 1 - EN3D_VIEW_Y / 8;
-            u16 t = (vx >= 0 && vx < EN3D_VIEW_W / 8 && vy >= 0 && vy < EN3D_VIEW_H / 8) ? ((vx & 1) | (vy & 1) << 1) : 0;
+            s32 vx = c - 1 - viewX / 8, vy = r - 1 - viewY / 8;
+            u16 t = (vx >= 0 && vx < viewW / 8 && vy >= 0 && vy < EN3D_VIEW_H / 8) ? ((vx & 1) | (vy & 1) << 1) : 0;
             ((u16 *)BG_SCREEN_ADDR(GRID_SCREEN))[r * 32 + c] = t | (GRID_PAL << 12);
         }
     DmaCopy16(3, D(EN3D_GFX_GRID), BG_CHAR_ADDR(GRID_CHAR), 4 * 32);
@@ -749,9 +1175,20 @@ static void TakeScreen(void)
         for (c = 0; c < 32; c++)
             gBG3MapBuffer[r * 32 + c] = (r >= 1 && r <= 20 && c >= 1 && c <= 30) ? map[(r - 1) * 30 + c - 1] : EN3D_VIEW_TILES;
     DmaCopy16(3, gBG3MapBuffer, BG_SCREEN_ADDR(31), 0x800);
-    DmaCopy32(3, D(EN3D_GFX_FRAME), BG_CHAR_ADDR(1) + EN3D_VIEW_TILES * 64, EN3D_FRAME_TILES * 64);
-    DmaCopy16(3, sEn3dFramePalette, BG_PLTT + EN3D_PAL_FRAME * 2, EN3D_FRAME_COLOURS * 2);
-    DmaCopy16(3, D(EN3D_GFX_SPRITES), OBJ_VRAM0 + TILE_BASE * 32, EN3D_SPRITE_TILES * 32);
+    if (v->jar)
+    {
+        DmaCopy32(3, D(EN3D_JAR_GFX_FRAME), BG_CHAR_ADDR(1) + EN3D_VIEW_TILES * 64, EN3D_JAR_FRAME_TILES * 64);
+        DmaCopy16(3, sEn3dJarFramePalette, BG_PLTT + EN3D_PAL_FRAME * 2, EN3D_JAR_FRAME_COLOURS * 2);
+        DmaCopy16(3, D(EN3D_JAR_GFX_SPRITES), OBJ_VRAM0 + TILE_BASE * 32, EN3D_JAR_SPRITE_TILES * 32);
+        DmaCopy16(3, D(EN3D_JAR_GFX_CROSS), OBJ_VRAM0 + (TILE_BASE + JAR_TILE_CROSS) * 32, 64 * 32);
+        JarColours(FALSE);
+    }
+    else
+    {
+        DmaCopy32(3, D(EN3D_GFX_FRAME), BG_CHAR_ADDR(1) + EN3D_VIEW_TILES * 64, EN3D_FRAME_TILES * 64);
+        DmaCopy16(3, sEn3dFramePalette, BG_PLTT + EN3D_PAL_FRAME * 2, EN3D_FRAME_COLOURS * 2);
+        DmaCopy16(3, D(EN3D_GFX_SPRITES), OBJ_VRAM0 + TILE_BASE * 32, EN3D_SPRITE_TILES * 32);
+    }
     DmaCopy16(3, sEn3dUiPalette, OBJ_PLTT + PAL_UI * 32, 32);
     ClearAll();
     DmaCopy32(3, sFb, BG_CHAR_ADDR(1), EN3D_VIEW_TILES * 64);
@@ -847,8 +1284,397 @@ void En3dOpenFromRecord(struct CourtRecord * courtRecord)
     v->fromVar2 = main->process[GAME_PROCESS_VAR2];
     main->process[GAME_PROCESS_STATE] = RECORD_3D;
     main->process[GAME_PROCESS_VAR1] = 0;
-    StartHardwareBlend(2, 1, 1, 0x1F);
+    StartHardwareBlend(2, 1, 1, FADE_ALL);
     SetMode(V_FADE_OUT);
+}
+
+// ---------------------------------------------------------------- the jar puzzle
+// The DS's 74 8 32 (script command 69 4<<8 | n: n 0 Day 2's, 1 Day 3's):
+// the Unstable Jar's pieces put back together (jarpuzzle.py has what the
+// DS does). The jar is drawn as the viewer draws its models, its view in
+// the viewport's left 144 columns; the fragment picked is in the circle on
+// the right: left and right pick, L and R turn it, A sends it to the jar
+// (it fits, the next piece turned right, or comes back), B leaves. The
+// DS's frames for each thing it does:
+#define JAR_RISE_FRAMES 30          // the base up into its place
+#define JAR_SPIN_FRAMES 60          // and once round
+#define JAR_ROTATE_FRAMES 15        // a fragment turned by 90
+#define JAR_SEND_FRAMES 15          // to the crosshair (then its flight, sEn3dJarFlight: as the
+                                    // frames go, the jar drawn once and kept, the piece alone again)
+#define JAR_MISS_SEND_FRAMES 12
+#define JAR_MISS_HOVER_FRAMES 40
+#define JAR_RETURN_FRAMES 20
+#define JAR_FLASH_FRAMES 11         // the jar white as a piece fits
+#define JAR_HOLD_FRAMES 60
+#define JAR_TURN_FRAMES 30          // to the next step's view
+#define JAR_END_FRAMES 60           // the jar done, before the fade
+// The jar's own moves (the rise, the turn round, the turn to the next view)
+// go a step a picture, at most the DS's pace: the whole jar takes the
+// renderer several frames, and a turn shown in three pictures is no turn.
+#define JAR_RISE_STEPS 6
+#define JAR_SPIN_STEPS 15
+#define JAR_TURN_STEPS 6
+
+static s32 Lerp(s32 a, s32 b, u32 t, u32 n)
+{
+    return a + (b - a) * (s32)t / (s32)n;
+}
+
+// the picture asked for is whole
+static bool32 PictureUp(void)
+{
+    return gEn3d.render == R_IDLE && !gEn3d.dirty;
+}
+
+// the next step of a move paced by the pictures (n steps, each at least
+// `min` frames): TRUE as one starts (its picture asked for)
+static bool32 JarStepOn(u32 n, u32 min)
+{
+    struct En3d * v = &gEn3d;
+    if (v->jarSub >= n || v->timer < min || !PictureUp())
+        return FALSE;
+    v->jarSub++;
+    v->timer = 0;
+    v->dirty = TRUE;
+    return TRUE;
+}
+
+static bool32 JarStepsDone(u32 n)
+{
+    return gEn3d.jarSub >= n && PictureUp();
+}
+
+// command 69 4<<8 | n: the screen faded out, then the puzzle's
+static void JarStart(u32 variant)
+{
+    struct En3d * v = &gEn3d;
+    v->jar = variant + 1;
+    v->sceneHere = FALSE;
+    v->hovered = FALSE;
+    v->hit = 0;
+    v->closeup = v->closeupShown = 0;
+    v->after = AFTER_NONE;
+    v->render = R_IDLE;
+    v->uploadReady = FALSE;
+    v->coloursRec = 0xFF;
+    v->file35 = FALSE;
+    v->dirty = FALSE;
+    BACKUP_PROCESS();
+    SET_PROCESS(COURT_RECORD_PROCESS, RECORD_3D, 0, 0);
+    StartHardwareBlend(2, 1, 1, FADE_ALL);
+    SetMode(V_FADE_OUT);
+}
+
+// the fragments (Day 2: eight, in the DS's order; Day 3: the last alone,
+// the jar whole but for it), each at a random quarter turn
+static void JarSetup(void)
+{
+    struct En3d * v = &gEn3d;
+    u32 k;
+    if (v->jar == 1)
+    {
+        v->jarStep = 0;
+        v->jarEnd = 8;
+        v->jarCount = 8;
+        for (k = 0; k < 8; k++)
+            v->jarList[k] = sEn3dJarOrder[k];
+    }
+    else
+    {
+        v->jarStep = 8;
+        v->jarEnd = 9;
+        v->jarCount = 1;
+        v->jarList[0] = 8;
+    }
+    for (k = 0; k < v->jarCount; k++)
+    {
+        v->jarPlaced[k] = FALSE;
+        v->jarAngle[k] = (Wrap(Random(), 3) + 1) * 90;
+    }
+    v->jarSel = 0;
+    v->jarYaw = sEn3dJarSteps[v->jarStep].yaw * 16;
+    v->jarTy = v->jarTz = 0;                // (it rises into its place)
+    v->jarShown = v->jarAngle[0] * 16;
+    v->jarGuide = v->jarFlying = v->jarFlash = v->jarColours = FALSE;
+    v->jarCached = v->jarKeep = FALSE;
+    v->jarSaveAt = 0xFF;
+    v->jarPulse = 0;
+    v->jarFragShown = 0xFF;
+    v->jarSpriteShown = v->jarCircle = TRUE;
+    v->jarSprX = EN3D_JAR_CIRCLE_X;
+    v->jarSprY = EN3D_JAR_CIRCLE_Y;
+    v->dirty = TRUE;
+}
+
+// the player's turn: the guide and the crosshair over where the next piece
+// goes, the fragment in the circle
+static void JarPlay(void)
+{
+    struct En3d * v = &gEn3d;
+    v->jarGuide = TRUE;
+    if (PictureUp() && !v->uploadReady)
+    {
+        // (written into the picture as it is: no new one)
+        v->guideDrawn = TRUE;
+        v->box[0] = v->drawnBox[0]; v->box[1] = v->drawnBox[1];
+        v->box[2] = v->drawnBox[2]; v->box[3] = v->drawnBox[3];
+        PictureDone();
+    }
+    else
+        v->dirty = TRUE;
+    v->jarSpriteShown = v->jarCircle = JarPiece() != 0xFF;
+    v->jarSprX = EN3D_JAR_CIRCLE_X;
+    v->jarSprY = EN3D_JAR_CIRCLE_Y;
+    SetMode(J_PLAY);
+}
+
+// to the step's view (the shorter way round)
+static void JarTurn(void)
+{
+    struct En3d * v = &gEn3d;
+    const struct En3dJarStep * st = &sEn3dJarSteps[v->jarStep];
+    s32 d;
+    v->jarYaw0 = Wrap(v->jarYaw, 360 * 16);
+    d = st->yaw * 16 - v->jarYaw0;
+    if (d > 180 * 16)
+        d -= 360 * 16;
+    else if (d <= -180 * 16)
+        d += 360 * 16;
+    v->jarYaw1 = v->jarYaw0 + d;
+    v->jarTy0 = v->jarTy;
+    v->jarTz0 = v->jarTz;
+    v->jarTy1 = st->ty;
+    v->jarTz1 = st->tz;
+    SetMode(J_TURN);
+}
+
+// the screen faded out (slowly when the jar is done), then away
+static void JarLeave(bool32 done)
+{
+    struct En3d * v = &gEn3d;
+    v->jarDone = done;
+    v->jarGuide = FALSE;
+    StartHardwareBlend(2, done ? 4 : 1, 1, FADE_ALL);
+    SetMode(V_FADE_LEAVE);
+}
+
+// everything back, the room's background (or the jar's picture: as the
+// script's 1B changes it) and the section the DS goes on in; faded in, but
+// Day 2's done, whose section fades out first (the screen left near black
+// so that its fade ends at once, as the DS's on a black screen)
+static void JarGone(struct Main * main)
+{
+    struct En3d * v = &gEn3d;
+    const u16 * e = sEn3dJarExits[v->jar - 1][v->jarDone];
+    bool32 fadesOut = v->jar == 1 && v->jarDone;
+    GiveBackScreen();
+    v->render = R_IDLE;
+    v->uploadReady = FALSE;
+    v->jar = 0;
+    SetMode(V_OFF);
+    RESTORE_PROCESS_PTR(main);
+    // no one shown (the DS's sections after it bring the person in themselves)
+    DestroyAnimation(&gAnimation[1]);
+    gInvestigation.personActive = 0;
+    SetInactiveActionButtons(&gInvestigation, 15);
+    if (e[0] != main->currentBG)
+    {
+        main->previousBG = main->currentBG;
+        main->currentBG = e[0];
+        main->currentBgStripe = 1;
+    }
+    ChangeScriptSection(e[1]);
+    if (fadesOut)
+        gIORegisters.lcd_bldy = 0x10 - 1;
+    else
+        StartHardwareBlend(1, 1, 1, FADE_ALL);
+}
+
+static void JarInput(void)
+{
+    struct En3d * v = &gEn3d;
+    u32 pressed = gJoypad.pressedKeys;
+    s32 k;
+    if (pressed & B_BUTTON)
+    {
+        PlaySE(SE002_MENU_CANCEL);
+        JarLeave(FALSE);
+        return;
+    }
+    if (pressed & A_BUTTON && JarPiece() != 0xFF)
+    {
+        // Combine: it fits if it is the next piece, turned as it goes
+        const struct En3dJarStep * st = &sEn3dJarSteps[v->jarStep];
+        PlaySE(SE00A_SWITCH_RECORD);
+        v->jarFit = JarPiece() == v->jarStep && v->jarAngle[v->jarSel] == 0;
+        v->jarCircle = FALSE;
+        v->jarSprX0 = v->jarSprX;
+        v->jarSprY0 = v->jarSprY;
+        v->jarSprX1 = st->crossX;
+        v->jarSprY1 = st->crossY;
+        SetMode(J_SEND);
+        return;
+    }
+    if (pressed & (L_BUTTON | R_BUTTON) && JarPiece() != 0xFF)
+    {
+        s32 turn = pressed & R_BUTTON ? 90 : -90;
+        PlaySE(EN3D_JAR_SE_TURN);
+        v->jarShown0 = v->jarAngle[v->jarSel] * 16;
+        v->jarShown1 = v->jarShown0 + turn * 16;
+        v->jarAngle[v->jarSel] = Wrap(v->jarAngle[v->jarSel] + turn, 360);
+        SetMode(J_ROTATE);
+        return;
+    }
+    if (pressed & (DPAD_LEFT | DPAD_RIGHT))
+    {
+        k = JarNext(pressed & DPAD_RIGHT ? 1 : -1);
+        if (k >= 0)
+        {
+            PlaySE(SE00C_MENU_CHANGE_PAGE);
+            v->jarSel = k;
+            v->jarShown = v->jarAngle[k] * 16;
+        }
+    }
+}
+
+static void JarFrame(void)
+{
+    struct En3d * v = &gEn3d;
+    const struct En3dJarStep * st = &sEn3dJarSteps[v->jarStep];
+    u32 t = ++v->timer;
+    s32 k;
+    if (++v->jarPulse >= 12 * EN3D_JAR_PULSE_FRAMES)
+        v->jarPulse = 0;
+    switch (v->mode)
+    {
+    case J_RISE:
+        if (JarStepOn(JAR_RISE_STEPS, JAR_RISE_FRAMES / JAR_RISE_STEPS))
+        {
+            v->jarTy = Lerp(0, st->ty, v->jarSub, JAR_RISE_STEPS);
+            v->jarTz = Lerp(0, st->tz, v->jarSub, JAR_RISE_STEPS);
+        }
+        if (JarStepsDone(JAR_RISE_STEPS))
+            SetMode(J_SPIN);
+        break;
+    case J_SPIN:
+        if (JarStepOn(JAR_SPIN_STEPS, JAR_SPIN_FRAMES / JAR_SPIN_STEPS))
+            v->jarYaw = st->yaw * 16 - Lerp(0, 360 * 16, v->jarSub, JAR_SPIN_STEPS);
+        if (JarStepsDone(JAR_SPIN_STEPS))
+        {
+            v->jarYaw = st->yaw * 16;
+            JarPlay();
+        }
+        break;
+    case J_PLAY:
+        JarInput();
+        break;
+    case J_ROTATE:
+        v->jarShown = Lerp(v->jarShown0, v->jarShown1, t, JAR_ROTATE_FRAMES);
+        if (t >= JAR_ROTATE_FRAMES)
+        {
+            v->jarShown = v->jarAngle[v->jarSel] * 16;
+            SetMode(J_PLAY);
+        }
+        break;
+    case J_SEND:
+    {
+        u32 n = v->jarFit ? JAR_SEND_FRAMES : JAR_MISS_SEND_FRAMES;
+        v->jarSprX = Lerp(v->jarSprX0, v->jarSprX1, t, n);
+        v->jarSprY = Lerp(v->jarSprY0, v->jarSprY1, t, n);
+        if (t < n)
+            break;
+        if (!v->jarFit)
+        {
+            SetMode(J_MISS);
+            break;
+        }
+        // it flies into its place (the next fragment picked meanwhile)
+        v->jarSpriteShown = FALSE;
+        v->jarGuide = FALSE;
+        v->jarFlying = TRUE;
+        v->jarCached = FALSE;
+        v->jarFly = 0;
+        v->jarFlyDrawn = 0xFF;
+        v->jarPlaced[v->jarSel] = TRUE;
+        k = JarNext(1);
+        if (k < 0)
+            k = JarNext(-1);
+        if (k >= 0)
+        {
+            v->jarSel = k;
+            v->jarShown = v->jarAngle[k] * 16;
+        }
+        v->dirty = TRUE;
+        SetMode(J_FIT);
+        break;
+    }
+    case J_FIT:
+    {
+        u32 f = t < EN3D_JAR_FLIGHT - 1 ? t : EN3D_JAR_FLIGHT - 1;
+        if (f != v->jarFly)
+        {
+            v->jarFly = f;
+            v->dirty = TRUE;
+        }
+        if (f == EN3D_JAR_FLIGHT - 1 && v->jarFlyDrawn == f && PictureUp())
+        {
+            // in its place (the picture as it is): the jar's from now on
+            v->jarFlying = v->jarCached = FALSE;
+            v->jarStep++;
+            v->jarFlash = TRUE;
+            PlaySE(EN3D_JAR_SE_FIT);
+            SetMode(J_FLASH);
+        }
+        break;
+    }
+    case J_FLASH:
+        if (t >= JAR_FLASH_FRAMES)
+        {
+            v->jarFlash = FALSE;
+            SetMode(J_HOLD);
+        }
+        break;
+    case J_HOLD:
+        if (t >= JAR_HOLD_FRAMES)
+            JarTurn();
+        break;
+    case J_TURN:
+        if (JarStepOn(JAR_TURN_STEPS, JAR_TURN_FRAMES / JAR_TURN_STEPS))
+        {
+            v->jarYaw = Lerp(v->jarYaw0, v->jarYaw1, v->jarSub, JAR_TURN_STEPS);
+            v->jarTy = Lerp(v->jarTy0, v->jarTy1, v->jarSub, JAR_TURN_STEPS);
+            v->jarTz = Lerp(v->jarTz0, v->jarTz1, v->jarSub, JAR_TURN_STEPS);
+        }
+        if (!JarStepsDone(JAR_TURN_STEPS))
+            break;
+        if (v->jarStep < v->jarEnd)
+        {
+            JarPlay();
+            break;
+        }
+        if (v->jar == 2)
+            PlaySE(EN3D_JAR_SE_DONE);
+        SetMode(J_END);
+        break;
+    case J_MISS:
+        if (t >= JAR_MISS_HOVER_FRAMES)
+        {
+            v->jarSprX0 = v->jarSprX;
+            v->jarSprY0 = v->jarSprY;
+            SetMode(J_RETURN);
+        }
+        break;
+    case J_RETURN:
+        v->jarSprX = Lerp(v->jarSprX0, EN3D_JAR_CIRCLE_X, t, JAR_RETURN_FRAMES);
+        v->jarSprY = Lerp(v->jarSprY0, EN3D_JAR_CIRCLE_Y, t, JAR_RETURN_FRAMES);
+        if (t >= JAR_RETURN_FRAMES)
+            JarPlay();
+        break;
+    case J_END:
+        if (t >= JAR_END_FRAMES)
+            JarLeave(TRUE);
+        break;
+    }
 }
 
 // ---------------------------------------------------------------- sections
@@ -988,13 +1814,13 @@ static void AfterSection(void)
         // the scene's end: the viewer and the record away, then its section
         v->afterSection = sc->after;
         v->sceneEnding = TRUE;
-        StartHardwareBlend(2, 1, 1, 0x1F);
+        StartHardwareBlend(2, 1, 1, FADE_ALL);
         SetMode(V_FADE_LEAVE);
         return;
     case AFTER_BACK:
         v->afterSection = sc->back;
         v->sceneEnding = TRUE;
-        StartHardwareBlend(2, 1, 1, 0x1F);
+        StartHardwareBlend(2, 1, 1, FADE_ALL);
         SetMode(V_FADE_LEAVE);
         return;
     default:
@@ -1068,7 +1894,7 @@ static void ViewInput(void)
             return;
         }
         PlaySE(SE002_MENU_CANCEL);
-        StartHardwareBlend(2, 1, 1, 0x1F);
+        StartHardwareBlend(2, 1, 1, FADE_ALL);
         SetMode(V_FADE_LEAVE);
     }
 }
@@ -1101,8 +1927,13 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
         return;
     case V_SETUP:
         TakeScreen();
-        ResetView();
-        ShowRecord(v->record);
+        if (v->jar)
+            JarSetup();
+        else
+        {
+            ResetView();
+            ShowRecord(v->record);
+        }
         v->uploadAll = TRUE;
         SetMode(V_FIRST);
         break;
@@ -1110,7 +1941,10 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
         // (the first picture whole before the fade)
         if (v->render == R_IDLE && !v->dirty && !v->uploadReady)
         {
-            StartHardwareBlend(1, 1, 2, 0x1F);
+            if (v->jar)
+                StartHardwareBlend(1, 2, 1, FADE_ALL);
+            else
+                StartHardwareBlend(1, 1, 2, FADE_ALL);
             SetMode(V_FADE_IN);
         }
         break;
@@ -1120,6 +1954,11 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
         gIORegisters.lcd_bldcnt = BLDCNT_TGT1_BG1 | BLDCNT_TGT2_BG2 | BLDCNT_TGT2_BG3 | BLDCNT_TGT2_OBJ | BLDCNT_TGT2_BD | BLDCNT_EFFECT_BLEND;
         gIORegisters.lcd_bldalpha = BLDALPHA_BLEND(0x1F, 0x7);
         gIORegisters.lcd_bldy = 0;
+        if (v->jar)
+        {
+            SetMode(J_RISE);
+            break;
+        }
         if (v->sceneHere && sc && sc->open && !v->hovered)
         {
             v->after = AFTER_NONE;
@@ -1173,6 +2012,11 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
         SetMode(V_LEAVE);
         return;
     case V_LEAVE:
+        if (v->jar)
+        {
+            JarGone(main);
+            return;
+        }
         GiveBackScreen();
         v->render = R_IDLE;
         v->uploadReady = FALSE;
@@ -1180,7 +2024,7 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
         main->process[GAME_PROCESS_VAR1] = v->fromVar1;
         main->process[GAME_PROCESS_VAR2] = v->fromVar2;
         main->process[GAME_PROCESS_STATE] = RECORD_3D;
-        StartHardwareBlend(1, 1, 2, 0x1F);
+        StartHardwareBlend(1, 1, 2, FADE_ALL);
         SetMode(V_SHOW_RECORD);
         UpdateBG2Window(courtRecord);
         UpdateRecordSprites(courtRecord);
@@ -1202,14 +2046,20 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
         SetMode(V_OFF);
         return;
     default:
-        return;
+        if (v->mode < J_RISE)
+            return;
+        JarFrame();
+        break;
     }
     // the hover's how-to may have started a section above
     gIORegisters.lcd_bg3hofs = 8;
     gIORegisters.lcd_bg3vofs = 8;
     if (v->mode == V_SCRIPT || v->mode == V_ANIM || v->mode == V_TURN)
         v->hit = 0;
-    DrawSprites();
+    if (v->jar)
+        DrawJarSprites();
+    else
+        DrawSprites();
     RenderWork();
 }
 
@@ -1252,7 +2102,8 @@ void En3dRecordPrompt(struct CourtRecord * courtRecord, bool32 show)
 
 // ---------------------------------------------------------------- the script
 // Script command 69: 69 0 n the record opened for scene n, 69 2<<8 | n
-// close-up n shown in the viewer, 69 3<<8 taken away
+// close-up n shown in the viewer, 69 3<<8 taken away, 69 4<<8 | n the jar
+// puzzle (n 0 Day 2's, 1 Day 3's)
 bool32 Command69(struct ScriptContext * scriptCtx)
 {
     struct En3d * v = &gEn3d;
@@ -1279,6 +2130,9 @@ bool32 Command69(struct ScriptContext * scriptCtx)
             v->closeup = 0;
             v->uploadAll = TRUE;
         }
+        break;
+    case 4:
+        JarStart(arg & 0xFF);
         break;
     }
     return 0;

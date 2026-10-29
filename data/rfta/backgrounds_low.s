@@ -92,6 +92,16 @@ gGfxRftaBgB4:
 	.incbin "graphics/en/rfta/bg/bg_b4.8bpp.striped"
 
 	.align 2
+	.global gGfxRftaBgC0
+gGfxRftaBgC0:
+	.incbin "graphics/en/rfta/bg/bg_c0.8bpp.striped"
+
+	.align 2
+	.global gGfxRftaBgC1
+gGfxRftaBgC1:
+	.incbin "graphics/en/rfta/bg/bg_c1.8bpp.striped"
+
+	.align 2
 	.global gGfxRftaBgC2
 gGfxRftaBgC2:
 	.incbin "graphics/en/rfta/bg/bg_c2.4bpp.striped"
