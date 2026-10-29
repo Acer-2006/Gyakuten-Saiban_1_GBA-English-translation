@@ -68,6 +68,19 @@ void EnRecordSprayPrompt(struct CourtRecord * courtRecord, bool32 show);
 void EnFingerprintProcess(struct Main * main, struct InvestigationStruct * inv);
 bool32 EnFingerprintActive(void);
 void EnFingerprintReset(void);
+// the evidence in 3D (en_evidence3d.c): the Court Record's state 8, its L
+// ("Check"), the scenes' record (no B until they end), command 69
+void En3dProcess(struct Main * main, struct CourtRecord * courtRecord);
+void En3dOpenFromRecord(struct CourtRecord * courtRecord);
+bool32 En3dCheckable(struct CourtRecord * courtRecord);
+void En3dRecordPrompt(struct CourtRecord * courtRecord, bool32 show);
+bool32 En3dHoldsRecord(void);
+bool32 En3dShowsPlate(void);
+void En3dRecordClosed(void);
+void En3dVBlank(void);
+bool32 En3dActive(void);
+void En3dReset(void);
+bool32 Command69(struct ScriptContext * scriptCtx);
 
 // the movies (en_movie.c): the DS's command 75 and its frame sequences
 void EnMovieFrame(void);

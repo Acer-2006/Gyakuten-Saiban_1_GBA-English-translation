@@ -55,7 +55,7 @@ command landing inside text.
 | `74` | kind, value | 241 (208 in variants episodes 1–4 never use) | bottom-screen UI: `74 5 0` puts the normal panel back (77 uses, after a portrait or a prompt), `74 8 n` shows panel n (17 panels, ids 0x2e–0x49; they follow "Court Record!" lines and evidence being added, and the tutorial), `74 d n` (18 values, in the touch tutorial), `74 a n` after questions that want an answer presented (profiles, prints), `74 9 n` / `74 6 n` / `74 c` / `74 b` around the luminol and fingerprint scenes — these readings are from the dialogue around them and still to be watched in the emulator. | most become nothing (one screen); the prompts become GBA prompts; the tutorial panels become text boxes |
 | `55` | background, 9 | 21 | shows background n over the scene for a moment and puts the previous one back (flashes and cut-ins) — the handler swaps `gMain.currentBG`, waits for the background system, restores it | a short background swap; to confirm in the emulator |
 | `68` | — | 23 | sets flag 0x400 in the DS's game flags: the plate on screen fades together with the scene | part of the fade mapping |
-| `7B` | 1=close, picture | 12 | in the shared evidence-examination file only: shows close-up picture n (0–2: the badge's number, the bloodstain, the sketch) over the 3D view and waits for the player to close it | a close-up picture |
+| `7B` | 1=close, picture | 12 | in the shared evidence-examination file only: shows close-up picture n (0–2: the sketch, the jar's stain, the Chief's piece) over the 3D view and waits for the player to close it | a close-up picture (the GBA's `69 2<<8 \| n`, `69 3<<8`) |
 | `6A` | chapter file | 3 | continues in chapter file n (the seamless Former/Latter splits) | nothing (the GBA scripts run from ROM; the files can be joined) |
 | `79` | — | 7 | the same handler as `15` (end of section), used after the `74 a` present prompts | `15` |
 | `77` | sound, 0x78 | 2 | a sound-effect call with a length (`77 196 78`, `77 3f 78`) | a sound effect |
@@ -143,7 +143,7 @@ is an arrangement rather than a copy.
 | movies | opening (329 frames), Blue Badger dance (450 frames, 256×160), ending montage (270 frames), security footage (1,420 frames, scrubbed by the player in the Day 3 trial) | 4bpp 256-wide frames, RLE or LZ: 0.85 + 1.8 + 2.4 + 22.6 MB compressed | a frame player streaming from ROM; the three short ones fit as they are (≈4.5 MB after re-encoding); the footage needs a decision: at 240×160 and 10 fps it is ≈8 MB, at full rate it does not fit |
 | luminol | Day 2 investigation (the evidence room, the parking lot) | spray by touch, reaction appears where sprayed | cursor + button spraying over the same picture (done: section 11) |
 | fingerprinting | Day 2–3 investigation (the locker, the wiped stain, the cloth) | pick a finger, dust by touch, blow into the mic, compare the prints | cursor + button dusting, a button to blow (done: section 12) |
-| 3D evidence | the Court Record's Check on the badge, the pieces with the bloodstain, the sketch and others; lines in the shared file | rotate a model, hotspots trigger the shared sections, `7B` close-ups | pre-rendered views (one axis, 24–36 angles each; the hotspots become angle ranges); the model data is a custom format not yet located in data.bin |
+| 3D evidence | the Court Record's Check on the badge, the pieces with the bloodstain, the sketch and others; lines in the shared file | rotate a model, hotspots trigger the shared sections, `7B` close-ups | the models drawn in real time, the hotspots tested as the DS tests them (done: section 13) |
 | bottom-screen panels | tutorial, prompts (`74`) | second screen | text boxes and prompts on the one screen |
 | second fade system | 268 fades | software palette fades | hardware blends |
 
@@ -189,10 +189,13 @@ reworded for buttons — the only deliberate departure from the DS text.
   (Stage 3 found it is the GBA's own format: section 8.)
 - No SSEQ → m4a path. (Stage 5: `music.py`, `sfx.py`.)
 - No GBA code for: luminol, fingerprinting, 3D views, close-ups (the
-  portrait plate, the frame player and the tape: sections 9 and 10).
+  portrait plate, the frame player and the tape: sections 9 and 10; the
+  luminol, the fingerprints and the 3D views with their close-ups:
+  sections 11 to 13).
 - The 3D model data has not been found in data.bin (no Nitro BMD0 headers;
-  a Capcom format), and `55`, `68`, `77` and the `74`/`75` variants are
-  read from the code and script contexts, not yet watched in the emulator.
+  a Capcom format; found: section 13), and `55`, `68`, `77` and the
+  `74`/`75` variants are read from the code and script contexts, not yet
+  watched in the emulator.
 
 ## 6. Stages
 
@@ -205,7 +208,8 @@ reworded for buttons — the only deliberate departure from the DS text.
 3. **Characters** — the animation data decoded or recorded, six sprite
    sets converted.
 4. **Mechanics** — the frame player and the tape (done: section 10),
-   luminol, fingerprints, 3D views, close-ups, prompts. The partner portrait and the
+   luminol, fingerprints, 3D views, close-ups (done: sections 11 to 13),
+   prompts. The partner portrait and the
    grey flashbacks (`5F`): done (section 9).
 5. **Sound** — seven tracks and the effects. Done (section 9).
 6. **Playthrough and release** — the sweep and audit tools extended to
@@ -252,16 +256,17 @@ the section the DS starts on success (`translate.py`, `BYPASS`):
 
 | where | DS system | goes on in |
 |---|---|---|
-| Day 1 investigation | the wallet turned over in 3D, the phone's redial | the ID card, the call |
-| Day 2 trial | the knife opened in 3D | the knife added |
 | Day 2 investigation | luminol in the parking lot | the stain, what is odd about it |
 | Day 2 investigation | luminol in the evidence room (the three stains the day waits for) | the stains' lines, from the shared file, after the handprint on the locker |
 | Day 2 investigation | the jar pieces put together | the Unstable Jar |
 | Day 3 trial | pointing at the security tape (twice in each half) | the answer's section (the DS's frame table at 0x020c09cc) |
 | Day 3 investigation | the locker number, the jar's last piece | Gant's number, the piece fits |
 | Final day | the jar turned to the Badger's angle, joining the dots | the Badger, "Ema" |
-| Final day | finding the picture on the back of the list | the picture |
 | The end | the staff roll | "The End", the title screen |
+
+(The wallet and the phone on Day 1, the knife in the Day 2 trial and the
+picture in the book on the final day were bypassed the same way until the
+3D viewer came: section 13.)
 
 The questions answered with a person's profile ("What is this person's
 name?", the DS's `74 A n`) stay questions: they become the GBA's present
@@ -597,6 +602,73 @@ the `68 0` found it (the menu, examining or talking, and its buttons): a
 match goes on in its section (142, 146, 12B), Back ends the section as its
 `1C 3` would have.
 
+## 13. Stage 4: the evidence in 3D
+
+The DS's Court Record has "Check" on the fifth episode's evidence with a
+model (the badge, the wallet and the ID card, the phone, the knife, the
+jar and its pieces, the book, the muffler…): the bottom screen shows it in
+3D, the stylus turns it, the slider zooms, and touching a hotspot brings
+up "Examine", which turns the model to a pose for it and runs its lines
+(the shared file 35's, a few with a close-up picture, `7B`). Four scenes
+open the Court Record for evidence to be checked (`74 8 2e`, `74 b 0`):
+the wallet on Day 1 (its clasp: the wallet opens, the ID card inside),
+the phone on Day 1 (flipped open, then its redial button), the knife in
+the Day 2 trial (its switch opens it; Back puts it in the record) and the
+book on the final day (its pages: the picture). `evidence3d.py` has what
+was read off the DS: the models are Capcom's own format in data.bin (the
+US build's resource table at 0x020b6574 names each mesh and its texture),
+the object records (0x020b91b8: the meshes, the hotspots' and blockers'
+quads, their ids), the hotspot test (0x0203cc1c: the quad's corners
+projected, a quad facing the camera, a blocker in front hides it), the
+ids' handlers (0x020c046c: the section, the pose, and for six of them an
+animation, a model change and a flag).
+
+On the GBA (`en_evidence3d.c`, the Court Record's state `RECORD_3D`) the
+models are drawn in real time as the DS draws them: its camera (20 units
+back, its projection), the vertices as they are, the textures 16 colours
+read from ROM, each in a 16-colour slot of BG3's 256, the back faces
+culled, a 16-bit depth buffer. The renderer is ARM code copied to IWRAM
+(`en_evidence3d_arm.s`): it draws into a 192 × 128 picture in EWRAM (the
+background's decompression buffer, given back as the viewer leaves), the
+textures with the perspective put right every 16 pixels (straight across
+where a triangle's depth hardly changes), and it works in the time each
+frame leaves before the music's mixing (it stops at a triangle or a row
+and goes on in the next frame; the picture is copied to VRAM, the rows it
+changed, when it is whole). An integer model of it in Python, run against
+the assembled code in an ARM emulator (unicorn), agrees with it to the
+pixel, suspended or not. A picture takes about 4 frames for the usual
+models (15 a second as a model turns), more zoomed right in.
+
+The screen is the DS's: its wood, the zoom's slider (its knob a sprite),
+the turning bar, the grey grid (BG2, under the picture), the blue lines and
+square of the touch's point, "B Back" and "A Examine" (when the point is on
+a hotspot) as the fingerprints' tabs, and the keys' hints between them:
+
+- the + pad turns the model (about the screen's axes), R with the + pad
+  moves the point, L with up / down zooms;
+- A on a hotspot examines it: the model turns to the DS's pose, its
+  section runs (file 35's: the script switched to it and put back after,
+  as it was; the scenes' own: the chapter's), the partner's portrait on the
+  plate as the DS's face box, and the model turns back; the six special
+  ids play their animation and change the model (the flagged two, the
+  phone's opening and redial, run their chapter lines once, in chapter 18
+  and before, as the DS);
+- the close-ups (command `69 2<<8 | n`, the DS's `7B 0 n`; `69 3<<8` takes
+  them away) show in the viewport;
+- B goes back to the Court Record, as the viewer found it (the screen, the
+  text box, the script, the sprites and their tiles: saved in
+  `gSaveDataBuffer` as the evidence details do).
+
+In the Court Record, evidence with a model shows "L Check" (the record's
+own L button beside a label in its free tiles). The scenes are command
+`69 0 n` (`translate.py`): the record opens and stays (no B) until the
+scene's evidence is checked and its end reached: the final hotspot's lines
+(the wallet's clasp, the phone's redial, the book's pages), or Back where
+the DS has one (the phone put away, the knife into the record); then the
+viewer and the record close and the section after it runs (C3, FD, AD, 82).
+The wallet's opening and first hover lines (C0, C1, the DS's how-to) run as
+on the DS.
+
 ## Tools (`tools/en/rfta/`)
 
 All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
@@ -659,3 +731,9 @@ Stages 4 and 5:
   `src/data/en_rfta_fingerprint.h`; `--preview` draws the screens as
   pictures; its `cases()` and `masks()` give the fingers as the GBA has
   them (`fullplay.py` dusts them).
+- `evidence3d.py [--preview DIR]` — `graphics/en/rfta/evidence3d.bin` (the
+  meshes, the textures, the close-ups as BG3 tiles, the frame's tiles and
+  map, the grid, the sprites, "Check", 2^31 / n for the renderer),
+  `data/rfta/evidence3d.s`, `src/data/en_rfta_evidence3d.h` (the records,
+  the hotspots, the ids' sections and poses, the evidence's records, the
+  scenes); `--preview` draws each record at rest and turned.

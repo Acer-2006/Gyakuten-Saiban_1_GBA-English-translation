@@ -119,6 +119,7 @@ void AgbMain()
 #if RFTA
         EnRftaGreyUpdate(TRUE); // the DS's monochrome flashbacks (en_rfta.c)
         EnMovieVBlank(); // the movies' frames (en_movie.c)
+        En3dVBlank(); // the evidence in 3D: its picture (en_evidence3d.c)
 #endif
         if (gMain.currentBgStripe > 10)
         {
