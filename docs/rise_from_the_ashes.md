@@ -144,6 +144,7 @@ is an arrangement rather than a copy.
 | luminol | Day 2 investigation (the evidence room, the parking lot) | spray by touch, reaction appears where sprayed | cursor + button spraying over the same picture (done: section 11) |
 | fingerprinting | Day 2–3 investigation (the locker, the wiped stain, the cloth) | pick a finger, dust by touch, blow into the mic, compare the prints | cursor + button dusting, a button to blow (done: section 12) |
 | 3D evidence | the Court Record's Check on the badge, the pieces with the bloodstain, the sketch and others; lines in the shared file | rotate a model, hotspots trigger the shared sections, `7B` close-ups | the models drawn in real time, the hotspots tested as the DS tests them (done: section 13) |
+| jar puzzle | Day 2 investigation (the pieces of the Unstable Jar), Day 3 (the Chief's piece) | the jar in 3D on the top screen, the pieces turned and sent from a circle on the touch screen | the jar drawn by the 3D renderer beside a circle of the pieces (done: section 14) |
 | bottom-screen panels | tutorial, prompts (`74`) | second screen | text boxes and prompts on the one screen |
 | second fade system | 268 fades | software palette fades | hardware blends |
 
@@ -209,7 +210,8 @@ reworded for buttons — the only deliberate departure from the DS text.
    sets converted.
 4. **Mechanics** — the frame player and the tape (done: section 10),
    luminol, fingerprints, 3D views, close-ups (done: sections 11 to 13),
-   prompts. The partner portrait and the
+   the jar puzzle (done: section 14), the locker's keypad, the jar's angle,
+   the dots, the staff roll, prompts. The partner portrait and the
    grey flashbacks (`5F`): done (section 9).
 5. **Sound** — seven tracks and the effects. Done (section 9).
 6. **Playthrough and release** — the sweep and audit tools extended to
@@ -256,17 +258,17 @@ the section the DS starts on success (`translate.py`, `BYPASS`):
 
 | where | DS system | goes on in |
 |---|---|---|
-| Day 2 investigation | luminol in the parking lot | the stain, what is odd about it |
-| Day 2 investigation | luminol in the evidence room (the three stains the day waits for) | the stains' lines, from the shared file, after the handprint on the locker |
-| Day 2 investigation | the jar pieces put together | the Unstable Jar |
-| Day 3 trial | pointing at the security tape (twice in each half) | the answer's section (the DS's frame table at 0x020c09cc) |
-| Day 3 investigation | the locker number, the jar's last piece | Gant's number, the piece fits |
+| Day 2 investigation | the luminol's tutorial in the parking lot | the player's turn with the spray, the stain's question |
+| Day 3 investigation | the locker number | Gant's number |
 | Final day | the jar turned to the Badger's angle, joining the dots | the Badger, "Ema" |
 | The end | the staff roll | "The End", the title screen |
 
-(The wallet and the phone on Day 1, the knife in the Day 2 trial and the
-picture in the book on the final day were bypassed the same way until the
-3D viewer came: section 13.)
+(The luminol in the evidence room and the security tape in the Day 3 trial
+were bypassed the same way until their systems came (sections 10 and 11),
+the wallet and the phone on Day 1, the knife in the Day 2 trial and the
+picture in the book on the final day until the 3D viewer came (section 13),
+the jar's pieces on Day 2 and its last piece on Day 3 until the jar puzzle
+came (section 14).)
 
 The questions answered with a person's profile ("What is this person's
 name?", the DS's `74 A n`) stay questions: they become the GBA's present
@@ -669,6 +671,60 @@ viewer and the record close and the section after it runs (C3, FD, AD, 82).
 The wallet's opening and first hover lines (C0, C1, the DS's how-to) run as
 on the DS.
 
+## 14. Stage 4: the jar puzzle
+
+On Day 2 Phoenix puts the pieces of the Unstable Jar back together in the
+evidence room, on Day 3 the Chief's piece goes in as the last (the DS's
+`74 8 32`). The DS shows the jar in 3D on the top screen and the pieces in a
+circle on the touch screen: left and right pick a piece ("Fragment No."),
+L and R turn it a quarter, Combine sends it. The next piece, turned
+upright, rises into its place (the jar flashes white, waits, turns to the
+next piece's view); any other comes back. Red edges mark where the next
+piece goes and a crosshair its point, both pulsing. `jarpuzzle.py` has what
+was read off the DS (its code at 0x02072a6c-0x020767a0): the jar is the
+object records 0x2f (the base) to 0x38 (the nine pieces, each in the jar's
+own frame), drawn under the 3D viewer's camera; a step table (0x020c9794:
+the jar's turn and offset for each piece, the angle it must have, 0 for
+all) and the crosshair's points (0x020c96b0); the pieces' order on Day 2
+(0x020c92d0), each at a random quarter turn; the red edges are pictures
+(guide01-guide09), the crosshair another, both through six palettes; the
+pieces' circle pictures (0x020c9518, the US build's set); the timings
+(the base rising 30 frames and turning once round in 60, a piece's
+flight 42 frames, the flash 11, the turn to the next view 30); the sounds
+(SE0CC as a piece fits, SE0CD as one turns, SE0C0 as Day 3's fits) and
+where it goes on: after Back, the room's background and the section the
+DS starts (135, Day 3 132); done, the jar's picture (background C0, Day 3
+C1) and the section after (136, Day 3 133).
+
+On the GBA (`en_evidence3d.c`, script command `69 4<<8 | n`, n 0 Day 2, 1
+Day 3) the puzzle is the viewer's state with the jar's screen: the jar is
+drawn by the same renderer, its view the DS's top screen at 2/3 in the
+viewport's left 144 columns, each piece transformed and drawn in turn (the
+depth's shift fixed for the nearest the jar comes, so no piece waits for
+the others' vertices); the red edges are the guide pictures' pixels
+written into the picture as it is finished (a colour of BG3 that pulses),
+the crosshair a sprite. On the right, the circle with its grid and ring,
+"Fragment No." and the piece's number, the arrows where more pieces are,
+the red cross, and the L and R buttons with their turns; the piece is a 64
+× 64 affine sprite (the DS's picture at half its size) that turns as on
+the DS and flies to the crosshair; "B Back" and "A Combine" are the
+fingerprints' tabs. A picks the DS's Combine, B its Back. The screen and
+the script are saved and put back as the viewer's are; leaving changes the
+background as the script's `1B` would (the jar's picture) and runs the
+DS's next section, faded in as the DS fades it (Day 2's done: the section
+fades the screen out itself first).
+
+The whole jar is up to 1,900 triangles, which takes the renderer about 2
+frames for the base alone and 12 with every piece in. As a piece flies, the
+jar is drawn once and kept (its tiles and depth, in the movies' buffer),
+and each picture puts back the piece's last place and draws the piece
+alone: about 20 pictures in the 42 frames of a flight. The jar's own moves
+(the rise and the turn round at the start, the turn to the next piece's
+view) go a step a picture, never faster than the DS: the turn takes the
+DS's 30 frames for the first pieces and up to 75 for the last, in six
+pictures. The fades take the backdrop too (the grid's grey under the
+picture: the viewer's fades left it lit until now).
+
 ## Tools (`tools/en/rfta/`)
 
 All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
@@ -737,3 +793,7 @@ Stages 4 and 5:
   `data/rfta/evidence3d.s`, `src/data/en_rfta_evidence3d.h` (the records,
   the hotspots, the ids' sections and poses, the evidence's records, the
   scenes); `--preview` draws each record at rest and turned.
+- `jarpuzzle.py` — read by `evidence3d.py` (the jar's records go with the
+  viewer's): the steps, the guides' pixels, the flight, the fragments'
+  sprites and colours, the crosshair, the jar's screen and sprites, into
+  the same files; `backgrounds.py` takes the jar's two pictures from it.

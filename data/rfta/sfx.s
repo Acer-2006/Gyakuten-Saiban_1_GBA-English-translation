@@ -470,6 +470,32 @@ gRftaSfx151:
 	.word gRftaSfx151_track0
 	.word gRftaSfx151_track1
 
+@ song 152: DS SE0CC (sequence 0x1AC), player 1, volume 100
+	.align 2
+gRftaSfx152_voices:
+	voice_directsound_no_resample 60, 0, gRftaSfxSample_7494bd6260, 255, 0, 255, 19
+gRftaSfx152_track0:
+	.byte 0xBC, 0x00, 0xBB, 0x78, 0xBE, 0x64, 0xBF, 0x40, 0xBD, 0x00, 0xCF, 0x3C, 0x7F, 0xB0, 0xB0, 0xB0, 0xB0, 0xCE, 0x3C, 0xB1
+	.align 2
+	.global gRftaSfx152
+gRftaSfx152:
+	.byte 1, 0, 80, 0x80
+	.word gRftaSfx152_voices
+	.word gRftaSfx152_track0
+
+@ song 153: DS SE0CD (sequence 0x1AD), player 1, volume 100
+	.align 2
+gRftaSfx153_voices:
+	voice_directsound_no_resample 60, 0, gRftaSfxSample_6e8a30b947, 255, 0, 255, 19
+gRftaSfx153_track0:
+	.byte 0xBC, 0x00, 0xBB, 0x78, 0xBE, 0x64, 0xBF, 0x40, 0xBD, 0x00, 0xCF, 0x3C, 0x7F, 0xB0, 0xB0, 0xB0, 0xB0, 0xCE, 0x3C, 0xB1
+	.align 2
+	.global gRftaSfx153
+gRftaSfx153:
+	.byte 1, 0, 80, 0x80
+	.word gRftaSfx153_voices
+	.word gRftaSfx153_track0
+
 	.align 2
 gRftaSfxSample_068e2f0318:
 	.incbin "sound/direct_sound_samples/rfta_sfx/068e2f0318.bin"
@@ -516,8 +542,14 @@ gRftaSfxSample_679a98ea73:
 gRftaSfxSample_6cf5b9c46d:
 	.incbin "sound/direct_sound_samples/rfta_sfx/6cf5b9c46d.bin"
 	.align 2
+gRftaSfxSample_6e8a30b947:
+	.incbin "sound/direct_sound_samples/rfta_sfx/6e8a30b947.bin"
+	.align 2
 gRftaSfxSample_700582230d:
 	.incbin "sound/direct_sound_samples/rfta_sfx/700582230d.bin"
+	.align 2
+gRftaSfxSample_7494bd6260:
+	.incbin "sound/direct_sound_samples/rfta_sfx/7494bd6260.bin"
 	.align 2
 gRftaSfxSample_77605a0b6b:
 	.incbin "sound/direct_sound_samples/rfta_sfx/77605a0b6b.bin"

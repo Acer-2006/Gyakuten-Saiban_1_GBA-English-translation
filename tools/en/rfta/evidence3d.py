@@ -555,6 +555,8 @@ def main():
     used = set(evrec.values())
     for i, sp in SPECIAL.items():
         used |= set(sp.get('anim', ())) | ({sp['to']} if 'to' in sp else set())
+    import jarpuzzle                # (the jar puzzle's: the base and the nine pieces)
+    used |= set(range(jarpuzzle.JAR_FIRST, jarpuzzle.JAR_LAST + 1))
     used = sorted(r for r in used if r < len(recs))
     meshes = []
     for r in used:
@@ -666,6 +668,7 @@ def main():
     align(); o_check = len(blob); blob += check_label()
     align(); o_r31 = len(blob)
     blob += struct.pack('<4098I', *([0x7FFFFFFF] + [min(0x7FFFFFFF, round((1 << 31) / n)) for n in range(1, 4098)]))
+    jar_lines = jarpuzzle.export(blob, align, meshidx, texids, recs)
     # write
     os.makedirs(os.path.join(ROOT, 'graphics', 'en', 'rfta'), exist_ok=True)
     open(os.path.join(ROOT, 'graphics', 'en', 'rfta', 'evidence3d.bin'), 'wb').write(blob)
@@ -678,6 +681,8 @@ def main():
          '#define EN3D_DISTANCE 0x%X      // the camera, 1.19.12' % (DISTANCE << 12),
          '#define EN3D_FOCAL_X %d         // pixels, 8.8' % fx(FOCAL_X, 8),
          '#define EN3D_FOCAL_Y %d' % fx(FOCAL_Y, 8),
+         '#define EN3D_FX %d              // (the renderer\'s: 1/16 pixel)' % int(FOCAL_X * 16 + 0.5),
+         '#define EN3D_FY %d' % int(FOCAL_Y * 16 + 0.5),
          '#define EN3D_VIEW_X %d' % VIEW_X, '#define EN3D_VIEW_Y %d' % VIEW_Y,
          '#define EN3D_VIEW_W %d' % VIEW_W, '#define EN3D_VIEW_H %d' % VIEW_H,
          '#define EN3D_TEXTURES %d' % len(textures), '#define EN3D_MESHES %d' % len(meshes),
@@ -720,6 +725,7 @@ def main():
     h.append('static const u16 sEn3dFramePalette[%d] = { %s };' % (len(colours), ', '.join('0x%04X' % rgb5(c) for c in colours)))
     import fingerprint as fp
     h.append('static const u16 sEn3dUiPalette[16] = { %s };   // (the fingerprints\')' % ', '.join('0x%04X' % rgb5(c or (0, 0, 0)) for c in fp.UI))
+    h += jar_lines
     open(os.path.join(ROOT, 'src', 'data', 'en_rfta_evidence3d.h'), 'w').write('\n'.join(h) + '\n')
     print('%d bytes: %d textures, %d meshes, %d records' % (len(blob), len(textures), len(meshes), len(rec_lines)))
     if preview:
