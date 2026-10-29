@@ -19,6 +19,7 @@ GBA_ARGS = {
  0x67:1,  # Rise from the Ashes build: the luminol (0 start, 1 Ema's spray, 2 the player's turn, 3 back to the red room, 4 leave)
  0x68:1,  # Rise from the Ashes build: the fingerprints (sub << 8 | n: 0 start case n, 1 the player's turn, 2-7 the screens' steps)
  0x69:1,  # Rise from the Ashes build: the evidence in 3D (sub << 8 | n: 0 the record for scene n, 2 close-up n shown, 3 away)
+ 0x6A:1,  # Rise from the Ashes build: the staff roll (sub << 8 | n: 0 no page, 1 page n, 2 shown, 3 blown away, 4 away)
 }
 def load(path_or_bytes):
     b = path_or_bytes if isinstance(path_or_bytes,(bytes,bytearray)) else open(path_or_bytes,'rb').read()
