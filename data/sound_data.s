@@ -3753,6 +3753,12 @@ gSongTable:	@ 0x0804132C
 	song gRftaSfx151, 1, 1 @ DS SE0C0
 	song gRftaSfx152, 1, 1 @ DS SE0CC
 	song gRftaSfx153, 1, 1 @ DS SE0CD
+	song gRftaSfx154, 1, 1 @ DS SE0CE
+	song gRftaSfx155, 1, 1 @ DS SE0CF
+	song gRftaSfx156, 1, 1 @ DS SE0D0
+	song gRftaSfx157, 1, 1 @ DS SE0D1
+	song gRftaSfx158, 1, 1 @ DS SE0D2
+	song gRftaSfx159, 1, 1 @ DS SE0D3
 	@ end of the RFTA sound effects
 	.endif
 dmy_song:
