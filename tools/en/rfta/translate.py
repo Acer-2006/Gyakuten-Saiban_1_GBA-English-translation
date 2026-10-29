@@ -78,7 +78,7 @@ def gba_text(s):
             out.append(inv[ch])
     return out
 # Where the DS hands over to a system of its own that the GBA does not have
-# yet (the jar's angle, the dots to join, the staff roll) and that
+# yet (the dots to join, the staff roll) and that
 # system then starts the section that follows, the
 # GBA goes on in that section straight away: (DS file, section) -> the
 # sections to go on in, in order. Each is entered where the source section
@@ -88,9 +88,8 @@ BYPASS = {
     # Day 2: the luminol in the parking lot (its luminol screen: src/en_luminol.c): the
     # tutorial after Ema's lines, the stain's question after its lines
     (22, 0x92): 0x93, (22, 0x95): 0x96,
-    # Final day: the jar turned to the Badger's angle (BC: not yet), the dots
-    # joined into the name (C6: wrong, C8: the game over)
-    (31, 0xBB): 0xBD, (31, 0xC5): 0xC7,
+    # Final day: the dots joined into the name (C6: wrong, C8: the game over)
+    (31, 0xC5): 0xC7,
     # The end: after the staff roll, "The End" (86 the first time, 87 the replay)
     (34, 0x85): 0x86, (34, 0x88): 0x87,
 }
@@ -136,10 +135,24 @@ JAR_PUZZLE = {24: 0, 30: 1}
 # the safe's keypad (the DS's 74 8 34 in Gant's office on Day 3) -> 69 5<<8;
 # it goes on in 11E (the right code) or 11D (src/en_keypad.c)
 KEYPAD = (30, 0x11C)
+# the Blue Badger's angle (the DS's 74 8 33 on the final day, and again after
+# the try-again's lines) -> 69 6<<8; as
+# the DS's "Take that!" the GBA's (Phoenix on his speed lines, the bubble
+# and the shout, between the white the angle leaves and the fade; 1F takes
+# his picture away in the dark), in two
+# sections after the file's own that go on in BD (the right angle) and BC
+# (not yet: its lines with the box shown and the screen faded in)
+BADGER_FILE, BADGER_FROM = 31, {(31, 0xBB), (31, 0xBC)}
+BADGER_TAKE_THAT = [0x1C, 1, 0x26, 1, 0x1E, 0x1D, 0xB4, 0, 0x46, 0, 0x1B, 0x42, 0x12, 0x301, 8, 0x1F,
+                    0x2F, 4, 1, 0x06, (0x37 << 8) | 1, 0x0C, 61, 0x12, 0x201, 1, 0x1F, 0x0C, 20,
+                    0x1F, 0x1E, 0, 0, 0, 0x26, 0]
+BADGER_EXITS = (('RIGHT', 0xBD), ('WRONG', 0xBC))
+BADGER_FADE_IN = {(31, 0xBC): [0x12, 0x101, 8, 0x1F]}
+BADGER_SECTIONS_H = os.path.join(ROOT, 'src', 'data', 'en_rfta_badger_sections.h')
 # Sections whose lines come with the text box away and no 1C 0 before them:
 # the DS shows its box as the text comes, the GBA's needs the 1C 0 (Day 3's
 # try-again after the jar puzzle: the puzzle left the box away)
-TEXTBOX_ON = {(30, 0x132)}
+TEXTBOX_ON = {(30, 0x132), (31, 0xBC)}
 FP_SECTIONS = {24: range(0x13A, 0x146), 30: (0x129, 0x12A), 35: (0xC9, 0xCA)}
 FP_74_8 = {0x37: 2 << 8, 0x38: 3 << 8, 0x39: 4 << 8, 0x3A: 5 << 8, 0x3B: (5 << 8) | 1,
            0x3C: (6 << 8) | 0xBA, 0x3D: 7 << 8}
@@ -251,6 +264,7 @@ class Translator:
 
     # -------------------------------------------------------------- one section
     luminol_base = {}
+    badger_sections = {}
 
     def luminol_74(self, a):
         k, sec, src = self.cur
@@ -367,6 +381,9 @@ class Translator:
             elif op == 0x74 and a[0] == 8 and a[1] == 0x34 and self.cur[:2] == KEYPAD:
                 out += [EVIDENCE3D, 5 << 8]
                 self.stats['the keypad'] += 1
+            elif op == 0x74 and a[0] == 8 and a[1] == 0x33 and self.cur[:2] in BADGER_FROM:
+                out += [EVIDENCE3D, 6 << 8]
+                self.stats['the Blue Badger\'s angle'] += 1
             elif op == 0x7B:
                 out += [EVIDENCE3D, (2 << 8) | a[1] if a[0] == 0 else 3 << 8]
                 self.stats['evidence in 3D: a close-up'] += 1
@@ -487,13 +504,20 @@ class Translator:
                 secs[n], _ = self.section(items, 'file %d sec %d (file 35 sec %d)' % (k, n, src_sec - 0x80))
                 offs = list(offs) + [0]; n += 1
                 self.stats['luminol: section brought in'] += 1
+        # the Blue Badger's angle's "Take that!", after the file's own
+        if k == BADGER_FILE:
+            for name, target in BADGER_EXITS:
+                secs[n] = BADGER_TAKE_THAT + [GOTO_SECTION, target]
+                self.badger_sections[name] = 0x80 + n
+                offs = list(offs) + [0]; n += 1
+                self.stats['take that'] += 1
         for si in sorted(secs):
             if (k, 0x80 + si) in TEXTBOX_ON:
                 out = secs[si]
                 items = parse(out, dict(GBA_ARGS))[0]
                 first = next(p for p, kind, op, a in items if kind == 'text')
                 assert not [1 for p, kind, op, a in items if kind == 'cmd' and op == 0x35], 'a jump past the text box'
-                secs[si] = out[:first] + [0x1C, 0] + out[first:]
+                secs[si] = out[:first] + BADGER_FADE_IN.get((k, 0x80 + si), []) + [0x1C, 0] + out[first:]
                 self.stats['text box shown'] += 1
             for old, new in TEXT_FOR_BUTTONS.get((k, 0x80 + si), ()):
                 old, new = gba_text(old), gba_text(new)
@@ -568,6 +592,11 @@ def main():
          'static const u16 sEnLuminolShared[%d] = { %s };' % (LAST_RFTA_FILE - FIRST_RFTA_FILE,
          ', '.join('0x%X' % t.luminol_base.get(k, 0) for k in range(FIRST_RFTA_FILE, LAST_RFTA_FILE)))]
     open(LUMINOL_SECTIONS_H, 'w').write('\n'.join(h) + '\n')
+    # the Blue Badger's angle's way on (src/en_evidence3d.c)
+    h = ['// generated by tools/en/rfta/translate.py: the Blue Badger\'s angle\'s "Take that!"',
+         '// sections (file %d\'s, after its own), on to BD and BC' % BADGER_FILE]
+    h += ['#define EN3D_BADGER_SECTION_%s 0x%X' % (name, t.badger_sections[name]) for name, _ in BADGER_EXITS]
+    open(BADGER_SECTIONS_H, 'w').write('\n'.join(h) + '\n')
     with open(os.path.join(out_dir, 'translate_report.txt'), 'w') as o:
         o.write('\n'.join(rep) + '\n\ntotals: %s\n\n' % dict(sorted(t.stats.items())))
         o.write('stand-ins: %s\nsongs: %s\n\n' % (PLACEHOLDER_NAMES, NEW_SONGS))

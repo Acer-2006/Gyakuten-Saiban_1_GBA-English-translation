@@ -101,6 +101,10 @@ void EnMovieVBlank(void);
 bool32 EnMovieDefersBg(void);
 bool32 EnMovieTakesBg(u32 bg);
 void EnMovieReset(void);
+void EnMovieClose(void);
+// the vertical blanks counted (main.c's interrupt: the frames that pass
+// whether the game's work keeps up or not), in the 3D viewer's free space
+#define gEnVBlanks (*(vu32 *)(EWRAM_START + 0x11FC0 + 0x9000 + 0x7FC))
 void EnMovieSaveState(void);
 void EnMovieLoadState(void);
 

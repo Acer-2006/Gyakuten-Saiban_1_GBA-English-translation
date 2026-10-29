@@ -146,6 +146,7 @@ is an arrangement rather than a copy.
 | 3D evidence | the Court Record's Check on the badge, the pieces with the bloodstain, the sketch and others; lines in the shared file | rotate a model, hotspots trigger the shared sections, `7B` close-ups | the models drawn in real time, the hotspots tested as the DS tests them (done: section 13) |
 | jar puzzle | Day 2 investigation (the pieces of the Unstable Jar), Day 3 (the Chief's piece) | the jar in 3D on the top screen, the pieces turned and sent from a circle on the touch screen | the jar drawn by the 3D renderer beside a circle of the pieces (done: section 14) |
 | safe's keypad | Day 3 investigation (Gant's safe) | the device's display on the top screen, its keys on the touch screen; seven digits checked one by one | the device on one screen, a cursor over the keys (done: section 15) |
+| the Badger's angle | Final day trial (the Unstable Jar as the Blue Badger) | the jar in 3D in a circle on the touch screen, turned by dragging drums and the circle, Present | the jar drawn by the 3D renderer in the DS's circle, the + pad and L and R (done: section 16) |
 | bottom-screen panels | tutorial, prompts (`74`) | second screen | text boxes and prompts on the one screen |
 | second fade system | 268 fades | software palette fades | hardware blends |
 
@@ -212,7 +213,7 @@ reworded for buttons — the only deliberate departure from the DS text.
 4. **Mechanics** — the frame player and the tape (done: section 10),
    luminol, fingerprints, 3D views, close-ups (done: sections 11 to 13),
    the jar puzzle (done: section 14), the safe's keypad (done: section 15),
-   the jar's angle, the dots, the staff roll, prompts. The partner portrait and the
+   the jar's angle (done: section 16), the dots, the staff roll, prompts. The partner portrait and the
    grey flashbacks (`5F`): done (section 9).
 5. **Sound** — seven tracks and the effects. Done (section 9).
 6. **Playthrough and release** — the sweep and audit tools extended to
@@ -260,7 +261,7 @@ the section the DS starts on success (`translate.py`, `BYPASS`):
 | where | DS system | goes on in |
 |---|---|---|
 | Day 2 investigation | the luminol's tutorial in the parking lot | the player's turn with the spray, the stain's question |
-| Final day | the jar turned to the Badger's angle, joining the dots | the Badger, "Ema" |
+| Final day | joining the dots | "Ema" |
 | The end | the staff roll | "The End", the title screen |
 
 (The luminol in the evidence room and the security tape in the Day 3 trial
@@ -268,7 +269,8 @@ were bypassed the same way until their systems came (sections 10 and 11),
 the wallet and the phone on Day 1, the knife in the Day 2 trial and the
 picture in the book on the final day until the 3D viewer came (section 13),
 the jar's pieces on Day 2 and its last piece on Day 3 until the jar puzzle
-came (section 14), Gant's safe until its keypad came (section 15).)
+came (section 14), Gant's safe until its keypad came (section 15), the
+jar's angle on the final day until it came (section 16).)
 
 The questions answered with a person's profile ("What is this person's
 name?", the DS's `74 A n`) stay questions: they become the GBA's present
@@ -773,6 +775,58 @@ keypad as the script shows it before, had the Japanese "もどる" key (the
 US build draws its Back Space key over it): it now has the key's texture,
 in the picture's greys (`backgrounds.py`).
 
+## 16. Stage 4: the Blue Badger's angle
+
+In the final day's trial Phoenix shows the court that the Unstable Jar,
+seen from the right angle, is what the witness took for the Blue Badger
+(the DS's `74 8 33`, after the section's last line, and again after the
+try-again's). The DS shows the Badger on the top screen and on the touch
+screen the jar whole (object record 17) in a circle, with drums on the
+right and below that turn it as they are dragged, two buttons that roll it,
+and Present. `badger.py` has what was read off the DS (process 20, its
+code at 0x0207a1ec-0x0207b220): the jar drawn in a 128 × 128 viewport at
+(64, 20) under the 3D viewer's camera, 2 further back, fovy 53 degrees;
+the jar's turn kept as a matrix that each frame's turn is applied after,
+about the screen's axes (the + pad held: 2 degrees a frame about the
+upright and across; L and R held: 1 about the line of sight; the steps the
+DS's sine table's entries 22 and 11, so 1.934 and 0.967 degrees in fact),
+the matrix kept square; the ring's 16 ticks (the texture eff060) turned by
+the roll, the drums' ticks (16 and 12, 11 and 15 degrees apart) along the
+drums' bows. Present reads three angles off the matrix (0x02067dac: the
+turn across and about the upright of the jar's axis, then the roll left
+when those are undone) and wants them in (300, 320), (350, 359) or
+[0, 10), and (175, 185) degrees: the jar on its head, tipped toward the
+viewer, about a sixth of a turn. Then both screens go white, "Take that!"
+with Phoenix on speed lines for 61 frames, the fade, and section BD (the
+right angle: the jar on its head, the Badger's head) or BC (not yet, and
+the angle again).
+
+On the GBA (`en_evidence3d.c`, script command `69 6<<8`) the panel is the
+viewer's state with its own screen: the DS's touch screen from (8, 12), the
+circle and the jar at the DS's size (the wood and the box, the ring and the
+grid, the drums and the roll's buttons drawn after the DS's, "A Present" in
+the fingerprints' tabs over the circle's top, L and R by the roll's
+buttons); the jar is drawn by the renderer in the frame buffer's first 16 ×
+16 tiles, the ring's pixels put over it where it crosses the picture's
+tiles; the ring's ticks are four affine sprites, the drums' ticks sprites.
+The turns are the DS's (the same matrix, the same steps, a step for each
+frame that passes, as the DS's frames: a picture may take a frame's work
+over its time), and A presents with the DS's angles and ranges: L held 186
+frames, up 26, right 3 is the Badger on both. The drums' ticks run with the
++ pad as with the DS's drag. The DS's top screen (the Badger's movie)
+cannot be shown with the panel: the movie is closed as the panel comes up
+(the sections after close it at once). The "Take that!" is the GBA's, in
+two sections after file 31's own (`translate.py`): from the white, Phoenix
+on his speed lines, the bubble and the shout, the DS's 61 frames, the fade,
+his picture taken away in the dark (`1F`: the speed lines' Phoenix is BG2's,
+which would stay over the next background), then BD or BC (which gets its
+text box and a fade in).
+
+Played through by `fullplay.py` from the final day's start: the
+cross-examinations, the Badger turned to its angle (L 186 frames, up 26,
+right 3) and presented, on through the trial into the next chapter; the
+wrong angle's "Take that!", BC's lines and the panel again by hand.
+
 ## Tools (`tools/en/rfta/`)
 
 All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
@@ -845,6 +899,10 @@ Stages 4 and 5:
   viewer's): the steps, the guides' pixels, the flight, the fragments'
   sprites and colours, the crosshair, the jar's screen and sprites, into
   the same files; `backgrounds.py` takes the jar's two pictures from it.
+- `badger.py [PREVIEW]` — read by `evidence3d.py` (the jar whole goes with
+  the viewer's records): the panel (its tiles and map, the ring's masks,
+  the grid), the ring's and the drums' ticks, the DS's steps, angles and
+  bows, into the same files; with a file name, a picture of the panel.
 - `keypad.py [--preview FILE]` — `graphics/en/rfta/keypad.bin` (the
   device's screen as 8bpp tiles, the display's first, and its map; the
   display's pictures, bars and messages in the screen's colours; the keys,

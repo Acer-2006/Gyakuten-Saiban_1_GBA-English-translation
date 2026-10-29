@@ -557,6 +557,8 @@ def main():
         used |= set(sp.get('anim', ())) | ({sp['to']} if 'to' in sp else set())
     import jarpuzzle                # (the jar puzzle's: the base and the nine pieces)
     used |= set(range(jarpuzzle.JAR_FIRST, jarpuzzle.JAR_LAST + 1))
+    import badger                   # (the Blue Badger's angle: the jar whole)
+    used.add(badger.RECORD)
     used = sorted(r for r in used if r < len(recs))
     meshes = []
     for r in used:
@@ -669,6 +671,7 @@ def main():
     align(); o_r31 = len(blob)
     blob += struct.pack('<4098I', *([0x7FFFFFFF] + [min(0x7FFFFFFF, round((1 << 31) / n)) for n in range(1, 4098)]))
     jar_lines = jarpuzzle.export(blob, align, meshidx, texids, recs)
+    jar_lines += badger.export(blob, align, used.index(badger.RECORD), PAL_FRAME, VIEW_TILES)
     # write
     os.makedirs(os.path.join(ROOT, 'graphics', 'en', 'rfta'), exist_ok=True)
     open(os.path.join(ROOT, 'graphics', 'en', 'rfta', 'evidence3d.bin'), 'wb').write(blob)

@@ -590,6 +590,9 @@ void VBlankIntr()
 {
     m4aSoundVSync();
     gMain.vblankWaitCounter++;
+#if RFTA
+    gEnVBlanks++; // English patch: every vertical blank, a lost frame's too (en_rfta.h)
+#endif
 }
 
 void HBlankIntr()
