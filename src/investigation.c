@@ -107,6 +107,7 @@ void InvestigationInit(struct Main * main, struct InvestigationStruct * investig
 #if RFTA
     EnLuminolReset(); // (a chapter starts without the luminol: en_luminol.c)
     EnFingerprintReset();
+    En3dReset();
     // English patch: the fifth episode keeps flags 0-0x27 (en_rfta.c)
     if(main->scenarioIdx >= RFTA_FIRST_CHAPTER)
         EnRftaChapterFlags(main, FALSE);

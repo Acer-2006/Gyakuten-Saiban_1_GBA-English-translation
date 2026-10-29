@@ -78,22 +78,16 @@ def gba_text(s):
             out.append(inv[ch])
     return out
 # Where the DS hands over to a system of its own that the GBA does not have
-# yet (the evidence turned over in 3D, the luminol, the fingerprints, the
-# security footage) and that system then starts the section that follows, the
+# yet (the jar's pieces, the locker's keypad, the dots to join) and that
+# system then starts the section that follows, the
 # GBA goes on in that section straight away: (DS file, section) -> the
 # sections to go on in, in order. Each is entered where the source section
 # would have handed over (its last "1C 3 / 15": back to the menu), the
 # DS's tutorial sections for the system itself are left out.
 BYPASS = {
-    # Day 1: the wallet turned over (C0, C1: how to turn evidence over) -> the ID card inside, then it replaces the wallet
-    (18, 0xBF): 0xC2, (18, 0xC2): 0xC3,
-    # Day 1: Ms. Skye's phone looked over: the redial display, the call, the patrolman
-    (18, 0xF9): 0xFB, (18, 0xFB): 0xFC, (18, 0xFC): 0xFD,
     # Day 2: the luminol in the parking lot (its luminol screen: src/en_luminol.c): the
     # tutorial after Ema's lines, the stain's question after its lines
     (22, 0x92): 0x93, (22, 0x95): 0x96,
-    # Day 2 trial: the knife opened in 3D (its switch) -> the knife added to the record
-    (21, 0x81): 0x82,
     # Day 2: the jar pieces put together (135 is the DS's try-again)
     (24, 0x134): 0x136,
     # Day 3: the locker's number (11D: the wrong one), the last piece of the jar
@@ -102,8 +96,6 @@ BYPASS = {
     # Final day: the jar turned to the Badger's angle (BC: not yet), the dots
     # joined into the name (C6: wrong, C8: the game over)
     (31, 0xBB): 0xBD, (31, 0xC5): 0xC7,
-    # Final day: the picture found on the back of the list
-    (33, 0xAC): 0xAD,
     # The end: after the staff roll, "The End" (86 the first time, 87 the replay)
     (34, 0x85): 0x86, (34, 0x88): 0x87,
 }
@@ -136,6 +128,12 @@ LUMINOL_ALL_FOUND = {24: [LUMINOL, 4, 0x36, 0xD2]}
 # 35's C9 and CA (back from the dusting, a print that cannot be compared)
 # come in with the luminol's stain lines, in the chapters that have both.
 FINGERPRINT = 0x68
+# The evidence in 3D (src/en_evidence3d.c, tools/en/rfta/evidence3d.py): the
+# scenes that open the Court Record for evidence to be checked (the DS's
+# 74 8 2e, 74 b 0) -> 69 0 n (n: evidence3d.SCENES), the close-ups shown in
+# the viewer (the DS's 7B 0 n, 7B 1 0) -> 69 2<<8 | n, 69 3<<8
+EVIDENCE3D = 0x69
+EVIDENCE3D_SCENES = {(18, 0xBF): 0, (18, 0xF9): 1, (21, 0x81): 2, (33, 0xAC): 3}
 FP_SECTIONS = {24: range(0x13A, 0x146), 30: (0x129, 0x12A), 35: (0xC9, 0xCA)}
 FP_74_8 = {0x37: 2 << 8, 0x38: 3 << 8, 0x39: 4 << 8, 0x3A: 5 << 8, 0x3B: (5 << 8) | 1,
            0x3C: (6 << 8) | 0xBA, 0x3D: 7 << 8}
@@ -354,6 +352,12 @@ class Translator:
                 else:
                     out += [PORTRAIT_HIDE]
                 self.stats['portrait'] += 1
+            elif op == 0x74 and self.cur[:2] in EVIDENCE3D_SCENES and ((a[0] == 8 and a[1] == 0x2E) or (a[0] == 0xB and a[1] == 0)):
+                out += [EVIDENCE3D, EVIDENCE3D_SCENES[self.cur[:2]]]
+                self.stats['evidence in 3D: a scene'] += 1
+            elif op == 0x7B:
+                out += [EVIDENCE3D, (2 << 8) | a[1] if a[0] == 0 else 3 << 8]
+                self.stats['evidence in 3D: a close-up'] += 1
             elif op == 0x74 and a[0] == 0xA:
                 out += [PROMPT_PRESENT]
                 self.stats['74 A as a present prompt'] += 1

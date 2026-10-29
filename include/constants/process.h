@@ -65,6 +65,7 @@ enum CourtRecordProcessStates {
     RECORD_DETAIL_SUBMENU,
     RECORD_LOAD_GFX_CHANGE_STATE,
     RECORD_TAKE_THAT_SPECIAL,
+    RECORD_3D, // English patch: the RFTA build's (en_evidence3d.c)
 };
 
 enum EvidenceAddedProcessStates {

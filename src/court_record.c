@@ -578,7 +578,7 @@ const struct EvidenceProfileData gEvidenceProfileData[] = {
 const u8 sCourtRecordLeftArrowTileIndexes[] = {0, 4, 8, 4};
 const u8 sCourtRecordRightArrowTileIndexes[] = {12, 16, 20, 16};
 
-void (*gCourtRecordProcessStates[8])(struct Main *, struct CourtRecord *) = {
+void (*gCourtRecordProcessStates[8 + RFTA])(struct Main *, struct CourtRecord *) = {
 	CourtRecordInit,
 	CourtRecordMain,
 	CourtRecordExit,
@@ -586,7 +586,10 @@ void (*gCourtRecordProcessStates[8])(struct Main *, struct CourtRecord *) = {
 	CourtRecordChangeRecord,
 	CourtRecordDetailSubMenu,
 	CourtRecordLoadGfxChangeState,
-	CourtRecordTakeThatSpecial
+	CourtRecordTakeThatSpecial,
+#if RFTA
+	En3dProcess, // English patch: the evidence in 3D (en_evidence3d.c)
+#endif
 };
 
 void (*gEvidenceAddedProcessStates[3])(struct Main *, struct CourtRecord *) = {
@@ -685,6 +688,16 @@ void CourtRecordMain(struct Main * main, struct CourtRecord * courtRecord) // st
     struct OamAttrs * oam;
     u32 section;
 
+#if RFTA
+    // English patch: the fifth episode's "Check" on evidence with a model
+    // (the DS's 3D viewer: en_evidence3d.c)
+    if(joypad->pressedKeys & L_BUTTON && En3dCheckable(courtRecord))
+    {
+        PlaySE(SE001_MENU_CONFIRM);
+        En3dOpenFromRecord(courtRecord);
+        return;
+    }
+#endif
     if(joypad->pressedKeys & L_BUTTON)
     {
         u32 evidenceId = courtRecord->displayItemList[courtRecord->selectedItem];
@@ -911,7 +924,12 @@ void CourtRecordMain(struct Main * main, struct CourtRecord * courtRecord) // st
             courtRecord->nextState = RECORD_CHANGE_RECORD;
             main->process[GAME_PROCESS_STATE] = RECORD_CHANGE_RECORD;
         }
+#if RFTA
+        // (a scene's record stays until its evidence is checked: en_evidence3d.c)
+        else if(joypad->pressedKeys & B_BUTTON && !En3dHoldsRecord())
+#else
         else if(joypad->pressedKeys & B_BUTTON)
+#endif
         {
             PlaySE(SE002_MENU_CANCEL);
             SlideInBG2Window(0x3, 0xC);
@@ -947,6 +965,9 @@ void CourtRecordExit(struct Main * main, struct CourtRecord * courtRecord) // st
             TextboxNextArrowNow(); // English patch: the DS's arrow, as the wait has it (script_commands.c)
         }
         RESTORE_PROCESS_PTR(main);
+#if RFTA
+        En3dRecordClosed(); // a scene's section after it (en_evidence3d.c)
+#endif
     }
 }
 
@@ -1501,6 +1522,7 @@ void UpdateRecordSprites(struct CourtRecord * courtRecord)
             UpdateRecordPresentActionSprites(1);
 #if RFTA
         EnRecordSprayPrompt(courtRecord, TRUE);
+        En3dRecordPrompt(courtRecord, TRUE); // (after the spray's: it clears its sprites when it has none)
 #endif
         return;
     }
@@ -1839,7 +1861,12 @@ void UpdateItemPlate(struct Main * main)
             DmaCopy16(3, &gOamObjects[OAM_IDX_POINTER], OAM+OAM_IDX_POINTER*8, 0x8);
             // English patch: closed while hidden (state 5): the frame (BG0) is
             // shown again, as when the plate closes normally
+#if RFTA
+            // (the 3D viewer shows the partner's portrait as the DS's face box)
+            if((main->process[GAME_PROCESS] < COURT_RECORD_PROCESS || En3dShowsPlate()) && !ItemPlateSlotBorrowed(main))
+#else
             if(main->process[GAME_PROCESS] < COURT_RECORD_PROCESS && !ItemPlateSlotBorrowed(main))
+#endif
                 gIORegisters.lcd_dispcnt |= DISPCNT_BG0_ON;
             if(main->itemPlateSide == 0)
                 main->itemPlateAction = 4;
@@ -1890,7 +1917,11 @@ void UpdateItemPlate(struct Main * main)
             if(main->itemPlateAction == 1)
                 oam->attr0 = SPRITE_ATTR0(16, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
             
+#if RFTA
+            if((main->process[GAME_PROCESS] >= COURT_RECORD_PROCESS && !En3dShowsPlate()) || ItemPlateSlotBorrowed(main))
+#else
             if(main->process[GAME_PROCESS] >= COURT_RECORD_PROCESS || ItemPlateSlotBorrowed(main))
+#endif
             {
                 oam->attr0 = SPRITE_ATTR0_CLEAR;
                 DmaCopy16(3, &gOamObjects[OAM_IDX_POINTER], OAM+OAM_IDX_POINTER*8, 0x8);
@@ -1899,7 +1930,12 @@ void UpdateItemPlate(struct Main * main)
             }
             break;
         case 5:
+#if RFTA
+            // (the 3D viewer shows the partner's portrait as the DS's face box)
+            if((main->process[GAME_PROCESS] < COURT_RECORD_PROCESS || En3dShowsPlate()) && !ItemPlateSlotBorrowed(main))
+#else
             if(main->process[GAME_PROCESS] < COURT_RECORD_PROCESS && !ItemPlateSlotBorrowed(main))
+#endif
             {
                 LoadItemPlateGfx(main);
                 oam->attr0 = SPRITE_ATTR0(16, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
