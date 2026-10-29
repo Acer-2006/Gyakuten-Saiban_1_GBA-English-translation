@@ -93,6 +93,17 @@ void EnKeypadScreen(void);
 void EnKeypadVBlank(void);
 void EnKeypadSprites(void);
 u32 EnKeypadFrame(void);
+u32 EnISqrt(u32 v);
+// joining the dots (en_dots.c), on the viewer's machinery as the keypad:
+// its screen, its frames (DOTS_ON: its screen up; DOTS_PRESENT: L, the
+// lines to be checked; DOTS_RECORD: R, the Court Record)
+enum { DOTS_ON, DOTS_PRESENT, DOTS_RECORD };
+void EnDotsStart(void);
+void EnDotsScreen(void);
+void EnDotsVBlank(void);
+void EnDotsSprites(void);
+u32 EnDotsFrame(void);
+bool32 EnDotsRight(void);
 
 // the movies (en_movie.c): the DS's command 75 and its frame sequences
 void EnMovieFrame(void);
