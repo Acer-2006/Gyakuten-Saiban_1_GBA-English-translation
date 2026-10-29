@@ -66,7 +66,9 @@ extern u32 gEnMovieCode[];
 
 enum { V_OFF, V_FADE_OUT, V_SETUP, V_FIRST, V_FADE_IN, V_VIEW, V_TURN, V_ANIM, V_SCRIPT, V_FADE_LEAVE, V_LEAVE, V_SHOW_RECORD,
        // the jar puzzle's (after V_FIRST's picture: V_FADE_IN, then these)
-       J_RISE, J_SPIN, J_PLAY, J_ROTATE, J_SEND, J_FIT, J_FLASH, J_HOLD, J_TURN, J_MISS, J_RETURN, J_END };
+       J_RISE, J_SPIN, J_PLAY, J_ROTATE, J_SEND, J_FIT, J_FLASH, J_HOLD, J_TURN, J_MISS, J_RETURN, J_END,
+       // the Blue Badger's angle's
+       B_PLAY, B_FLASH };
 enum { R_IDLE, R_CLEAR, R_XFORM, R_DRAW, R_READY };
 enum { AFTER_NONE, AFTER_RESTORE, AFTER_STAY, AFTER_END, AFTER_BACK };
 enum { THEN_EXAMINE, THEN_VIEW };
@@ -135,6 +137,11 @@ struct En3d
     u8 jarSub, jarCached, jarKeep, jarSaveAt;   // an animation's step (paced by the pictures); the jar kept for the flight: saved, still in the picture beyond its box, saved after this item
     u8 jarFlyDrawn, jarSaveRow, cacheBox[4];    // (the flight's frame drawn; the save's next row; the kept box)
     u8 keypad, keypadSpare[3];              // the safe's keypad up (en_keypad.c: the viewer's screen and script kept, its own frames)
+    // the Blue Badger's angle: up, the angle presented right; the roll (degrees), the drums' turns (0-10)
+    u8 badger, badgerRight, badgerSpare[2];
+    s16 badgerRoll, badgerDrumH, badgerDrumV, badgerSpare2;
+    s32 bm[9];                              // the jar's turn as the DS keeps it (row vectors: v' = v M), 1.14
+    u32 badgerVBlank;                       // (the vertical blanks counted when its keys were last read)
 };
 // in the old script heap's free space (+0x9000-0xF000: after the menu's,
 // before the movie's), the picture and its depth in the background's buffer
@@ -154,7 +161,7 @@ struct En3d
 #define sFb ((u8 *)(EWRAM_START + 0x2CFC0))             // 24 x 16 tiles, 8bpp (0: the grid under it)
 #define sZb ((u16 *)(EWRAM_START + 0x2CFC0 + 0x6000))   // 192 x 128
 #define MAX_VERTS 540
-typedef char sEn3dFits[sizeof(struct En3d) <= 0x800 ? 1 : -1];   // (before the backups)
+typedef char sEn3dFits[sizeof(struct En3d) <= 0x7FC ? 1 : -1];   // (before the backups; gEnVBlanks after)
 // the grid (BG2, under BG3: its tiles and map where nothing else is while
 // the viewer is up, its colour in BG palette 14)
 #define GRID_CHAR 3
@@ -167,6 +174,13 @@ static const u32 * R31(void) { return (const u32 *)D(EN3D_R31); }
 
 void UpdateItemPlate(struct Main *);
 static void KeypadProcess(struct Main * main);
+static void BadgerMatrix(void);
+static void BadgerMask(void);
+static void BadgerScreen(void);
+static void BadgerSetup(void);
+static void BadgerFrame(void);
+static void DrawBadgerSprites(void);
+static void BadgerGone(struct Main * main);
 
 // ---------------------------------------------------------------- state
 bool32 En3dActive(void)
@@ -179,6 +193,7 @@ void En3dReset(void)
     gEn3d.mode = V_OFF;
     gEn3d.jar = 0;
     gEn3d.keypad = 0;
+    gEn3d.badger = 0;
     gEn3d.scene = 0;
     gEn3d.sceneEnding = FALSE;
     gEn3d.afterSection = 0;
@@ -221,7 +236,7 @@ bool32 En3dHoldsRecord(void)
 // the portrait plate shown over the viewer (as the DS's face box)
 bool32 En3dShowsPlate(void)
 {
-    return gEn3d.mode >= V_FIRST && gEn3d.mode <= V_SCRIPT && !gEn3d.jar && !gEn3d.keypad;
+    return gEn3d.mode >= V_FIRST && gEn3d.mode <= V_SCRIPT && !gEn3d.jar && !gEn3d.keypad && !gEn3d.badger;
 }
 
 // ---------------------------------------------------------------- maths
@@ -326,6 +341,11 @@ static void SetXf(struct En3dXf * xf, const s32 * m, const s32 * t)
     if (gEn3d.jar)
     {
         xf->fx = EN3D_JAR_FX; xf->fy = EN3D_JAR_FY; xf->ox = EN3D_JAR_OX; xf->oy = EN3D_JAR_OY;
+    }
+    else if (gEn3d.badger)
+    {
+        // (the DS's 128 x 128 viewport: the frame buffer's first 16 x 16 tiles)
+        xf->fx = xf->fy = EN3D_BADGER_F; xf->ox = xf->oy = 64 * 16;
     }
     else
     {
@@ -619,8 +639,13 @@ static void StartPicture(void)
     {
         const struct En3dRecord * r;
         u32 k;
-        Matrix(v->rm, v->q);
-        v->rt[0] = v->t[0]; v->rt[1] = v->t[1]; v->rt[2] = v->t[2];
+        if (v->badger)
+            BadgerMatrix();
+        else
+        {
+            Matrix(v->rm, v->q);
+            v->rt[0] = v->t[0]; v->rt[1] = v->t[1]; v->rt[2] = v->t[2];
+        }
         v->drawRec = ShownIndex();
         r = &sEn3dRecords[v->drawRec];
         for (k = 0; k < 3 && r->meshes[k] != 0xFF; k++)
@@ -698,6 +723,8 @@ static void PictureDone(void)
             if (st->box[3] > v->box[3]) v->box[3] = st->box[3];
         }
     }
+    if (v->badger)
+        BadgerMask();
     y0 = v->box[1]; y1 = v->box[3];
     if (v->drawnBox[3] > v->drawnBox[1] || v->uploadAll)
     {
@@ -1167,6 +1194,11 @@ static void TakeScreen(void)
     s32 viewX = v->jar ? EN3D_JAR_VIEW_X : EN3D_VIEW_X, viewY = v->jar ? EN3D_JAR_VIEW_Y : EN3D_VIEW_Y;
     s32 viewW = v->jar ? EN3D_JAR_VIS_W : EN3D_VIEW_W;
     CpuCopy32(gEn3dCodeStart, gEnMovieCode, gEn3dCodeEnd - gEn3dCodeStart);
+    if (v->badger)
+    {
+        BadgerScreen();
+        return;
+    }
     io->lcd_dispcnt &= ~(DISPCNT_BG0_ON | DISPCNT_BG1_ON);
     io->lcd_dispcnt |= DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON;
     io->lcd_bg3hofs = 8;
@@ -1960,6 +1992,8 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
     case V_FADE_OUT:
         if (main->blendMode != 0)
             return;
+        if (v->badger)
+            EnMovieClose();         // (the DS's Blue Badger on its top screen: here the panel is the screen)
         SaveScreen();
         SetMode(V_SETUP);
         return;
@@ -1967,6 +2001,8 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
         TakeScreen();
         if (v->jar)
             JarSetup();
+        else if (v->badger)
+            BadgerSetup();
         else
         {
             ResetView();
@@ -1981,6 +2017,8 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
         {
             if (v->jar)
                 StartHardwareBlend(1, 2, 1, FADE_ALL);
+            else if (v->badger)
+                StartHardwareBlend(1, 1, 1, FADE_ALL);
             else
                 StartHardwareBlend(1, 1, 2, FADE_ALL);
             SetMode(V_FADE_IN);
@@ -1995,6 +2033,12 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
         if (v->jar)
         {
             SetMode(J_RISE);
+            break;
+        }
+        if (v->badger)
+        {
+            v->badgerVBlank = gEnVBlanks;
+            SetMode(B_PLAY);
             break;
         }
         if (v->sceneHere && sc && sc->open && !v->hovered)
@@ -2055,6 +2099,11 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
             JarGone(main);
             return;
         }
+        if (v->badger)
+        {
+            BadgerGone(main);
+            return;
+        }
         GiveBackScreen();
         v->render = R_IDLE;
         v->uploadReady = FALSE;
@@ -2086,7 +2135,10 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
     default:
         if (v->mode < J_RISE)
             return;
-        JarFrame();
+        if (v->badger)
+            BadgerFrame();
+        else
+            JarFrame();
         break;
     }
     // the hover's how-to may have started a section above
@@ -2096,6 +2148,8 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
         v->hit = 0;
     if (v->jar)
         DrawJarSprites();
+    else if (v->badger)
+        DrawBadgerSprites();
     else
         DrawSprites();
     RenderWork();
@@ -2136,6 +2190,379 @@ void En3dRecordPrompt(struct CourtRecord * courtRecord, bool32 show)
     oam[2].attr0 = SPRITE_ATTR0(96, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_H_RECTANGLE);
     oam[2].attr1 = SPRITE_ATTR1_NONAFFINE(144, FALSE, FALSE, 2);
     oam[2].attr2 = SPRITE_ATTR2(0x1D0, 0, 4);
+}
+
+// ---------------------------------------------------------------- the Blue Badger's angle
+// The DS's 74 8 33 (script command 69 6<<8): the Unstable Jar turned until
+// it looks like the Blue Badger (badger.py has what the DS does). The jar
+// whole (the DS's object record 17) is drawn by the viewer's renderer in the
+// DS's circle, its turn kept as the DS keeps it: a matrix (row vectors) each
+// turn is applied after, about the screen's axes. The + pad turns it 2
+// degrees a frame (and runs the drums' ticks round, as the DS's drag
+// does), L and R 1 about the line of sight (the ring's ticks turn with
+// it); A presents it: the DS's angles read off the matrix, then the white,
+// and the Take that! section (translate.py) on to BD or BC.
+#include "data/en_rfta_badger_sections.h"
+#define B_OAM 90                        // (the screen's own: nothing else draws while it is up)
+#define B_OAM_LAST 121
+#define B_AFFINE 30
+#define PAL_RING 10
+#define PAL_TICK 11
+#define B_TILE_TICKS (TILE_BASE + 256)
+// BG2's grid tiles (4 bits, charbase GRID_CHAR) after BG3's: the frame buffer's and the panel's
+#define B_GRID_TILE (((EN3D_VIEW_TILES + EN3D_BADGER_TILES) * 64 + 0x4000 - 0x4000 * GRID_CHAR + 31) / 32)
+typedef char sEn3dBadgerFits[B_GRID_TILE * 32 + 5 * 32 + 0x4000 * GRID_CHAR <= 0x800 * GRID_SCREEN ? 1 : -1];
+
+// M = M x R: R the DS's rotation (row vectors) about x, y or z by its
+// step (the + pad's, or L and R's: the sine table's entries), d its sign
+static void BadgerTurn(u32 axis, s32 d)
+{
+    s32 * m = gEn3d.bm;
+    s32 c = axis == 2 ? EN3D_BADGER_ROLL_COS : EN3D_BADGER_TURN_COS, s, i, a, b;
+    s = axis == 2 ? EN3D_BADGER_ROLL_SIN : EN3D_BADGER_TURN_SIN;
+    if (d < 0)
+        s = -s;
+    for (i = 0; i < 3; i++)
+    {
+        s32 * r = m + 3 * i;
+        if (axis == 1)
+        {
+            a = (r[0] * c + r[2] * s) >> 14; b = (r[2] * c - r[0] * s) >> 14;
+            r[0] = a; r[2] = b;
+        }
+        else if (axis == 0)
+        {
+            a = (r[1] * c - r[2] * s) >> 14; b = (r[1] * s + r[2] * c) >> 14;
+            r[1] = a; r[2] = b;
+        }
+        else
+        {
+            a = (r[0] * c - r[1] * s) >> 14; b = (r[0] * s + r[1] * c) >> 14;
+            r[0] = a; r[1] = b;
+        }
+    }
+}
+
+static void Normalize3(s32 * v)
+{
+    s32 len = ISqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    if (len == 0)
+        return;
+    v[0] = (v[0] << 14) / len; v[1] = (v[1] << 14) / len; v[2] = (v[2] << 14) / len;
+}
+
+static void Cross3(s32 * out, const s32 * a, const s32 * b)
+{
+    out[0] = (a[1] * b[2] - a[2] * b[1]) >> 14;
+    out[1] = (a[2] * b[0] - a[0] * b[2]) >> 14;
+    out[2] = (a[0] * b[1] - a[1] * b[0]) >> 14;
+}
+
+// kept a rotation (the DS's 0x02067ca4 each frame)
+static void BadgerSquare(void)
+{
+    s32 * m = gEn3d.bm;
+    Normalize3(m + 6);
+    Cross3(m, m + 3, m + 6);
+    Normalize3(m);
+    Cross3(m + 3, m + 6, m);
+}
+
+// the renderer's (column vectors: M turned over), the jar 2 behind its place
+static void BadgerMatrix(void)
+{
+    struct En3d * v = &gEn3d;
+    u32 i, j;
+    for (i = 0; i < 3; i++)
+        for (j = 0; j < 3; j++)
+            v->rm[3 * i + j] = v->bm[3 * j + i];
+    v->rt[0] = v->rt[1] = 0;
+    v->rt[2] = EN3D_BADGER_Z;
+}
+
+// the ring's pixels over the picture where it crosses it (four at a time:
+// most of the mask's words are all the ring's or all the picture's)
+static void BadgerMask(void)
+{
+    const u32 * m = (const u32 *)D(EN3D_BADGER_GFX_MASKS);
+    const u16 * at = (const u16 *)D(EN3D_BADGER_GFX_MASK_AT);
+    u32 k, i, j;
+    for (k = 0; k < EN3D_BADGER_MASKS; k++, m += 16)
+    {
+        u32 * t = (u32 *)(sFb + 64 * at[k]);
+        for (i = 0; i < 16; i++)
+        {
+            u32 w = m[i];
+            if (w == 0)
+                continue;
+            if ((w & 0xFF) && (w & 0xFF00) && (w & 0xFF0000) && (w & 0xFF000000))
+                t[i] = w;
+            else
+            {
+                u8 * tb = (u8 *)&t[i];
+                for (j = 0; j < 4; j++, w >>= 8)
+                    if (w & 0xFF)
+                        tb[j] = w;
+            }
+        }
+    }
+}
+
+// the angle of (x, y), degrees x 16 (0 to 360: the DS's FX_Atan2Idx's)
+static s32 Atan2Deg16(s32 y, s32 x)
+{
+    s32 ax = x < 0 ? -x : x, ay = y < 0 ? -y : y, n, d, lo = 0, hi = 45 * 16, a;
+    bool32 swap = ay > ax;
+    n = swap ? ax : ay;
+    d = swap ? ay : ax;
+    if (d == 0)
+        return 0;
+    while (lo < hi)
+    {
+        s32 mid = (lo + hi + 1) >> 1;
+        if (Sin16(mid) * d <= Cos16(mid) * n)
+            lo = mid;
+        else
+            hi = mid - 1;
+    }
+    a = swap ? 90 * 16 - lo : lo;
+    if (x < 0)
+        a = 180 * 16 - a;
+    if (y < 0)
+        a = 360 * 16 - a;
+    return a >= 360 * 16 ? a - 360 * 16 : a;
+}
+
+// the DS's 0x02067dac: the angles of the matrix, and whether they are the Badger's
+static bool32 BadgerRight(void)
+{
+    const s32 * m = gEn3d.bm;
+    s32 x = m[6], y = m[7], z = m[8], a, b, c, r0[3], r1, r2, sa, ca, sb, cb;
+    a = Atan2Deg16(-y, ISqrt(x * x + z * z)) >> 4;
+    b = Atan2Deg16(x, z) >> 4;
+    // the first row turned back by b about y, then by a about x
+    sb = Sin16(-b * 16); cb = Cos16(-b * 16);
+    sa = Sin16(-a * 16); ca = Cos16(-a * 16);
+    r0[0] = (m[0] * cb + m[2] * sb) >> 14;
+    r0[1] = m[1];
+    r0[2] = (m[2] * cb - m[0] * sb) >> 14;
+    r1 = (r0[1] * ca - r0[2] * sa) >> 14;
+    r2 = r0[0];
+    c = Atan2Deg16(r1, r2) >> 4;
+    return a > EN3D_BADGER_A0 && a < EN3D_BADGER_A1
+        && ((b > EN3D_BADGER_B0 && b < EN3D_BADGER_B1) || (b >= 0 && b < EN3D_BADGER_B2))
+        && c > EN3D_BADGER_C0 && c < EN3D_BADGER_C1;
+}
+
+// command 69 6<<8: the screen faded out (the DS's 2, 3, 1), then the panel's
+static void BadgerStart(void)
+{
+    struct En3d * v = &gEn3d;
+    v->badger = TRUE;
+    v->jar = 0;
+    v->keypad = 0;
+    v->scene = 0;
+    v->sceneHere = FALSE;
+    v->hovered = FALSE;
+    v->hit = 0;
+    v->closeup = v->closeupShown = 0;
+    v->after = AFTER_NONE;
+    v->render = R_IDLE;
+    v->uploadReady = FALSE;
+    v->coloursRec = 0xFF;
+    v->file35 = FALSE;
+    v->dirty = FALSE;
+    BACKUP_PROCESS();
+    SET_PROCESS(COURT_RECORD_PROCESS, RECORD_3D, 0, 0);
+    StartHardwareBlend(2, 3, 1, FADE_ALL);
+    SetMode(V_FADE_OUT);
+}
+
+// the panel: BG3 the frame buffer's tiles in the circle, the panel's round
+// it; BG2 the grid under the picture; the ring's ticks and the drums' sprites
+static void BadgerScreen(void)
+{
+    struct IORegisters * io = &gIORegisters;
+    const u16 * map = (const u16 *)D(EN3D_BADGER_GFX_MAP);
+    const u8 * grid = D(EN3D_BADGER_GFX_GRID_MAP);
+    u32 r, c, k;
+    io->lcd_dispcnt &= ~(DISPCNT_BG0_ON | DISPCNT_BG1_ON);
+    io->lcd_dispcnt |= DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON;
+    io->lcd_bg3hofs = 8;
+    io->lcd_bg3vofs = 8;
+    io->lcd_bg3cnt = BGCNT_PRIORITY(2) | BGCNT_CHARBASE(1) | BGCNT_SCREENBASE(31) | BGCNT_WRAP | BGCNT_TXT256x256 | BGCNT_256COLOR;
+    io->lcd_bg2hofs = 8;
+    io->lcd_bg2vofs = 8;
+    io->lcd_bg2cnt = BGCNT_PRIORITY(3) | BGCNT_CHARBASE(GRID_CHAR) | BGCNT_SCREENBASE(GRID_SCREEN) | BGCNT_WRAP | BGCNT_TXT256x256 | BGCNT_16COLOR;
+    DmaCopy16(3, D(EN3D_BADGER_GFX_GRID), BG_CHAR_ADDR(GRID_CHAR) + B_GRID_TILE * 32, 4 * 32);
+    DmaFill16(3, 0, BG_CHAR_ADDR(GRID_CHAR) + (B_GRID_TILE + 4) * 32, 32);
+    for (r = 0; r < 32; r++)
+        for (c = 0; c < 32; c++)
+        {
+            u32 g = (r >= 1 && r <= 20 && c >= 1 && c <= 30) ? grid[(r - 1) * 30 + c - 1] : 0;
+            ((u16 *)BG_SCREEN_ADDR(GRID_SCREEN))[r * 32 + c] = (g ? B_GRID_TILE + g - 1 : B_GRID_TILE + 4) | (GRID_PAL << 12);
+        }
+    DmaCopy16(3, sEn3dBadgerGridPal, BG_PLTT + GRID_PAL * 32, 8);
+    ((u16 *)BG_PLTT)[0] = sEn3dBadgerGridPal[1];
+    for (r = 0; r < 32; r++)
+        for (c = 0; c < 32; c++)
+            gBG3MapBuffer[r * 32 + c] = (r >= 1 && r <= 20 && c >= 1 && c <= 30) ? map[(r - 1) * 30 + c - 1] : EN3D_VIEW_TILES;
+    DmaCopy16(3, gBG3MapBuffer, BG_SCREEN_ADDR(31), 0x800);
+    DmaCopy32(3, D(EN3D_BADGER_GFX_TILES), BG_CHAR_ADDR(1) + EN3D_VIEW_TILES * 64, EN3D_BADGER_TILES * 64);
+    DmaCopy16(3, sEn3dBadgerPalette, BG_PLTT + EN3D_PAL_FRAME * 2, EN3D_BADGER_COLOURS * 2);
+    DmaCopy32(3, D(EN3D_BADGER_GFX_RING), OBJ_VRAM0 + TILE_BASE * 32, 256 * 32);
+    DmaCopy32(3, D(EN3D_BADGER_GFX_TICKS), OBJ_VRAM0 + B_TILE_TICKS * 32, 2 * 32);
+    DmaCopy16(3, sEn3dBadgerRingPal, OBJ_PLTT + PAL_RING * 32, 32);
+    DmaCopy16(3, sEn3dBadgerTickPal, OBJ_PLTT + PAL_TICK * 32, 32);
+    for (k = OAM_FIRST; k <= OAM_LAST; k++)
+        gOamObjects[k].attr0 = SPRITE_ATTR0_CLEAR;
+    ClearAll();
+    BadgerMask();
+    DmaCopy32(3, sFb, BG_CHAR_ADDR(1), EN3D_VIEW_TILES * 64);
+}
+
+// the jar upright, the drums and the ring at rest; the picture's record
+static void BadgerSetup(void)
+{
+    struct En3d * v = &gEn3d;
+    u32 k;
+    for (k = 0; k < 9; k++)
+        v->bm[k] = (k % 4 == 0) ? 1 << 14 : 0;
+    v->badgerRoll = v->badgerDrumH = v->badgerDrumV = 0;
+    v->badgerRight = FALSE;
+    v->record = EN3D_BADGER_RECORD;
+    v->dirty = TRUE;
+}
+
+// a drum's ticks: k of n, at the drum's turn (degrees: its sine along the drum's middle)
+static void BadgerTicks(u32 * o, bool32 across)
+{
+    struct En3d * v = &gEn3d;
+    u32 n = across ? 16 : 12, k;
+    for (k = 0; k < n && *o <= B_OAM_LAST; k++)
+    {
+        s32 r = across ? EN3D_BADGER_DRUM_H_R : EN3D_BADGER_DRUM_V_R;
+        s32 ang = (across ? v->badgerDrumH + sEn3dBadgerTicksH[k] : v->badgerDrumV + sEn3dBadgerTicksV[k]) + 360;
+        s32 sv = r * Sin16(ang * 16) / 16384, x, y;   // (toward 0: the DS's float to int)
+        s32 out = r - (sv < 0 ? -sv : sv);
+        struct OamAttrs * oam = &gOamObjects[(*o)++];
+        if (across)
+        {
+            x = EN3D_BADGER_DRUM_H_X + sv;
+            y = sEn3dBadgerBowH[out] + EN3D_BADGER_DRUM_H_Y;
+        }
+        else
+        {
+            y = EN3D_BADGER_DRUM_V_Y + sv;
+            x = sEn3dBadgerBowV[out] + EN3D_BADGER_DRUM_V_X;
+        }
+        oam->attr0 = SPRITE_ATTR0(y & 0xFF, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
+        oam->attr1 = SPRITE_ATTR1_NONAFFINE(x & 0x1FF, FALSE, FALSE, 0);
+        oam->attr2 = SPRITE_ATTR2(B_TILE_TICKS + !across, 1, PAL_TICK);
+    }
+}
+
+static void DrawBadgerSprites(void)
+{
+    struct En3d * v = &gEn3d;
+    u32 o = B_OAM, q;
+    s32 c = Cos16(v->badgerRoll * 16), s = Sin16(v->badgerRoll * 16);
+    // the ring's ticks: four quarters, turned about the circle's middle by the roll
+    for (q = 0; q < 4; q++)
+    {
+        s32 dx = (q & 1) ? 32 : -32, dy = (q & 2) ? 32 : -32;
+        s32 x = EN3D_BADGER_RING_X + ((dx * c + dy * s) >> 14), y = EN3D_BADGER_RING_Y + ((dy * c - dx * s) >> 14);
+        struct OamAttrs * oam = &gOamObjects[o++];
+        oam->attr0 = SPRITE_ATTR0((y - 64) & 0xFF, ST_OAM_AFFINE_DOUBLE, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
+        oam->attr1 = SPRITE_ATTR1_AFFINE((x - 64) & 0x1FF, B_AFFINE, 3);
+        oam->attr2 = SPRITE_ATTR2(TILE_BASE + 64 * q, 1, PAL_RING);
+    }
+    gOamObjects[B_AFFINE * 4 + 0].attr3 = c >> 6;
+    gOamObjects[B_AFFINE * 4 + 1].attr3 = -s >> 6;
+    gOamObjects[B_AFFINE * 4 + 2].attr3 = s >> 6;
+    gOamObjects[B_AFFINE * 4 + 3].attr3 = c >> 6;
+    BadgerTicks(&o, TRUE);
+    BadgerTicks(&o, FALSE);
+    for (; o <= B_OAM_LAST; o++)
+        gOamObjects[o].attr0 = SPRITE_ATTR0_CLEAR;
+}
+
+// the player's turn: the + pad and L and R held turn the jar (the DS's
+// order: about the upright, across, the line of sight) a step for each
+// frame that passed (the DS's frames: a picture can take a frame's work
+// over its time), A presents it
+static void BadgerFrame(void)
+{
+    struct En3d * v = &gEn3d;
+    u32 held = gJoypad.heldKeys, n = gEnVBlanks - v->badgerVBlank;
+    s32 dy = 0, dp = 0, dr = 0;
+    v->badgerVBlank = gEnVBlanks;
+    if (n > 4)
+        n = 4;
+    if (v->mode == B_FLASH)
+    {
+        if (gMain.blendMode == 0)
+            SetMode(V_LEAVE);
+        return;
+    }
+    if (gJoypad.pressedKeys & A_BUTTON)
+    {
+        // the white (the DS's both screens), then the Take that!
+        v->badgerRight = BadgerRight();
+        StartHardwareBlend(4, 1, 4, FADE_ALL);
+        SetMode(B_FLASH);
+        return;
+    }
+    if (held & DPAD_LEFT)
+        dy = -EN3D_BADGER_TURN;
+    else if (held & DPAD_RIGHT)
+        dy = EN3D_BADGER_TURN;
+    if (held & DPAD_UP)
+        dp = -EN3D_BADGER_TURN;
+    else if (held & DPAD_DOWN)
+        dp = EN3D_BADGER_TURN;
+    if (held & L_BUTTON)
+        dr = EN3D_BADGER_ROLL;
+    else if (held & R_BUTTON)
+        dr = -EN3D_BADGER_ROLL;
+    if (!dy && !dp && !dr)
+        return;
+    for (; n > 0; n--)
+    {
+        if (dy)
+        {
+            BadgerTurn(1, dy);
+            v->badgerDrumH = Wrap(v->badgerDrumH + dy, 11);
+        }
+        if (dp)
+        {
+            BadgerTurn(0, dp);
+            v->badgerDrumV = Wrap(v->badgerDrumV + dp, 11);
+        }
+        if (dr)
+        {
+            BadgerTurn(2, dr);
+            v->badgerRoll = Wrap(v->badgerRoll + dr, 360);
+        }
+        BadgerSquare();
+    }
+    v->dirty = TRUE;
+}
+
+// everything back, the screen white; the Take that! (the GBA's own,
+// translate.py) and the DS's next section
+static void BadgerGone(struct Main * main)
+{
+    struct En3d * v = &gEn3d;
+    GiveBackScreen();
+    v->render = R_IDLE;
+    v->uploadReady = FALSE;
+    v->badger = FALSE;
+    SetMode(V_OFF);
+    RESTORE_PROCESS_PTR(main);
+    gIORegisters.lcd_bldcnt = FADE_ALL | BLDCNT_EFFECT_LIGHTEN;
+    gIORegisters.lcd_bldy = 16;
+    ChangeScriptSection(v->badgerRight ? EN3D_BADGER_SECTION_RIGHT : EN3D_BADGER_SECTION_WRONG);
 }
 
 // ---------------------------------------------------------------- the keypad
@@ -2219,7 +2646,8 @@ static void KeypadProcess(struct Main * main)
 // ---------------------------------------------------------------- the script
 // Script command 69: 69 0 n the record opened for scene n, 69 2<<8 | n
 // close-up n shown in the viewer, 69 3<<8 taken away, 69 4<<8 | n the jar
-// puzzle (n 0 Day 2's, 1 Day 3's), 69 5<<8 the safe's keypad
+// puzzle (n 0 Day 2's, 1 Day 3's), 69 5<<8 the safe's keypad, 69 6<<8 the
+// Blue Badger's angle
 bool32 Command69(struct ScriptContext * scriptCtx)
 {
     struct En3d * v = &gEn3d;
@@ -2252,6 +2680,9 @@ bool32 Command69(struct ScriptContext * scriptCtx)
         break;
     case 5:
         KeypadStart();
+        break;
+    case 6:
+        BadgerStart();
         break;
     }
     return 0;

@@ -554,3 +554,48 @@ static const struct En3dPiece sEn3dJarPieces[] = {
     { 0, 0, 1, 1, 52, 1 }, // HLINE
     { 0, 0, 2, 1, 56, 1 }, // VLINE
 };
+#define EN3D_BADGER_GFX_TILES 0xABABC  // 8bpp, after the frame buffer's
+#define EN3D_BADGER_GFX_MAP 0xAE2BC  // 30 x 20
+#define EN3D_BADGER_GFX_MASKS 0xAE76C  // the ring's tiles: 0 the picture's
+#define EN3D_BADGER_GFX_MASK_AT 0xAF16C  // their frame buffer tiles
+#define EN3D_BADGER_GFX_GRID 0xAF1BC  // 4 tiles, 4 bits
+#define EN3D_BADGER_GFX_GRID_MAP 0xAF23C  // 30 x 20: tile + 1, 0 none
+#define EN3D_BADGER_GFX_RING 0xAF494  // the ring's ticks: four 64 x 64 quarters
+#define EN3D_BADGER_GFX_TICKS 0xB1494  // the bottom drum's, the right one's
+#define EN3D_BADGER_TURN_SIN 552   // (1.14: the DS's 1.12 entry)
+#define EN3D_BADGER_TURN_COS 16376
+#define EN3D_BADGER_ROLL_SIN 276
+#define EN3D_BADGER_ROLL_COS 16380
+#define EN3D_BADGER_RECORD 16     // (the DS's object record 17)
+#define EN3D_BADGER_TILES 160
+#define EN3D_BADGER_COLOURS 20
+#define EN3D_BADGER_MASKS 40
+#define EN3D_BADGER_VIEW_X 7    // the picture on the screen (tiles)
+#define EN3D_BADGER_VIEW_Y 1
+#define EN3D_BADGER_F 2050          // the focal length, 1/16 pixel
+#define EN3D_BADGER_Z (-2 << 12)   // the jar behind its place (1.19.12)
+#define EN3D_BADGER_RING_X 120     // the circle's middle on the screen
+#define EN3D_BADGER_RING_Y 72
+#define EN3D_BADGER_TURN 2
+#define EN3D_BADGER_ROLL 1
+#define EN3D_BADGER_A0 300
+#define EN3D_BADGER_A1 320
+#define EN3D_BADGER_B0 350
+#define EN3D_BADGER_B1 359
+#define EN3D_BADGER_B2 10
+#define EN3D_BADGER_C0 175
+#define EN3D_BADGER_C1 185
+#define EN3D_BADGER_DRUM_H_R 79
+#define EN3D_BADGER_DRUM_H_X 116
+#define EN3D_BADGER_DRUM_H_Y -4
+#define EN3D_BADGER_DRUM_V_R 47
+#define EN3D_BADGER_DRUM_V_Y 68
+#define EN3D_BADGER_DRUM_V_X -16
+static const u8 sEn3dBadgerBowH[80] = { 147, 148, 149, 149, 149, 150, 150, 150, 151, 151, 151, 151, 152, 152, 152, 152, 152, 152, 153, 153, 153, 153, 153, 154, 154, 154, 154, 154, 154, 155, 155, 155, 155, 155, 155, 155, 155, 155, 156, 156, 156, 156, 156, 156, 156, 156, 156, 156, 156, 156, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157, 157 };
+static const u8 sEn3dBadgerBowV[48] = { 232, 235, 236, 237, 237, 238, 238, 238, 239, 239, 240, 240, 240, 240, 240, 241, 241, 241, 241, 241, 242, 242, 242, 242, 242, 243, 243, 243, 243, 243, 243, 243, 243, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244 };
+static const u16 sEn3dBadgerTicksH[16] = { 270, 281, 292, 303, 314, 325, 336, 347, 358, 9, 20, 31, 42, 53, 64, 75 };
+static const u16 sEn3dBadgerTicksV[12] = { 270, 285, 300, 315, 330, 345, 0, 15, 30, 45, 60, 75 };
+static const u16 sEn3dBadgerPalette[20] = { 0x2DD0, 0x256C, 0x008B, 0x00CF, 0x739C, 0x7FFF, 0x4A52, 0x6318, 0x192C, 0x194D, 0x31F1, 0x0842, 0x6B5A, 0x5295, 0x2108, 0x2DF4, 0x00AE, 0x294A, 0x008C, 0x00AD };
+static const u16 sEn3dBadgerGridPal[4] = { 0, 0x3DEF, 0x4E73, 0x56B5 };
+static const u16 sEn3dBadgerRingPal[16] = { 0x03E0, 0x4631, 0x4A52, 0x4A52, 0x4A52, 0x5294, 0x5294, 0x56B5, 0x5AD6, 0x5AD6, 0x6739, 0x6B5A, 0x739C, 0x7BDE, 0x7BDE, 0x7FFF };
+static const u16 sEn3dBadgerTickPal[16] = { 0, 0x7BDE, 0x4631, 0x7FFF, 0x4A52 };

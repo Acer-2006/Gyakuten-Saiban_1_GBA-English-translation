@@ -443,6 +443,14 @@ static void Close(void)
 
 static void Restore(void);
 
+// the movie away at once (a screen of its own taking its place: the Blue
+// Badger's angle, en_evidence3d.c)
+void EnMovieClose(void)
+{
+    if (gEnMovie.open)
+        Close();
+}
+
 // once a frame (the DS's 0x0206b0dc)
 void EnMovieFrame(void)
 {
