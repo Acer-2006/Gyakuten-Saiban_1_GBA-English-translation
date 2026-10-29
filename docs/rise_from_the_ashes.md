@@ -145,6 +145,7 @@ is an arrangement rather than a copy.
 | fingerprinting | Day 2–3 investigation (the locker, the wiped stain, the cloth) | pick a finger, dust by touch, blow into the mic, compare the prints | cursor + button dusting, a button to blow (done: section 12) |
 | 3D evidence | the Court Record's Check on the badge, the pieces with the bloodstain, the sketch and others; lines in the shared file | rotate a model, hotspots trigger the shared sections, `7B` close-ups | the models drawn in real time, the hotspots tested as the DS tests them (done: section 13) |
 | jar puzzle | Day 2 investigation (the pieces of the Unstable Jar), Day 3 (the Chief's piece) | the jar in 3D on the top screen, the pieces turned and sent from a circle on the touch screen | the jar drawn by the 3D renderer beside a circle of the pieces (done: section 14) |
+| safe's keypad | Day 3 investigation (Gant's safe) | the device's display on the top screen, its keys on the touch screen; seven digits checked one by one | the device on one screen, a cursor over the keys (done: section 15) |
 | bottom-screen panels | tutorial, prompts (`74`) | second screen | text boxes and prompts on the one screen |
 | second fade system | 268 fades | software palette fades | hardware blends |
 
@@ -210,8 +211,8 @@ reworded for buttons — the only deliberate departure from the DS text.
    sets converted.
 4. **Mechanics** — the frame player and the tape (done: section 10),
    luminol, fingerprints, 3D views, close-ups (done: sections 11 to 13),
-   the jar puzzle (done: section 14), the locker's keypad, the jar's angle,
-   the dots, the staff roll, prompts. The partner portrait and the
+   the jar puzzle (done: section 14), the safe's keypad (done: section 15),
+   the jar's angle, the dots, the staff roll, prompts. The partner portrait and the
    grey flashbacks (`5F`): done (section 9).
 5. **Sound** — seven tracks and the effects. Done (section 9).
 6. **Playthrough and release** — the sweep and audit tools extended to
@@ -259,7 +260,6 @@ the section the DS starts on success (`translate.py`, `BYPASS`):
 | where | DS system | goes on in |
 |---|---|---|
 | Day 2 investigation | the luminol's tutorial in the parking lot | the player's turn with the spray, the stain's question |
-| Day 3 investigation | the locker number | Gant's number |
 | Final day | the jar turned to the Badger's angle, joining the dots | the Badger, "Ema" |
 | The end | the staff roll | "The End", the title screen |
 
@@ -268,7 +268,7 @@ were bypassed the same way until their systems came (sections 10 and 11),
 the wallet and the phone on Day 1, the knife in the Day 2 trial and the
 picture in the book on the final day until the 3D viewer came (section 13),
 the jar's pieces on Day 2 and its last piece on Day 3 until the jar puzzle
-came (section 14).)
+came (section 14), Gant's safe until its keypad came (section 15).)
 
 The questions answered with a person's profile ("What is this person's
 name?", the DS's `74 A n`) stay questions: they become the GBA's present
@@ -456,10 +456,14 @@ Checked against the DS on the red-scarf scene.
 **The sounds.** The script plays 25 sounds the first four episodes lack
 (SE073, SE0B6–SE0BE, SE0C2 and the opening's SE0D4–SE0E2) and the people's
 animation frames six (SE0C3–SE0C8). `sfx.py` converts them as `port_sfx.py`
-converts the DS's other sounds, to songs 120–150, on the player and with the
-priority the DS gives them; the opening's stereo pairs on players 2 and 3
-get those players a second track. Their volumes come from recordings of
-each in both games (`sfx_levels.json`).
+converts the DS's other sounds, to songs 120–159 (with the systems' own:
+the fingerprints' SE0C0, the jar's SE0CC and SE0CD, the keypad's
+SE0CE–SE0D3), on the player and with the priority the DS gives them; the
+opening's stereo pairs on players 2 and 3 get those players a second
+track. Their volumes come from recordings of each in both games
+(`sfx_levels.json`); the jar's and the keypad's want more than a track's
+full volume (their samples are at full scale already) and play at it, a
+few dB under the DS's balance with the music.
 
 ## 10. Stage 4: the movies and the tape
 
@@ -725,6 +729,50 @@ DS's 30 frames for the first pieces and up to 75 for the last, in six
 pictures. The fades take the backdrop too (the grid's grey under the
 picture: the viewer's fades left it lit until now).
 
+## 15. Stage 4: the safe's keypad
+
+On Day 3 Phoenix opens Chief Gant's safe with the number of the last ID
+card on the evidence room's record (the DS's `74 8 34`, after the zoom onto
+the safe: backgrounds DF, E0, E1, C8). The DS shows the device's display on
+the top screen and its keys on the touch screen; `keypad.py` has what was
+read off the DS (its code at 0x020791dc-0x0207b200, the display's at
+0x0206c4f8): the display a 256 × 192 bitmap; its pictures (the digits, the
+cursor, the six of a segment that runs round a digit, the bars over and
+under it, the US build's messages "Input code.", "Code confirmed. Access
+granted." and "Code input error.", the light); the keys the US build's
+textures in three palettes (dark, lit, pressed); the code (0x020c91e8:
+seven 7s). What it does, in frames: "Input code." blinks (20 on, 20 off)
+for 60, the keys light one by one 4 frames apart (SE0CE); the cursor under
+the next digit blinks on the display's 60-frame clock (shown under 40); a
+key is orange while it is touched (SE0CF; Back Space SE0D0); at the
+seventh the keys go dark and 60 frames on the check runs: a digit every 21
+frames (SE0D1), the segment running round it between its bars, the light
+green from the clock's 0 to 50, then the seven blinking for six steps
+more; then the message (and the light red for the right code), SE0D3 (or
+SE0D2) 30 frames in, and at 120 the right code shows the safe (E1) at once
+with its handle turning a quarter about the dial (64 frames) and the
+safe's own light red, 60 frames more and the fade to Gant's office (74) and
+section 11E; the wrong code fades to the office and section 11D.
+
+On the GBA (`en_keypad.c`, script command `69 5<<8`) the keypad runs on the
+3D viewer's machinery (the screen and the script saved and put back, the
+Court Record's state 8). The device is one screen: the DS's top screen from
+(8, 58), the display at the DS's size, over the keys in two rows (1-6; 7, 8,
+9, 0 and Back Space) at the DS's size in a sunken black frame; the display's
+tiles are drawn into in RAM (the pictures over its own) and copied in the
+vertical blank as they change, the keys, the light and a cursor are
+sprites. The + pad moves the cursor over the keys (round at the ends), A
+presses the key under it, B is Back Space; a key stays orange while its
+button is held. Every frame count above is the DS's. The safe is the
+room's screen given back on background E1 (the handle a 16 × 32 affine
+sprite, its turn the DS's matrices; the safe's light, which the DS draws
+over the safe's display, read off its screen), a frame black between the
+display and the safe where the DS's top screen changes at once; then the
+fade, the office and the section, as the jar's. Background C8, the safe's
+keypad as the script shows it before, had the Japanese "もどる" key (the
+US build draws its Back Space key over it): it now has the key's texture,
+in the picture's greys (`backgrounds.py`).
+
 ## Tools (`tools/en/rfta/`)
 
 All read your own DS dump: `DS_DATA` (data.bin, as `dsdata.py`), `MES_ALL`
@@ -797,3 +845,9 @@ Stages 4 and 5:
   viewer's): the steps, the guides' pixels, the flight, the fragments'
   sprites and colours, the crosshair, the jar's screen and sprites, into
   the same files; `backgrounds.py` takes the jar's two pictures from it.
+- `keypad.py [--preview FILE]` — `graphics/en/rfta/keypad.bin` (the
+  device's screen as 8bpp tiles, the display's first, and its map; the
+  display's pictures, bars and messages in the screen's colours; the keys,
+  the lights, the cursor, the handle, the safe's light), `data/rfta/keypad.s`,
+  `src/data/en_rfta_keypad.h` (the places, the code, the sounds, the
+  colours); `backgrounds.py` takes the Back Space key from it for C8.

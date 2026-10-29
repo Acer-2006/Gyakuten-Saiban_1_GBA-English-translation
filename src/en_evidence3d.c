@@ -134,6 +134,7 @@ struct En3d
     s16 jarSprX, jarSprY, jarSprX0, jarSprY0, jarSprX1, jarSprY1;   // the fragment's sprite's middle (pixels)
     u8 jarSub, jarCached, jarKeep, jarSaveAt;   // an animation's step (paced by the pictures); the jar kept for the flight: saved, still in the picture beyond its box, saved after this item
     u8 jarFlyDrawn, jarSaveRow, cacheBox[4];    // (the flight's frame drawn; the save's next row; the kept box)
+    u8 keypad, keypadSpare[3];              // the safe's keypad up (en_keypad.c: the viewer's screen and script kept, its own frames)
 };
 // in the old script heap's free space (+0x9000-0xF000: after the menu's,
 // before the movie's), the picture and its depth in the background's buffer
@@ -165,6 +166,7 @@ typedef char sEn3dFits[sizeof(struct En3d) <= 0x800 ? 1 : -1];   // (before the 
 static const u32 * R31(void) { return (const u32 *)D(EN3D_R31); }
 
 void UpdateItemPlate(struct Main *);
+static void KeypadProcess(struct Main * main);
 
 // ---------------------------------------------------------------- state
 bool32 En3dActive(void)
@@ -176,6 +178,7 @@ void En3dReset(void)
 {
     gEn3d.mode = V_OFF;
     gEn3d.jar = 0;
+    gEn3d.keypad = 0;
     gEn3d.scene = 0;
     gEn3d.sceneEnding = FALSE;
     gEn3d.afterSection = 0;
@@ -218,7 +221,7 @@ bool32 En3dHoldsRecord(void)
 // the portrait plate shown over the viewer (as the DS's face box)
 bool32 En3dShowsPlate(void)
 {
-    return gEn3d.mode >= V_FIRST && gEn3d.mode <= V_SCRIPT && !gEn3d.jar;
+    return gEn3d.mode >= V_FIRST && gEn3d.mode <= V_SCRIPT && !gEn3d.jar && !gEn3d.keypad;
 }
 
 // ---------------------------------------------------------------- maths
@@ -302,6 +305,11 @@ static s32 Sin16(s32 a)
 static s32 Cos16(s32 a)
 {
     return Sin16(a + 90 * 16);
+}
+
+s32 EnSin16(s32 a)
+{
+    return Sin16(a);
 }
 
 static void SetXf(struct En3dXf * xf, const s32 * m, const s32 * t)
@@ -892,6 +900,12 @@ static void JarVBlank(void)
 void En3dVBlank(void)
 {
     struct En3d * v = &gEn3d;
+    if (v->keypad)
+    {
+        if (v->mode == V_VIEW)
+            EnKeypadVBlank();
+        return;
+    }
     if (v->mode < V_FIRST || v->mode == V_LEAVE || v->mode == V_SHOW_RECORD)
         return;
     if (v->jar)
@@ -1195,14 +1209,26 @@ static void TakeScreen(void)
 }
 
 // everything as it was (the background decompressed again: the picture had
-// its buffer)
-static void GiveBackScreen(void)
+// its buffer), or on another background (the keypad's: the safe, the office)
+static void ChangeBg(u32 bg)
+{
+    struct Main * main = &gMain;
+    main->previousBG = main->currentBG;
+    main->currentBG = bg;
+    DecompressBackgroundIntoBuffer(bg);
+    CopyBGDataToVram(bg);
+}
+
+static void GiveBackScreenOn(u32 bg)
 {
     struct Main * main = &gMain;
     struct En3d * v = &gEn3d;
     u32 i;
-    DecompressBackgroundIntoBuffer(main->currentBG);
-    CopyBGDataToVramAndScrollBG(main->currentBG);
+    if (bg == main->currentBG)
+    {
+        DecompressBackgroundIntoBuffer(main->currentBG);
+        CopyBGDataToVramAndScrollBG(main->currentBG);
+    }
     DmaCopy16(3, sMapBackup, gBG3MapBuffer, 0x800);
     DmaCopy16(3, gBG3MapBuffer, BG_SCREEN_ADDR(31), 0x800);
     DmaCopy16(3, sBgPalBackup, BG_PLTT, 0x200);
@@ -1237,6 +1263,13 @@ static void GiveBackScreen(void)
     for (i = OAM_FIRST; i <= OAM_LAST; i++)
         if (gOamObjects[i].attr2 >= TILE_BASE && gOamObjects[i].attr2 < TILE_BASE + EN3D_SPRITE_TILES)
             gOamObjects[i].attr0 = SPRITE_ATTR0_CLEAR;
+    if (bg != main->currentBG)
+        ChangeBg(bg);       // (the room's registers back: the background's own after them)
+}
+
+static void GiveBackScreen(void)
+{
+    GiveBackScreenOn(gMain.currentBG);
 }
 
 // ---------------------------------------------------------------- the record
@@ -1917,6 +1950,11 @@ void En3dProcess(struct Main * main, struct CourtRecord * courtRecord)
 {
     struct En3d * v = &gEn3d;
     const struct En3dScene * sc = Scene();
+    if (v->keypad)
+    {
+        KeypadProcess(main);
+        return;
+    }
     switch (v->mode)
     {
     case V_FADE_OUT:
@@ -2100,10 +2138,88 @@ void En3dRecordPrompt(struct CourtRecord * courtRecord, bool32 show)
     oam[2].attr2 = SPRITE_ATTR2(0x1D0, 0, 4);
 }
 
+// ---------------------------------------------------------------- the keypad
+// The DS's 74 8 34 (script command 69 5<<8): the safe's keypad, its frames
+// en_keypad.c's; here its screen taken and given back (the viewer's way)
+static void KeypadStart(void)
+{
+    struct En3d * v = &gEn3d;
+    v->keypad = TRUE;
+    v->jar = 0;
+    v->scene = 0;
+    v->render = R_IDLE;
+    v->uploadReady = FALSE;
+    v->closeup = v->closeupShown = 0;
+    v->coloursRec = 0xFF;
+    v->dirty = FALSE;
+    BACKUP_PROCESS();
+    SET_PROCESS(COURT_RECORD_PROCESS, RECORD_3D, 0, 0);
+    StartHardwareBlend(2, 1, 1, FADE_ALL);
+    SetMode(V_FADE_OUT);
+}
+
+// the room's screen given back on background bg, no one in it (the DS's
+// sections after the keypad bring the person in themselves)
+void En3dGiveBack(u32 bg)
+{
+    struct En3d * v = &gEn3d;
+    GiveBackScreenOn(bg);
+    v->render = R_IDLE;
+    v->uploadReady = FALSE;
+    DestroyAnimation(&gAnimation[1]);
+    gInvestigation.personActive = 0;
+    SetInactiveActionButtons(&gInvestigation, 15);
+}
+
+// the record's sprites' tiles and the colours back (after the safe's handle)
+void En3dGiveBackObj(void)
+{
+    DmaCopy16(3, sObjPalBackup, OBJ_PLTT, 0x200);
+    DmaCopy32(3, sObjBackup, OBJ_VRAM0 + TILE_BASE * 32, OBJ_BACKUP_TILES * 32);
+}
+
+void En3dChangeBg(u32 bg)
+{
+    ChangeBg(bg);
+}
+
+static void KeypadProcess(struct Main * main)
+{
+    struct En3d * v = &gEn3d;
+    u32 r;
+    switch (v->mode)
+    {
+    case V_FADE_OUT:
+        if (main->blendMode != 0)
+            return;
+        SaveScreen();
+        EnKeypadScreen();
+        EnKeypadSprites();
+        // (the DS's keypad fades in as the LCD's prompt blinks)
+        StartHardwareBlend(1, 2, 1, FADE_ALL);
+        SetMode(V_VIEW);
+        return;
+    case V_VIEW:
+        r = EnKeypadFrame();
+        if (r == KEYPAD_ON)
+            EnKeypadSprites();
+        else if (r >= KEYPAD_SECTION)
+        {
+            // on in the section the DS's would start, faded in
+            v->keypad = FALSE;
+            SetMode(V_OFF);
+            RESTORE_PROCESS_PTR(main);
+            ChangeScriptSection(r);
+            StartHardwareBlend(1, 1, 1, FADE_ALL);
+        }
+        return;
+    }
+}
+
 // ---------------------------------------------------------------- the script
 // Script command 69: 69 0 n the record opened for scene n, 69 2<<8 | n
 // close-up n shown in the viewer, 69 3<<8 taken away, 69 4<<8 | n the jar
-// puzzle (n 0 Day 2's, 1 Day 3's)
+// puzzle (n 0 Day 2's, 1 Day 3's), 69 5<<8 the safe's keypad
 bool32 Command69(struct ScriptContext * scriptCtx)
 {
     struct En3d * v = &gEn3d;
@@ -2133,6 +2249,9 @@ bool32 Command69(struct ScriptContext * scriptCtx)
         break;
     case 4:
         JarStart(arg & 0xFF);
+        break;
+    case 5:
+        KeypadStart();
         break;
     }
     return 0;

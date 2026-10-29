@@ -19,7 +19,7 @@ the Ashes has no GBA script, so every command is translated here:
     new looks do); the DS poses of the others are mapped the way episodes 1-4
     map them (anim_looks.json);
   * the seven new songs are the GBA songs 113-119 (NEW_SONGS; converted by
-    music.py), its 25 new sound effects songs 120-144 (NEW_SES, sfx.py).
+    music.py), its new sound effects songs 120-159 (NEW_SES, sfx.py).
 
 Section numbers are the DS's, so choices, jumps and testimony records keep
 their targets; the jump descriptors in the section table are rewritten to
@@ -78,7 +78,7 @@ def gba_text(s):
             out.append(inv[ch])
     return out
 # Where the DS hands over to a system of its own that the GBA does not have
-# yet (the locker's keypad, the jar's angle, the dots to join) and that
+# yet (the jar's angle, the dots to join, the staff roll) and that
 # system then starts the section that follows, the
 # GBA goes on in that section straight away: (DS file, section) -> the
 # sections to go on in, in order. Each is entered where the source section
@@ -88,8 +88,6 @@ BYPASS = {
     # Day 2: the luminol in the parking lot (its luminol screen: src/en_luminol.c): the
     # tutorial after Ema's lines, the stain's question after its lines
     (22, 0x92): 0x93, (22, 0x95): 0x96,
-    # Day 3: the locker's number (11D: the wrong one)
-    (30, 0x11C): 0x11E,
     # Final day: the jar turned to the Badger's angle (BC: not yet), the dots
     # joined into the name (C6: wrong, C8: the game over)
     (31, 0xBB): 0xBD, (31, 0xC5): 0xC7,
@@ -135,6 +133,9 @@ EVIDENCE3D_SCENES = {(18, 0xBF): 0, (18, 0xF9): 1, (21, 0x81): 2, (33, 0xAC): 3}
 # 3's last piece in Gant's office) -> 69 4<<8 | n; it goes on in the section
 # the DS's would (jarpuzzle.EXITS)
 JAR_PUZZLE = {24: 0, 30: 1}
+# the safe's keypad (the DS's 74 8 34 in Gant's office on Day 3) -> 69 5<<8;
+# it goes on in 11E (the right code) or 11D (src/en_keypad.c)
+KEYPAD = (30, 0x11C)
 # Sections whose lines come with the text box away and no 1C 0 before them:
 # the DS shows its box as the text comes, the GBA's needs the 1C 0 (Day 3's
 # try-again after the jar puzzle: the puzzle left the box away)
@@ -363,6 +364,9 @@ class Translator:
             elif op == 0x74 and a[0] == 8 and a[1] == 0x32 and self.cur[0] in JAR_PUZZLE:
                 out += [EVIDENCE3D, (4 << 8) | JAR_PUZZLE[self.cur[0]]]
                 self.stats['the jar puzzle'] += 1
+            elif op == 0x74 and a[0] == 8 and a[1] == 0x34 and self.cur[:2] == KEYPAD:
+                out += [EVIDENCE3D, 5 << 8]
+                self.stats['the keypad'] += 1
             elif op == 0x7B:
                 out += [EVIDENCE3D, (2 << 8) | a[1] if a[0] == 0 else 3 << 8]
                 self.stats['evidence in 3D: a close-up'] += 1

@@ -15,7 +15,9 @@ the one-track players 2 and 3: those players get two tracks in the RFTA build.
 Volumes: tools/en/rfta/sfx_levels.json holds each sound's level in the DS game
 and in this build at track volume port_sfx.REF_VOL (made like
 tools/en/sfx_levels.json, by sfx_measure.py's method); without it the sounds
-play at REF_VOL.
+play at REF_VOL. (The jar's and the keypad's sounds want more than track
+volume 127 gives: their samples are at full scale already, so they stay at
+127, a few dB under the DS's balance with the music.)
 
 usage: sfx.py DS_sound_data.sdat
 writes data/rfta/sfx.s and sound/direct_sound_samples/rfta_sfx/*.bin
@@ -34,9 +36,10 @@ import port_sfx                                   # noqa: E402
 # the DS's sequence numbers, in order: GBA songs FIRST_SONG and up
 # (then SE0C3-SE0C8: Gant's and others' animation frames; SE0C0: the
 # fingerprints' "Match found.", fingerprint.py; SE0CC, SE0CD: the jar's
-# piece fitting and turning, jarpuzzle.py)
+# piece fitting and turning, jarpuzzle.py; SE0CE-SE0D3: the safe's keypad,
+# keypad.py)
 SES = [0x9D] + list(range(0x196, 0x19F)) + [0x1A2] + [0x1B4, 0x1B5, 0x1B6] + list(range(0x1B8, 0x1C3)) + \
-      list(range(0x1A3, 0x1A9)) + [0x1A0, 0x1AC, 0x1AD]
+      list(range(0x1A3, 0x1A9)) + [0x1A0, 0x1AC, 0x1AD] + list(range(0x1AE, 0x1B4))
 FRAME_SE = 0xE0                                   # an animation frame's sound n is SE0nn: the sequence n + 0xE0
 FIRST_SONG = 120                                  # after the seven songs (113-119, music.py)
 NEW_SES = {d: FIRST_SONG + i for i, d in enumerate(SES)}

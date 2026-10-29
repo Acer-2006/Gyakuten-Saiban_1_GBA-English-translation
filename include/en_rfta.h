@@ -81,6 +81,18 @@ void En3dVBlank(void);
 bool32 En3dActive(void);
 void En3dReset(void);
 bool32 Command69(struct ScriptContext * scriptCtx);
+void En3dGiveBack(u32 bg);
+void En3dGiveBackObj(void);
+void En3dChangeBg(u32 bg);
+s32 EnSin16(s32 a);
+// the safe's keypad (en_keypad.c), on the viewer's machinery: its screen,
+// its frames (KEYPAD_ON: its screen up; KEYPAD_ROOM: the room's given back;
+// else the section to go on in)
+enum { KEYPAD_ON, KEYPAD_ROOM, KEYPAD_SECTION = 0x80 };
+void EnKeypadScreen(void);
+void EnKeypadVBlank(void);
+void EnKeypadSprites(void);
+u32 EnKeypadFrame(void);
 
 // the movies (en_movie.c): the DS's command 75 and its frame sequences
 void EnMovieFrame(void);

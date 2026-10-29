@@ -25,6 +25,11 @@ picture as the puzzle leaves it (jarpuzzle.py) are backgrounds too; those no
 script shows go in data/rfta/backgrounds_low.s (section rfta_low, below the
 16 MB line).
 
+The safe's keypad as the script shows it before its own screen (C8) has
+the Japanese "もどる" key (the DS's US build draws its Back Space key over
+it as a sprite): the GBA's has that key's texture (keypad.py) painted in,
+in the picture's own greys.
+
 Writes graphics/en/rfta/bg/bg_XX.png, data/rfta/backgrounds.s (labels
 gGfxRftaBgXX, section rfta_data), include/en_rfta_backgrounds.h (their
 declarations) and src/data/en_rfta_background.h (the table entries
@@ -75,6 +80,24 @@ def crop(img, ctrl):
         out = np.concatenate([out, np.repeat(out[:, -1:], 120, 1)], 1)
     return out
 
+# (background, x, y): the keypad's Back Space key (its dark colours) over the picture's
+BACK_SPACE = (0xC8, 104, 104)
+
+
+def back_space(img, pal):
+    import keypad
+    px, pals = keypad.tex2d(keypad.KEYS[10])
+    i, x, y = BACK_SPACE
+    h, w = px.shape
+    area = img[y:y + h, x:x + w]
+    used = sorted(set(area.reshape(-1).tolist()))
+    P = np.array([pal[k] for k in used], int)
+    for v in set(px.reshape(-1).tolist()) - {0}:
+        c = pals[0][v]
+        rgb = np.array([(c & 31) << 3, (c >> 5 & 31) << 3, (c >> 10 & 31) << 3])
+        area[px == v] = used[int(np.argmin(((P - rgb) ** 2).sum(1)))]
+
+
 def ui_palette():
     p = Image.open(os.path.join(ROOT, 'graphics/striped_images/backgrounds/court/judge_seat.png')).getpalette()
     return [tuple(p[3 * i:3 * i + 3]) for i in range(32)]
@@ -105,6 +128,8 @@ def main():
         src = en_entry(en)[0] if en != 0x8000 else off
         img, pal = decode(src, ctrl)
         img = crop(img, ctrl)
+        if i == BACK_SPACE[0]:
+            back_space(img, pal)
         bpp = 4 if ctrl & 0x80000000 else 8
         if ctrl & 2:
             ctrl = (ctrl & ~2) | 1
