@@ -1402,7 +1402,9 @@ def fix_scene_poses(out, seen, front=(), gt=None, gmap=None):
     """A pose the Japanese game never shows on this background goes to its
     version for this background (the same expression drawn at the witness
     stand, behind the glass...). For someone in front of the visitor's room
-    glass (glass_front) the versions drawn behind it don't count.
+    glass (glass_front) the versions drawn behind it don't count; for
+    someone behind it, only those count (the others come down over the
+    counter: Maya's "I don't believe it!" in Turnabout Sisters).
 
     A pose drawn further down the screen than any the Japanese game shows for
     this person here, where all of those end above the bottom (a desk in
@@ -1411,19 +1413,41 @@ def fix_scene_poses(out, seen, front=(), gt=None, gmap=None):
     her Gourd Lake ones, in front of the stand). It goes to the version of
     that expression the Japanese game pairs with the same talking or idle
     animation here; with none, to the pose the Japanese game shows at this
-    point of the section (gt: its tokens, gmap: their places in out)."""
+    point of the section (gt: its tokens, gmap: their places in out).
+
+    Where the section shows a person before setting a background (a talk in
+    the room the player is in), the Japanese section's own poses for them
+    there stand for the place, for the desk check only: Maya's "Well, I'd
+    say a photograph is pretty good proof!" in the visitor's room (Turnabout
+    Goodbyes) came down over the counter."""
     out = list(out)
     vals = {k: set(v for pr in c for v in pr) for k, c in seen.items()}
     allseen = seen
-    for person in front:
+    seen = dict(seen)
+    for person, glass in GLASS.items():
         k = (VISITORS_ROOM, person)
-        if k in vals:
-            vals[k] = vals[k] - GLASS.get(person, set())
-            seen = dict(seen)
-            seen[k] = collections.Counter({pr: n for pr, n in seen[k].items()
-                                           if not set(pr) & GLASS.get(person, set())})
-            if not seen[k]:
-                del seen[k], vals[k]
+        if k not in vals:
+            continue
+        if person in front:
+            keep = collections.Counter({pr: n for pr, n in seen[k].items() if not set(pr) & glass})
+        else:
+            keep = collections.Counter({pr: n for pr, n in seen[k].items() if set(pr) <= glass})
+        if keep:
+            seen[k] = keep
+            vals[k] = set(v for pr in keep for v in pr)
+        else:
+            del seen[k], vals[k]
+    if gt is not None:
+        bgj = None
+        own = collections.defaultdict(collections.Counter)
+        for p, kind, op, a in parse(gt, GBA_ARGS)[0]:
+            if kind == 'cmd' and op == 0x1B and a:
+                bgj = a[0] & 0x7FFF
+            elif kind == 'cmd' and op == 0x1E and a and a[0] & 0xFF and bgj is None:
+                own[(None, a[0] & 0xFF)][(a[1], a[2])] += 1
+        for k, c in own.items():
+            seen[k] = c
+            vals[k] = set(v for pr in c for v in pr)
 
     def desk(k):
         """the lowest row the Japanese game's poses of this person reach here,
@@ -1515,7 +1539,18 @@ def fix_scene_poses(out, seen, front=(), gt=None, gmap=None):
     for pos, kind, op, a in parse(out, GBA_ARGS)[0]:
         if kind == 'text':
             fresh = False
-        shown = (kind == 'text' and not intext) or (kind == 'cmd' and op in (0x02, 0x2D, 0x2E, 0x15))
+        # (a timed wait too: a pose held through it, a plate coming up,
+        # shows; the desk check only, as at the waits for a button)
+        shown = (kind == 'text' and not intext) or (kind == 'cmd' and op in (0x02, 0x2D, 0x2E, 0x15, 0x0C))
+        if shown and bg is None and cur and cur[0] and (None, cur[0]) in vals:
+            # no background set yet: the desk check only (see above)
+            k = (None, cur[0])
+            if over_desk(k, cur[1]) or over_desk(k, cur[2]):
+                t, i = desk_pose(k, cur[1], cur[2], cur[3])
+                if (t, i) != (cur[1], cur[2]):
+                    out[cur[3] + 2], out[cur[3] + 3] = t, i
+                    cur = (cur[0], t, i, cur[3])
+                    fixed += 1
         if shown and bg is not None and cur and cur[0]:
             k = (bg, cur[0])
             t, i = cur[1], cur[2]
