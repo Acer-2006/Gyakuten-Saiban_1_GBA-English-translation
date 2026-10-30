@@ -1892,6 +1892,108 @@ def fix_card_locks(out, gtoks):
     return out, f, 'the lock over the location card moved back before it'
 
 
+# The Japanese script always follows a fade to black (12, mode 2) with a wait
+# by its speed (12 201: 0C 7, 12 202: 0C F, 12 204: 0C 19; 878 fades, no
+# exception). Where the DS's commands and the GBA's were merged, that wait
+# could end up elsewhere (before the fade, or after the next background):
+# the new background or person then showed at once and the fade ran over
+# them (Turnabout Sisters: Phoenix over the floor plans, then the fade to
+# him; the court adjourned cutting to black). The wait goes back in.
+FADE_OUT_WAITS = {1: 0x07, 2: 0x0F, 4: 0x19}
+
+
+def fix_fade_waits(out):
+    out = list(out)
+    f = list(range(len(out) + 1))
+    items = parse(out, GBA_ARGS)[0]
+    n = 0
+    for k in reversed(range(len(items))):
+        pos, kind, op, a = items[k]
+        if kind != 'cmd' or op != 0x12 or not a or a[0] >> 8 != 2 or not a[1] or (a[0] & 0xFF) not in FADE_OUT_WAITS:
+            continue
+        nxt = items[k + 1] if k + 1 < len(items) else None
+        if nxt is not None and nxt[1] == 'cmd' and nxt[2] == 0x0C:
+            continue
+        p = pos + 4
+        out = out[:p] + [0x0C, FADE_OUT_WAITS[a[0] & 0xFF]] + out[p:]
+        f = [q + 2 if q >= p else q for q in f]
+        n += 1
+    return out, f, ('%d waits after fades to black put back' % n) if n else None
+
+
+# Thoughts (blue text, 03 2) are not spoken: the person shown keeps their
+# mouth shut through them. The engine runs the talking animation from the
+# pose (1E) to the next wait for the player and again after each page break
+# (02), whoever's text it is; the Japanese script gives thoughts a silent
+# pose. The DS added thoughts after spoken lines on the same page ("Both
+# witnesses are telling the truth. (For once...)"), and some continue past
+# a page break with someone else shown talking (Gumshoe's mouth in Phoenix's
+# "(Ugh. Not again.)"). There the mouth shuts as the thought starts: the
+# wait before it becomes the DS's pause with the mouth closed (0C 8000|n,
+# its 4E, which it uses for this in its later scripts), or one of a frame
+# goes in. Where the Japanese section has such a thought itself, the
+# section is left as it is (the original game's).
+THOUGHT_COLOUR = 2
+
+
+def thought_mouths(toks):
+    """[('wait', position of a plain wait to close the mouth at) or
+    ('insert', position for a mouth-closed wait)] for each thought typed while
+    the person shown talks (after spoken text on the page, or on a page the
+    talking went on to)"""
+    res = []
+    talking = shown = talks = spoken = page_cont = False
+    colour, last_wait, blue_start = 0, None, None
+    for pos, kind, op, a in parse(toks, GBA_ARGS)[0]:
+        if kind == 'text':
+            if colour == THOUGHT_COLOUR:
+                if talking and (spoken or page_cont):
+                    res.append(('wait', last_wait) if spoken and last_wait is not None else ('insert', blue_start))
+                    talking = False
+            else:
+                spoken, last_wait = True, None
+            continue
+        if op == 0x03 and a:
+            if a[0] == THOUGHT_COLOUR and colour != THOUGHT_COLOUR:
+                blue_start = pos
+            colour = a[0]
+        elif op == 0x1E and a:
+            shown, talks = bool(a[0] & 0xFF), a[1] != a[2]
+            talking = shown and talks
+            page_cont = False       # (a pose set for the page: the script's own)
+        elif op == 0x31 and a and a[0] in (3, 4):
+            shown = a[0] == 3       # (the person faded in or out)
+            talking = talking and shown
+        elif op == 0x0C and a:
+            if a[0] & 0x8000:
+                talking = False
+            elif spoken:
+                last_wait = pos
+        elif op == 0x02:
+            talking = shown and talks
+            spoken, last_wait, page_cont, blue_start = False, None, True, pos + 1
+        elif op in (0x2D, 0x2E, 0x07, 0x0A, 0x08, 0x09, 0x15, 0x0D):
+            talking = spoken = page_cont = False
+            last_wait = None
+    return res
+
+
+def fix_thought_mouths(out, gtoks):
+    out = list(out)
+    f = list(range(len(out) + 1))
+    if thought_mouths(gtoks):
+        return out, f, None
+    n = 0
+    for what, p in reversed(thought_mouths(out)):
+        if what == 'wait':
+            out[p + 1] |= 0x8000
+        else:
+            out = out[:p] + [0x0C, 0x8001] + out[p:]
+            f = [q + 2 if q >= p else q for q in f]
+        n += 1
+    return out, f, ('%d thoughts with the mouth shut' % n) if n else None
+
+
 PAN_WAIT = 0x23   # frames the GBA script waits after a court pan (1A)
 
 
@@ -2173,6 +2275,18 @@ def port(gfile, dfile, outfile, report=None, scenario_idx=None, pairs=None):
             patches = [(f[idx], tgt, dtg) for idx, tgt, dtg in patches]
             if note:
                 st = dict(st, card_lock=note)
+            out, f, note = fix_fade_waits(out)
+            m = {g: f[o] for g, o in m.items()}
+            dm = {p: f[o] for p, o in dm.items()}
+            patches = [(f[idx], tgt, dtg) for idx, tgt, dtg in patches]
+            if note:
+                st = dict(st, fade_waits=note)
+            out, f, note = fix_thought_mouths(out, gt)
+            m = {g: f[o] for g, o in m.items()}
+            dm = {p: f[o] for p, o in dm.items()}
+            patches = [(f[idx], tgt, dtg) for idx, tgt, dtg in patches]
+            if note:
+                st = dict(st, thoughts=note)
             out, note = fix_scene_poses(out, seen_poses(os.path.dirname(gfile)), glass_front(gt, dt), gt, m)
             if note:
                 st = dict(st, poses=note)

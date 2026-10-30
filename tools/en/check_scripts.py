@@ -30,6 +30,18 @@ the Japanese script (the English scripts keep the Japanese sections):
   the Japanese section has none: after "(Maybe I should just listen to the
   testimony again.)" the Japanese wait-and-jump had been kept after the DS's
   box hide and fade.
+- No pose drawn further down the screen than the Japanese section draws that
+  person there (pose_bottoms.json), where all of those end above the bottom
+  (a desk, the witness stand, the visitor's room counter): Maya's sad
+  talking pose came down over the counter in Turnabout Sisters (issue 5).
+  A pose the Japanese game shows with those on the same background
+  elsewhere is fine (Phoenix's desk slam at the defense bench).
+- Every fade to black (12, mode 2) followed by its wait, as all 878 of the
+  Japanese script's are (port_script.fix_fade_waits): without it the next
+  background showed before the fade (Phoenix over the floor plans).
+- No thought (blue text) typed while the person shown is talking where the
+  Japanese section has none (port_script.thought_mouths): Phoenix's mouth
+  moved through "(For once...)".
 
 The Makefile runs this before the scripts are built into the ROM.
 usage: check_scripts.py [JAPANESE_DIR ENGLISH_DIR]"""
@@ -37,6 +49,7 @@ import os, sys, glob, struct, collections
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from phscr import load, section_bounds, tokens, parse, GBA_ARGS
 from pdump import ch
+from port_script import FADE_OUT_WAITS, thought_mouths
 
 FADE_IN, FADE_OUT = 1, 2
 PRESS_ON = (0x02, 0x2D, 0x0D)          # page break, wait for A, end of section
@@ -184,6 +197,79 @@ def hidden_waits(items):
     return res
 
 
+POSE_SHOWN = (0x02, 0x2D, 0x2E, 0x15, 0x0C)   # text starts, waits: the pose is on screen
+DESK_ROW = 150                                 # poses that end above this stop at something in front
+POSE_SLACK = 4
+_BOTTOMS = None
+
+
+def bottoms():
+    """(person, animation) -> the lowest row it draws (pose_bottoms.json)"""
+    global _BOTTOMS
+    if _BOTTOMS is None:
+        import json
+        d = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pose_bottoms.json')))['bottoms']
+        _BOTTOMS = {(int(p, 16), int(a, 16)): v[1] for p, x in d.items() for a, v in x.items()}
+    return _BOTTOMS
+
+
+def pose_events(items):
+    """(background or None, person, talking, idle) each time a pose is shown"""
+    bg = cur = None
+    intext = False
+    for pos, kind, op, a in items:
+        shown = (kind == 'text' and not intext) or (kind == 'cmd' and op in POSE_SHOWN)
+        if shown and cur and cur[0]:
+            yield bg, cur[0], cur[1], cur[2]
+        if kind == 'text':
+            intext = True
+            continue
+        if op not in TEXT_KEEPS:
+            intext = False
+        if op == 0x1B and a:
+            bg = a[0] & 0x7FFF
+        elif op == 0x1E and a:
+            cur = (a[0] & 0xFF, a[1], a[2])
+
+
+def section_poses(items):
+    """(background, person) -> the poses the section shows"""
+    res = collections.defaultdict(set)
+    for bg, p, t, i in pose_events(items):
+        res[(bg, p)].update((t, i))
+    return res
+
+
+def low_poses(ei, gi, together):
+    """poses drawn lower than any the Japanese section shows the person in
+    there, where those all end above the bottom of the screen (together:
+    (background, person, pose) -> the poses the Japanese game shows with it)"""
+    b, ref, res = bottoms(), section_poses(gi), []
+    for bg, p, t, i in pose_events(ei):
+        r = ref.get((bg, p))
+        rb = [b[(p, x)] for x in r or () if (p, x) in b]
+        if not rb or max(rb) >= DESK_ROW:
+            continue
+        for g in (t, i):
+            if g in r or (p, g) not in b or b[(p, g)] <= max(rb) + POSE_SLACK:
+                continue
+            if bg is not None and together.get((bg, p, g), set()) & r:
+                continue
+            res.append('person %X pose %X drawn to row %d, the Japanese here to %d' % (p, g, b[(p, g)], max(rb)))
+    return sorted(set(res))
+
+
+def fades_without_wait(items):
+    """fades to black (12, mode 2) not followed by their wait"""
+    res = 0
+    for k, (pos, kind, op, a) in enumerate(items):
+        if kind == 'cmd' and op == 0x12 and a and a[0] >> 8 == FADE_OUT and a[1] and (a[0] & 0xFF) in FADE_OUT_WAITS:
+            nxt = items[k + 1] if k + 1 < len(items) else None
+            if nxt is None or nxt[1] != 'cmd' or nxt[2] != 0x0C:
+                res += 1
+    return res
+
+
 def bad_jumps(b, n, offs, sec_items, here):
     """jumps of section `here` that land nowhere"""
     res = []
@@ -212,7 +298,7 @@ def bad_jumps(b, n, offs, sec_items, here):
     return res
 
 
-def check_file(jp_path, en_path):
+def check_file(jp_path, en_path, together):
     gb, gn, go = load(jp_path)
     G = section_bounds(gb, go)
     eb, en, eo = load(en_path)
@@ -223,10 +309,11 @@ def check_file(jp_path, en_path):
     real = sorted(set(eo[i] for i in range(gn) if G[i] and i not in skip and eo[i] < len(eb))) + [len(eb)]
     std = name.startswith('std')
     errors = []
-    en_items = {}
+    en_items, en_toks = {}, {}
     for i in range(gn):
         if G[i] and i not in skip and eo[i] < len(eb):
-            en_items[i] = parse(tokens(eb, eo[i], real[real.index(eo[i]) + 1]), GBA_ARGS)[0]
+            en_toks[i] = tokens(eb, eo[i], real[real.index(eo[i]) + 1])
+            en_items[i] = parse(en_toks[i], GBA_ARGS)[0]
     for i in range(gn):
         if i not in en_items:
             continue
@@ -258,18 +345,41 @@ def check_file(jp_path, en_path):
         eh, gh = hidden_waits(ei), hidden_waits(gi)
         if len(eh) > len(gh):
             errors.append('%s: wait for A with the text box hidden (the Japanese has %d such): after "%s"' % (where, len(gh), eh[-1]))
+        for e in low_poses(ei, gi, together):
+            errors.append('%s: %s' % (where, e))
+        n = fades_without_wait(ei)
+        if n > fades_without_wait(gi):
+            errors.append('%s: %d fades to black without their wait' % (where, n))
+        if thought_mouths(en_toks[i]) and not thought_mouths(tokens(gb, *G[i])):
+            errors.append('%s: a thought typed while the person shown is talking' % where)
     return errors
+
+
+def poses_together(jp_dir):
+    """(background, person, pose) -> the poses the Japanese game shows with
+    that pose in a section, on that background"""
+    res = collections.defaultdict(set)
+    for path in glob.glob(os.path.join(jp_dir, '*.phscr')):
+        b, n, offs = load(path)
+        for x in section_bounds(b, offs):
+            if x:
+                for (bg, p), poses in section_poses(parse(tokens(b, *x), GBA_ARGS)[0]).items():
+                    if bg is not None:
+                        for g in poses:
+                            res[(bg, p, g)] |= poses
+    return res
 
 
 def main():
     root = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
     jp_dir, en_dir = sys.argv[1:3] if len(sys.argv) > 2 else (os.path.join(root, 'script'), os.path.join(root, 'script_en'))
     errors, n = [], 0
+    together = poses_together(jp_dir)
     for en_path in sorted(glob.glob(os.path.join(en_dir, '*.phscr'))):
         jp_path = os.path.join(jp_dir, os.path.basename(en_path))
         if not os.path.exists(jp_path):
             continue
-        errors += check_file(jp_path, en_path)
+        errors += check_file(jp_path, en_path, together)
         n += 1
     if not n:
         errors.append('no scripts found in %s' % en_dir)
@@ -280,7 +390,8 @@ def main():
         return 1
     print('script check: %d scripts: no line on a black screen, penalties and branches as in the '
           'Japanese game, every jump lands, every line fits (third lines clear of the arrow), no fourth line, '
-          'no wait on a hidden box' % n)
+          'no wait on a hidden box, no pose over a desk, every fade with its wait, no mouth moving through a '
+          'thought' % n)
     return 0
 
 
