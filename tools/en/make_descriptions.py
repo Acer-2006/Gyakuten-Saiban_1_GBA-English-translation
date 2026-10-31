@@ -10,7 +10,7 @@ Court Record from the English DS release.
 
 Writes the PNGs in place under graphics/evidence_profile_descriptions/
 (keeping the Japanese originals as *.png.orig). Run relocate_assets.py after."""
-import os, re, sys, hashlib
+import os, re, sys, hashlib, itertools, functools
 import numpy as np
 from PIL import Image
 sys.path.insert(0, os.path.dirname(__file__))
@@ -35,6 +35,14 @@ NAME_SHIFT = -1                  # name plate ink rows 2..14 -> 1..13
 # DS font's descenders reach the cell's row 14, so a fourth line's start one
 # row higher than the Japanese font allowed)
 LAYOUTS = {3: (16, 16), 4: (13, 12)}
+# On 12-pixel rows a line's descenders and commas can meet the quotes,
+# apostrophes and tall letters of the line below (a comma over an
+# apostrophe reads as one mark). No two lines (nor the name and the first
+# line) may touch side by side; where the plain line breaks would, a line
+# may sit a pixel higher or lower (rows of 12 or 13, the first line from
+# row 11) or the lines break elsewhere (layout()).
+FLEX_TOP = (13, 12, 11)
+HEIGHT = 64
 # The DS sets these texts in its dialogue font, three lines across a
 # 256-pixel panel; the GBA's panel is 149 pixels. Set at the text box's
 # spacing (each letter a pixel after the last), with word spaces of 4, then
@@ -92,6 +100,7 @@ def join(lines):
     s = s.replace('Photo #', 'Photo' + NBSP + '#')
     return re.sub(r'Exhibit ([A-Z])\b', 'Exhibit' + NBSP + r'\1', s)
 
+@functools.lru_cache(None)
 def render_line(s, spacing):
     return dsfont.render(s.replace(NBSP, ' '), *spacing)
 
@@ -109,13 +118,46 @@ def wrap(text, spacing):
     out.append(cur)
     return out
 
-def touching(lines, spacing, y0, pitch):
-    """pixels two lines would share (a descender on the capital below)"""
-    a = np.zeros((y0 + pitch * len(lines) + dsfont.ROWS, AREA_W + 16), int)
-    for k, l in enumerate(lines):
-        ys, xs = np.nonzero(render_line(l, spacing))
-        a[ys + y0 + pitch * k, xs + TEXT_X] += 1
-    return int((a > 1).sum())
+def rows(n):
+    """where the n lines go (their glyph origins): the plain layout first, then
+    the ones with lines a pixel up or down, the fewest moves first"""
+    y0, pitch = LAYOUTS[n]
+    plain = [y0 + pitch * k for k in range(n)]
+    yield plain
+    if n < 4:
+        return
+    flex = []
+    for top in FLEX_TOP:
+        for steps in itertools.product((12, 13), repeat=n - 1):
+            ys = [top + sum(steps[:k]) for k in range(n)]
+            if ys != plain:
+                flex.append((sum(abs(a - b) for a, b in zip(ys, plain)), ys))
+    for _, ys in sorted(flex):
+        yield ys
+
+def _shift(m, dy, dx):
+    p = np.pad(m, 1)
+    return p[1 + dy:1 + dy + m.shape[0], 1 + dx:1 + dx + m.shape[1]]
+
+def touching(lines, spacing, ys, name):
+    """(pixels where a line meets the one above it, side by side or overlapping;
+    pixels where they meet only corner to corner). The name is the line above
+    the first. Text past the bottom counts as touching."""
+    layers = [name]
+    for l, y in zip(lines, ys):
+        m = np.zeros(name.shape, bool)
+        gy, gx = np.nonzero(render_line(l, spacing))
+        if len(gy) and (gy + y).max() >= HEIGHT:
+            return (1000, 0)
+        m[gy + y, gx + TEXT_X] = True
+        layers.append(m)
+    edge = corner = 0
+    for a, b in zip(layers, layers[1:]):
+        e = a | _shift(a, 1, 0) | _shift(a, -1, 0) | _shift(a, 0, 1) | _shift(a, 0, -1)
+        c = _shift(a, 1, 1) | _shift(a, 1, -1) | _shift(a, -1, 1) | _shift(a, -1, -1)
+        edge += int((e & b).sum())
+        corner += int((c & b & ~e).sum())
+    return (edge, corner)
 
 def wraps(words, spacing, n):
     """every way to set the words on at most n lines that fit, the fullest
@@ -131,38 +173,51 @@ def wraps(words, spacing, n):
             for rest in wraps(words[k:], spacing, n - 1):
                 yield [line] + rest
 
-def layout(lines):
-    """-> (lines, spacing, (first line's row, pitch)): the fewest lines, then
-    the widest spacing, with no two lines touching (another line break where
-    the first one's would)"""
+def layout(lines, name):
+    """-> (lines, spacing, the lines' rows): the fewest lines, then the widest
+    spacing. The plain line breaks on the plain rows if nothing touches;
+    else the best of every line break on every row layout (FLEX_TOP) where
+    no two lines meet side by side: the evenest lines, a pixel moved
+    counting as 15 pixels short on a line, a corner meeting a corner (at
+    most one) as 55 (an odd line break shows more than either)"""
     text = join(lines)
     for n in sorted(LAYOUTS):    # the plain line breaks first
         for spacing in SPACINGS:
             out = wrap(text, spacing)
             if len(out) <= n and all(width(l, spacing) <= TEXT_W for l in out) \
-               and not touching(out, spacing, *LAYOUTS[n]):
-                return out, spacing, LAYOUTS[n]
+               and touching(out, spacing, next(rows(n))[:len(out)], name) == (0, 0):
+                return out, spacing, next(rows(n))[:len(out)]
     def ragged(out, spacing):
         return sum((TEXT_W - width(l, spacing)) ** 2 for l in out[:-1])
-    least = None                 # (pixels shared, layout): if every layout touches
-    for n in sorted(LAYOUTS):    # then the evenest other breaks
+    least = None                 # (contact, layout): if every layout touches
+    for n in sorted(LAYOUTS):
+        plain = next(rows(n))
         for spacing in SPACINGS:
             good = []
             for out in wraps(text.split(' '), spacing, n):
-                t = touching(out, spacing, *LAYOUTS[n])
-                if not t:
-                    good.append((ragged(out, spacing), out))
-                elif least is None or t < least[0]:
-                    least = (t, (out, spacing, LAYOUTS[n]))
+                for k, ys in enumerate(rows(n)):
+                    if k > 0 and len(out) != n:
+                        continue
+                    ys = ys[:len(out)]
+                    edge, corner = t = touching(out, spacing, ys, name)
+                    if edge == 0 and corner <= 1:
+                        moved = sum(abs(a - b) for a, b in zip(ys, plain))
+                        good.append((ragged(out, spacing) + 225 * moved + 3025 * corner, out, ys))
+                    if t != (0, 0) and (least is None or t < least[0]):
+                        least = (t, (out, spacing, ys))
             if good:
-                return min(good)[1], spacing, LAYOUTS[n]
-    if least is not None and least[0] <= 2:
-        return least[1]          # (one: a comma's tail on the P below, "[Oct 15," / "2:00 PM, Photo #2]")
+                _, out, ys = min(good)
+                return out, spacing, ys
+    # else the least contact there is, if only a pixel or three: a comma's
+    # tail on the P below ("[Oct 15," / "2:00 PM, Photo #2]"); the fifth
+    # episode's lockers, whose only four lines meet in three
+    if least is not None and sum(least[0]) <= 3:
+        return least[1]
     raise ValueError('does not fit: ' + text)
 
-def draw_text(a, lines, spacing, y0, pitch):
-    for k, l in enumerate(lines):
-        put(a, render_line(l, spacing), TEXT_X, y0 + pitch * k, TEXT)
+def draw_text(a, lines, spacing, ys):
+    for l, y in zip(lines, ys):
+        put(a, render_line(l, spacing), TEXT_X, y, TEXT)
 
 def put(a, mask, x0, y0, color):
     ys, xs = np.nonzero(mask)
@@ -188,8 +243,8 @@ def build(i, name_idx, age):
         x0 = (AREA_W - w) // 2
         put(a, n, x0, NAME_SHIFT, NAME)
         put(a, suffix, x0 + n.shape[1], NAME_SHIFT, NAME)   # same baseline as the plate
-        lines, spacing, (y0, pitch) = layout(ds_text.description(i))
-        draw_text(a, lines, spacing, y0, pitch)
+        lines, spacing, ys = layout(ds_text.description(i), a == NAME)
+        draw_text(a, lines, spacing, ys)
     out = Image.fromarray(a, 'P'); out.putpalette(base.getpalette())
     out.save(path)
     return lines
