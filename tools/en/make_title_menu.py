@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """English "New Game" / "Continue" title options drawn with the DS font,
-in the same 64x32 sprite sheet and palette indices as the original."""
+in the same 64x32 sprite sheet and palette indices as the original.
+The outline's corners are softened as in the GS2 English patch: an outline
+pixel that touches a letter only diagonally takes colour 4, the grey each of
+the menu's palettes has between the outline's colour and the black."""
 import os, sys, shutil
 import numpy as np
 from PIL import Image
@@ -24,7 +27,11 @@ for row, label in ((0, 'New Game'), (1, 'Continue')):
     if w > 64: raise SystemExit('%s too wide (%d px)' % (label, w))
     x0 = (64 - w) // 2; y0 = row * 16 + (16 - h) // 2 + 1
     sub = a[y0:y0 + h, x0:x0 + w]
+    # the outline's corners: no letter pixel above, below, left or right
+    q = np.pad(p.astype(bool), 1)
+    side = q[:-2, 1:-1] | q[2:, 1:-1] | q[1:-1, :-2] | q[1:-1, 2:]
     sub[o] = 3
+    sub[o & ~side] = 4
     sub[p.astype(bool)] = 1
 img = Image.fromarray(a, 'P'); img.putpalette(tpl.getpalette()); img.save(path)
 print('title menu written')
