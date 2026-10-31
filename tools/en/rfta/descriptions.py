@@ -82,8 +82,8 @@ def build(f):
     md.put(a, suffix, x0 + n.shape[1], md.NAME_SHIFT, md.NAME)
     lines = []
     if f[4]:                         # (entries without a description of their own: the name only)
-        lines, spacing, (y0, pitch) = md.layout(description(f[4]))
-        md.draw_text(a, lines, spacing, y0, pitch)
+        lines, spacing, ys = md.layout(description(f[4]), a == md.NAME)
+        md.draw_text(a, lines, spacing, ys)
     im = Image.fromarray(a, 'P'); im.putpalette(base.getpalette())
     return im, ag, lines
 
