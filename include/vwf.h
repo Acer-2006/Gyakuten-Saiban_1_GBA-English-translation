@@ -6,6 +6,9 @@
 
 #define VWF_LINES 3
 #define VWF_BLOCKS_PER_LINE 8          // 8 x 32px = 256px (224px used)
+// the text box's lines use the first 7 blocks (224 px, tools/en/check_scripts.py);
+// the eighth's tiles hold the Court Record's description strips (court_record.c)
+#define VWF_TEXT_BLOCKS 7
 #define VWF_LINE_PIXELS (VWF_BLOCKS_PER_LINE * 32)
 #define VWF_LINE_HEIGHT 14
 // Where the lines sit in the text box (the sprites' offset: textXOffset,

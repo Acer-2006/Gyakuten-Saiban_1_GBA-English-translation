@@ -48,10 +48,17 @@ static void VwfCopyBlocks(u32 line, u32 firstBlock, u32 lastBlock)
     DmaCopy16(3, src, dst, (lastBlock - firstBlock + 1) * 256);
 }
 
+// the last block a line may copy or show: the menu plates use the whole line,
+// the text box the first VWF_TEXT_BLOCKS (the rest is the Court Record's)
+static u32 VwfLastBlock(void)
+{
+    return gEnMenu->textMode ? VWF_BLOCKS_PER_LINE - 1 : VWF_TEXT_BLOCKS - 1;
+}
+
 static void VwfShowBlocks(u32 line, u32 lastBlock)
 {
     u32 b;
-    for (b = 0; b <= lastBlock && b < VWF_BLOCKS_PER_LINE; b++)
+    for (b = 0; b <= lastBlock && b <= VwfLastBlock(); b++)
     {
         struct TextBoxCharacter * c = &gTextBoxCharacters[line * VWF_BLOCKS_PER_LINE + b];
         c->x = b * 32;
@@ -130,7 +137,7 @@ void VwfClearLine(u32 line)
     gVwf->logLen[line] = 0;
     gVwf->logMagic = VWF_LOG_MAGIC;
     DmaFill16(3, 0, gVwf->tiles[line], sizeof(gVwf->tiles[line]));
-    VwfCopyBlocks(line, 0, VWF_BLOCKS_PER_LINE - 1);
+    VwfCopyBlocks(line, 0, VwfLastBlock());
     for (b = 0; b < VWF_BLOCKS_PER_LINE; b++)
         gTextBoxCharacters[line * VWF_BLOCKS_PER_LINE + b].state &= ~0x8000;
     if (!gEnMenu->textMode && gVwf->centre)
@@ -189,9 +196,10 @@ static void VwfDrawMenuChar(u32 code, u32 line)
     gVwf->pen[line] = pen + gEnPlateFontAdv[code];
     first = pen >> 5;
     last = (pen + 15) >> 5;
-    if (last >= VWF_BLOCKS_PER_LINE)
-        last = VWF_BLOCKS_PER_LINE - 1;
-    VwfCopyBlocks(line, first, last);
+    if (last > VwfLastBlock())
+        last = VwfLastBlock();
+    if (first <= last)
+        VwfCopyBlocks(line, first, last);
     VwfShowBlocks(line, last);
 }
 
@@ -252,10 +260,11 @@ static void VwfDrawChar(u32 code, u32 line, u32 color, bool32 copy)
     if (copy)
     {
         u32 first = pen >> 5;
-        u32 last = (pen + width) >> 5;
-        if (last >= VWF_BLOCKS_PER_LINE)
-            last = VWF_BLOCKS_PER_LINE - 1;
-        VwfCopyBlocks(line, first, last);
+        u32 last = (pen + width - 1) >> 5;
+        if (last > VwfLastBlock())
+            last = VwfLastBlock();
+        if (first <= last)
+            VwfCopyBlocks(line, first, last);
         VwfShowBlocks(line, last);
     }
 }
@@ -290,7 +299,7 @@ void VwfRedraw(void)
                 code = 0xFF;
             VwfDrawChar(code, line, gVwf->log[line][i] >> 11, FALSE);
         }
-        VwfCopyBlocks(line, 0, VWF_BLOCKS_PER_LINE - 1);
+        VwfCopyBlocks(line, 0, VwfLastBlock());
     }
     VwfReloadChoiceLabels();
 }

@@ -51,6 +51,9 @@ void LoadEvidenceWindowGraphics();
 void UpdateRecordSprites(struct CourtRecord *);
 void LoadEvidenceGraphics(u32);
 void UpdateEvidenceSprites(struct CourtRecord *);
+void EnDescriptionStripLoad(const u8 * tiles); // English patch: the descriptions' last 8 rows
+void EnDescriptionStripToBG(void);
+void EnDescriptionStripReset(void);
 void UpdateRecordInfoActionSprites(u32);
 void ClearEvidenceSprites(struct CourtRecord *);
 void UpdateRecordPresentActionSprites(u32);

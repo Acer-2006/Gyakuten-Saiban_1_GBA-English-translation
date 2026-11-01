@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
-"""Build the English evidence/profile description images (160x64) for the GBA
-Court Record from the English DS release.
+"""Build the English evidence/profile description images for the GBA Court
+Record from the English DS release.
 
   - name line: the DS English name plate (its own pixels), plus the age for
     profiles, as the GBA original shows it ("Mia Fey (27)")
   - description: the DS English description text, read exactly out of the DS
     description bitmaps (ds_text.py), re-wrapped to the GBA width and drawn
     with the DS dialogue font (the same font as the text box)
+
+The pictures are 160x72, eight rows more than the Japanese ones (160x64):
+the panel's red runs five rows below where the Japanese pictures end, and
+four lines of the DS font need them to keep clear of each other. The last
+three rows are the panel's bottom border (desc_tiles.py, court_record.c).
 
 Writes the PNGs in place under graphics/evidence_profile_descriptions/
 (keeping the Japanese originals as *.png.orig). Run relocate_assets.py after."""
@@ -30,19 +35,25 @@ DUMMY = {41, 70, 107}            # unused entries ("ダミー" in both versions)
 AREA_W = 152                     # columns 152-159 are transparent in the originals
 TEXT_X, TEXT_W = 2, 149
 NAME_SHIFT = -1                  # name plate ink rows 2..14 -> 1..13
+# The picture: 160x72. Rows 0-68 are the panel's red (the Japanese pictures
+# had 0-63), rows 69-71 its bottom border (the BG2 tile 0x4C's last three
+# rows), drawn here so the sprites that show them match the panel.
+IMAGE_H = 72
+HEIGHT = 69                      # rows the text may use
+BORDER_ROWS = (10, 11, 1)        # rows 69, 70, 71
 # glyph origin of the first line and line pitch: three lines use the original
-# 16-pixel rows; text that needs a fourth line is set on 12-pixel rows (the
-# DS font's descenders reach the cell's row 14, so a fourth line's start one
-# row higher than the Japanese font allowed)
-LAYOUTS = {3: (16, 16), 4: (13, 12)}
-# On 12-pixel rows a line's descenders and commas can meet the quotes,
-# apostrophes and tall letters of the line below (a comma over an
-# apostrophe reads as one mark). No two lines (nor the name and the first
-# line) may touch side by side; where the plain line breaks would, a line
-# may sit a pixel higher or lower (rows of 12 or 13, the first line from
-# row 11) or the lines break elsewhere (layout()).
-FLEX_TOP = (13, 12, 11)
-HEIGHT = 64
+# 16-pixel rows; text that needs a fourth line is set on 14-pixel rows. The DS
+# font's glyphs reach from the cell's row 1 (quotes, apostrophes, brackets)
+# to its row 14 (descenders, commas): on 14-pixel rows the next line's capitals
+# and tall letters keep a clear row from the descenders, and only a quote or
+# bracket right under a descender could touch it.
+LAYOUTS = {3: (16, 16), 4: (12, 14)}
+# No two lines (nor the name and the first line) may touch, not even corner
+# to corner. Where the plain line breaks would, the lines sit on rows of 13
+# to 15 pixels instead (the first from row 11 to 14, all of them within the
+# red), the evenest first; then the lines break elsewhere (layout()).
+FLEX_TOP = (12, 13, 11, 14)
+FLEX_PITCH = (14, 13, 15)
 # The DS sets these texts in its dialogue font, three lines across a
 # 256-pixel panel; the GBA's panel is 149 pixels. Set at the text box's
 # spacing (each letter a pixel after the last), with word spaces of 4, then
@@ -94,10 +105,11 @@ def join(lines):
     # The GBA has no touch screen: the Check button is the L button there
     # (the Japanese GBA text says "Lボタンで…").
     s = re.sub(r'Touch (the )?Check( Button)?', 'Press L', s)
-    # keep "2:00 PM" and "Exhibit A" together
+    # keep "2:00 PM", "Exhibit A" and "ID# 5842189" together
     s = re.sub(r'(\d) (AM|PM)\b', r'\1' + NBSP + r'\2', s)
     s = re.sub(r'\b(Oct|Dec) (\d)', r'\1' + NBSP + r'\2', s)
     s = s.replace('Photo #', 'Photo' + NBSP + '#')
+    s = s.replace('ID# ', 'ID#' + NBSP)
     return re.sub(r'Exhibit ([A-Z])\b', 'Exhibit' + NBSP + r'\1', s)
 
 @functools.lru_cache(None)
@@ -119,8 +131,8 @@ def wrap(text, spacing):
     return out
 
 def rows(n):
-    """where the n lines go (their glyph origins): the plain layout first, then
-    the ones with lines a pixel up or down, the fewest moves first"""
+    """where the n lines go (their glyph origins): the plain layout first,
+    then (four lines) the others that stay within the red, the evenest first"""
     y0, pitch = LAYOUTS[n]
     plain = [y0 + pitch * k for k in range(n)]
     yield plain
@@ -128,10 +140,11 @@ def rows(n):
         return
     flex = []
     for top in FLEX_TOP:
-        for steps in itertools.product((12, 13), repeat=n - 1):
+        for steps in itertools.product(FLEX_PITCH, repeat=n - 1):
             ys = [top + sum(steps[:k]) for k in range(n)]
-            if ys != plain:
-                flex.append((sum(abs(a - b) for a, b in zip(ys, plain)), ys))
+            if ys != plain and ys[-1] + dsfont.ROWS - 2 < HEIGHT:
+                flex.append(((len(set(steps)) > 1, sum(abs(p - pitch) for p in steps),
+                              abs(top - y0)), ys))
     for _, ys in sorted(flex):
         yield ys
 
@@ -175,21 +188,22 @@ def wraps(words, spacing, n):
 
 def layout(lines, name):
     """-> (lines, spacing, the lines' rows): the fewest lines, then the widest
-    spacing. The plain line breaks on the plain rows if nothing touches;
-    else the best of every line break on every row layout (FLEX_TOP) where
-    no two lines meet side by side: the evenest lines, a pixel moved
-    counting as 15 pixels short on a line, a corner meeting a corner (at
-    most one) as 55 (an odd line break shows more than either)"""
+    spacing, with nothing touching (touching(): not even corner to corner).
+    The plain line breaks on the plain rows, else on the evenest other rows
+    (rows()); else the evenest other line breaks, a pixel moved off the plain
+    rows counting as 15 pixels short on a line"""
     text = join(lines)
     for n in sorted(LAYOUTS):    # the plain line breaks first
         for spacing in SPACINGS:
             out = wrap(text, spacing)
-            if len(out) <= n and all(width(l, spacing) <= TEXT_W for l in out) \
-               and touching(out, spacing, next(rows(n))[:len(out)], name) == (0, 0):
-                return out, spacing, next(rows(n))[:len(out)]
+            if len(out) <= n and all(width(l, spacing) <= TEXT_W for l in out):
+                for k, ys in enumerate(rows(n)):
+                    if k > 0 and len(out) != n:
+                        break
+                    if touching(out, spacing, ys[:len(out)], name) == (0, 0):
+                        return out, spacing, ys[:len(out)]
     def ragged(out, spacing):
         return sum((TEXT_W - width(l, spacing)) ** 2 for l in out[:-1])
-    least = None                 # (contact, layout): if every layout touches
     for n in sorted(LAYOUTS):
         plain = next(rows(n))
         for spacing in SPACINGS:
@@ -197,23 +211,15 @@ def layout(lines, name):
             for out in wraps(text.split(' '), spacing, n):
                 for k, ys in enumerate(rows(n)):
                     if k > 0 and len(out) != n:
-                        continue
+                        break
                     ys = ys[:len(out)]
-                    edge, corner = t = touching(out, spacing, ys, name)
-                    if edge == 0 and corner <= 1:
+                    if touching(out, spacing, ys, name) == (0, 0):
                         moved = sum(abs(a - b) for a, b in zip(ys, plain))
-                        good.append((ragged(out, spacing) + 225 * moved + 3025 * corner, out, ys))
-                    if t != (0, 0) and (least is None or t < least[0]):
-                        least = (t, (out, spacing, ys))
+                        good.append((ragged(out, spacing) + 225 * moved, out, ys))
             if good:
                 _, out, ys = min(good)
                 return out, spacing, ys
-    # else the least contact there is, if only a pixel or three: a comma's
-    # tail on the P below ("[Oct 15," / "2:00 PM, Photo #2]"); the fifth
-    # episode's lockers, whose only four lines meet in three
-    if least is not None and sum(least[0]) <= 3:
-        return least[1]
-    raise ValueError('does not fit: ' + text)
+    raise ValueError('no layout without touching lines: ' + text)
 
 def draw_text(a, lines, spacing, ys):
     for l, y in zip(lines, ys):
@@ -226,13 +232,24 @@ def put(a, mask, x0, y0, color):
     assert (ys + y0).min() >= 0 and (ys + y0).max() < a.shape[0] and (xs + x0).max() < AREA_W
     a[ys + y0, xs + x0] = color
 
+def canvas(base):
+    """the 160x72 picture to draw on, from a Japanese one (160x64): the red
+    down to row 68, then the panel's border; columns 152-159 stay as the
+    Japanese pictures have them (transparent)"""
+    a = np.zeros((IMAGE_H, base.width), np.uint8)
+    a[:base.height] = np.array(base)
+    a[base.height:, AREA_W:] = 0
+    a[:HEIGHT, :AREA_W] = BG
+    for k, c in enumerate(BORDER_ROWS):
+        a[HEIGHT + k, :AREA_W] = c
+    return a
+
 def build(i, name_idx, age):
     path = os.path.join(ROOT, sym2file[table[i]] + '.png')
     if not os.path.exists(path + '.orig'):
         os.rename(path, path + '.orig')
     base = Image.open(path + '.orig')
-    a = np.array(base).copy()
-    a[:, :AREA_W] = BG
+    a = canvas(base)
     lines = []
     if i not in DUMMY:
         n = np.array(name_plate(name_idx)) == DS_NAME_TEXT

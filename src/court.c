@@ -16,6 +16,7 @@
 #include "constants/persons.h"
 #include "constants/process.h"
 #include "constants/oam_allocations.h"
+#include "court_record.h"
 
 void SetCurrentEpisodeBit()
 {
@@ -84,6 +85,7 @@ void CourtInit(struct Main * main)
     DmaCopy16(3, gUnusedAsciiCharSet, VRAM + 0x3800, 0x800);
     DmaCopy16(3, gGfxEnNextArrow, VRAM + 0x3800, 0x200); // English patch: the DS's "next" arrow (bg.c)
     DmaCopy16(3, gGfxSaveGameTiles, VRAM, 0x1000);
+    EnDescriptionStripReset(); // English patch: the Court Record panel's bottom row (court_record.c)
     DmaCopy16(3, &gPalInvestigationExamineCursors[0], OBJ_PLTT+0x100, 0x20);
     DmaCopy16(3, gGfx4bppTrialLife, OBJ_VRAM0 + 0x3780, 0x80);
     DmaCopy16(3, gPalCrossExaminationUI, OBJ_PLTT+0x60, 0x20);

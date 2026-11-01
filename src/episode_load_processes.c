@@ -12,6 +12,7 @@
 #include "constants/oam_allocations.h"
 #include "en_menu.h"
 #include "en_rfta.h"
+#include "court_record.h"
 
 void EpisodeInit(struct Main * main)
 {
@@ -698,6 +699,7 @@ void ContinueSaveProcess(struct Main * main) {
             DmaCopy16(3, gUnusedAsciiCharSet, BG_VRAM + 0x3800, 0x800);
             DmaCopy16(3, gGfxEnNextArrow, BG_VRAM + 0x3800, 0x200); // English patch: the DS's "next" arrow (bg.c)
             DmaCopy16(3, gGfxSaveGameTiles, BG_VRAM, 0x1000);
+            EnDescriptionStripReset(); // English patch: the Court Record panel's bottom row (court_record.c)
             i = (uintptr_t)GetBGPalettePtr(0); // ! BAD FAKEMATCH?
             DmaCopy16(3, i, BG_PLTT, 0x200);
             DmaCopy16(3, &gSaveDataBuffer.main, &gMain, sizeof(gMain));

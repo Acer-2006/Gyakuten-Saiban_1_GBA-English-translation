@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The fifth episode's Court Record descriptions, from the DS English data.
 
-The GBA description image (160x64: the name, with the age for people, and
+The GBA description image (160x72: the name, with the age for people, and
 the description below) is drawn as tools/en/make_descriptions.py draws the
 first four episodes': the DS English name plate's own pixels, the DS
 English description text read exactly out of the DS bitmaps and set again
@@ -69,8 +69,7 @@ def age(k):
 
 def build(f):
     base = Image.open(TEMPLATE)
-    a = np.array(base).copy()
-    a[:, :md.AREA_W] = md.BG
+    a = md.canvas(base)              # (160x72: make_descriptions.py)
     n = np.array(name_plate(f[1])) == md.DS_NAME_TEXT
     cols = np.where(n.any(0))[0]
     n = n[:, cols[0]:cols[-1] + 1]

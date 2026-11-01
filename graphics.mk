@@ -1,18 +1,20 @@
+# English patch: the descriptions are 160x72, in the order the Court Record's
+# sprites take them (tools/en/desc_tiles.py, court_record.c)
 EVIDENCE_PROFILE_DESCRIPTIONS := graphics/evidence_profile_descriptions
-$(EVIDENCE_PROFILE_DESCRIPTIONS)/%.4bpp: $(EVIDENCE_PROFILE_DESCRIPTIONS)/%.png
-	$(GBAGFX) $< $@ -mwidth 4 -mheight 4
+$(EVIDENCE_PROFILE_DESCRIPTIONS)/%.4bpp: $(EVIDENCE_PROFILE_DESCRIPTIONS)/%.png tools/en/desc_tiles.py
+	python3 tools/en/desc_tiles.py $< $@
 $(EVIDENCE_PROFILE_DESCRIPTIONS)/%.4bpp.lz: $(EVIDENCE_PROFILE_DESCRIPTIONS)/%.4bpp
 	$(GBAGFX) $< $@ -search 8
 
 EVIDENCE_PROFILE_DESCRIPTIONS_EVIDENCE := graphics/evidence_profile_descriptions/evidence
-$(EVIDENCE_PROFILE_DESCRIPTIONS_EVIDENCE)/%.4bpp: $(EVIDENCE_PROFILE_DESCRIPTIONS_EVIDENCE)/%.png
-	$(GBAGFX) $< $@ -mwidth 4 -mheight 4
+$(EVIDENCE_PROFILE_DESCRIPTIONS_EVIDENCE)/%.4bpp: $(EVIDENCE_PROFILE_DESCRIPTIONS_EVIDENCE)/%.png tools/en/desc_tiles.py
+	python3 tools/en/desc_tiles.py $< $@
 $(EVIDENCE_PROFILE_DESCRIPTIONS_EVIDENCE)/%.4bpp.lz: $(EVIDENCE_PROFILE_DESCRIPTIONS_EVIDENCE)/%.4bpp
 	$(GBAGFX) $< $@ -search 8
 
 EVIDENCE_PROFILE_DESCRIPTIONS_PROFILES := graphics/evidence_profile_descriptions/profiles
-$(EVIDENCE_PROFILE_DESCRIPTIONS_PROFILES)/%.4bpp: $(EVIDENCE_PROFILE_DESCRIPTIONS_PROFILES)/%.png
-	$(GBAGFX) $< $@ -mwidth 4 -mheight 4
+$(EVIDENCE_PROFILE_DESCRIPTIONS_PROFILES)/%.4bpp: $(EVIDENCE_PROFILE_DESCRIPTIONS_PROFILES)/%.png tools/en/desc_tiles.py
+	python3 tools/en/desc_tiles.py $< $@
 $(EVIDENCE_PROFILE_DESCRIPTIONS_PROFILES)/%.4bpp.lz: $(EVIDENCE_PROFILE_DESCRIPTIONS_PROFILES)/%.4bpp
 	$(GBAGFX) $< $@ -search 8
 
@@ -28,8 +30,8 @@ $(TALK_CHOICES)/%.4bpp: $(TALK_CHOICES)/%.png
 # English patch: the Rise from the Ashes build's plates (tools/en/rfta/plates.py)
 graphics/en/rfta/location_choices.4bpp graphics/en/rfta/talk_choices.4bpp graphics/en/rfta/episode_title.4bpp: %.4bpp: %.png
 	$(GBAGFX) $< $@ -mwidth 8 -mheight 4
-graphics/en/rfta/descriptions/%.4bpp: graphics/en/rfta/descriptions/%.png
-	$(GBAGFX) $< $@ -mwidth 4 -mheight 4
+graphics/en/rfta/descriptions/%.4bpp: graphics/en/rfta/descriptions/%.png tools/en/desc_tiles.py
+	python3 tools/en/desc_tiles.py $< $@
 graphics/en/rfta/descriptions/%.4bpp.lz: graphics/en/rfta/descriptions/%.4bpp
 	$(GBAGFX) $< $@ -search 8
 
