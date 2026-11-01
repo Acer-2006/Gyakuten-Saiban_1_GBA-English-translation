@@ -729,6 +729,7 @@ void CourtRecordMain(struct Main * main, struct CourtRecord * courtRecord) // st
         courtRecord->nextState = RECORD_MAIN;
         courtRecord->flags |= 2;
         DmaCopy16(3, OBJ_VRAM0+0x3C00, VRAM+0x1400, 0x1C00);
+        EnDescriptionStripToBG(); // English patch: the description's last 8 rows too
         DmaCopy16(3, OBJ_PLTT+0x20, PLTT+0x20, 0x20);
         UpdateEvidenceSprites(courtRecord);
         DmaCopy16(3, &gOamObjects[OAM_IDX_EVIDENCE_DISPLAY], OAM + OAM_IDX_EVIDENCE_DISPLAY*8, OAM_COUNT_EVIDENCE_DISPLAY*8);
@@ -1555,6 +1556,46 @@ void LoadEvidenceGraphics(u32 evidenceId)
     src = gEvidenceProfileData[evidenceId].descriptionTiles;
     LZ77UnCompWram(src, eUnknown_0200AFC0);
     DmaCopy16(3, eUnknown_0200AFC0, (void *)OBJ_VRAM0+0x3C00, TILE_SIZE_4BPP * 160);
+    EnDescriptionStripLoad(eUnknown_0200AFC0 + TILE_SIZE_4BPP * 160);
+}
+
+// English patch: the descriptions are 160x72, eight rows more than the
+// Japanese ones (tools/en/make_descriptions.py): four lines of the DS font
+// keep clear of each other only with the five rows of the panel's red below
+// where the Japanese pictures end. The picture's first 64 rows are two 64x64
+// sprites and a 32x64 one (tiles 0x1E0-0x27F, as before; 3 sprites where the
+// 32x32 ones took 10), its last 8 rows five 32x8 strips: those rows' red,
+// then the panel's bottom border, drawn into the picture (tools/en/desc_tiles.py).
+// The strips' 20 tiles go in the text box's eighth block of each line, which
+// the text never reaches (lines are at most 224 pixels, vwf.c).
+static const u16 sDescStripTile[5] = { 0x38, 0x3C, 0x78, 0x7C, 0xB8 };
+// the copy the window slides away on BG2 (bg.c, gUnknown_08013F70's row 11)
+#define EN_DESC_STRIP_BG_TILE 0x180
+
+void EnDescriptionStripLoad(const u8 * tiles)
+{
+    u32 k;
+    for (k = 0; k < 5; k++)
+        DmaCopy16(3, tiles + k * 4 * TILE_SIZE_4BPP, OBJ_VRAM0 + sDescStripTile[k] * TILE_SIZE_4BPP, 4 * TILE_SIZE_4BPP);
+}
+
+// the strips of the description on screen, to BG2 with the rest of it (an
+// item turned away slides out on BG2)
+void EnDescriptionStripToBG(void)
+{
+    u32 k;
+    for (k = 0; k < 5; k++)
+        DmaCopy16(3, OBJ_VRAM0 + sDescStripTile[k] * TILE_SIZE_4BPP,
+                  VRAM + (EN_DESC_STRIP_BG_TILE + k * 4) * TILE_SIZE_4BPP, 4 * TILE_SIZE_4BPP);
+}
+
+// no description on BG2 yet: the strip's copy shows the panel's plain bottom
+// border (BG tile 0x4C), wherever the panel's tiles are loaded
+void EnDescriptionStripReset(void)
+{
+    u32 k;
+    for (k = 0; k < 20; k++)
+        DmaCopy16(3, VRAM + 0x4C * TILE_SIZE_4BPP, VRAM + (EN_DESC_STRIP_BG_TILE + k) * TILE_SIZE_4BPP, TILE_SIZE_4BPP);
 }
 
 void UpdateEvidenceSprites(struct CourtRecord * courtRecord)
@@ -1567,20 +1608,26 @@ void UpdateEvidenceSprites(struct CourtRecord * courtRecord)
     oam->attr1 += courtRecord->windowX;
     oam->attr2 = SPRITE_ATTR2(0x280, 0, 1);
     oam++;
-    for(i = 0; i < 5; i++)
+    // English patch: the description, 160x72 (see EnDescriptionStripLoad)
+    for(i = 0; i < 3; i++)
     {
-        oam->attr0 = SPRITE_ATTR0(24, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
-        oam->attr1 = SPRITE_ATTR1_NONAFFINE(72 + i*32, FALSE, FALSE, 2);
+        oam->attr0 = SPRITE_ATTR0(24, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, i < 2 ? ST_OAM_SQUARE : ST_OAM_V_RECTANGLE);
+        oam->attr1 = SPRITE_ATTR1_NONAFFINE(72 + i*64, FALSE, FALSE, 3);
         oam->attr1 += courtRecord->windowX;
-        oam->attr2 = SPRITE_ATTR2(0x1E0 + i*0x10, 0, 2);
+        oam->attr2 = SPRITE_ATTR2(0x1E0 + i*0x40, 0, 2);
         oam++;
     }
     for(i = 0; i < 5; i++)
     {
-        oam->attr0 = SPRITE_ATTR0(56, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_SQUARE);
-        oam->attr1 = SPRITE_ATTR1_NONAFFINE(72 + i*32, FALSE, FALSE, 2);
+        oam->attr0 = SPRITE_ATTR0(88, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_H_RECTANGLE);
+        oam->attr1 = SPRITE_ATTR1_NONAFFINE(72 + i*32, FALSE, FALSE, 1);
         oam->attr1 += courtRecord->windowX;
-        oam->attr2 = SPRITE_ATTR2(0x230 + i*0x10, 0, 2);
+        oam->attr2 = SPRITE_ATTR2(sDescStripTile[i], 0, 2);
+        oam++;
+    }
+    for(i = 0; i < 2; i++)
+    {
+        oam->attr0 = SPRITE_ATTR0_CLEAR;
         oam++;
     }
 }

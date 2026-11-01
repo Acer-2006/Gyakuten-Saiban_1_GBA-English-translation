@@ -75,6 +75,7 @@ void InvestigationInit(struct Main * main, struct InvestigationStruct * investig
     DmaCopy16(3, gUnusedAsciiCharSet, VRAM + 0x3800, 0x800);
     DmaCopy16(3, gGfxEnNextArrow, VRAM + 0x3800, 0x200); // English patch: the DS's "next" arrow (bg.c)
     DmaCopy16(3, gGfxSaveGameTiles, VRAM, 0x1000);
+    EnDescriptionStripReset(); // English patch: the Court Record panel's bottom row (court_record.c)
     DmaCopy16(3, gGfx4bppInvestigationActions, OBJ_VRAM0 + 0x2000, 0x1000);
     DmaCopy16(3, gPalActionButtons, OBJ_PLTT+0xA0, 0x40);
     DmaCopy16(3, gGfx4bppInvestigationScrollButton, OBJ_VRAM0 + 0x3000, 0x200);
