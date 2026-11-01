@@ -42,6 +42,11 @@ the Japanese script (the English scripts keep the Japanese sections):
 - No thought (blue text) typed while the person shown is talking where the
   Japanese section has none (port_script.thought_mouths): Phoenix's mouth
   moved through "(For once...)".
+- No two lines of a page touching, not even corner to corner, with the
+  moves the game gives the page's lines (text_gaps.py, vwf.c VwfLineStarts):
+  a descender or comma right above a quote, apostrophe or bracket of the line
+  below touched it ("girl" over "where'd"). The Rise from the Ashes scripts
+  too (script_rfta/), when they are there.
 
 The Makefile runs this before the scripts are built into the ROM.
 usage: check_scripts.py [JAPANESE_DIR ENGLISH_DIR]"""
@@ -50,6 +55,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from phscr import load, section_bounds, tokens, parse, GBA_ARGS
 from pdump import ch
 from port_script import FADE_OUT_WAITS, thought_mouths
+import text_gaps
 
 FADE_IN, FADE_OUT = 1, 2
 PRESS_ON = (0x02, 0x2D, 0x0D)          # page break, wait for A, end of section
@@ -370,6 +376,20 @@ def poses_together(jp_dir):
     return res
 
 
+def touching_pages(path):
+    """[(section, text)] of the pages whose lines still touch once laid out"""
+    res = []
+    b, n, offs = load(path)
+    for si, x in enumerate(section_bounds(b, offs)):
+        if not x:
+            continue
+        t = tokens(b, *x)
+        for p, line, ahead, o in text_gaps.page_layouts(t):
+            if text_gaps.touching(ahead, o):
+                res.append((si, ''.join(ch(v) for v in t[p:p + 40] if v >= 0x80)))
+    return res
+
+
 def main():
     root = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
     jp_dir, en_dir = sys.argv[1:3] if len(sys.argv) > 2 else (os.path.join(root, 'script'), os.path.join(root, 'script_en'))
@@ -383,6 +403,10 @@ def main():
         n += 1
     if not n:
         errors.append('no scripts found in %s' % en_dir)
+    rfta_dir = os.path.join(root, 'script_rfta')
+    for path in sorted(glob.glob(os.path.join(en_dir, '*.phscr'))) + sorted(glob.glob(os.path.join(rfta_dir, '*.phscr'))):
+        for si, text in touching_pages(path):
+            errors.append('%s section %d: lines touching after the layout: "%s"' % (os.path.basename(path), si, text))
     for e in errors:
         print('error: ' + e, file=sys.stderr)
     if errors:
@@ -391,7 +415,7 @@ def main():
     print('script check: %d scripts: no line on a black screen, penalties and branches as in the '
           'Japanese game, every jump lands, every line fits (third lines clear of the arrow), no fourth line, '
           'no wait on a hidden box, no pose over a desk, every fade with its wait, no mouth moving through a '
-          'thought' % n)
+          'thought, no lines touching' % n)
     return 0
 
 

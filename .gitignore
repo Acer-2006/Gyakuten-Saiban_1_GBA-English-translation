@@ -86,3 +86,5 @@ build.log
 /agbcc/
 *_build.log
 tools/en/rfta/__pycache__/
+# made from the scripts (graphics.mk)
+graphics/vwf/page_moves.bin
