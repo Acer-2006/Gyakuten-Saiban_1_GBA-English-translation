@@ -61,3 +61,9 @@ graphics/speedlines_first_and_last_columns.4bpp: graphics/speedlines_first_and_l
 	$(GBAGFX) $< $@ -mwidth 1 -mheight 20
 graphics/charset.4bpp: graphics/charset.png
 	$(GBAGFX) $< $@ -mwidth 2 -mheight 2
+
+# English patch: the pages whose lines move a pixel or two so that none touch
+# (vwf.c VwfLineStarts): every script's, the Rise from the Ashes ones' too
+# when they are there (the RFTA build's common script has its own number)
+graphics/vwf/page_moves.bin: tools/en/text_gaps.py tools/en/phscr.py graphics/vwf/font_glyphs.bin graphics/vwf/font_widths.bin graphics/vwf/font_advance.bin $(wildcard script_en/*.phscr) $(wildcard script_rfta/*.phscr)
+	python3 tools/en/text_gaps.py $@ $(wildcard script_en/*.phscr) $(wildcard script_rfta/*.phscr)

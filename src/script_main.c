@@ -329,7 +329,10 @@ static void PutCharInTextbox(u32 characterCode, u32 y, u32 x)
     if(!(gScriptContext.flags & 4)) // English patch: normal text box uses the VWF
     {
         if(x == 0)
+        {
+            VwfLineStarts(y); // the page's lines kept from touching (vwf.c)
             VwfClearLine(y);
+        }
         VwfPutChar(characterCode, y, gScriptContext.textColor);
         return;
     }
@@ -482,7 +485,8 @@ static void DrawTextAndMapMarkers(struct ScriptContext * scriptCtx)
             
             if(gTextBoxCharacters[i].state & 0x8000)
             {
-                oam->attr0 = SPRITE_ATTR0(gTextBoxCharacters[i].y + scriptCtx->textYOffset, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_H_RECTANGLE);
+                // (English patch: & 0xFF, a line moved a pixel up has y -1, vwf.c VwfLineStarts)
+                oam->attr0 = SPRITE_ATTR0((gTextBoxCharacters[i].y + scriptCtx->textYOffset) & 0xFF, ST_OAM_AFFINE_OFF, ST_OAM_OBJ_NORMAL, FALSE, ST_OAM_4BPP, ST_OAM_H_RECTANGLE);
                 oam->attr1 = SPRITE_ATTR1_NONAFFINE(gTextBoxCharacters[i].x + scriptCtx->textXOffset, FALSE, FALSE, 2);
                 oam->attr2 = gTextBoxCharacters[i].objAttr2;
             }

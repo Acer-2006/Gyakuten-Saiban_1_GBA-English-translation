@@ -27,7 +27,7 @@ struct VwfState
     u16 log[VWF_LINES][VWF_LOG_LEN];
     u8 lineStart[4];             // pen position each line starts at
     u8 centre;                   // lines are centred (script command 5D, as the DS)
-    u8 pad[3];
+    s8 lineYOff[3];              // each line's move off its row (VwfLineStarts; 0 in saves before v0.7.58)
 };
 #define VWF_LOG_MAGIC 0x32465756 // "VWF2"
 #define VWF_LOG_MAGIC_V1 0x31465756 // "VWF1": no line starts / centring
@@ -70,7 +70,7 @@ static void VwfShowBlocks(u32 line, u32 lastBlock)
         }
         else
         {
-            c->y = line * VWF_LINE_HEIGHT;
+            c->y = line * VWF_LINE_HEIGHT + gVwf->lineYOff[line]; // (u16: -1 wraps, the sprite's y takes the low 8 bits)
             c->objAttr2 = (line * (VWF_LINE_VRAM_STRIDE / 32) + b * 8) + 0x400;
         }
         c->state = 0x8000 | line;
@@ -126,6 +126,87 @@ static u32 VwfCentredLineStart(void)
 void VwfSetCentre(u32 on)
 {
     gVwf->centre = on ? 1 : 0;
+}
+
+// English patch: the text box's lines kept from touching. The lines are 14
+// pixels apart and the DS font's glyphs reach from row 1 of their cell (quotes,
+// apostrophes, brackets) to row 14 (descenders, commas): a descender or comma
+// right above a quote, apostrophe or bracket of the line below touched it
+// ("girl" over "where'd", 294 of the scripts' 30,546 pages). When the scripts
+// are built, tools/en/text_gaps.py lays each page out: where two of its lines
+// would touch, not even corner to corner, a line moves a pixel or two. The
+// pages it moves lines on are listed by where they start in the scripts
+// (graphics/vwf/page_moves.bin, sorted), and a page that starts here takes
+// its lines' moves, those for the centring it starts with (5D: a section
+// starts with what the one before left); check_scripts.py checks that no
+// page's lines touch.
+struct VwfPageMove
+{
+    u32 at;                      // the script's number << 20 | the page's first character's byte in it
+    s8 yOff[2][VWF_LINES];       // the lines' moves (-2 to 2 pixels), the centring off / on
+    u8 pad[2];
+};
+extern const struct VwfPageMove gVwfPageMoves[];
+extern const u32 gVwfPageMoveCount;
+extern const u8 * const gScriptTable[];
+
+#define VWF_STD_SCRIPT (RFTA ? 63 : 62)  // the common script's number (text_gaps.py)
+
+// the number text_gaps.py gives the script the text comes from: the
+// chapters' scripts in gScriptTable's order (0-16), the fifth episode's
+// (17-35), the common script (VWF_STD_SCRIPT); -1 none of them
+static s32 VwfScriptNumber(const u8 ** base)
+{
+    u32 i;
+    if (gScriptContext.currentSection < 0x80)
+    {
+        *base = (const u8 *)std_scripts;
+        return VWF_STD_SCRIPT;
+    }
+    *base = gScriptBase;
+    for (i = 0; i < RFTA_FIRST_CHAPTER; i++)
+        if (gScriptBase == gScriptTable[i])
+            return i;
+#if RFTA
+    for (i = 0; i < RFTA_SCRIPTS; i++)
+        if (gScriptBase == gRftaScriptTable[i])
+            return RFTA_FIRST_CHAPTER + i;
+#endif
+    return -1;
+}
+
+// a line starts (PutCharInTextbox): the page's first, with no line above it
+// shown, gives the page's lines their moves
+void VwfLineStarts(u32 line)
+{
+    const u8 * base;
+    s32 script;
+    u32 l, b, at, lo, hi;
+    if (line >= VWF_LINES || gEnMenu->textMode)
+        return;                  // (the menu plates' lines are not the text box's)
+    for (l = 0; l < line; l++)
+        for (b = 0; b < VWF_BLOCKS_PER_LINE; b++)
+            if (gTextBoxCharacters[l * VWF_BLOCKS_PER_LINE + b].state & 0x8000)
+                return;          // (the page started before)
+    for (l = 0; l < VWF_LINES; l++)
+        gVwf->lineYOff[l] = 0;
+    script = VwfScriptNumber(&base);
+    if (script < 0)
+        return;
+    at = (u32)script << 20 | (u32)((const u8 *)gScriptContext.scriptPtr - base);
+    lo = 0;
+    hi = gVwfPageMoveCount;
+    while (lo < hi)
+    {
+        u32 mid = (lo + hi) / 2;
+        if (gVwfPageMoves[mid].at < at)
+            lo = mid + 1;
+        else
+            hi = mid;
+    }
+    if (lo < gVwfPageMoveCount && gVwfPageMoves[lo].at == at)
+        for (l = 0; l < VWF_LINES; l++)
+            gVwf->lineYOff[l] = gVwfPageMoves[lo].yOff[gVwf->centre ? 1 : 0][l];
 }
 
 void VwfClearLine(u32 line)
@@ -282,6 +363,7 @@ void VwfRedraw(void)
             gVwf->lineStart[line] = 0;
         }
         gVwf->centre = 0;
+        gVwf->lineYOff[0] = gVwf->lineYOff[1] = gVwf->lineYOff[2] = 0;
         gVwf->choiceIds[3] = 0;
         gVwf->logMagic = VWF_LOG_MAGIC;
     }
@@ -358,6 +440,7 @@ void VwfLoadLog(void)
         for (line = 0; line < 4; line++)
             gVwfBackup->lineStart[line] = 0;
         gVwfBackup->centre = 0;
+        gVwfBackup->lineYOff[0] = gVwfBackup->lineYOff[1] = gVwfBackup->lineYOff[2] = 0;
         gVwfBackup->logMagic = VWF_LOG_MAGIC;
     }
 }
