@@ -200,33 +200,6 @@ static void DestroyBannerPart(struct AnimationListEntry * animation)
     DestroyAnimation(animation);
 }
 
-// English patch: the banners at the DS's size reach further out from their
-// middle than the Japanese ones did. A half is put away only once none of its
-// sprites is on the screen any more: DestroyAnimation puts the palette from
-// before the banner back at once, while the frame on screen still shows the
-// half where it was, and a half still in sight showed in that palette for a
-// frame (the tail of "Testimony"'s y at the left edge, "Examination" over the
-// text box).
-extern const struct SpriteSizeData gSpriteSizeTable[];
-
-static bool32 BannerPartOnScreen(struct AnimationListEntry * animation)
-{
-    struct SpriteTemplate * t = animation->spriteData;
-    s32 n = *(u16 *)t, i;
-    for (i = 0; i < n; i++)
-    {
-        const struct SpriteSizeData * size;
-        s32 x, y;
-        t++;
-        size = &gSpriteSizeTable[t->data >> 12];
-        x = animation->animationInfo.xOrigin + t->x;
-        y = animation->animationInfo.yOrigin + t->y;
-        if (x < DISPLAY_WIDTH && x + size->width > 0 && y < DISPLAY_HEIGHT && y + size->height > 0)
-            return TRUE;
-    }
-    return FALSE;
-}
-
 void TestimonyAnim(struct Main * main)
 {
     struct AnimationListEntry * animation;
@@ -274,14 +247,6 @@ void TestimonyAnim(struct Main * main)
         case 4:
             animation = FindAnimationFromAnimId(ANIM_TESTIMONY_START_LEFT);
             animation2 = FindAnimationFromAnimId(ANIM_TESTIMONY_START_RIGHT);
-            // (English patch: away once both are out of sight, see BannerPartOnScreen)
-            if(!BannerPartOnScreen(animation) && !BannerPartOnScreen(animation2))
-            {
-                DestroyAnimation(animation);
-                DestroyAnimation(animation2);
-                main->process[GAME_PROCESS_STATE] = TESTIMONY_MAIN;
-                break;
-            }
             animation->animationInfo.xOrigin += gTestimony.testimonyAnimMoveAmount;
             animation->flags |= ANIM_ACTIVE;
             animation2->animationInfo.xOrigin -= gTestimony.testimonyAnimMoveAmount;
@@ -289,6 +254,12 @@ void TestimonyAnim(struct Main * main)
             gTestimony.testimonyAnimMoveAmount++;
             if(gTestimony.testimonyAnimMoveAmount > 12)
                 gTestimony.testimonyAnimMoveAmount = 12;
+            if(animation->animationInfo.xOrigin > 336) // the English halves are up to 192 px wide
+            {
+                DestroyAnimation(animation);
+                DestroyAnimation(animation2);
+                main->process[GAME_PROCESS_STATE] = TESTIMONY_MAIN;
+            }
         default:
             break;
     }
@@ -406,19 +377,17 @@ void QuestioningAnim(struct Main * main)
         case 4:
             animation = FindAnimationFromAnimId(ANIM_CROSS_EXAMINATION_START_LEFT);
             animation2 = FindAnimationFromAnimId(ANIM_CROSS_EXAMINATION_START_RIGHT);
-            // (English patch: away once both are out of sight, see BannerPartOnScreen)
-            if(!BannerPartOnScreen(animation) && !BannerPartOnScreen(animation2))
+            animation->animationInfo.yOrigin -= 7;
+            animation->flags |= ANIM_ACTIVE;
+            animation2->animationInfo.yOrigin += 7;
+            animation2->flags |= ANIM_ACTIVE;
+            if(animation->animationInfo.yOrigin < -60)
             {
                 DestroyAnimation(animation);
                 DestroyAnimation(animation2);
                 main->process[GAME_PROCESS_STATE] = QUESTIONING_MAIN;
                 main->process[GAME_PROCESS_VAR1] = 0;
-                break;
             }
-            animation->animationInfo.yOrigin -= 7;
-            animation->flags |= ANIM_ACTIVE;
-            animation2->animationInfo.yOrigin += 7;
-            animation2->flags |= ANIM_ACTIVE;
         default:
             break;
     }
