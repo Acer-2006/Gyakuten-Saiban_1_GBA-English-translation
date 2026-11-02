@@ -686,6 +686,7 @@ bool32 VwfFixSavedScriptPos(void)
         case 0x02: // wait for A (page end)
         case 0x07:
         case 0x0A:
+        case 0x2D: // (Command02 as well: a wait for A, a new page after it)
         case 0x08: // choices
         case 0x09:
         case 0x2C:
