@@ -3,11 +3,13 @@
 
 The English graphics are taken from the DS: the plates ("SAVE" / "LOAD"), the
 Yes / No / Saving... / From save point. / From chapter start. buttons with
-their normal and pressed palettes, the orange selection brackets and the
-"Press START..." hint are the DS images (data.bin) and the plate lettering
+their normal and pressed palettes and the "Press START..." hint are the DS
+images (data.bin) and the plate lettering
 uses the DS menu font (assets/ds_plate_font.json: every glyph, its advance and
 offset, measured from text the DS itself drew on the save plate). Behind them
-stays the GBA's own sepia courtroom, without the DS scanlines.
+stays the GBA's own sepia courtroom, without the DS scanlines. The selected
+button is shown as the Japanese game shows it, not with the DS's orange
+brackets: the other button is grey (UNSELECTED below).
 
 The DS screen is 256x192 and the GBA one 240x160: everything keeps its DS size
 and horizontal place (8 px cut on each side); vertically the save screen pulls
@@ -150,27 +152,34 @@ for name, m in maps.items():
     open(os.path.join(OUT, 'map_%s.bin' % name), 'wb').write(struct.pack('<%dH' % len(m), *m))
 
 # ---------------------------------------------------------------------------
-# OBJ: buttons (normal, pressed and greyed-out palettes), brackets, plate-text colour
+# OBJ: buttons (normal, pressed, greyed-out and not-selected palettes), plate-text colour
 yes, bpal = ds_image('yes')
 no, _ = ds_image('no')
 saving, _ = ds_image('saving')
 savept, _ = ds_image('savept')
 chstart, _ = ds_image('chstart')
-bracket, kpal = ds_image('bracket')
 short = b''.join(obj_sprites(b, 0, (64, 32)) for b in (yes, no, saving))     # 3 x 48 tiles
 long_ = b''.join(obj_sprites(b, 32, (64, 64, 64)) for b in (savept, chstart))  # 2 x 96 tiles
-br = b''.join(tiles_4bpp(bracket[y:y + 16, x:x + 16]) for y, x in ((0, 0), (0, 16), (16, 0), (16, 16)))
 open(os.path.join(OUT, 'buttons_short.4bpp'), 'wb').write(short)
 open(os.path.join(OUT, 'buttons_long.4bpp'), 'wb').write(long_)
-open(os.path.join(OUT, 'bracket.4bpp'), 'wb').write(br)
 TEXT_COLOUR = (240, 240, 240)
-open(os.path.join(OUT, 'menu_obj.gbapal'), 'wb').write(
-    pal_bytes(bpal[0]) + pal_bytes(bpal[1]) + pal_bytes(bpal[2]) + pal_bytes(kpal[0]) + pal_bytes([(0, 0, 0), TEXT_COLOUR]))
 
-# the bracket image's corners, measured: where its quadrants sit around a box
-# 2 px larger than the button face (DS: Yes face x 23..114, y 119..144 ->
-# brackets from (21, 117) to (116, 146))
-qs = [bracket[y:y + 16, x:x + 16] for y, x in ((0, 0), (0, 16), (16, 0), (16, 16))]
+def unselected(pal):
+    """The button not selected, as the Japanese save and load screens show it
+    (their two palettes at 0x1FD92C: the selected answer in colour, the other
+    in grey): each colour becomes the grey the Japanese palettes give a colour
+    that bright, 0.501 x its brightness + 2.085 (5-bit steps; fitted to their
+    14 colour pairs, within 1.4 steps of every one)"""
+    out = [pal[0]]
+    for r, g, b in pal[1:]:
+        l = (0.299 * r + 0.587 * g + 0.114 * b) / 8
+        v = min(31, max(0, int(round(0.501 * l + 2.085))))
+        out.append((v * 8, v * 8, v * 8))
+    return out
+
+UNSELECTED = unselected(bpal[0])
+open(os.path.join(OUT, 'menu_obj.gbapal'), 'wb').write(
+    pal_bytes(bpal[0]) + pal_bytes(bpal[1]) + pal_bytes(bpal[2]) + pal_bytes(UNSELECTED) + pal_bytes([(0, 0, 0), TEXT_COLOUR]))
 
 # ---------------------------------------------------------------------------
 # plate font: 14 rows (cell rows 2..15) x 16 px per glyph, 4bpp, value 1
@@ -208,7 +217,7 @@ SYMS = [('gEnMenuBgTiles', 'menu_bg.4bpp'), ('gEnMenuBgPal', 'menu_bg.gbapal'),
         ('gEnMenuMapSave', 'map_save.bin'), ('gEnMenuMapLoad', 'map_load.bin'),
         ('gEnMenuMapClear', 'map_clear.bin'),
         ('gEnMenuButtonsShort', 'buttons_short.4bpp'), ('gEnMenuButtonsLong', 'buttons_long.4bpp'),
-        ('gEnMenuBracket', 'bracket.4bpp'), ('gEnMenuObjPal', 'menu_obj.gbapal'),
+        ('gEnMenuObjPal', 'menu_obj.gbapal'),
         ('gEnPlateFont', 'plate_font.bin'), ('gEnPlateFontAdv', 'plate_font_adv.bin'),
         ('gEnPlateFontOff', 'plate_font_off.bin')]
 with open(os.path.join(ROOT, 'data/en_menu.s'), 'w') as f:
@@ -249,18 +258,12 @@ if len(sys.argv) > 1:
                     v = hint[yy, xx]
                     if v and 0 <= 128 + yy < 160 and 0 <= 24 + xx < 240:
                         scr[128 + yy, 24 + xx] = hp[v]
-            blit(yes[:, :96], bpal[0], 11, 96)
+            blit(yes[:, :96], UNSELECTED, 11, 96)
             blit(no[:, :96], bpal[0], 128, 96)
-            bx0, by0, bx1, by1 = 128 + 4 - 2, 96 + 3 - 2, 128 + 95 + 2, 96 + 28 + 2
         else:
             blit(plate_l, ppal[0], -8, 0)
             blit(savept[:, 32:224], bpal[0], 24, 96)
-            blit(chstart[:, 32:224], bpal[0], 24, 128)
-            bx0, by0, bx1, by1 = 24 - 2, 96 + 3 - 2, 24 + 191 + 2, 96 + 28 + 2
-        blit(qs[0], kpal[0], bx0, by0)
-        blit(qs[1], kpal[0], bx1 - 15, by0)
-        blit(qs[2], kpal[0], bx0, by1 - 15)
-        blit(qs[3], kpal[0], bx1 - 15, by1 - 15)
+            blit(chstart[:, 32:224], UNSELECTED, 24, 128)
         return Image.fromarray(scr)
     a, b = compose('save'), compose('load')
     sheet = Image.new('RGB', (2 * 256 + 8, 2 * 192 + 8), 'white')

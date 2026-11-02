@@ -13,8 +13,8 @@
 // what a confirmed choice does on screen (EnMenuConfirm)
 #define EN_CONFIRM_SAVE_YES 0   // blink, the other button flips away, Yes slides to the middle and turns into "Saving..."
 #define EN_CONFIRM_STAY     1   // blink, the other button flips away, the chosen one stays
-#define EN_CONFIRM_LOAD     2   // blink, then the brackets go and the other button flips away
-#define EN_CONFIRM_CANCEL   3   // brackets go, both buttons flip away (bottom one first)
+#define EN_CONFIRM_LOAD     2   // blink, then the other button flips away
+#define EN_CONFIRM_CANCEL   3   // both buttons flip away (bottom one first)
 
 // frames after EnMenuConfirm at which the screens move on, as on the DS
 #define EN_MENU_T_STAY_FADE     59   // EN_CONFIRM_STAY: start the fade
@@ -49,9 +49,8 @@ struct EnMenu
     u8 sel;            // selected button
     u8 count;          // buttons on screen
     u8 confirm;        // EN_CONFIRM_*
-    u8 bracketsOn;
     u8 introDelay;
-    u8 pad[3];
+    u8 pad[4];
     struct EnMenuButton buttons[3];   // [2] is "Saving..."
     u16 pal[0x200];        // full-brightness palettes while fading
     u16 fadeBuf[0x200];

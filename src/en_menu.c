@@ -12,8 +12,10 @@
 //    through the palettes; the hardware fade takes over once black.
 //  - the plate slides in from the right 12 px a frame (BG2, window 0 hides
 //    the wrapped copy), then the text is typed in the DS menu font (vwf.c);
-//  - the buttons flip in one after the other, the brackets close in on the
-//    selected one; a choice blinks, the other button flips away, and so on.
+//  - the buttons flip in one after the other; a choice blinks, the other
+//    button flips away, and so on.
+//  - the selected button is shown as the Japanese screens show it: the other
+//    one in grey (PAL_UNSELECTED), not with the DS's orange brackets.
 
 #define EN_BTN_HIDDEN   0
 #define EN_BTN_SHOWN    1
@@ -29,11 +31,10 @@
 #define PAL_NORMAL  9
 #define PAL_PRESSED 10
 #define PAL_FADED   11
-#define PAL_BRACKET 12
+#define PAL_UNSELECTED 12  // the button not selected (make_menus.py)
 #define PAL_TEXT    13
 
 #define OBJ_TILE(addr) ((addr) / TILE_SIZE_4BPP)
-#define OAM_BRACKETS 36   // 4 corners, over the buttons
 #define OAM_BUTTONS  40   // 3 buttons x 3 sprites
 
 #define DARK_BLDCNT (BLDCNT_TGT1_BG0 | BLDCNT_TGT1_BG1 | BLDCNT_TGT1_BG2 | BLDCNT_TGT1_BG3 | BLDCNT_TGT1_OBJ | BLDCNT_TGT1_BD | BLDCNT_EFFECT_DARKEN)
@@ -65,7 +66,7 @@ static void SetButton(struct EnMenuButton * b, s32 x, s32 y, u32 tile, u32 sprit
 static void HideSprites(void)
 {
     u32 i;
-    for (i = OAM_BRACKETS; i < OAM_BUTTONS + 9; i++)
+    for (i = OAM_BUTTONS; i < OAM_BUTTONS + 9; i++)
         gOamObjects[i].attr0 = SPRITE_ATTR0_CLEAR;
 }
 
@@ -87,7 +88,6 @@ void EnMenuBegin(u32 kind)
     m->slideDelay = 6;
     m->t = 0;
     m->count = 0;
-    m->bracketsOn = FALSE;
     // the game's palettes, before the courtroom picture changes palette 2
     DmaCopy16(3, PLTT, m->backup, sizeof(m->backup));
     DecompressBackgroundIntoBuffer(0x43);
@@ -98,16 +98,14 @@ void EnMenuBegin(u32 kind)
     if (kind == EN_MENU_LOAD)
     {
         DmaCopy16(3, gEnMenuButtonsLong, OBJ_VRAM0 + 0x3800, EN_MENU_LONG_BUTTON_BYTES * 2);
-        DmaCopy16(3, gEnMenuBracket, OBJ_VRAM0 + 0x3800 + EN_MENU_LONG_BUTTON_BYTES * 2, 0x200);
         map = gEnMenuMapLoad;
     }
     else
     {
         DmaCopy16(3, gEnMenuButtonsShort, OBJ_VRAM0 + 0x3800, EN_MENU_SHORT_BUTTON_BYTES * 3);
-        DmaCopy16(3, gEnMenuBracket, OBJ_VRAM0 + 0x3800 + EN_MENU_SHORT_BUTTON_BYTES * 3, 0x200);
         map = kind == EN_MENU_SAVE ? gEnMenuMapSave : gEnMenuMapClear;
     }
-    // normal, pressed and greyed-out buttons, brackets, plate text
+    // normal, pressed, greyed-out and not selected buttons, plate text
     DmaCopy16(3, gEnMenuObjPal, OBJ_PLTT + PAL_NORMAL * 0x20, 0x20 * 5);
 
     for (i = 0; i < 32 * 20; i++)
@@ -170,7 +168,6 @@ void EnMenuSetupButtons(u32 kind, u32 selected, bool32 firstDisabled)
     }
     m->count = 2;
     m->sel = selected;
-    m->bracketsOn = FALSE;
     if (m->phase != EN_PH_SLIDE)
         m->phase = EN_PH_IDLE;
 }
@@ -247,62 +244,22 @@ static void Blink(struct EnMenuButton * b, u32 t)
     b->blinkOff = (t >= 2 && t < 8) || (t >= 12 && t < 18);
 }
 
-static void BracketBox(const struct EnMenuButton * b, s32 * box)
-{
-    s32 left = b->sprites == 2 ? 4 : 0, width = b->sprites == 2 ? 92 : 192;
-    box[0] = b->x + left - 2;
-    box[1] = b->y + 1;
-    box[2] = b->x + left + width + 1;
-    box[3] = b->y + 30;
-}
-
-static void DrawBrackets(void)
-{
-    struct EnMenu * m = gEnMenu;
-    struct OamAttrs * oam = &gOamObjects[OAM_BRACKETS];
-    u32 tile = OBJ_TILE(0x3800) + (m->kind == EN_MENU_LOAD ? EN_MENU_LONG_BUTTON_BYTES * 2 : EN_MENU_SHORT_BUTTON_BYTES * 3) / TILE_SIZE_4BPP;
-    s32 box[4], q;
-    if (!m->bracketsOn)
-    {
-        for (q = 0; q < 4; q++)
-            oam[q].attr0 = SPRITE_ATTR0_CLEAR;
-        return;
-    }
-    BracketBox(&m->buttons[m->sel], box);
-    if (m->phase == EN_PH_INTRO && m->t < 16)
-    {
-        // closing in from a box around most of the screen, three frames
-        s32 k = m->t - 13, start[4];
-        start[0] = 30;
-        start[1] = box[1] - 88;
-        start[2] = 238;
-        start[3] = box[3] + 34;
-        for (q = 0; q < 4; q++)
-            box[q] = start[q] + (box[q] - start[q]) * k / 3;
-    }
-    for (q = 0; q < 4; q++, oam++)
-    {
-        s32 x = (q & 1) ? box[2] - 15 : box[0];
-        s32 y = (q & 2) ? box[3] - 15 : box[1];
-        oam->attr0 = (y & 0xFF) | (ST_OAM_SQUARE << 14);
-        oam->attr1 = (x & 0x1FF) | (1 << 14);
-        oam->attr2 = (tile + q * 4) | (1 << 10) | (PAL_BRACKET << 12);
-    }
-}
-
 static void DrawButton(u32 n)
 {
     struct EnMenuButton * b = &gEnMenu->buttons[n];
     struct OamAttrs * oam = &gOamObjects[OAM_BUTTONS + n * 3];
     bool32 affine = FALSE;
     s32 x = b->x;
-    u32 i;
+    u32 i, pal = b->pal;
     if (b->anim == EN_BTN_HIDDEN || b->blinkOff || !b->sprites)
     {
         for (i = 0; i < 3; i++)
             oam[i].attr0 = SPRITE_ATTR0_CLEAR;
         return;
     }
+    // the Japanese screens' selection: the answer not selected in grey
+    if (pal == PAL_NORMAL && n < gEnMenu->count && n != gEnMenu->sel)
+        pal = PAL_UNSELECTED;
     if (b->anim == EN_BTN_FLIP_IN || b->anim == EN_BTN_FLIP_OUT)
     {
         u32 k = b->anim == EN_BTN_FLIP_OUT ? b->t : FLIP_IN_FRAMES - b->t;
@@ -335,7 +292,7 @@ static void DrawButton(u32 n)
             oam->attr0 = (b->y & 0xFF) | ((wide ? ST_OAM_H_RECTANGLE : ST_OAM_SQUARE) << 14);
             oam->attr1 = (x & 0x1FF) | ((wide ? 3 : 2) << 14);
         }
-        oam->attr2 = (b->tile + i * 32) | (1 << 10) | (b->pal << 12);
+        oam->attr2 = (b->tile + i * 32) | (1 << 10) | (pal << 12);
         x += w;
     }
 }
@@ -374,8 +331,6 @@ static void UpdatePhase(void)
             Flip(&m->buttons[0], EN_BTN_FLIP_IN);
         if (t == 10)
             Flip(&m->buttons[1], EN_BTN_FLIP_IN);
-        if (t == 13)
-            m->bracketsOn = TRUE;
         if (t >= 16)
             m->phase = EN_PH_READY;
         break;
@@ -389,8 +344,6 @@ static void UpdatePhase(void)
                 Flip(o, EN_BTN_FLIP_OUT);
             if (m->confirm == EN_CONFIRM_STAY)
                 break;
-            if (t == 31)
-                m->bracketsOn = FALSE;
             if (t >= 31 && s->x != m->buttons[2].x)
             {
                 // to the middle, 12 px a frame
@@ -411,13 +364,9 @@ static void UpdatePhase(void)
         case EN_CONFIRM_LOAD:
             Blink(s, t);
             if (t == 22)
-            {
-                m->bracketsOn = FALSE;
                 Flip(o, EN_BTN_FLIP_OUT);
-            }
             break;
         case EN_CONFIRM_CANCEL:
-            m->bracketsOn = FALSE;
             if (t == 12)
                 Flip(&m->buttons[1], EN_BTN_FLIP_OUT);
             if (t == 22)
@@ -513,7 +462,6 @@ bool32 EnMenuFrame(void)
     io->lcd_win0h = (left << 8) | DISPLAY_WIDTH;
     for (i = 0; i < 3; i++)
         DrawButton(i);
-    DrawBrackets();
     for (i = 0; i < 3; i++)
         AdvanceButton(&m->buttons[i]);
     Blend();
