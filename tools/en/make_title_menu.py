@@ -4,7 +4,8 @@ in the same 64x32 sprite sheet and palette indices as the original.
 The outline's corners are softened as in the GS2 English patch: an outline
 pixel that touches a letter only diagonally takes colour 4, the grey each of
 the menu's palettes has between the outline's colour and the black, except
-the two the GS2 patch touched up back to the outline's colour (KEEP)."""
+the two the GS2 patch touched up back to the outline's colour (KEEP), and two
+grey ones inside the G of "Game" that go, as in the GS3 patch (REMOVE)."""
 import os, sys, shutil
 import numpy as np
 from PIL import Image
@@ -20,6 +21,9 @@ ROWS = 13                     # the labels' rows (no descenders): capitals from 
 # corners that keep the outline's colour (x, y in the sheet), as in the GS2
 # patch (V39): inside the "e" of "New" and inside the "G" of "Game"
 KEEP = ((16, 11), (38, 7))
+# grey corners that go (transparent), as in the GS3 patch: inside the "G" of
+# "Game", where its curve meets the bar
+REMOVE = ((32, 10), (33, 11))
 for row, label in ((0, 'New Game'), (1, 'Continue')):
     m = render(label, space=3)          # (word spaces of 3, as the title has had)
     assert not m[ROWS:].any()
@@ -40,5 +44,8 @@ for row, label in ((0, 'New Game'), (1, 'Continue')):
 for x, y in KEEP:
     assert a[y, x] == 4
     a[y, x] = 3
+for x, y in REMOVE:
+    assert a[y, x] == 4
+    a[y, x] = 0
 img =Image.fromarray(a, 'P'); img.putpalette(tpl.getpalette()); img.save(path)
 print('title menu written')
