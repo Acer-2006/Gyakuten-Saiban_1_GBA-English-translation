@@ -9,7 +9,6 @@ extern const u16 gEnMenuMapLoad[];
 extern const u16 gEnMenuMapClear[];
 extern const u8 gEnMenuButtonsShort[];
 extern const u8 gEnMenuButtonsLong[];
-extern const u8 gEnMenuBracket[];
 extern const u16 gEnMenuObjPal[];
 extern const u8 gEnPlateFont[];
 extern const u8 gEnPlateFontAdv[];

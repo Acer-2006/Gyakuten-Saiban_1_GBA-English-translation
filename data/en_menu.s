@@ -37,11 +37,6 @@ gEnMenuButtonsLong:
 	.incbin "graphics/en/menu/buttons_long.4bpp"
 
 	.align 2
-	.global gEnMenuBracket
-gEnMenuBracket:
-	.incbin "graphics/en/menu/bracket.4bpp"
-
-	.align 2
 	.global gEnMenuObjPal
 gEnMenuObjPal:
 	.incbin "graphics/en/menu/menu_obj.gbapal"
