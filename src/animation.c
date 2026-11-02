@@ -417,7 +417,7 @@ const struct AnimationData gAnimationData[] = {
 	},
 	[20] = {
 		.gfxData = gEnBannerGfx,
-		.vramPtr = OBJ_VRAM0+0x4200,
+		.vramPtr = OBJ_VRAM0+EN_BANNER_VRAM_RIGHT, // (English banners at the DS's size: after the left half)
 		.frameData = gEnBannerSeq_testimony_right,
 		.xOrigin = 336,
 		.yOrigin = EN_BANNER_Y,
@@ -439,7 +439,7 @@ const struct AnimationData gAnimationData[] = {
 	},
 	[22] = {
 		.gfxData = gEnBannerGfx,
-		.vramPtr = OBJ_VRAM0+0x4200,
+		.vramPtr = OBJ_VRAM0+EN_BANNER_VRAM_RIGHT, // (English banners at the DS's size: after the left half)
 		.frameData = gEnBannerSeq_cross_right,
 		.xOrigin = 336,
 		.yOrigin = EN_BANNER_Y,
