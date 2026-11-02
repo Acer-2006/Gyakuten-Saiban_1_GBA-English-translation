@@ -4,19 +4,18 @@
 
 extern u8 gEnBannerGfx[];
 extern u8 gEnBannerSeq_testimony[];
-#define EN_BANNER_SPRITES_TESTIMONY 10
+#define EN_BANNER_SPRITES_TESTIMONY 4
 extern u8 gEnBannerSeq_cross[];
-#define EN_BANNER_SPRITES_CROSS 11
+#define EN_BANNER_SPRITES_CROSS 5
 extern u8 gEnBannerSeq_testimony_left[];
-#define EN_BANNER_SPRITES_TESTIMONY_LEFT 3
+#define EN_BANNER_SPRITES_TESTIMONY_LEFT 2
 extern u8 gEnBannerSeq_testimony_right[];
-#define EN_BANNER_SPRITES_TESTIMONY_RIGHT 6
+#define EN_BANNER_SPRITES_TESTIMONY_RIGHT 3
 extern u8 gEnBannerSeq_cross_left[];
 #define EN_BANNER_SPRITES_CROSS_LEFT 3
 extern u8 gEnBannerSeq_cross_right[];
-#define EN_BANNER_SPRITES_CROSS_RIGHT 6
-#define EN_BANNER_Y 40   // banners at 100% of the DS size
-#define EN_BANNER_VRAM_RIGHT 0x4500   // the halves from the right (OBJ_VRAM0 offset)
+#define EN_BANNER_SPRITES_CROSS_RIGHT 3
+#define EN_BANNER_Y 60   // banners scaled to 67% of the DS size
 extern u8 gEnBubbleGfx_objection[];
 extern u8 gEnBubbleSeq_objection[];
 #define EN_BUBBLE_SPRITES_OBJECTION 27
