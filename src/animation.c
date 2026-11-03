@@ -2224,15 +2224,8 @@ void UpdateAnimations(u32 arg0)
             if(animation->flags < 0) // what the fuck
             {
                 // English patch: as on the DS, characters keep moving (and
-                // talking) through a white flash; fades still hold them. The
-                // Hold it! / Objection! / Take that! bubbles still hold through
-                // the flash they come with, as in the Japanese game: a press's
-                // and a present's own timings count that time in, and a bubble
-                // that ran on was gone 12 frames before the cut to the bench
-                u32 id = animation->animationInfo.animId;
-                bool32 bubble = (id >= ANIM_HOLDIT_LEFT && id <= ANIM_TAKETHAT_LEFT)
-                             || id == ANIM_HOLDIT_CENTER || id == ANIM_OBJECTION_CENTER;
-                if(main->blendMode == 0 || (main->blendMode == 3 && !bubble))
+                // talking) through a white flash; fades still hold them
+                if(main->blendMode == 0 || main->blendMode == 3)
                 {
                     if(AdvanceAnimationFrame(animation) == 0)
                         continue;
