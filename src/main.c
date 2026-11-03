@@ -1,4 +1,5 @@
 #include "global.h"
+#include "vwf.h"
 #include "main.h"
 #include "animation.h"
 #include "sound.h"
@@ -360,6 +361,12 @@ void ResetGameState()
     main->rngSeed = 3383;
     main->scenarioIdx = 0;
     main->caseEnabledFlags = 1;
+    // English patch: the text centring (script command 5D) is the VWF's, in
+    // the old script heap, which only a power-on cleared: a save made on a
+    // centred page (a location card) and the title after it left it on, and
+    // the next game's "Select an episode." and an episode's opening lines came
+    // out centred. A save that is loaded puts its own back (VwfRestore).
+    VwfSetCentre(0);
     ioRegsp->lcd_bg0cnt = BGCNT_PRIORITY(0) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(28) | BGCNT_16COLOR | BGCNT_WRAP;                 // TODO: add TXT/AFF macro once known which one is used
     ioRegsp->lcd_bg1cnt = BGCNT_PRIORITY(1) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(29) | BGCNT_16COLOR | BGCNT_WRAP;                 // TODO: add TXT/AFF macro once known which one is used
     ioRegsp->lcd_bg2cnt = BGCNT_PRIORITY(0) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(30) | BGCNT_16COLOR | BGCNT_WRAP;                 // TODO: add TXT/AFF macro once known which one is used

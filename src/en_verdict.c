@@ -96,6 +96,7 @@ bool32 EnVerdictAnimate(struct Main * main)
         PlaySE(SE02C_GAME_OVER);
         main->shakeTimer = 4;
         main->shakeIntensity = 1;
+        main->gameStateFlags |= 1; // (the shake runs only with this set, as everywhere else)
     }
     if (n < 0xFF)
         main->process[GAME_PROCESS_VAR1]++;
