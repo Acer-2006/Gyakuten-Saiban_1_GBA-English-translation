@@ -79,10 +79,15 @@ static void VwfShowBlocks(u32 line, u32 lastBlock)
 }
 
 // arguments of each script command, to step over the ones inside a line
-static const u8 sCmdArgs[0x60] = {
+static const u8 sCmdArgs[] = {
     0, 0, 0, 1, 1, 2, 1, 0, 2, 3, 1, 1, 1, 0, 1, 2, 1, 0, 3, 1, 0, 0, 0, 1, 1, 2, 4, 1, 1, 1, 3, 0,
     1, 0, 2, 2, 0, 1, 1, 2, 1, 1, 3, 0, 1, 0, 0, 2, 1, 2, 2, 5, 1, 2, 1, 2, 1, 1, 2, 2, 1, 1, 1, 0,
     0, 0, 1, 1, 1, 0, 1, 2, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 1,
+#if RFTA
+    // the fifth episode's commands (60-6A, script_main.c; tools/en/phscr.py):
+    // the scripts are walked over them when a save is loaded
+    1, 1, 1, 0, 2, 3, 1, 1, 1, 1, 1,
+#endif
 };
 
 // The DS centres location cards, testimony titles and a few lines with
@@ -527,7 +532,7 @@ static bool32 VwfFixSavedChoiceLabels(const u16 * s, u32 upTo)
             labels = pos;
         else if (t == 0x08 || t == 0x09)
             labels = NO_POS;
-        pos += t >= 0x80 ? 1 : 1 + (t < 0x60 ? sCmdArgs[t] : 0);
+        pos += t >= 0x80 ? 1 : 1 + (t < ARRAY_COUNT(sCmdArgs) ? sCmdArgs[t] : 0);
     }
     if (labels != NO_POS)
         SetChoiceLabels(s + labels + 1);
@@ -698,7 +703,7 @@ bool32 VwfFixSavedScriptPos(void)
             labels = pos;
         else if (t == 0x08 || t == 0x09)
             labels = NO_POS;
-        pos += 1 + (t < 0x60 ? sCmdArgs[t] : 0);
+        pos += 1 + (t < ARRAY_COUNT(sCmdArgs) ? sCmdArgs[t] : 0);
     }
 
     ctx->scriptSectionPtr = s;

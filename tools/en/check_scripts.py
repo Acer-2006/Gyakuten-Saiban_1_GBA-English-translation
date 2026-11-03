@@ -58,7 +58,7 @@ from port_script import FADE_OUT_WAITS, thought_mouths
 import text_gaps
 
 FADE_IN, FADE_OUT = 1, 2
-PRESS_ON = (0x02, 0x2D, 0x0D)          # page break, wait for A, end of section
+PRESS_ON = (0x02, 0x07, 0x0A, 0x2D, 0x0D)   # waits for A (Command02: 02, 07, 0A, 2D), end of section
 TEXT_KEEPS = (0x01, 0x03, 0x0B, 0x0C)  # new line, colour, speed, wait: still the same line
 CHOICES = {0x08: 2, 0x09: 3}           # answers' sections: the first 2 / 3 arguments
 JUMPS = {0x0A: (0,), 0x2C: (0,), 0x20: (0,), 0x2A: (1, 2)}   # section arguments
@@ -162,7 +162,7 @@ def wide_lines(items):
             pen += ADVANCE[c] if c < len(ADVANCE) else 99
             s += ch(op)
         elif k == 'cmd' and op in (0x01, 0x02, 0x07, 0x08, 0x09, 0x0A, 0x0D, 0x2D, 0x2E):
-            limit = THIRD_LINE_PIXELS if y == 2 and op in (0x02, 0x0A, 0x2D) else LINE_PIXELS
+            limit = THIRD_LINE_PIXELS if y == 2 and op in (0x02, 0x07, 0x0A, 0x2D) else LINE_PIXELS
             if w > limit:
                 res.append((w, s, limit))
             pen, w, s = 0, 0, ''
@@ -203,7 +203,7 @@ def hidden_waits(items):
     return res
 
 
-POSE_SHOWN = (0x02, 0x2D, 0x2E, 0x15, 0x0C)   # text starts, waits: the pose is on screen
+POSE_SHOWN = (0x02, 0x07, 0x0A, 0x2D, 0x2E, 0x15, 0x0C)   # text starts, waits: the pose is on screen
 DESK_ROW = 150                                 # poses that end above this stop at something in front
 POSE_SLACK = 4
 _BOTTOMS = None
