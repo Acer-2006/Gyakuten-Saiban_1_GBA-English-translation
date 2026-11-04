@@ -273,9 +273,10 @@ VERDICT_SCALE = 0.9
 GUILTY_TABLE, NOT_GUILTY_TABLE = 0x20b45b0, 0x20b4640       # arm9 addresses
 GUILTY_PAL, NOT_GUILTY_PAL = 0x1ab10b4, 0x1ab10d4           # data.bin
 VERDICT_VRAM_END = 0x5800                                   # person sprites start there
-# the DS letters sit just above the DS text box; on the GBA they go where the
-# Japanese verdict kanji were, clear of the name tag and text box
-VERDICT_CENTRE_Y = 57
+# the DS centres the letters on its screen (their middle 49% of the way down,
+# the text box gone); on the GBA they go about the GBA screen's centre the same
+# way, as x goes about 120 (the Japanese verdict kanji sat higher, at 57)
+VERDICT_CENTRE_Y = 80
 
 def ds_letters(addr, n):
     a = open(ARM9, 'rb').read()
