@@ -245,8 +245,9 @@ void VwfClearLine(u32 line)
     }
 }
 
-// a character in the DS menu font (plate text)
-static void VwfDrawMenuChar(u32 code, u32 line)
+// a character in the DS menu font (plate text); a coloured word (the GBA's
+// blue "save" and "suspend") takes plate-text value 1 + colour
+static void VwfDrawMenuChar(u32 code, u32 line, u32 color)
 {
     const u8 * glyph;
     u8 * buf = gVwf->tiles[line];
@@ -272,6 +273,7 @@ static void VwfDrawMenuChar(u32 code, u32 line)
                 u32 px = pen + x + off;
                 u32 tile = (px >> 5) * 8 + (y >> 3) * 4 + ((px >> 3) & 3);
                 u8 * p = buf + tile * 32 + (y & 7) * 4 + ((px & 7) >> 1);
+                v += color;
                 if (px & 1)
                     *p = (*p & 0x0F) | (v << 4);
                 else
@@ -300,7 +302,7 @@ void VwfPutChar(u32 code, u32 line, u32 color)
     if (gVwf->logLen[line] < VWF_LOG_LEN)
         gVwf->log[line][gVwf->logLen[line]++] = code | (color << 11);
     if (gEnMenu->textMode)
-        VwfDrawMenuChar(code, line);
+        VwfDrawMenuChar(code, line, color < 4 ? color : 0);
     else
         VwfDrawChar(code, line, color, TRUE);
 }

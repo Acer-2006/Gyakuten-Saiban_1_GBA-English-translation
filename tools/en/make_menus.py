@@ -163,6 +163,11 @@ long_ = b''.join(obj_sprites(b, 32, (64, 64, 64)) for b in (savept, chstart))  #
 open(os.path.join(OUT, 'buttons_short.4bpp'), 'wb').write(short)
 open(os.path.join(OUT, 'buttons_long.4bpp'), 'wb').write(long_)
 TEXT_COLOUR = (240, 240, 240)
+# the GBA's coloured words on the plates (the Japanese plates show "save" and
+# "suspend" in blue; the DS English dropped the colour): script colours 1-3 as
+# the GBA text palette draws them (gTextPal 6, 9, 12: the brightest red, blue
+# and green), at plate-text values 2-4 (vwf.c VwfDrawMenuChar)
+TEXT_COLOURS = [(248, 112, 56), (104, 200, 248), (0, 248, 0)]
 
 def unselected(pal):
     """The button not selected, as the Japanese save and load screens show it
@@ -179,7 +184,7 @@ def unselected(pal):
 
 UNSELECTED = unselected(bpal[0])
 open(os.path.join(OUT, 'menu_obj.gbapal'), 'wb').write(
-    pal_bytes(bpal[0]) + pal_bytes(bpal[1]) + pal_bytes(bpal[2]) + pal_bytes(UNSELECTED) + pal_bytes([(0, 0, 0), TEXT_COLOUR]))
+    pal_bytes(bpal[0]) + pal_bytes(bpal[1]) + pal_bytes(bpal[2]) + pal_bytes(UNSELECTED) + pal_bytes([(0, 0, 0), TEXT_COLOUR] + TEXT_COLOURS))
 
 # ---------------------------------------------------------------------------
 # plate font: 14 rows (cell rows 2..15) x 16 px per glyph, 4bpp, value 1

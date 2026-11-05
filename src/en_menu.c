@@ -223,9 +223,18 @@ u32 EnMenuLineStart(void)
 {
     const u16 * p = gScriptContext.scriptPtr;
     s32 w = 0, x;
-    while (*p >= 0x80)
+    for (;;)
     {
-        u32 c = *p++ - 0x80;
+        u32 c = *p;
+        if (c == 0x03)
+        {
+            p += 2;   // a colour change inside the line (the blue words)
+            continue;
+        }
+        if (c < 0x80)
+            break;
+        c -= 0x80;
+        p++;
         w += (c < EN_PLATE_FONT_CODES && gEnPlateFontAdv[c]) ? gEnPlateFontAdv[c] : 8;
     }
     x = (258 - w) / 2 - 8;

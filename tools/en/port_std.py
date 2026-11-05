@@ -92,10 +92,56 @@ def centre(ds, sections):
         if len(body) % 4: body += b'\0\0'
     return struct.pack('<I', n) + struct.pack('<%dI' % n, *newoffs) + bytes(body)
 
+# The GBA colours a word or two of the plate messages blue (command 03, 2): the
+# DS Japanese kept them, the DS English dropped them. Put them back on the
+# English words that say the same (the Japanese words in brackets).
+BLUE = {0: ['Save'],                              # 保存
+        1: ['Save', 'suspend'],                   # 保存, 中断
+        4: ['Erase', 'default settings'],         # 消去, 初期状態
+        6: ['Suspending']}                        # 中断
+COLOUR, BLUE_COLOUR, NO_COLOUR = 0x03, 2, 0
+
+def encode(word):
+    out = []
+    for ch in word:
+        if 'A' <= ch <= 'Z': out.append(0x8A + ord(ch) - 65)
+        elif 'a' <= ch <= 'z': out.append(0xA4 + ord(ch) - 97)
+        elif ch == ' ': out.append(0x17F)
+        else: raise ValueError(ch)
+    return out
+
+def colour_words(path, spec):
+    from phscr import section_bounds, tokens, parse, GBA_ARGS
+    b = open(path, 'rb').read()
+    n = struct.unpack_from('<I', b, 0)[0]
+    offs = list(struct.unpack_from('<%dI' % n, b, 4))
+    S = section_bounds(b, offs)
+    out_secs = []
+    for i, x in enumerate(S):
+        toks = tokens(b, *x) if x else []
+        for word in spec.get(i, []):
+            w = encode(word)
+            # find the word as text (not inside a command's arguments)
+            items, _ = parse(toks, GBA_ARGS)
+            starts = [pos for pos, kind, op, a in items if kind == 'text']
+            hits = [k for k in starts if toks[k:k + len(w)] == w]
+            assert len(hits) == 1, (i, word, hits)
+            k = hits[0]
+            toks = toks[:k] + [COLOUR, BLUE_COLOUR] + w + [COLOUR, NO_COLOUR] + toks[k + len(w):]
+        out_secs.append(toks)
+    body = bytearray(); newoffs = []
+    base = 4 + 4 * n
+    for t in out_secs:
+        newoffs.append(base + len(body))
+        body += struct.pack('<%dH' % len(t), *t)
+        if len(body) % 4: body += b'\0\0'
+    open(path, 'wb').write(struct.pack('<I', n) + struct.pack('<%dI' % n, *newoffs) + bytes(body))
+
 if __name__ == '__main__':
     gfile, mes_all, out = sys.argv[1:4]
     tmp = out + '.ds'
     open(tmp, 'wb').write(centre(ds_std(mes_all), {2, 5}))
     t, k = port_script.port(gfile, tmp, out, out + '.report.txt', None, PAIRS)
     os.remove(tmp)
+    colour_words(out, BLUE)
     print('std: %d sections, %d left in Japanese' % (t, k))
